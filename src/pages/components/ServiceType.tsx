@@ -35,7 +35,7 @@ const ServiceType = () => {
   return (
     <>
       <div className="flex">
-        <div className="flex justify-between">
+        <div className="flex">
           <div className="grid grid-cols-2 gap-4 text-2xl md:grid-cols-3 lg:grid-cols-4">
             {serviceType.map((item, index) => (
               <div
@@ -49,9 +49,9 @@ const ServiceType = () => {
               </div>
             ))}
           </div>
-          <div className="flex items-center space-x-2 rounded p-2 ">
+          <div className="flex space-x-2 rounded p-2">
             <div className="flex flex-col">
-              <div className="flex">
+              <div className="mb-4 flex">
                 <p className="flex-1 rounded bg-white px-4 py-2 text-center text-2xl">
                   是否十萬火急
                 </p>
@@ -74,10 +74,11 @@ const ServiceType = () => {
               </div>
               <div className="flex items-center">
                 <p className="px-4">完成日期</p>
+                {/* 底下 span 是 calendar_month icon */}
                 {/* <span className="material-symbols-outlined">
                   calendar_month
                 </span> */}
-                <input type="date" />
+                <input className="border" type="date" />
               </div>
             </div>
           </div>
