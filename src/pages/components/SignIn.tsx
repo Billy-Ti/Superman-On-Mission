@@ -24,7 +24,7 @@ const SignIn = () => {
               action="#"
               className="flex h-full flex-col items-center justify-center bg-[#FFFFFF] px-[50px] py-[0] text-center"
             >
-              <h1 className="m-0 mb-4 font-bold">Create Account</h1>
+              <p className="m-0 mb-4 font-bold">Create Account</p>
               <span className="text-[12px]">
                 or use your email for registration
               </span>
@@ -53,7 +53,7 @@ const SignIn = () => {
               action="#"
               className="flex h-full flex-col items-center justify-center bg-[#FFFFFF] px-[50px] py-[0] text-center"
             >
-              <h1>Sign in</h1>
+              <p>Sign in</p>
               <input
                 className="mx-0 my-2 w-full border-[none] bg-[#eee] px-[15px] py-[12px] focus:outline-none"
                 type="email"
@@ -78,7 +78,7 @@ const SignIn = () => {
           <div className="overlay-container absolute left-2/4 top-[0] h-full w-1/2 overflow-hidden [transition:transform_0.6s_ease-in-out]">
             <div className="overlay relative -left-full h-full w-[200%] translate-x-[0] bg-[#FF416C] bg-[-webkit-linear-gradient(to_right,_#FF4B2B,_#FF416C)] bg-[linear-gradient(to_right,_#FF4B2B,_#FF416C)] bg-cover bg-[0_0] bg-no-repeat text-[#FFFFFF] [transition:transform_0.6s_ease-in-out]">
               <div className="overlay-panel overlay-left absolute top-[0] flex h-full w-1/2 -translate-x-[20%] translate-x-[0] flex-col items-center justify-center px-[40px] py-[0] text-center [transition:transform_0.6s_ease-in-out]">
-                <h1>Welcome Back!</h1>
+                <p>Welcome Back!</p>
                 <p className="mx-0 mb-[30px] mt-[20px] text-[14px] font-thin leading-[20px] tracking-[0.5px]">
                   To keep connected with us please login with your personal info
                 </p>
@@ -91,7 +91,7 @@ const SignIn = () => {
                 </button>
               </div>
               <div className="overlay-panel overlay-right absolute right-[0] top-[0] flex h-full w-1/2 translate-x-[0] flex-col items-center justify-center px-[40px] py-[0] text-center [transition:transform_0.6s_ease-in-out]">
-                <h1>Hello, Friend!</h1>
+                <p>Hello, Friend!</p>
                 <p className="mx-0 mb-[30px] mt-[20px] text-[14px] font-thin leading-[20px] tracking-[0.5px]">
                   Enter your personal details and start journey with us
                 </p>

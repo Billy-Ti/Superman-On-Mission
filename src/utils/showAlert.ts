@@ -15,6 +15,7 @@ export const showAlert = (
     | "bottom-start"
     | "bottom-end",
   allowOutsideClick?: boolean,
+  
 ) => {
   Swal.fire({
     title: title || "",
