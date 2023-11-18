@@ -3,6 +3,8 @@ import { forwardRef, useImperativeHandle, useState } from "react";
 // 定義 interface 以提供 Task 元件做清空動作
 export interface ServiceTypeRef {
   resetServiceType: () => void;
+  getSelectedServiceTypes: () => string[];
+  getUrgentStatus: () => boolean | null;
 }
 
 const ServiceType = forwardRef((props, ref) => {
@@ -15,6 +17,12 @@ const ServiceType = forwardRef((props, ref) => {
       setSelectedIndexes([]);
       setUrgent(false);
       setSelectedDate("");
+    },
+    getSelectedServiceTypes: () => {
+      return selectedIndexes.map((index) => serviceType[index]);
+    },
+    getUrgentStatus: () => {
+      return urgent;
     },
   }));
 

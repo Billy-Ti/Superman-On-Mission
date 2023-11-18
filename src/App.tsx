@@ -1,5 +1,5 @@
 import { BrowserRouter, Route, Routes } from "react-router-dom";
-import Task from "./pages/Home/Task.tsx";
+import Task from "./pages/Task/index.tsx";
 import Home from "./pages/Home/index.tsx";
 import SignIn from "./pages/components/SignIn.tsx";
 const App = () => {

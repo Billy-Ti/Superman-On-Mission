@@ -1,7 +1,12 @@
-import { useRef, useState } from "react";
+import { doc, getDoc, getFirestore, writeBatch } from "firebase/firestore";
+import { useEffect, useRef, useState } from "react";
 import Swal from "sweetalert2";
+import { app } from "../../config/firebase"; // 導入初始化的 Firebase app
+import { showAlert } from "../../utils/showAlert";
 import ServiceType, { ServiceTypeRef } from "../components/ServiceType";
 import countyToRegion from "../components/TaiwanRegion";
+
+const db = getFirestore(app);
 
 const Task = () => {
   const [selectedCounty, setSelectedCounty] = useState<string>("");
@@ -13,6 +18,8 @@ const Task = () => {
   const [detailedAddress, setDetailedAddress] = useState("");
   const [additionalNotes, setAdditionalNotes] = useState("");
   const [taskReward, setTaskReward] = useState("");
+  const [superCoins, setSuperCoins] = useState(5000); // 初始 Super Coin 數量
+  const [originalSuperCoins] = useState(5000); // 保存原始 Super Coin 數量
 
   const serviceTypeRef = useRef<ServiceTypeRef>(null);
 
@@ -21,6 +28,33 @@ const Task = () => {
     setSelectedCounty(county);
     setSelectedRegion("");
   };
+
+  const handleRegionChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
+    setSelectedRegion(event.target.value);
+  };
+
+  const handleTaskRewardChange = (
+    event: React.ChangeEvent<HTMLInputElement>,
+  ) => {
+    const value = event.target.value;
+    const numericValue = Number(value); // 將字串轉換為數字
+    if (!isNaN(numericValue) && numericValue >= 0) {
+      if (numericValue <= originalSuperCoins) {
+        setTaskReward(value);
+      } else {
+        showAlert("🚨系統提醒", "已超過可用 Super Coin 數量...");
+      }
+    } else {
+      showAlert("🚨系統提醒", "請輸入有效的數字...");
+    }
+  };
+
+  useEffect(() => {
+    const rewardValue = Number(taskReward);
+    if (!isNaN(rewardValue) && rewardValue <= originalSuperCoins) {
+      setSuperCoins(originalSuperCoins - rewardValue);
+    }
+  }, [taskReward, originalSuperCoins]);
 
   const deleteTask = (event: React.MouseEvent<HTMLButtonElement>) => {
     event.preventDefault();
@@ -36,7 +70,7 @@ const Task = () => {
 
     Swal.fire({
       title: "確定要刪除任務嗎？",
-      text: "此操作將清空所有已填寫的資訊。",
+      html: "<strong style='color: red;'>此操作將清空所有已填寫的資訊</strong>",
       icon: "warning",
       showCancelButton: true,
       confirmButtonText: "確定",
@@ -54,22 +88,77 @@ const Task = () => {
           showConfirmButton: false,
           allowOutsideClick: false,
         });
-        setSelectedCounty("請選擇任務縣市");
-        setSelectedRegion("");
-        setTaskTitle("");
-        setTaskDetails("");
-        setTaskDescription("");
-        setDetailedAddress("");
-        setAdditionalNotes("");
-        setTaskReward("");
+        resetFormFields();
       }
     });
   };
 
-  const confirmSubmitTask = (event: React.MouseEvent<HTMLButtonElement>) => {
+  const confirmSubmitTask = async (
+    event: React.MouseEvent<HTMLButtonElement>,
+  ) => {
     event.preventDefault();
 
-    Swal.fire({
+    const batch = writeBatch(db);
+    const taskDocRef = doc(db, "tasks", "XbQyRMt7bR2UBAAuiFR5");
+    const coinsDocRef = doc(db, "users", "vnI4HAeUrFstdvCkYGAs");
+
+    try {
+      // 使用 getDoc 讀取資料庫文件欄位
+      const taskDocSnap = await getDoc(taskDocRef);
+      const coinsDocSnap = await getDoc(coinsDocRef);
+
+      // 從 ServiceType 讀取選中的服務類別
+      const selectedServiceTypes =
+        serviceTypeRef.current?.getSelectedServiceTypes();
+
+      // 從 ServiceType 讀取是否為急件的狀態
+      const urgentStatus = serviceTypeRef.current?.getUrgentStatus();
+
+      // 要更新的欄位資訊
+      const taskData = {
+        title: taskTitle,
+        city: selectedCounty,
+        district: selectedRegion,
+        address: detailedAddress,
+        description: taskDescription,
+        notes: additionalNotes,
+        categorys: selectedServiceTypes,
+        isUrgent: urgentStatus,
+      };
+
+      const coinsData = {
+        coin: superCoins,
+      };
+
+      // 根據文件是否存在來決定操作
+      if (taskDocSnap.exists()) {
+        batch.update(taskDocRef, taskData);
+      } else {
+        batch.set(taskDocRef, taskData);
+      }
+
+      if (coinsDocSnap.exists()) {
+        batch.update(coinsDocRef, coinsData);
+      } else {
+        batch.set(coinsDocRef, coinsData);
+      }
+
+      // 提交一次性操作
+      await batch.commit();
+      Swal.fire("成功", "任务信息已更新。", "success");
+      resetFormFields();
+
+      if (serviceTypeRef.current) {
+        serviceTypeRef.current.resetServiceType();
+      }
+    } catch (error) {
+      console.error("Update failed", error);
+      await Swal.fire("錯誤", "任務提交失敗，請聯繫管理員", "error");
+      return;
+    }
+
+    // 如果文件存在，一切顺利，顯示提交成功訊息
+    const result = await Swal.fire({
       title: "是否提交任務?",
       text: "請再次確認所有資訊皆已填寫",
       icon: "question",
@@ -78,23 +167,31 @@ const Task = () => {
       cancelButtonText: "取消",
       reverseButtons: true,
       allowOutsideClick: false,
-    }).then((result) => {
-      if (result.isConfirmed) {
-        Swal.fire({
-          title: "提交任務成功",
-          icon: "success",
-          timer: 1500,
-          timerProgressBar: true,
-          showConfirmButton: false,
-          allowOutsideClick: false,
-        });
-      }
     });
+
+    if (result.isConfirmed) {
+      await Swal.fire({
+        title: "🍻 提交任務成功",
+        icon: "success",
+        timer: 1500,
+        timerProgressBar: true,
+        showConfirmButton: false,
+        allowOutsideClick: false,
+      });
+      resetFormFields();
+    }
+  };
+  const resetFormFields = () => {
+    setSelectedCounty("");
+    setSelectedRegion("");
+    setTaskTitle("");
+    setTaskDetails("");
+    setTaskDescription("");
+    setDetailedAddress("");
+    setAdditionalNotes("");
+    setTaskReward("");
   };
 
-  const handleRegionChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
-    setSelectedRegion(event.target.value);
-  };
   return (
     <div className="container mx-auto">
       <h3 className="mb-4 mt-10 border-b-8 border-black pb-3 text-4xl font-bold">
@@ -203,13 +300,14 @@ const Task = () => {
               placeholder="願支付多少 Coin 請人完成任務"
               className="mr-4 w-72 rounded-[10px] border p-3 focus:outline-none"
               value={taskReward}
-              onChange={(e) => setTaskReward(e.target.value)}
+              onChange={handleTaskRewardChange}
             />
             <span className="text-xl font-black">Super Coin</span>
           </div>
           <div className="flex items-center text-xl font-black">
             <p>我的 Super Coin :</p>
-            <span className="ml-1">3000</span>
+            <span className="ml-1">{superCoins}</span>{" "}
+            {/* 顯示當前 Super Coin 數量 */}
           </div>
         </div>
         <div className="mb-4">

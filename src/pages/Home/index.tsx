@@ -1,9 +1,9 @@
 import { Icon } from "@iconify/react";
 // import { showAlert } from "../../utils/showAlert";
 import { useNavigate } from "react-router-dom";
-import StartTask from "../components/StartTask";
+import TaskButton from "../Task/TaskButton";
 
-const index = () => {
+const Home = () => {
   // const click = () => {
   //   showAlert("標題", "文本", "success", "center", false);
   // };
@@ -27,9 +27,9 @@ const index = () => {
           />
         </div>
       </div>
-      <StartTask />
+      <TaskButton />
     </>
   );
 };
 
-export default index;
+export default Home;
