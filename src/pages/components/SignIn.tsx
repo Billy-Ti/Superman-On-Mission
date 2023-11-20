@@ -47,6 +47,10 @@ const SignIn = () => {
         email,
         joinedAt,
         userId: userCredential.user.uid,
+        totalPostedTasks: 0,
+        totalCompletedTasks: 0,
+        progressTasks: 0,
+        superCoins: 5000,
       });
 
       // 清除輸入狀態

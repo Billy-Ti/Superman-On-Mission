@@ -190,7 +190,7 @@ const Task = () => {
       showAlert("錯誤", "無效的任務報酬");
       return;
     }
-    const remainingSuperCoins = originalSuperCoins - taskRewardValue;
+    // const remainingSuperCoins = originalSuperCoins - taskRewardValue;
 
     // 上傳文件並獲取 URL
     const uploadPromises = files.map((file) => uploadFile(file));
@@ -236,6 +236,7 @@ const Task = () => {
         taskId,
         createdAt,
         cost: taskRewardValue,
+        acceptedBy: ""
       };
       await addDoc(collection(db, "tasks"), taskData);
 
