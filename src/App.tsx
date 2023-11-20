@@ -4,6 +4,7 @@ import { AuthProvider } from "./hooks/AuthProvider.tsx";
 import Home from "./pages/Home/index.tsx";
 import Task from "./pages/Task/index.tsx";
 import SignIn from "./pages/components/SignIn.tsx";
+import TaskManagement from "./pages/Task/TaskManagement.tsx";
 
 const App = () => {
   return (
@@ -17,6 +18,14 @@ const App = () => {
             element={
               <ProtectedRoute>
                 <Task />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/TaskManagement"
+            element={
+              <ProtectedRoute>
+                <TaskManagement />
               </ProtectedRoute>
             }
           />

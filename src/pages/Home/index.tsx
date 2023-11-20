@@ -43,6 +43,10 @@ const Home = () => {
     });
   };
 
+  const handleTaskManagement = () => {
+    navigate("/TaskManagement");
+  };
+
   return (
     <>
       <div className="container mx-auto">
@@ -51,7 +55,7 @@ const Home = () => {
           <div className="flex items-center">
             {currentUser ? (
               <>
-                <div title="會員中心">
+                <div className="group relative">
                   <Icon
                     className="cursor-pointer"
                     icon="mingcute:user-4-fill"
@@ -60,6 +64,27 @@ const Home = () => {
                     height="40"
                     onClick={handleSignIn}
                   />
+                  <div className="absolute z-10 hidden flex-col space-y-2 rounded bg-white p-4 opacity-0 group-hover:flex group-hover:opacity-100">
+                    <button
+                      type="button"
+                      className="w-36 rounded bg-gray-200 px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-300"
+                    >
+                      會員中心
+                    </button>
+                    <button
+                      type="button"
+                      onClick={handleTaskManagement}
+                      className="w-36 rounded bg-gray-200 px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-300"
+                    >
+                      任務管理
+                    </button>
+                    <button
+                      type="button"
+                      className="w-36 rounded bg-gray-200 px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-300"
+                    >
+                      我的評價
+                    </button>
+                  </div>
                 </div>
                 <div title="登出">
                   <Icon
@@ -74,7 +99,7 @@ const Home = () => {
               </>
             ) : (
               // 如果用戶未登入，顯示登入按鈕
-              <div title="會員中心">
+              <div title="註冊 | 登入">
                 <Icon
                   className="cursor-pointer"
                   icon="mingcute:user-4-fill"
