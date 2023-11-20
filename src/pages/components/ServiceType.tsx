@@ -8,7 +8,7 @@ export interface ServiceTypeRef {
   getDate: () => string;
 }
 
-const ServiceType = forwardRef((props, ref) => {
+const ServiceType = forwardRef((_props, ref) => {
   const [selectedIndexes, setSelectedIndexes] = useState<number[]>([]);
   const [urgent, setUrgent] = useState<boolean | null>(false);
   const [selectedDate, setSelectedDate] = useState<string>("");
@@ -67,6 +67,7 @@ const ServiceType = forwardRef((props, ref) => {
     setUrgent(value);
   };
 
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const resetServiceType = () => {
     setSelectedIndexes([]);
     setUrgent(false);

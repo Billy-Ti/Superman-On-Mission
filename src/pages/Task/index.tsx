@@ -56,7 +56,9 @@ const Task = () => {
   const handleRegionChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
     setSelectedRegion(event.target.value);
   };
-  const handleTaskRewardChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+  const handleTaskRewardChange = (
+    event: React.ChangeEvent<HTMLInputElement>,
+  ) => {
     const rewardValue = Number(event.target.value);
     if (!isNaN(rewardValue) && rewardValue >= 0) {
       if (rewardValue <= superCoins) {
@@ -68,8 +70,7 @@ const Task = () => {
     } else {
       showAlert("🚨系統提醒", "請輸入有效的數字...");
     }
-};
-
+  };
 
   useEffect(() => {
     const rewardValue = Number(taskReward);
@@ -104,36 +105,6 @@ const Task = () => {
           setUserName(user.displayName || "未設置名稱");
           setSuperCoins(5000);
         }
-      }
-    });
-    return () => unsubscribe();
-  }, []);
-
-  useEffect(() => {
-    const auth = getAuth();
-    const unsubscribe = onAuthStateChanged(auth, async (user) => {
-      if (user) {
-        setCurrentUserId(user.uid);
-        const userDocRef = doc(db, "users", user.uid);
-        const userDoc = await getDoc(userDocRef);
-
-        if (!userDoc.exists()) {
-          await setDoc(userDocRef, {
-            userId: user.uid,
-            userName,
-            email: user.email || "未知郵箱",
-            joinedAt: new Date().toISOString(),
-            superCoins: 5000,
-          });
-          setSuperCoins(5000);
-        } else {
-          const userData = userDoc.data();
-          setUserName(userData.userName || "未知用戶");
-          setSuperCoins(userData.superCoins || 5000);
-          setUserEmail(userData.email || "未知郵箱");
-        }
-
-        setUserEmail(user.email || "未知郵箱");
       }
     });
     return () => unsubscribe();
