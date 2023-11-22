@@ -1,4 +1,6 @@
 import { Icon } from "@iconify/react";
+import { getAuth, onAuthStateChanged } from "firebase/auth";
+import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import Swal from "sweetalert2";
 import { useAuth } from "../../hooks/AuthProvider";
@@ -44,12 +46,29 @@ const Home = () => {
   };
 
   const handleTaskManagement = () => {
-    navigate("/TaskManagement");
+    navigate("/taskManagement");
   };
+
+  useEffect(() => {
+    const auth = getAuth();
+    const unsubscribe = onAuthStateChanged(auth, (user) => {
+      if (user) {
+        // 用戶已登錄，打印用戶郵件和 ID
+        console.log("當前用戶郵件:", user.email);
+        console.log("當前用戶 ID:", user.uid);
+      } else {
+        // 用戶未登錄
+        console.log("沒有用戶登錄");
+      }
+    });
+
+    // 清理監聽器
+    return () => unsubscribe();
+  }, []);
 
   return (
     <>
-      <div className="container mx-auto">
+      <div className="container mx-auto px-4 md:max-w-7xl">
         <div className="mt-10 flex items-center justify-between">
           <p className="text-center text-xl">Home</p>
           <div className="flex items-center">
@@ -86,7 +105,7 @@ const Home = () => {
                     </button>
                   </div>
                 </div>
-                <div title="登出">
+                <div className="ml-3" title="登出">
                   <Icon
                     className="cursor-pointer"
                     icon="material-symbols:logout-sharp"

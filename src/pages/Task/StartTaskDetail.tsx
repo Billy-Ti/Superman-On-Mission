@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { db } from "../../config/firebase";
 
-// 使用 Task 介面替代原來的 TaskData
+// 使用 Task interface 替代原來的 TaskData
 interface Task {
   id: string;
   cost: number;
@@ -38,7 +38,7 @@ const StartTaskDetail = () => {
   const navigate = useNavigate();
 
   const handleBackToTaskManagement = () => {
-    navigate("/TaskManagement");
+    navigate("/taskManagement");
   };
   console.log(taskDetails);
   useEffect(() => {
@@ -88,7 +88,7 @@ const StartTaskDetail = () => {
   }
 
   return (
-    <div className="container mx-auto mt-10">
+    <div className="container mx-auto mt-10 px-4 md:max-w-7xl">
       <div className="mb-10 flex items-center">
         <h3 className="text-4xl font-bold">發案紀錄詳情</h3>
         <button
@@ -148,7 +148,7 @@ const StartTaskDetail = () => {
         </div>
       </div>
       {/* 任務資訊 */}
-      <div className="mb-10 bg-gray-200 p-4">
+      <div className="bg-gray-200 p-4">
         <div className="mb-2 text-3xl font-semibold text-gray-700">
           任務資訊
         </div>
@@ -243,7 +243,7 @@ const StartTaskDetail = () => {
             </div>
           )}
 
-          <div className="my-auto ml-auto">
+          <div className="my-auto mb-6 ml-auto">
             <div className="flex flex-col items-center">
               <p className="text-center text-3xl">請點選此按鈕查看</p>
               <Icon icon="icon-park:down-two" width="100" height="100" />
@@ -387,7 +387,7 @@ const StartTaskDetail = () => {
             id="input1"
             name="input1"
             rows={3}
-            className="mb-3 mt-1 block w-full rounded-md border border-gray-300 p-2.5 tracking-wider shadow-sm focus:border-blue-500 focus:outline-none focus:ring-blue-500"
+            className="mb-3 mt-1 block w-full resize-none rounded-md border border-gray-300 p-2.5 tracking-wider shadow-sm focus:border-blue-500 focus:outline-none focus:ring-blue-500"
             placeholder="請填寫關於此任務的詳細完成成果"
             defaultValue={""}
           />
@@ -403,7 +403,7 @@ const StartTaskDetail = () => {
             id="input2"
             name="input2"
             rows={3}
-            className="mb-3 mt-1 block w-full rounded-md border border-gray-300 p-2.5 tracking-wider shadow-sm focus:border-blue-500 focus:outline-none focus:ring-blue-500"
+            className="mb-3 mt-1 block w-full resize-none rounded-md border border-gray-300 p-2.5 tracking-wider shadow-sm focus:border-blue-500 focus:outline-none focus:ring-blue-500"
             placeholder="請補充所需要讓發案者知道的資訊"
             defaultValue={""}
           />
@@ -423,7 +423,7 @@ const StartTaskDetail = () => {
             id="input3"
             name="input3"
             rows={3}
-            className="mb-10 mt-1 block w-full rounded-md border border-gray-300 bg-blue-200 p-2.5 tracking-wider shadow-sm focus:border-blue-500 focus:outline-none focus:ring-blue-500"
+            className="mb-10 mt-1 block w-full resize-none rounded-md border border-gray-300 bg-blue-200 p-2.5 tracking-wider shadow-sm focus:border-blue-500 focus:outline-none focus:ring-blue-500"
             placeholder="若有其他需要讓我們知道的資訊，請填寫於此。"
             defaultValue={""}
           />
@@ -440,11 +440,11 @@ const StartTaskDetail = () => {
         </div>
         {/* 遮罩區塊 */}
         <div className="absolute inset-0 flex items-center justify-center bg-black bg-opacity-50">
-          <div className="relative flex h-[100px] w-[300px] items-center justify-center">
-            <span className="absolute -left-4 -top-4 h-[100px] w-[300px] animate-ping rounded-full bg-gray-200 opacity-75" />
-            <span className="absolute -left-4 -top-4 flex h-[100px] w-[300px] items-center justify-center rounded-full bg-gray-200">
+          <div className="relative flex h-[100px] w-[400px] items-center justify-center">
+            <span className="absolute -left-4 -top-4 h-[100px] w-[400px] animate-ping rounded-full bg-gray-200 opacity-75" />
+            <span className="absolute -left-4 -top-4 flex h-[100px] w-[400px] items-center justify-center rounded-full bg-gray-200">
               <p className="z-10 text-2xl font-extrabold text-black">
-                等待任務回報時才會開放
+                等待『任務進行中』才會開放
               </p>
             </span>
           </div>

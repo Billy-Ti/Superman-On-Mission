@@ -2,9 +2,10 @@ import { BrowserRouter, Navigate, Route, Routes } from "react-router-dom";
 import ProtectedRoute from "./components/ProtectedRoute.tsx";
 import { AuthProvider } from "./hooks/AuthProvider.tsx";
 import Home from "./pages/Home/index.tsx";
-import AcceptTaskDetail from "./pages/Task/AcceptTaskDetail.tsx";
 import AcceptTask from "./pages/Task/AcceptTask.tsx";
+import AcceptTaskDetail from "./pages/Task/AcceptTaskDetail.tsx";
 import StartTaskDetail from "./pages/Task/StartTaskDetail.tsx";
+import TaskDetail from "./pages/Task/TaskDetail.tsx";
 import TaskManagement from "./pages/Task/TaskManagement.tsx";
 import Task from "./pages/Task/index.tsx";
 import SignIn from "./pages/components/SignIn.tsx";
@@ -25,7 +26,7 @@ const App = () => {
             }
           />
           <Route
-            path="/TaskManagement"
+            path="/taskManagement"
             element={
               <ProtectedRoute>
                 <TaskManagement />
@@ -33,9 +34,13 @@ const App = () => {
             }
           ></Route>
           <Route path="/detail/:taskId" element={<StartTaskDetail />} />
-          <Route path="/acceptDetail/:taskId" element={<AcceptTaskDetail />} />
+          <Route path="/acceptDetail/:taskId" element={<TaskDetail />} />
           <Route path="/detail" element={<Navigate to="/" />} />
           <Route path="/acceptTask" element={<AcceptTask />} />
+          <Route
+            path="/acceptTaskDetail/:taskId"
+            element={<AcceptTaskDetail />}
+          />
         </Routes>
       </BrowserRouter>
     </AuthProvider>

@@ -15,7 +15,7 @@ const ProtectedRoute: React.FC<ProtectedRouteProps> = ({ children }) => {
     if (!currentUser) {
       Swal.fire({
         title: "請先登入",
-        text: "您需要登入才能訪問此頁面",
+        text: "您需要登入才能使用功能",
         icon: "info",
         confirmButtonText: "確定",
         allowOutsideClick: false,
@@ -28,7 +28,6 @@ const ProtectedRoute: React.FC<ProtectedRouteProps> = ({ children }) => {
   }, [currentUser, navigate]);
 
   if (!currentUser) {
-    // 在等待 SweetAlert 的回應時顯示空白或加載指示器
     return null;
   }
 

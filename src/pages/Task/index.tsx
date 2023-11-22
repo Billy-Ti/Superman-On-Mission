@@ -72,6 +72,10 @@ const Task = () => {
     }
   };
 
+  const backToHome = () => {
+    navigate("/");
+  };
+
   useEffect(() => {
     const rewardValue = Number(taskReward);
     if (!isNaN(rewardValue) && rewardValue <= originalSuperCoins) {
@@ -236,7 +240,7 @@ const Task = () => {
         taskId,
         createdAt,
         cost: taskRewardValue,
-        acceptedBy: ""
+        acceptedBy: "",
       };
       await addDoc(collection(db, "tasks"), taskData);
 
@@ -292,10 +296,13 @@ const Task = () => {
     setTaskReward("");
   };
   return (
-    <div className="container mx-auto">
-      <h3 className="mb-4 mt-10 border-b-8 border-black pb-3 text-4xl font-bold">
-        發任務 {`>>`}
-      </h3>
+    <div className="container mx-auto px-4 md:max-w-7xl">
+      <div className="mb-4 mt-10 flex items-center border-b-8 border-black">
+        <h3 className="pb-3 text-4xl font-bold">發任務 {`>>`}</h3>
+        <button onClick={backToHome} type="button">
+          回首頁
+        </button>
+      </div>
       <form>
         <div className="flex flex-col">
           <label htmlFor="taskTitle" className="mb-4 text-3xl font-black">
@@ -417,16 +424,16 @@ const Task = () => {
           </div>
           <ul className="mb-28 flex justify-evenly border p-4">
             <li className="border">
-              <input type="file" name="taskPhoto" />
+              <input className="w-[200px]" type="file" name="taskPhoto" />
             </li>
             <li className="border">
-              <input type="file" name="taskPhoto" />
+              <input className="w-[200px]" type="file" name="taskPhoto" />
             </li>
             <li className="border">
-              <input type="file" name="taskPhoto" />
+              <input className="w-[200px]" type="file" name="taskPhoto" />
             </li>
             <li className="border">
-              <input type="file" name="taskPhoto" />
+              <input className="w-[200px]" type="file" name="taskPhoto" />
             </li>
           </ul>
           <div className="mt-10 flex text-2xl">

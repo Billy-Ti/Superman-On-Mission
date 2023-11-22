@@ -17,7 +17,7 @@ const TaskManagement = () => {
   };
 
   return (
-    <div className="container mx-auto">
+    <div className="container mx-auto px-4 md:max-w-7xl">
       <div className="mt-10 flex items-center justify-between">
         <div className="flex items-center pb-3">
           <h3 className="text-4xl font-bold">任務管理 {`>>`} 任務列表</h3>

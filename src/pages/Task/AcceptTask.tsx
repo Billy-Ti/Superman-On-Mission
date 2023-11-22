@@ -1,5 +1,5 @@
 import { Icon } from "@iconify/react";
-import { collection, getDocs, query } from "firebase/firestore";
+import { collection, doc, getDocs, query, updateDoc } from "firebase/firestore";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { db } from "../../config/firebase";
@@ -15,6 +15,7 @@ interface Task {
   address: string;
   categorys: string[];
   photos?: string[]; // photos是可選的字串陣列的 URL，有可能不會有上傳圖片的可能
+  accepted?: boolean;
 }
 const AcceptTask = () => {
   const [tasks, setTasks] = useState<Task[]>([]);
@@ -22,7 +23,11 @@ const AcceptTask = () => {
 
   const navigate = useNavigate();
 
-  const handleAcceptTask = (taskId: string) => {
+  const handleAcceptTask = async (taskId: string) => {
+    const taskRef = doc(db, "tasks", taskId);
+    await updateDoc(taskRef, {
+      accepted: true,
+    });
     navigate(`/acceptDetail/${taskId}`);
   };
 
@@ -30,23 +35,30 @@ const AcceptTask = () => {
     const fetchTasks = async () => {
       const q = query(collection(db, "tasks"));
       const querySnapshot = await getDocs(q);
-      const tasksData = querySnapshot.docs.map((doc) => {
-        // 先讀取資料，然後再加 id
-        const data = doc.data() as Task; // 確保資料符合 Task 類型
-        return {
-          ...data, // 先展開資料
-          id: doc.id, // 然後再加 id，避免 id 被覆蓋
-        };
-      });
+      const tasksData = querySnapshot.docs
+        .map((doc) => {
+          const data = doc.data() as Task;
+          return {
+            ...data,
+            id: doc.id,
+          };
+        })
+        .filter((task) => !task.accepted); // 只保留那些未被接受的任務
+
       setTasks(tasksData);
     };
 
     fetchTasks();
   }, []);
+
+  const handleBackToTask = () => navigate("/");
   return (
-    <div className="container mx-auto">
+    <div className="container mx-auto px-4 md:max-w-7xl">
       <h3 className="mb-4 mt-10 border-b-8 border-black pb-3 text-4xl font-bold">
         找任務 {`>>`}
+        <button onClick={handleBackToTask} type="button" className="text-xl">
+          回首頁
+        </button>
       </h3>
       {tasks.map((task) => (
         <>

@@ -1,5 +1,6 @@
 import { Icon } from "@iconify/react";
-import { collection, getDocs, query } from "firebase/firestore";
+import { getAuth } from "firebase/auth";
+import { collection, getDocs, query, where } from "firebase/firestore";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { db } from "../../config/firebase";
@@ -24,13 +25,23 @@ const StartTaskRecord = () => {
   const navigate = useNavigate();
 
   const handleStartTask = (taskId: string) => {
-    navigate(`/detail/${taskId}`)
+    navigate(`/detail/${taskId}`);
   };
-  
 
   useEffect(() => {
     const fetchTasks = async () => {
-      const q = query(collection(db, "tasks"));
+      const auth = getAuth();
+      const currentUser = auth.currentUser;
+
+      if (!currentUser) {
+        console.log("沒有用戶登錄");
+        return;
+      }
+
+      const q = query(
+        collection(db, "tasks"),
+        where("createdBy", "==", currentUser.uid), // 只獲取由當前用戶創建的任務
+      );
       const querySnapshot = await getDocs(q);
       const tasksData = querySnapshot.docs.map((doc) => {
         // 先讀取資料，然後再加 id
@@ -54,11 +65,18 @@ const StartTaskRecord = () => {
             <div className="flex w-full items-center justify-between">
               <div className="flex items-start">
                 <div className="border-2 border-gray-300 p-2">
-                  <img
-                    src={task.photos?.[0] ?? "/path-to-your-image.jpg"}
-                    alt="任務"
-                    className="h-32 w-32 object-cover"
-                  />
+                  {task.photos?.[0] ? (
+                    <img
+                      src={task.photos[0]}
+                      alt="任務"
+                      className="h-32 w-32 object-cover"
+                    />
+                  ) : (
+                    <div className="flex h-32 w-32 flex-col items-center justify-center bg-gray-200">
+                      <span>No more images</span>
+                      <Icon icon="openmoji:picture" className="text-8xl" />
+                    </div>
+                  )}
                 </div>
                 <div className="ml-4">
                   <h5 className="text-lg font-bold">
