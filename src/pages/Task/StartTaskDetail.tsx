@@ -1,10 +1,21 @@
 import { Icon } from "@iconify/react";
 import { getAuth } from "firebase/auth";
-import { doc, getDoc, updateDoc } from "firebase/firestore";
+import "firebase/firestore"; // 確保引入 firestore 功能
+import {
+  FieldValue,
+  addDoc,
+  collection,
+  doc,
+  getDoc,
+  serverTimestamp,
+  updateDoc,
+} from "firebase/firestore";
 import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import Swal from "sweetalert2";
+// import RatingModal from "../../components/RatingModal";
 import { db } from "../../config/firebase";
+import StarRating from "../../components/StarRating";
 
 // 使用 Task interface 替代原來的 TaskData
 interface Task {
@@ -29,8 +40,24 @@ interface Task {
   photos?: string[]; // photos 是可選的
 }
 
+interface Review {
+  reviewId: string;
+  reviewTaskId: string;
+  ratedBy: string;
+  rating: number;
+  ratedAt: FieldValue; // 使用 Timestamp 类型
+}
+
+const reviewData: Review = {
+  reviewId: "", // Firestore 將自動生成這個值
+  reviewTaskId: "task-id",
+  ratedBy: "user-id",
+  rating: 5,
+  ratedAt: serverTimestamp(), // 使用 serverTimestamp
+};
+
 const StartTaskDetail = () => {
-  const { taskId } = useParams();
+  const { taskId } = useParams<{ taskId: string }>(); // 如果 useParams 不帶參數，它的默認型別是 { [key: string]: string }
   const [taskDetails, setTaskDetails] = useState<Task | null>(null);
   const [loading, setLoading] = useState(true);
   // 存發案者姓名，以存取不同集合中的 user
@@ -46,11 +73,44 @@ const StartTaskDetail = () => {
   const [feedbackMessage, setFeedbackMessage] = useState("");
   const [isFeedbackSubmitted, setIsFeedbackSubmitted] = useState(false);
   const [showFeedbackContent, setShowFeedbackContent] = useState(false);
+  const [isRatingModalOpen, setIsRatingModalOpen] = useState(false);
 
   const navigate = useNavigate();
 
   const handleBackToTaskManagement = () => {
     navigate("/taskManagement");
+  };
+
+  const handleRatingSubmit = (ratingValue: number) => {
+    // 這裡添加將評分保存到數據庫的代碼
+    console.log("Rating submitted: ", ratingValue);
+    // ... 保存評分到數據庫的代碼 ...
+    setIsRatingModalOpen(false); // 關閉評價模態視窗
+    submitReviewToFirestore(taskId!, currentUserId!, ratingValue);
+    // 注意：'!' 用來告訴 TypeScript 我們確信這些值不會是 null 或 undefined
+  };
+
+  const submitReviewToFirestore = async (
+    reviewTaskId: string,
+    ratedBy: string,
+    rating: number,
+  ) => {
+    // 創建 reviewData 物件
+    const reviewData: Review = {
+      reviewId: "", // Firestore 將在文檔創建後自動賦值
+      reviewTaskId,
+      ratedBy,
+      rating,
+      ratedAt: serverTimestamp(),
+    };
+
+    try {
+      // 將 reviewData 添加到 Firestore
+      const docRef = await addDoc(collection(db, "reviews"), reviewData);
+      console.log("Review ID: ", docRef.id); // 輸出新創建評價的 ID
+    } catch (error) {
+      console.error("Error adding review:", error);
+    }
   };
 
   const fetchTaskDetails = async () => {
@@ -103,7 +163,7 @@ const StartTaskDetail = () => {
       return;
     }
 
-    Swal.fire({
+    const result = await Swal.fire({
       title: "🚨系統提醒",
       html: "<strong style='color: gray;'>回饋成功後將進入評價流程</strong>",
       icon: "info",
@@ -112,32 +172,35 @@ const StartTaskDetail = () => {
       cancelButtonText: "取消",
       reverseButtons: true,
       allowOutsideClick: false,
-    }).then(async (result) => {
-      if (result.isConfirmed) {
-        try {
-          const taskRef = doc(db, "tasks", taskId);
-          await updateDoc(taskRef, {
-            isFeedback: true,
-            feedbackMessage: feedbackMessage,
-            status: "發案者確認", // 更新狀態
-          });
-          setIsFeedbackSubmitted(true);
-          fetchTaskDetails();
-
-          Swal.fire({
-            title: "✅已回饋成功",
-            text: "將進入評價流程",
-            icon: "success",
-            timer: 1500,
-            timerProgressBar: true,
-            showConfirmButton: false,
-            allowOutsideClick: false,
-          });
-        } catch (error) {
-          console.error("Error updating task:", error);
-        }
-      }
     });
+
+    if (result.isConfirmed) {
+      try {
+        const taskRef = doc(db, "tasks", taskId);
+        await updateDoc(taskRef, {
+          isFeedback: true,
+          feedbackMessage: feedbackMessage,
+          status: "發案者確認", // 更新狀態
+        });
+        setIsFeedbackSubmitted(true);
+        await fetchTaskDetails();
+
+        await Swal.fire({
+          title: "✅已回饋成功",
+          text: "將進入評價流程",
+          icon: "success",
+          timer: 1500,
+          timerProgressBar: true,
+          showConfirmButton: false,
+          allowOutsideClick: false,
+        });
+
+        // 現在顯示評價模態框
+        setIsRatingModalOpen(true);
+      } catch (error) {
+        console.error("Error updating task:", error);
+      }
+    }
   };
 
   useEffect(() => {
@@ -721,6 +784,15 @@ const StartTaskDetail = () => {
             </button>
           </div>
         </form>
+      )}
+      {/* // 在 StartTaskDetail 組件的 render 方法中 */}
+      {isRatingModalOpen && (
+        <StarRating />
+        // <RatingModal
+        //   isOpen={isRatingModalOpen}
+        //   onClose={() => setIsRatingModalOpen(false)}
+        //   onSubmit={handleRatingSubmit}
+        // />
       )}
     </div>
   );

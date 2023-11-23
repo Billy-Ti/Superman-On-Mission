@@ -1,5 +1,5 @@
 import { Icon } from "@iconify/react";
-import { collection, doc, getDocs, query, updateDoc } from "firebase/firestore";
+import { collection, getDocs, query } from "firebase/firestore";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { db } from "../../config/firebase";
@@ -24,10 +24,6 @@ const AcceptTask = () => {
   const navigate = useNavigate();
 
   const handleAcceptTask = async (taskId: string) => {
-    // const taskRef = doc(db, "tasks", taskId);
-    // await updateDoc(taskRef, {
-    //   accepted: true,
-    // });
     navigate(`/acceptDetail/${taskId}`);
   };
 
