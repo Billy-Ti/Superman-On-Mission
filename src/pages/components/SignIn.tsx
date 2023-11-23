@@ -88,7 +88,7 @@ const SignIn = () => {
   return (
     <>
       <div className="mx-0 -mt-5 mb-12 flex h-screen flex-col items-center justify-center bg-[#f6f5f7]">
-        <p className="cursor-pointer" onClick={backToHome}>
+        <p className="cursor-pointer mb-3 text-2xl" onClick={backToHome}>
           回到首頁
         </p>
         <div

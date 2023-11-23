@@ -52,6 +52,5 @@ export const showAlert = (
 //       showConfirmButton: false,
 //       allowOutsideClick: false,
 //     });
-//     resetFormFields();
 //   }
 // });

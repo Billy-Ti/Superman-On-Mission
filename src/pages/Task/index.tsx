@@ -40,12 +40,9 @@ const Task = () => {
   const [taskReward, setTaskReward] = useState("");
   const [superCoins, setSuperCoins] = useState(5000); // 初始 Super Coin 數量
   const [originalSuperCoins] = useState(5000); // 保存原始 Super Coin 數量
-  // const [currentSuperCoins, setCurrentSuperCoins] = useState(5000);
-  // const [taskStatus, setTaskStatus] = useState("matching");
   const [currentUserId, setCurrentUserId] = useState<string | null>(null);
   const serviceTypeRef = useRef<ServiceTypeRef>(null);
   const [userName, setUserName] = useState("");
-  // const [userEmail, setUserEmail] = useState("");
 
   const navigate = useNavigate();
   const handleCountyChange = (event: React.ChangeEvent<HTMLSelectElement>) => {

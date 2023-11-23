@@ -14,6 +14,7 @@ interface Task {
   city: string;
   district: string;
   address: string;
+  status: string;
   categorys: string[];
   photos?: string[]; // photos是可選的字串陣列的 URL，有可能不會有上傳圖片的可能
 }
@@ -99,6 +100,12 @@ const StartTaskRecord = () => {
                     <p>支付 Super Coins : {task.cost}</p>
                     <p>任務截止日期 : {task.dueDate}</p>
                   </div>
+                  <div className="mt-1">
+                  <span className="text-lg font-bold">任務狀態 :</span>
+                  <span className="ml-2 text-lg font-bold">
+                    {task.status || "未知"}
+                  </span>
+                </div>
                 </div>
               </div>
               <div className="flex flex-col items-center justify-center">

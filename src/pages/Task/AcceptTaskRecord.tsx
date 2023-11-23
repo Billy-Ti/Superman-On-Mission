@@ -15,6 +15,7 @@ interface Task {
   dueDate: string;
   isUrgent: boolean;
   photos?: string[];
+  status: string;
 }
 
 const AcceptTaskRecord = () => {
@@ -94,6 +95,12 @@ const AcceptTaskRecord = () => {
                 <div className="flex">
                   <p className="mr-1">任務截止日期 :</p>
                   <span>{task.dueDate}</span>
+                </div>
+                <div className="mt-1">
+                  <span className="text-lg font-bold">任務狀態 :</span>
+                  <span className="ml-2 text-lg font-bold">
+                    {task.status || "未知"}
+                  </span>
                 </div>
               </div>
             </div>

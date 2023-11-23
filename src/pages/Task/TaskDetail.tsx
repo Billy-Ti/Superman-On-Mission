@@ -20,7 +20,7 @@ interface Task {
   userId: string;
   address: string;
   categorys: string[];
-  photos?: string[]; // photos 是可選的
+  photos?: string[];
 }
 
 const TaskDetail = () => {
@@ -109,24 +109,25 @@ const TaskDetail = () => {
       return;
     }
 
-    const taskRef = doc(db, "tasks", taskId);
+    Swal.fire({
+      title: "確定要接下此任務嗎？",
+      html: "<strong style='color: red;'>接下後請務必注意任務截止日期</strong>",
+      icon: "question",
+      showCancelButton: true,
+      confirmButtonText: "確定",
+      cancelButtonText: "取消",
+      reverseButtons: true,
+      allowOutsideClick: false,
+    }).then(async (result) => {
+      if (result.isConfirmed) {
+        try {
+          const taskRef = doc(db, "tasks", taskId);
+          await updateDoc(taskRef, {
+            acceptedBy: currentUserID,
+            status: "任務進行中",
+            accepted: true,
+          });
 
-    try {
-      await updateDoc(taskRef, {
-        acceptedBy: currentUserID,
-      });
-
-      Swal.fire({
-        title: "確定要接下此任務嗎？",
-        html: "<strong style='color: red;'>接下後請務必注意任務截止日期</strong>",
-        icon: "question",
-        showCancelButton: true,
-        confirmButtonText: "確定",
-        cancelButtonText: "取消",
-        reverseButtons: true,
-        allowOutsideClick: false,
-      }).then((result) => {
-        if (result.isConfirmed) {
           Swal.fire({
             title: "已完成",
             html: "<div style='color: #000000; font-weight: bold;'>請至任務管理區查看</div><strong style='color: #22C55E;'>接下後請務必注意任務截止日期</strong>",
@@ -136,12 +137,13 @@ const TaskDetail = () => {
             showConfirmButton: false,
           });
           navigate("/");
+        } catch (error) {
+          console.error("Error updating task:", error);
         }
-      });
-    } catch (error) {
-      console.error("Error updating task:", error);
-    }
+      }
+    });
   };
+
   return (
     <div className="bg-gray-200 p-4">
       <div className="mb-2 text-3xl font-semibold text-gray-700">
