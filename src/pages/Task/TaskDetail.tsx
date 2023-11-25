@@ -302,7 +302,9 @@ const TaskDetail = () => {
             點我詢問細節
           </span>
         </button>
-        {isChatOpen && <ChatRoomWindow onCloseRoom={handleCloseChat} />}
+        {isChatOpen && taskId && (
+              <ChatRoomWindow onCloseRoom={handleCloseChat} taskId={taskId} />
+            )}
         <button
           type="button"
           onClick={handleConfirmAcceptTask}

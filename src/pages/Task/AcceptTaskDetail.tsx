@@ -13,9 +13,9 @@ import { getDownloadURL, ref, uploadBytes } from "firebase/storage";
 import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import Swal from "sweetalert2";
+import ChatRoomWindow from "../../components/ChatRoomWindow";
 import { db, storage } from "../../config/firebase";
 import { showAlert } from "../../utils/showAlert";
-import ChatRoomWindow from "../../components/ChatRoomWindow";
 
 // 使用 Task interface 替代原來的 TaskData
 interface Task {
@@ -37,6 +37,7 @@ interface Task {
   address: string;
   status: string;
   ratedComment: string;
+  taskId: string;
   categorys: string[];
   photos?: string[]; // photos 是可選的
 }
@@ -530,7 +531,9 @@ const AcceptTaskDetail = () => {
                 聯繫發案者
               </span>
             </button>
-              {isChatOpen && <ChatRoomWindow onCloseRoom={handleCloseChat} />}
+            {isChatOpen && taskId && (
+              <ChatRoomWindow onCloseRoom={handleCloseChat} taskId={taskId} />
+            )}
           </div>
         </div>
 

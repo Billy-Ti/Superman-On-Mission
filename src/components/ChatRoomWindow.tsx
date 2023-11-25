@@ -1,8 +1,81 @@
 import { Icon } from "@iconify/react";
+import { getAuth } from "firebase/auth";
+import {
+  getDatabase,
+  off,
+  onValue,
+  push,
+  ref,
+  serverTimestamp,
+  set,
+} from "firebase/database";
+import { useEffect, useState } from "react";
 interface ChatRoomWindowProps {
   onCloseRoom: () => void;
+  taskId: string;
 }
-const ChatRoomWindow = ({ onCloseRoom }: ChatRoomWindowProps) => {
+
+interface Message {
+  content: string;
+  sentBy: string;
+  sentAt: number; // or string if it's a timestamp
+}
+
+const ChatRoomWindow = ({ onCloseRoom, taskId }: ChatRoomWindowProps) => {
+  const [message, setMessage] = useState(""); // 用于输入框的消息
+  const [messages, setMessages] = useState<Message[]>([]); // 存所有訊息的陣列
+  const database = getDatabase();
+  const auth = getAuth();
+  const currentUser = auth.currentUser;
+
+  useEffect(() => {
+    const database = getDatabase();
+    const messagesRef = ref(database, `tasks/${taskId}/messages`);
+
+    // 监听新消息
+    onValue(messagesRef, (snapshot) => {
+      const messagesData = snapshot.val();
+      const messagesList = messagesData
+        ? (Object.values(messagesData) as Message[])
+        : [];
+      setMessages(messagesList);
+    });
+
+    // 组件卸载时取消监听
+    return () => {
+      off(messagesRef);
+    };
+  }, [taskId]);
+
+  const handleSendMessage = () => {
+    if (!currentUser) {
+      console.error("用户未登录，不能发送消息。");
+      // 这里可以添加逻辑来处理未登录的情况，如显示登录提示等
+      return;
+    }
+
+    if (!message.trim()) {
+      // 如果沒有訊息，则不执行任何操作
+      return;
+    }
+
+    // 发送消息到 Realtime Database 的对应任务下
+    const messagesRef = ref(database, `tasks/${taskId}/messages`);
+    const newMessageRef = push(messagesRef);
+
+    set(newMessageRef, {
+      content: message,
+      sentBy: currentUser?.uid || "anonymous", // 如果未登录，则标记为匿名用户
+      sentAt: serverTimestamp(), // 使用 Firebase 服务器的时间戳
+    })
+      .then(() => {
+        setMessage(""); // 成功发送后清空输入框
+      })
+      .catch((error) => {
+        console.error("Error sending message: ", error);
+      });
+  };
+
   return (
     <div className="fixed inset-0 z-50 my-auto flex h-full items-center justify-center bg-black bg-opacity-50 text-gray-800 antialiased">
       <div className="relative flex h-[70vh] w-3/4 flex-row overflow-auto rounded-lg bg-white p-4 shadow-lg">
@@ -117,15 +190,24 @@ const ChatRoomWindow = ({ onCloseRoom }: ChatRoomWindowProps) => {
             <div className="mb-4 flex h-full flex-col overflow-x-auto">
               <div className="flex h-full flex-col"></div>
             </div>
+            {messages.map((message, index) => (
+              <div className="text-end" key={index}>
+                {message.content}
+              </div>
+            ))}
             <div className="flex h-16 w-full flex-row items-center rounded-xl bg-white px-4">
-              <div>{/*  */}</div>
               <div className="ml-4 flex-grow">
                 <div className="relative w-full">
                   <input
                     type="text"
+                    value={message}
+                    onChange={(e) => setMessage(e.target.value)}
                     className="flex h-10 w-full rounded-xl border pl-4 focus:border-indigo-300 focus:outline-none"
                   />
-                  <button className="absolute right-0 top-0 flex h-full w-12 items-center justify-center text-gray-400 hover:text-gray-600">
+                  <button
+                    onClick={handleSendMessage}
+                    className="absolute right-0 top-0 flex h-full w-12 items-center justify-center text-gray-400 hover:text-gray-600"
+                  >
                     <svg
                       className="h-6 w-6"
                       fill="none"
@@ -144,7 +226,10 @@ const ChatRoomWindow = ({ onCloseRoom }: ChatRoomWindowProps) => {
                 </div>
               </div>
               <div className="ml-4">
-                <button className="flex flex-shrink-0 items-center justify-center rounded-xl bg-indigo-500 px-4 py-1 text-white hover:bg-indigo-600">
+                <button
+                  onClick={handleSendMessage}
+                  className="flex flex-shrink-0 items-center justify-center rounded-xl bg-indigo-500 px-4 py-1 text-white hover:bg-indigo-600"
+                >
                   <span>Send</span>
                   <span className="ml-2">
                     <svg

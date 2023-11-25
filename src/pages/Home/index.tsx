@@ -69,12 +69,12 @@ const Home = () => {
     // 清理監聽器
     return () => unsubscribe();
   }, []);
-
+  
   return (
     <>
       <div className="container mx-auto px-4 md:max-w-7xl">
         <div className="mt-10 flex items-center justify-between">
-          <div className="bg-gradient-to-l from-blue-500 to-purple-500 bg-clip-text text-transparent">
+          <div className="bg-gradient-to-r from-blue-500 to-purple-700 bg-clip-text text-transparent">
             Home
           </div>
           <div className="flex items-center">
