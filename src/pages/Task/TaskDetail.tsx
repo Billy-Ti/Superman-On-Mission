@@ -4,6 +4,7 @@ import { doc, getDoc, updateDoc } from "firebase/firestore";
 import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import Swal from "sweetalert2";
+import ChatRoomWindow from "../../components/ChatRoomWindow";
 import { db } from "../../config/firebase";
 
 interface Task {
@@ -36,6 +37,8 @@ const TaskDetail = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
 
   const [currentUserID, setCurrentUserID] = useState<string | null>(null);
+
+  const [isChatOpen, setIsChatOpen] = useState(false);
 
   const navigate = useNavigate();
 
@@ -102,6 +105,14 @@ const TaskDetail = () => {
   }
 
   const handleBackToTask = () => navigate("/acceptTask");
+
+  const handleAskDetails = () => {
+    setIsChatOpen(true);
+  };
+
+  const handleCloseChat = () => {
+    setIsChatOpen(false);
+  };
 
   const handleConfirmAcceptTask = async () => {
     if (!taskId || !currentUserID) {
@@ -283,6 +294,7 @@ const TaskDetail = () => {
       <div className="flex justify-center gap-4">
         <button
           type="button"
+          onClick={handleAskDetails}
           className="group relative overflow-hidden rounded-lg bg-gray-300 px-6 py-3 [transform:translateZ(0)] before:absolute before:bottom-0 before:left-0 before:h-full before:w-full before:origin-[100%_100%] before:scale-x-0 before:bg-sky-600 before:transition before:duration-500 before:ease-in-out hover:before:origin-[0_0] hover:before:scale-x-100"
         >
           <span className="relative z-0 flex w-60 items-center justify-center rounded p-4 text-2xl text-black transition duration-500 ease-in-out group-hover:text-gray-200">
@@ -290,6 +302,7 @@ const TaskDetail = () => {
             點我詢問細節
           </span>
         </button>
+        {isChatOpen && <ChatRoomWindow onCloseRoom={handleCloseChat} />}
         <button
           type="button"
           onClick={handleConfirmAcceptTask}

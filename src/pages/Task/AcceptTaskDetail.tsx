@@ -15,6 +15,7 @@ import { useNavigate, useParams } from "react-router-dom";
 import Swal from "sweetalert2";
 import { db, storage } from "../../config/firebase";
 import { showAlert } from "../../utils/showAlert";
+import ChatRoomWindow from "../../components/ChatRoomWindow";
 
 // 使用 Task interface 替代原來的 TaskData
 interface Task {
@@ -64,6 +65,8 @@ const AcceptTaskDetail = () => {
 
   const [taskStatus, setTaskStatus] = useState("");
 
+  const [isChatOpen, setIsChatOpen] = useState(false);
+
   const navigate = useNavigate();
 
   const handleBackToTaskManagement = () => {
@@ -76,6 +79,14 @@ const AcceptTaskDetail = () => {
 
   const handleOverlay = () => {
     setShowOverlay(false);
+  };
+
+  const handleAskDetails = () => {
+    setIsChatOpen(true);
+  };
+
+  const handleCloseChat = () => {
+    setIsChatOpen(false);
   };
 
   // 處理檔案選擇
@@ -510,6 +521,7 @@ const AcceptTaskDetail = () => {
               <Icon icon="icon-park:down-two" width="100" height="100" />
             </div>
             <button
+              onClick={handleAskDetails}
               type="button"
               className="group relative overflow-hidden rounded-lg bg-gray-300 px-6 py-3 [transform:translateZ(0)] before:absolute before:bottom-0 before:left-0 before:h-full before:w-full before:origin-[100%_100%] before:scale-x-0 before:bg-sky-600 before:transition before:duration-500 before:ease-in-out hover:before:origin-[0_0] hover:before:scale-x-100"
             >
@@ -518,6 +530,7 @@ const AcceptTaskDetail = () => {
                 聯繫發案者
               </span>
             </button>
+              {isChatOpen && <ChatRoomWindow onCloseRoom={handleCloseChat} />}
           </div>
         </div>
 

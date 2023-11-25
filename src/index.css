@@ -2,6 +2,32 @@
 @tailwind components;
 @tailwind utilities;
 
+@import url("https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700;800;900&display=swap");
+* {
+  box-sizing: border-box;
+}
+
+body {
+  font-family:
+    "Inter var experimental",
+    "Inter var",
+    Inter,
+    -apple-system,
+    BlinkMacSystemFont,
+    "Segoe UI",
+    Roboto,
+    Oxygen,
+    Ubuntu,
+    serif;
+  background-color: var(--bg);
+  color: var(--fg);
+  font: 1em/1.5 sans-serif;
+  transition:
+    background-color var(--trans-dur),
+    color var(--trans-dur);
+  font-weight: 900;
+}
+
 .container.right-panel-active .sign-in-container {
   transform: translateX(100%);
 }
@@ -23,19 +49,6 @@
 }
 .container.right-panel-active .overlay-right {
   transform: translateX(20%);
-}
-
-* {
-  box-sizing: border-box;
-}
-
-body {
-  background-color: var(--bg);
-  color: var(--fg);
-  font: 1em/1.5 sans-serif;
-  transition:
-    background-color var(--trans-dur),
-    color var(--trans-dur);
 }
 
 .rating {
