@@ -75,7 +75,7 @@ const SignIn = () => {
         email,
         password,
       );
-      showAlert("登入成功", "Welcome", "success");
+      showAlert("登入成功", "下一個超人就是你~", "success");
       console.log("登入成功：", userCredential.user);
 
       navigate("/");
@@ -88,7 +88,7 @@ const SignIn = () => {
   return (
     <>
       <div className="mx-0 -mt-5 mb-12 flex h-screen flex-col items-center justify-center bg-[#f6f5f7]">
-        <p className="cursor-pointer mb-3 text-2xl" onClick={backToHome}>
+        <p className="mb-3 cursor-pointer text-2xl" onClick={backToHome}>
           回到首頁
         </p>
         <div

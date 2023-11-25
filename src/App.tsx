@@ -2,6 +2,7 @@ import { BrowserRouter, Navigate, Route, Routes } from "react-router-dom";
 import ProtectedRoute from "./components/ProtectedRoute.tsx";
 import { AuthProvider } from "./hooks/AuthProvider.tsx";
 import Home from "./pages/Home/index.tsx";
+import ReviewLists from "./pages/Review/index.tsx";
 import AcceptTask from "./pages/Task/AcceptTask.tsx";
 import AcceptTaskDetail from "./pages/Task/AcceptTaskDetail.tsx";
 import StartTaskDetail from "./pages/Task/StartTaskDetail.tsx";
@@ -41,6 +42,7 @@ const App = () => {
             path="/acceptTaskDetail/:taskId"
             element={<AcceptTaskDetail />}
           />
+          <Route path="/reviewLists" element={<ReviewLists />} />
         </Routes>
       </BrowserRouter>
     </AuthProvider>
