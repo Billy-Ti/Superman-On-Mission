@@ -1,8 +1,92 @@
-const StarRating = () => {
+import {
+  addDoc,
+  collection,
+  doc,
+  getDoc,
+  serverTimestamp,
+} from "firebase/firestore";
+import { useState } from "react";
+import { useNavigate } from "react-router-dom";
+import Swal from "sweetalert2";
+import { db } from "../config/firebase";
+interface StarRatingProps {
+  taskId: string;
+  currentUserId: string;
+  ratedUser: string;
+  ratedStatus: boolean;
+}
+
+const StarRating: React.FC<StarRatingProps> = ({
+  taskId,
+  currentUserId,
+  ratedUser,
+}) => {
+  const [rating, setRating] = useState<number>(0);
+  const [comment, setComment] = useState<string>("");
+
+  const navigate = useNavigate();
+
+  const handleSubmit = async () => {
+    const taskRef = doc(db, "tasks", taskId);
+    const taskSnap = await getDoc(taskRef);
+
+    if (taskSnap.exists()) {
+      const taskData = taskSnap.data();
+      const taskCost = taskData.cost;
+      const review = {
+        reviewTaskId: taskId,
+        ratedBy: currentUserId,
+        rating: rating,
+        ratedAt: serverTimestamp(),
+        ratedUser: ratedUser, // 被評價的用戶 ID
+        ratedStatus: true, // 標記評價已完成
+        ratedComment: comment, // 發案者評論
+      };
+
+      Swal.fire({
+        title: "提交評價",
+        html: `<strong style='color: #8D91AA;'>您將支付 ${taskCost} Super Coins</strong>`,
+        icon: "question",
+        showCancelButton: true,
+        confirmButtonText: "確定",
+        cancelButtonText: "取消",
+        reverseButtons: true,
+        allowOutsideClick: false,
+        background: "#DBE2EC",
+      }).then(async (result) => {
+        if (result.isConfirmed) {
+          try {
+            const docRef = await addDoc(collection(db, "reviews"), review);
+            console.log("Review submitted successfully, ID: ", docRef.id);
+            Swal.fire({
+              title: "已送出評價",
+              text: "感謝您的反饋",
+              icon: "success",
+              timer: 1500,
+              timerProgressBar: true,
+              showConfirmButton: false,
+              allowOutsideClick: false,
+            });
+            setComment("");
+            navigate("/");
+          } catch (error) {
+            console.error("Error submitting review: ", error);
+            Swal.fire({
+              title: "發生錯誤",
+              text: "無法提交評價",
+              icon: "error",
+              confirmButtonText: "好的",
+            });
+          }
+        }
+      });
+    }
+  };
+
   return (
     <>
       <div className="rating fixed inset-0 z-50 flex flex-col items-center justify-center bg-gray-400 bg-opacity-50">
-        <div className="mx-4 h-[200px] w-[500px] rounded bg-slate-50 p-6 text-center shadow-lg md:mx-0 md:w-[600px]">
+        <div className="mx-4 h-[600px] w-[500px] rounded-2xl bg-slate-50 p-10 text-center shadow-lg md:mx-0 md:w-[600px]">
           <h3 className="mx-auto mb-3 text-3xl font-bold">請評價此次感受</h3>
           <div className="rating__stars mb-3 flex justify-center">
             <input
@@ -11,6 +95,7 @@ const StarRating = () => {
               type="radio"
               name="rating"
               defaultValue={1}
+              onChange={(e) => setRating(parseInt(e.target.value))}
             />
             <input
               id="rating-2"
@@ -18,6 +103,7 @@ const StarRating = () => {
               type="radio"
               name="rating"
               defaultValue={2}
+              onChange={(e) => setRating(parseInt(e.target.value))}
             />
             <input
               id="rating-3"
@@ -25,6 +111,7 @@ const StarRating = () => {
               type="radio"
               name="rating"
               defaultValue={3}
+              onChange={(e) => setRating(parseInt(e.target.value))}
             />
             <input
               id="rating-4"
@@ -32,6 +119,7 @@ const StarRating = () => {
               type="radio"
               name="rating"
               defaultValue={4}
+              onChange={(e) => setRating(parseInt(e.target.value))}
             />
             <input
               id="rating-5"
@@ -39,6 +127,7 @@ const StarRating = () => {
               type="radio"
               name="rating"
               defaultValue={5}
+              onChange={(e) => setRating(parseInt(e.target.value))}
             />
             <label className="rating__label" htmlFor="rating-1">
               <svg
@@ -161,12 +250,24 @@ const StarRating = () => {
               <span className="rating__sr">5 stars</span>
             </label>
           </div>
-          <button
-            type="button"
-            className="w-1/3 rounded bg-blue-500 px-4 py-2 text-white transition-colors hover:bg-blue-700"
-          >
-            送出評價
-          </button>
+          <div className="flex flex-col items-center">
+            <textarea
+              className="mb-10 resize-none rounded-2xl p-4 text-xl focus:outline-none"
+              name="ratedComment"
+              cols={30}
+              rows={10}
+              value={comment}
+              onChange={(e) => setComment(e.target.value)}
+              placeholder="請給接案者一點回饋，好讓下次做得更好唷~"
+            ></textarea>
+            <button
+              onClick={handleSubmit}
+              type="button"
+              className="w-1/3 rounded bg-blue-500 p-6 text-2xl font-extrabold text-white transition-colors hover:bg-[#355c7d]"
+            >
+              送出評價
+            </button>
+          </div>
         </div>
       </div>
     </>

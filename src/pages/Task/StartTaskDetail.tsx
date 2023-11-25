@@ -1,21 +1,21 @@
 import { Icon } from "@iconify/react";
-import { getAuth } from "firebase/auth";
+import { getAuth, onAuthStateChanged } from "firebase/auth";
 import "firebase/firestore"; // 確保引入 firestore 功能
 import {
-  FieldValue,
-  addDoc,
   collection,
   doc,
   getDoc,
-  serverTimestamp,
+  getDocs,
+  query,
   updateDoc,
+  where,
 } from "firebase/firestore";
 import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import Swal from "sweetalert2";
 // import RatingModal from "../../components/RatingModal";
-import { db } from "../../config/firebase";
 import StarRating from "../../components/StarRating";
+import { db } from "../../config/firebase";
 
 // 使用 Task interface 替代原來的 TaskData
 interface Task {
@@ -36,25 +36,12 @@ interface Task {
   address: string;
   feedbackMessage: string;
   isFeedback: boolean;
+  acceptedBy: string;
   categorys: string[];
-  photos?: string[]; // photos 是可選的
+  photos?: string[];
+  hasBeenRated?: boolean; // 添加 hasBeenRated 屬性
+  // assignedUserId?: string; // 添加 assignedUserId 屬性
 }
-
-interface Review {
-  reviewId: string;
-  reviewTaskId: string;
-  ratedBy: string;
-  rating: number;
-  ratedAt: FieldValue; // 使用 Timestamp 类型
-}
-
-const reviewData: Review = {
-  reviewId: "", // Firestore 將自動生成這個值
-  reviewTaskId: "task-id",
-  ratedBy: "user-id",
-  rating: 5,
-  ratedAt: serverTimestamp(), // 使用 serverTimestamp
-};
 
 const StartTaskDetail = () => {
   const { taskId } = useParams<{ taskId: string }>(); // 如果 useParams 不帶參數，它的默認型別是 { [key: string]: string }
@@ -75,42 +62,14 @@ const StartTaskDetail = () => {
   const [showFeedbackContent, setShowFeedbackContent] = useState(false);
   const [isRatingModalOpen, setIsRatingModalOpen] = useState(false);
 
+  const [ratedUser, setRatedUser] = useState<string>("defaultRatedUserId");
+  const [ratedStatus, setRatedStatus] = useState<boolean>(false);
+  const [ratingComment, setRatingComment] = useState("");
+
   const navigate = useNavigate();
 
   const handleBackToTaskManagement = () => {
     navigate("/taskManagement");
-  };
-
-  const handleRatingSubmit = (ratingValue: number) => {
-    // 這裡添加將評分保存到數據庫的代碼
-    console.log("Rating submitted: ", ratingValue);
-    // ... 保存評分到數據庫的代碼 ...
-    setIsRatingModalOpen(false); // 關閉評價模態視窗
-    submitReviewToFirestore(taskId!, currentUserId!, ratingValue);
-    // 注意：'!' 用來告訴 TypeScript 我們確信這些值不會是 null 或 undefined
-  };
-
-  const submitReviewToFirestore = async (
-    reviewTaskId: string,
-    ratedBy: string,
-    rating: number,
-  ) => {
-    // 創建 reviewData 物件
-    const reviewData: Review = {
-      reviewId: "", // Firestore 將在文檔創建後自動賦值
-      reviewTaskId,
-      ratedBy,
-      rating,
-      ratedAt: serverTimestamp(),
-    };
-
-    try {
-      // 將 reviewData 添加到 Firestore
-      const docRef = await addDoc(collection(db, "reviews"), reviewData);
-      console.log("Review ID: ", docRef.id); // 輸出新創建評價的 ID
-    } catch (error) {
-      console.error("Error adding review:", error);
-    }
   };
 
   const fetchTaskDetails = async () => {
@@ -121,8 +80,11 @@ const StartTaskDetail = () => {
       const taskSnap = await getDoc(taskRef);
 
       if (taskSnap.exists()) {
+        console.log("Task data exists");
         const taskData = taskSnap.data() as Task;
         setTaskDetails(taskData);
+        setRatedUser(taskData.acceptedBy || ""); // 從任務數據中獲取接案者 ID
+        setRatedStatus(taskData.hasBeenRated || false);
 
         if (taskData.feedbackMessage) {
           setFeedbackMessage(taskData.feedbackMessage);
@@ -147,7 +109,7 @@ const StartTaskDetail = () => {
           }
         }
       } else {
-        console.log("No such task!");
+        console.log("No such task!", taskId);
         setTaskDetails(null);
       }
     } catch (error) {
@@ -157,6 +119,26 @@ const StartTaskDetail = () => {
     }
   };
 
+  const fetchRatingDetails = async (taskId: string) => {
+    if (!taskId) return;
+
+    try {
+      // 建立針對 reviews 集合的查詢，篩選出與特定 taskId 相關的評價
+      const querySnapshot = await getDocs(
+        query(collection(db, "reviews"), where("reviewTaskId", "==", taskId)),
+      );
+
+      // 遍歷查詢結果
+      querySnapshot.forEach((doc) => {
+        const reviewData = doc.data();
+        if (reviewData) {
+          setRatingComment(reviewData.ratedComment || "尚未有評價");
+        }
+      });
+    } catch (error) {
+      console.error("Error fetching rating details:", error);
+    }
+  };
   const handleFeedBack = async () => {
     if (!taskId) {
       console.error("Task ID is undefined");
@@ -180,7 +162,7 @@ const StartTaskDetail = () => {
         await updateDoc(taskRef, {
           isFeedback: true,
           feedbackMessage: feedbackMessage,
-          status: "發案者確認", // 更新狀態
+          status: "發案者已評價", // 更新狀態
         });
         setIsFeedbackSubmitted(true);
         await fetchTaskDetails();
@@ -217,17 +199,13 @@ const StartTaskDetail = () => {
   }, []);
 
   useEffect(() => {
-    fetchTaskDetails();
-  }, [taskId, db]);
-
-  useEffect(() => {
     const checkAndUpdateOverlayStatus = () => {
       if (taskDetails && currentUserId) {
-        // 確保在 "任務回報完成" 或 "發案者確認" 狀態下遮罩不顯示
+        // 確保在 "任務回報完成" 或 "發案者已評價" 狀態下遮罩不顯示
         if (
           taskDetails.createdBy === currentUserId &&
           (taskDetails.status === "任務回報完成" ||
-            taskDetails.status === "發案者確認")
+            taskDetails.status === "發案者已評價")
         ) {
           setShowOverlay(false);
         } else {
@@ -260,9 +238,31 @@ const StartTaskDetail = () => {
           taskDetails.status === "任務回報完成"
         ),
       );
-      setShowFeedbackContent(taskDetails.status === "發案者確認");
+      setShowFeedbackContent(taskDetails.status === "發案者已評價");
     }
   }, [taskDetails, currentUserId]);
+
+  useEffect(() => {
+    fetchTaskDetails();
+  }, [taskId]);
+
+  useEffect(() => {
+    const auth = getAuth();
+    onAuthStateChanged(auth, (user) => {
+      if (user) {
+        // 使用者已登入, 可以獲取 user.uid
+        setCurrentUserId(user.uid);
+      } else {
+        // 使用者未登入
+      }
+    });
+  }, []);
+
+  useEffect(() => {
+    if (taskId) {
+      fetchRatingDetails(taskId);
+    }
+  }, [taskId]);
 
   if (loading) {
     return <div>Loading task details...</div>;
@@ -331,7 +331,7 @@ const StartTaskDetail = () => {
           <div
             className={`flex h-40 w-40 items-center justify-center rounded-full text-xl font-bold ${
               (taskDetails && taskDetails.status === "任務回報完成") ||
-              taskDetails.status === "發案者確認"
+              taskDetails.status === "發案者已評價"
                 ? "bg-green-500 text-white"
                 : "bg-gray-400"
             }`}
@@ -343,7 +343,7 @@ const StartTaskDetail = () => {
         <div className="flex items-center justify-center">
           <div
             className={`flex h-40 w-40 items-center justify-center rounded-full text-xl font-bold ${
-              taskDetails && taskDetails.status === "發案者確認"
+              taskDetails && taskDetails.status === "發案者已評價"
                 ? "bg-green-500 text-white"
                 : "bg-gray-400 text-black"
             }`}
@@ -428,7 +428,7 @@ const StartTaskDetail = () => {
 
           {isModalOpen && (
             <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
-              <div className=" relative max-w-full overflow-auto bg-white p-4">
+              <div className="relative max-w-full bg-white p-4">
                 <img
                   className="min-w-[500px] max-w-[800px] object-cover"
                   src={selectedPhoto || "defaultImagePath"}
@@ -625,6 +625,23 @@ const StartTaskDetail = () => {
           </div>
           <div>
             <label
+              htmlFor="comment"
+              className="block text-xl font-extrabold text-gray-700"
+            >
+              To 超人的評價
+            </label>
+            <textarea
+              id="comment"
+              name="comment"
+              rows={3}
+              className="mb-3 mt-1 block w-full resize-none rounded-md border border-gray-300 p-2.5 tracking-wider shadow-sm focus:border-blue-500 focus:outline-none focus:ring-blue-500"
+              placeholder="尚未有評價內容"
+              defaultValue={ratingComment}
+              readOnly
+            />
+          </div>
+          <div>
+            <label
               htmlFor="input3"
               className="flex text-xl font-extrabold text-gray-700"
             >
@@ -745,6 +762,23 @@ const StartTaskDetail = () => {
           </div>
           <div>
             <label
+              htmlFor="comment"
+              className="block text-xl font-extrabold text-gray-700"
+            >
+              To 超人的評價
+            </label>
+            <textarea
+              id="comment"
+              name="comment"
+              rows={3}
+              className="mb-3 mt-1 block w-full resize-none rounded-md border border-gray-300 p-2.5 tracking-wider shadow-sm focus:border-blue-500 focus:outline-none focus:ring-blue-500"
+              placeholder="尚未有評價內容"
+              defaultValue={ratingComment}
+              readOnly
+            />
+          </div>
+          <div>
+            <label
               htmlFor="input3"
               className="flex text-xl font-extrabold text-gray-700"
             >
@@ -785,14 +819,13 @@ const StartTaskDetail = () => {
           </div>
         </form>
       )}
-      {/* // 在 StartTaskDetail 組件的 render 方法中 */}
       {isRatingModalOpen && (
-        <StarRating />
-        // <RatingModal
-        //   isOpen={isRatingModalOpen}
-        //   onClose={() => setIsRatingModalOpen(false)}
-        //   onSubmit={handleRatingSubmit}
-        // />
+        <StarRating
+          taskId={taskId || "defaultTaskId"}
+          currentUserId={currentUserId || "defaultUserId"}
+          ratedUser={ratedUser} // 將接案者 ID 傳遞給 StarRating 組件
+          ratedStatus={ratedStatus !== undefined ? ratedStatus : false}
+        />
       )}
     </div>
   );
