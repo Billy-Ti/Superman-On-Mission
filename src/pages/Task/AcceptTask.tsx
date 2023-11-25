@@ -1,5 +1,5 @@
 import { Icon } from "@iconify/react";
-import { collection, doc, getDocs, query, updateDoc } from "firebase/firestore";
+import { collection, getDocs, query } from "firebase/firestore";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { db } from "../../config/firebase";
@@ -10,6 +10,7 @@ interface Task {
   dueDate: string;
   isUrgent: boolean;
   title: string;
+  status: string;
   city: string;
   district: string;
   address: string;
@@ -24,10 +25,6 @@ const AcceptTask = () => {
   const navigate = useNavigate();
 
   const handleAcceptTask = async (taskId: string) => {
-    // const taskRef = doc(db, "tasks", taskId);
-    // await updateDoc(taskRef, {
-    //   accepted: true,
-    // });
     navigate(`/acceptDetail/${taskId}`);
   };
 
@@ -108,6 +105,12 @@ const AcceptTask = () => {
                     </div>
                     <div>
                       <p>任務截止日期 : {task.dueDate}</p>
+                    </div>
+                    <div className="mt-1">
+                      <span className="text-lg font-bold">任務狀態 :</span>
+                      <span className="ml-2 text-lg font-bold">
+                        {task.status || "未知"}
+                      </span>
                     </div>
                   </div>
                 </div>

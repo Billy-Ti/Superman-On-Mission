@@ -1,9 +1,20 @@
 import { Icon } from "@iconify/react";
-import { getAuth } from "firebase/auth";
-import { doc, getDoc, updateDoc } from "firebase/firestore";
+import { getAuth, onAuthStateChanged } from "firebase/auth";
+import "firebase/firestore"; // 確保引入 firestore 功能
+import {
+  collection,
+  doc,
+  getDoc,
+  getDocs,
+  query,
+  updateDoc,
+  where,
+} from "firebase/firestore";
 import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import Swal from "sweetalert2";
+// import RatingModal from "../../components/RatingModal";
+import StarRating from "../../components/StarRating";
 import { db } from "../../config/firebase";
 
 // 使用 Task interface 替代原來的 TaskData
@@ -25,12 +36,15 @@ interface Task {
   address: string;
   feedbackMessage: string;
   isFeedback: boolean;
+  acceptedBy: string;
   categorys: string[];
-  photos?: string[]; // photos 是可選的
+  photos?: string[];
+  hasBeenRated?: boolean; // 添加 hasBeenRated 屬性
+  // assignedUserId?: string; // 添加 assignedUserId 屬性
 }
 
 const StartTaskDetail = () => {
-  const { taskId } = useParams();
+  const { taskId } = useParams<{ taskId: string }>(); // 如果 useParams 不帶參數，它的默認型別是 { [key: string]: string }
   const [taskDetails, setTaskDetails] = useState<Task | null>(null);
   const [loading, setLoading] = useState(true);
   // 存發案者姓名，以存取不同集合中的 user
@@ -46,6 +60,11 @@ const StartTaskDetail = () => {
   const [feedbackMessage, setFeedbackMessage] = useState("");
   const [isFeedbackSubmitted, setIsFeedbackSubmitted] = useState(false);
   const [showFeedbackContent, setShowFeedbackContent] = useState(false);
+  const [isRatingModalOpen, setIsRatingModalOpen] = useState(false);
+
+  const [ratedUser, setRatedUser] = useState<string>("defaultRatedUserId");
+  const [ratedStatus, setRatedStatus] = useState<boolean>(false);
+  const [ratingComment, setRatingComment] = useState("");
 
   const navigate = useNavigate();
 
@@ -61,8 +80,11 @@ const StartTaskDetail = () => {
       const taskSnap = await getDoc(taskRef);
 
       if (taskSnap.exists()) {
+        console.log("Task data exists");
         const taskData = taskSnap.data() as Task;
         setTaskDetails(taskData);
+        setRatedUser(taskData.acceptedBy || ""); // 從任務數據中獲取接案者 ID
+        setRatedStatus(taskData.hasBeenRated || false);
 
         if (taskData.feedbackMessage) {
           setFeedbackMessage(taskData.feedbackMessage);
@@ -87,7 +109,7 @@ const StartTaskDetail = () => {
           }
         }
       } else {
-        console.log("No such task!");
+        console.log("No such task!", taskId);
         setTaskDetails(null);
       }
     } catch (error) {
@@ -97,13 +119,33 @@ const StartTaskDetail = () => {
     }
   };
 
+  const fetchRatingDetails = async (taskId: string) => {
+    if (!taskId) return;
+
+    try {
+      // 建立針對 reviews 集合的查詢，篩選出與特定 taskId 相關的評價
+      const querySnapshot = await getDocs(
+        query(collection(db, "reviews"), where("reviewTaskId", "==", taskId)),
+      );
+
+      // 遍歷查詢結果
+      querySnapshot.forEach((doc) => {
+        const reviewData = doc.data();
+        if (reviewData) {
+          setRatingComment(reviewData.ratedComment || "尚未有評價");
+        }
+      });
+    } catch (error) {
+      console.error("Error fetching rating details:", error);
+    }
+  };
   const handleFeedBack = async () => {
     if (!taskId) {
       console.error("Task ID is undefined");
       return;
     }
 
-    Swal.fire({
+    const result = await Swal.fire({
       title: "🚨系統提醒",
       html: "<strong style='color: gray;'>回饋成功後將進入評價流程</strong>",
       icon: "info",
@@ -112,32 +154,35 @@ const StartTaskDetail = () => {
       cancelButtonText: "取消",
       reverseButtons: true,
       allowOutsideClick: false,
-    }).then(async (result) => {
-      if (result.isConfirmed) {
-        try {
-          const taskRef = doc(db, "tasks", taskId);
-          await updateDoc(taskRef, {
-            isFeedback: true,
-            feedbackMessage: feedbackMessage,
-            status: "發案者確認", // 更新狀態
-          });
-          setIsFeedbackSubmitted(true);
-          fetchTaskDetails();
-
-          Swal.fire({
-            title: "✅已回饋成功",
-            text: "將進入評價流程",
-            icon: "success",
-            timer: 1500,
-            timerProgressBar: true,
-            showConfirmButton: false,
-            allowOutsideClick: false,
-          });
-        } catch (error) {
-          console.error("Error updating task:", error);
-        }
-      }
     });
+
+    if (result.isConfirmed) {
+      try {
+        const taskRef = doc(db, "tasks", taskId);
+        await updateDoc(taskRef, {
+          isFeedback: true,
+          feedbackMessage: feedbackMessage,
+          status: "發案者已評價", // 更新狀態
+        });
+        setIsFeedbackSubmitted(true);
+        await fetchTaskDetails();
+
+        await Swal.fire({
+          title: "✅已回饋成功",
+          text: "將進入評價流程",
+          icon: "success",
+          timer: 1500,
+          timerProgressBar: true,
+          showConfirmButton: false,
+          allowOutsideClick: false,
+        });
+
+        // 現在顯示評價模態框
+        setIsRatingModalOpen(true);
+      } catch (error) {
+        console.error("Error updating task:", error);
+      }
+    }
   };
 
   useEffect(() => {
@@ -154,17 +199,13 @@ const StartTaskDetail = () => {
   }, []);
 
   useEffect(() => {
-    fetchTaskDetails();
-  }, [taskId, db]);
-
-  useEffect(() => {
     const checkAndUpdateOverlayStatus = () => {
       if (taskDetails && currentUserId) {
-        // 確保在 "任務回報完成" 或 "發案者確認" 狀態下遮罩不顯示
+        // 確保在 "任務回報完成" 或 "發案者已評價" 狀態下遮罩不顯示
         if (
           taskDetails.createdBy === currentUserId &&
           (taskDetails.status === "任務回報完成" ||
-            taskDetails.status === "發案者確認")
+            taskDetails.status === "發案者已評價")
         ) {
           setShowOverlay(false);
         } else {
@@ -197,9 +238,31 @@ const StartTaskDetail = () => {
           taskDetails.status === "任務回報完成"
         ),
       );
-      setShowFeedbackContent(taskDetails.status === "發案者確認");
+      setShowFeedbackContent(taskDetails.status === "發案者已評價");
     }
   }, [taskDetails, currentUserId]);
+
+  useEffect(() => {
+    fetchTaskDetails();
+  }, [taskId]);
+
+  useEffect(() => {
+    const auth = getAuth();
+    onAuthStateChanged(auth, (user) => {
+      if (user) {
+        // 使用者已登入, 可以獲取 user.uid
+        setCurrentUserId(user.uid);
+      } else {
+        // 使用者未登入
+      }
+    });
+  }, []);
+
+  useEffect(() => {
+    if (taskId) {
+      fetchRatingDetails(taskId);
+    }
+  }, [taskId]);
 
   if (loading) {
     return <div>Loading task details...</div>;
@@ -268,7 +331,7 @@ const StartTaskDetail = () => {
           <div
             className={`flex h-40 w-40 items-center justify-center rounded-full text-xl font-bold ${
               (taskDetails && taskDetails.status === "任務回報完成") ||
-              taskDetails.status === "發案者確認"
+              taskDetails.status === "發案者已評價"
                 ? "bg-green-500 text-white"
                 : "bg-gray-400"
             }`}
@@ -280,7 +343,7 @@ const StartTaskDetail = () => {
         <div className="flex items-center justify-center">
           <div
             className={`flex h-40 w-40 items-center justify-center rounded-full text-xl font-bold ${
-              taskDetails && taskDetails.status === "發案者確認"
+              taskDetails && taskDetails.status === "發案者已評價"
                 ? "bg-green-500 text-white"
                 : "bg-gray-400 text-black"
             }`}
@@ -365,7 +428,7 @@ const StartTaskDetail = () => {
 
           {isModalOpen && (
             <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
-              <div className=" relative max-w-full overflow-auto bg-white p-4">
+              <div className="relative max-w-full bg-white p-4">
                 <img
                   className="min-w-[500px] max-w-[800px] object-cover"
                   src={selectedPhoto || "defaultImagePath"}
@@ -562,6 +625,23 @@ const StartTaskDetail = () => {
           </div>
           <div>
             <label
+              htmlFor="comment"
+              className="block text-xl font-extrabold text-gray-700"
+            >
+              To 超人的評價
+            </label>
+            <textarea
+              id="comment"
+              name="comment"
+              rows={3}
+              className="mb-3 mt-1 block w-full resize-none rounded-md border border-gray-300 p-2.5 tracking-wider shadow-sm focus:border-blue-500 focus:outline-none focus:ring-blue-500"
+              placeholder="尚未有評價內容"
+              defaultValue={ratingComment}
+              readOnly
+            />
+          </div>
+          <div>
+            <label
               htmlFor="input3"
               className="flex text-xl font-extrabold text-gray-700"
             >
@@ -682,6 +762,23 @@ const StartTaskDetail = () => {
           </div>
           <div>
             <label
+              htmlFor="comment"
+              className="block text-xl font-extrabold text-gray-700"
+            >
+              To 超人的評價
+            </label>
+            <textarea
+              id="comment"
+              name="comment"
+              rows={3}
+              className="mb-3 mt-1 block w-full resize-none rounded-md border border-gray-300 p-2.5 tracking-wider shadow-sm focus:border-blue-500 focus:outline-none focus:ring-blue-500"
+              placeholder="尚未有評價內容"
+              defaultValue={ratingComment}
+              readOnly
+            />
+          </div>
+          <div>
+            <label
               htmlFor="input3"
               className="flex text-xl font-extrabold text-gray-700"
             >
@@ -721,6 +818,14 @@ const StartTaskDetail = () => {
             </button>
           </div>
         </form>
+      )}
+      {isRatingModalOpen && (
+        <StarRating
+          taskId={taskId || "defaultTaskId"}
+          currentUserId={currentUserId || "defaultUserId"}
+          ratedUser={ratedUser} // 將接案者 ID 傳遞給 StarRating 組件
+          ratedStatus={ratedStatus !== undefined ? ratedStatus : false}
+        />
       )}
     </div>
   );

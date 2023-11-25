@@ -190,7 +190,7 @@ const TaskDetail = () => {
           任務照片
         </div>
       </div>
-      <div className="flex items-center">
+      <div className="flex items-center justify-center">
         <ul className="flex gap-4">
           {taskDetails.photos?.map((photo) => (
             <li key={photo} className="h-52 w-52 bg-gray-400">

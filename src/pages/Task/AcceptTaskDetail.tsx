@@ -1,6 +1,14 @@
 import { Icon } from "@iconify/react";
 import { getAuth } from "firebase/auth";
-import { doc, getDoc, updateDoc } from "firebase/firestore";
+import {
+  collection,
+  doc,
+  getDoc,
+  getDocs,
+  query,
+  updateDoc,
+  where,
+} from "firebase/firestore";
 import { getDownloadURL, ref, uploadBytes } from "firebase/storage";
 import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
@@ -20,10 +28,14 @@ interface Task {
   district: string;
   createdBy: string;
   reportFiles: string[];
+  reportDescription: string;
+  reportSupplementaryNotes: string;
+  feedbackMessage: string;
   notes: string;
   accepted: boolean;
   address: string;
   status: string;
+  ratedComment: string;
   categorys: string[];
   photos?: string[]; // photos 是可選的
 }
@@ -48,6 +60,7 @@ const AcceptTaskDetail = () => {
   const [selectedFiles, setSelectedFiles] = useState<(File | null)[]>(
     Array(6).fill(null),
   );
+  const [ratedComment, setRatedComment] = useState<string>("");
 
   const [taskStatus, setTaskStatus] = useState("");
 
@@ -72,64 +85,118 @@ const AcceptTaskDetail = () => {
     setSelectedFiles(newSelectedFiles);
   };
 
-  // console.log(taskDetails);
+  const handleReportDescriptionChange = (
+    event: React.ChangeEvent<HTMLTextAreaElement>,
+  ) => {
+    setReportDescription(event.target.value);
+    setTaskDetails((prevDetails) => {
+      // 確保 prevDetails 不是 null
+      if (prevDetails === null) return null;
+
+      return {
+        ...prevDetails, // 保留所有現有的屬性
+        reportDescription: event.target.value, // 更新 reportDescription 屬性
+      };
+    });
+  };
+
+  const handleReportSupplementaryNotesChange = (
+    event: React.ChangeEvent<HTMLTextAreaElement>,
+  ) => {
+    setReportSupplementaryNotes(event.target.value);
+    setTaskDetails((prevDetails) => {
+      if (prevDetails === null) return null;
+
+      return {
+        ...prevDetails, // 保留所有現有的屬性
+        reportSupplementaryNotes: event.target.value, // 更新 reportSupplementaryNotes 屬性
+      };
+    });
+  };
 
   const uploadImages = async () => {
     const urls = await Promise.all(
       selectedFiles.map(async (file) => {
         if (file) {
-          // 現在可以安全地使用 file 了
           const fileRef = ref(storage, `tasks/${taskId}/${file.name}`);
           await uploadBytes(fileRef, file);
           return getDownloadURL(fileRef);
         } else {
-          // 處理 file 為 null 的情況
           console.log("沒有選擇檔案");
         }
-        return null; // 如果 file 為 null，返回 null 或適當的預設值
+        return null;
       }),
     );
 
     return urls.filter((url) => url !== null); // 過濾掉 null 值
   };
 
-  useEffect(() => {
-    const fetchTask = async () => {
-      if (!taskId) return;
+  const fetchTask = async () => {
+    if (!taskId) {
+      console.log("Task ID is not defined");
+      return;
+    }
 
-      const taskRef = doc(db, "tasks", taskId);
-      try {
-        const docSnap = await getDoc(taskRef);
-        if (docSnap.exists()) {
-          const taskData = docSnap.data() as Task;
-          setTaskDetails(taskData);
-          setTaskStatus(taskData.status);
+    console.log("Fetching task with ID:", taskId);
 
-          // 獲取發案者的用戶名稱
-          const userRef = doc(db, "users", taskData.createdBy);
-          const userSnap = await getDoc(userRef);
-          if (userSnap.exists()) {
-            // 用戶名稱存在 'name' 欄位
-            setPosterName(userSnap.data().name);
-          } else {
-            console.log("No such user!");
-            setPosterName("未知用戶"); // 或其他預設值
-          }
+    const taskRef = doc(db, "tasks", taskId);
+    try {
+      const docSnap = await getDoc(taskRef);
+      if (docSnap.exists()) {
+        const taskData = docSnap.data() as Task;
+        console.log("Task data retrieved:", taskData);
+
+        setTaskDetails(taskData);
+        setTaskStatus(taskData.status);
+        setReportDescription(taskData.reportDescription ?? "");
+        setReportSupplementaryNotes(taskData.reportSupplementaryNotes ?? "");
+        console.log("taskStatus", taskStatus);
+
+        const userRef = doc(db, "users", taskData.createdBy);
+        const userSnap = await getDoc(userRef);
+        if (userSnap.exists()) {
+          setPosterName(userSnap.data().name);
         } else {
-          console.log("No such task!");
-          setTaskDetails(null);
+          console.log("No such user!");
+          setPosterName("未知用戶");
         }
-      } catch (error) {
-        console.error("Error getting document:", error);
+      } else {
+        console.log("No such task!");
+        setTaskDetails(null);
       }
-    };
+    } catch (error) {
+      console.error("Error getting document:", error);
+    }
+  };
 
+  useEffect(() => {
     fetchTask();
-  }, [taskId, db]);
+  }, []);
+
+  useEffect(() => {
+    if (taskDetails) {
+      setTaskStatus(taskDetails.status);
+    }
+  }, [taskDetails]);
+
+  useEffect(() => {
+    if (taskStatus === "發案者已評價") {
+      setShowOverlay(false);
+    }
+  }, [taskStatus]);
 
   const handleReportSubmit = async () => {
+    console.log("Report Description:", reportDescription);
+    console.log("Report Supplementary Notes:", reportSupplementaryNotes);
+
     if (!taskId) {
       console.error("Task ID is undefined");
+      return;
+    }
+
+    if (reportDescription === undefined) {
+      console.error("reportDescription is undefined");
+      // 處理這個錯誤，比如通過顯示錯誤消息給用戶
       return;
     }
 
@@ -167,8 +234,8 @@ const AcceptTaskDetail = () => {
           const taskRef = doc(db, "tasks", taskId);
           await updateDoc(taskRef, {
             reportFiles: imageUrls,
-            reportDescription: reportDescription,
-            reportSupplementaryNotes: reportSupplementaryNotes,
+            reportDescription: reportDescription ?? "",
+            reportSupplementaryNotes: reportSupplementaryNotes ?? "",
             status: "任務回報完成",
           });
 
@@ -191,6 +258,31 @@ const AcceptTaskDetail = () => {
       // 如果按下"取消"，則不執行任何操作
     });
   };
+
+  useEffect(() => {
+    const fetchRatedComment = async () => {
+      if (typeof taskId === "string") {
+        // 創建指向 reviews 集合的引用
+        const reviewsRef = collection(db, "reviews");
+        // 創建一個查詢，根據 reviewTaskId 篩選文檔
+        const q = query(reviewsRef, where("reviewTaskId", "==", taskId));
+
+        try {
+          const querySnapshot = await getDocs(q);
+          querySnapshot.forEach((doc) => {
+            // 假設每個任務只有一條評價
+            const reviewData = doc.data();
+            console.log("Review data:", reviewData); // 檢查獲取到的數據
+            setRatedComment(reviewData.ratedComment);
+          });
+        } catch (error) {
+          console.error("Error getting reviews:", error);
+        }
+      }
+    };
+
+    fetchRatedComment();
+  }, [taskId]);
 
   useEffect(() => {
     const fetchTaskDetails = async () => {
@@ -301,7 +393,7 @@ const AcceptTaskDetail = () => {
         <div className="flex-auto border-t-2 border-black"></div>
         <div className="flex items-center justify-center">
           <div className="flex h-40 w-40 items-center justify-center rounded-full bg-gray-400 text-xl font-bold text-black">
-            發案者確認
+            發案者已評價
           </div>
         </div>
       </div>
@@ -512,23 +604,49 @@ const AcceptTaskDetail = () => {
         <div className="flex items-center">
           <div className="mb-2 flex items-center text-3xl font-semibold text-gray-700">
             驗收內容
-            <p className="ml-3 text-xl font-extrabold text-red-500">
-              僅限上傳圖片 {"("}png / jpg / gif{")"}
-            </p>
+            {/* 條件渲染：僅在非"發案者已評價"狀態時顯示 */}
+            {taskStatus !== "發案者已評價" && (
+              <p className="ml-3 text-xl font-extrabold text-red-500">
+                僅限上傳圖片格式為 {"("}png / jpg / gif{")"}
+              </p>
+            )}
           </div>
         </div>
         <ul className="flex justify-between gap-2">
-          {Array.from({ length: 6 }).map((_, index) => (
-            <li key={index} className="mb-2 h-48 w-48 bg-gray-700">
-              <input
-                type="file"
-                name="taskPhoto"
-                accept="image/png, image/jpeg, image/gif"
-                onChange={(e) => handleFileSelect(e, 0)}
-              />
-            </li>
-          ))}
+          {taskStatus === "發案者已評價" ? (
+            taskDetails.reportFiles.length > 0 ? (
+              taskDetails.reportFiles.map((fileUrl, index) => (
+                <li key={index} className="mb-2 h-48 w-48 bg-gray-700">
+                  <img
+                    className="h-full w-full cursor-pointer object-cover p-2"
+                    src={fileUrl}
+                    alt={`Report Photo ${index}`}
+                    onClick={() => {
+                      setSelectedPhoto(fileUrl); // 設置選中的圖片
+                      setIsModalOpen(true); // 打開模態視窗
+                    }}
+                  />
+                </li>
+              ))
+            ) : (
+              <li className="mb-2 h-48 w-48">
+                <Icon icon="openmoji:picture" className="text-8xl" />
+              </li>
+            )
+          ) : (
+            Array.from({ length: 6 }).map((_, index) => (
+              <li key={index} className="mb-2 h-48 w-48 bg-gray-700">
+                <input
+                  type="file"
+                  name="taskPhoto"
+                  accept="image/png, image/jpeg, image/gif"
+                  onChange={(e) => handleFileSelect(e, index)}
+                />
+              </li>
+            ))
+          )}
         </ul>
+        {/* 顯示任務回報說明 */}
         <div>
           <label
             htmlFor="input1"
@@ -540,12 +658,19 @@ const AcceptTaskDetail = () => {
             id="input1"
             name="input1"
             rows={3}
-            className="mb-3 mt-1 block w-full resize-none rounded-md border border-gray-300 p-2.5 tracking-wider shadow-sm focus:border-blue-500 focus:outline-none focus:ring-blue-500"
-            placeholder="請填寫關於此任務的詳細完成成果"
-            defaultValue={""}
-            onChange={(e) => setReportDescription(e.target.value)}
+            className={`mb-3 mt-1 block w-full resize-none rounded-md border border-gray-300 p-2.5 tracking-wider shadow-sm focus:border-blue-500 focus:outline-none focus:ring-blue-500 ${
+              taskStatus === "任務回報完成" || taskStatus === "發案者已評價"
+                ? "cursor-not-allowed"
+                : ""
+            }`}
+            // readOnly={
+            //   taskStatus === "任務回報完成" || taskStatus === "發案者已評價"
+            // }
+            value={taskDetails.reportDescription}
+            onChange={handleReportDescriptionChange}
           />
         </div>
+        {/* 顯示超人補充說明 */}
         <div>
           <label
             htmlFor="input2"
@@ -557,12 +682,36 @@ const AcceptTaskDetail = () => {
             id="input2"
             name="input2"
             rows={3}
-            className="mb-3 mt-1 block w-full resize-none rounded-md border border-gray-300 p-2.5 tracking-wider shadow-sm focus:border-blue-500 focus:outline-none focus:ring-blue-500"
-            placeholder="請補充所需要讓發案者知道的資訊"
-            defaultValue={""}
-            onChange={(e) => setReportSupplementaryNotes(e.target.value)}
+            onChange={handleReportSupplementaryNotesChange}
+            className={`mb-3 mt-1 block w-full resize-none rounded-md border border-gray-300 p-2.5 tracking-wider ${
+              taskStatus === "任務回報完成" || taskStatus === "發案者已評價"
+                ? "cursor-not-allowed"
+                : ""
+            } shadow-sm focus:border-blue-500 focus:outline-none focus:ring-blue-500`}
+            // readOnly={
+            //   taskStatus === "任務回報完成" || taskStatus === "發案者已評價"
+            // }
+            value={taskDetails.reportSupplementaryNotes}
           />
         </div>
+        {/* To 超人的評價 */}
+        <div>
+          <label
+            htmlFor="comment"
+            className="block text-xl font-extrabold text-gray-700"
+          >
+            To 超人的評價
+          </label>
+          <textarea
+            id="comment"
+            name="comment"
+            rows={3}
+            className={`mb-3 mt-1 block w-full cursor-not-allowed resize-none rounded-md border border-gray-300 p-2.5 tracking-wider shadow-sm focus:border-blue-500 focus:outline-none focus:ring-blue-500`}
+            readOnly
+            value={ratedComment} // 假設 ratedComment 是從 reviews 集合獲取
+          />
+        </div>
+        {/* 發案者回饋 */}
         <div>
           <label
             htmlFor="input3"
@@ -578,16 +727,18 @@ const AcceptTaskDetail = () => {
             id="input3"
             name="input3"
             rows={3}
-            className="mb-10 mt-1 block w-full resize-none rounded-md border border-gray-300 bg-blue-200 p-2.5 tracking-wider shadow-sm focus:border-blue-500 focus:outline-none focus:ring-blue-500"
-            placeholder="請針對此任務驗收成果填寫"
-            defaultValue={""}
+            className="mb-10 mt-1 block w-full cursor-not-allowed resize-none rounded-md border border-gray-300 bg-blue-200 p-2.5 tracking-wider shadow-sm focus:border-blue-500 focus:outline-none focus:ring-blue-500"
             readOnly
+            value={taskDetails.feedbackMessage} // 假設 feedbackMessage 是從 taskDetails 獲取
           />
         </div>
+
+        {/* 禁用送出按鈕 */}
         <div className="flex justify-center">
           <button
             onClick={handleReportSubmit}
             type="button"
+            disabled={taskStatus === "發案者已評價"}
             className="group relative w-52 overflow-hidden rounded-lg bg-gray-200 px-6 py-3 [transform:translateZ(0)] before:absolute before:left-1/2 before:top-1/2 before:h-8 before:w-8 before:-translate-x-1/2 before:-translate-y-1/2 before:scale-[0] before:rounded-full before:bg-sky-600 before:opacity-0 before:transition before:duration-500 before:ease-in-out hover:before:scale-[10] hover:before:opacity-100"
           >
             <span className="relative z-0 text-2xl text-black transition duration-500 ease-in-out group-hover:text-gray-200">
