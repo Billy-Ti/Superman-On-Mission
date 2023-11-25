@@ -70,6 +70,10 @@ const AcceptTaskDetail = () => {
     navigate("/taskManagement");
   };
 
+  const handleToReviews = () => {
+    navigate("/reviewLists");
+  };
+
   const handleOverlay = () => {
     setShowOverlay(false);
   };
@@ -180,7 +184,7 @@ const AcceptTaskDetail = () => {
   }, [taskDetails]);
 
   useEffect(() => {
-    if (taskStatus === "發案者已評價") {
+    if (taskStatus === "已完成") {
       setShowOverlay(false);
     }
   }, [taskStatus]);
@@ -353,6 +357,7 @@ const AcceptTaskDetail = () => {
           任務管理
         </button>
         <button
+          onClick={handleToReviews}
           type="button"
           className="w-1/5 rounded bg-gray-300 p-4 text-center"
         >
@@ -382,18 +387,24 @@ const AcceptTaskDetail = () => {
         <div className="flex items-center justify-center">
           <div
             className={`flex h-40 w-40 items-center justify-center rounded-full text-xl font-bold ${
-              taskStatus === "任務回報完成"
+              taskStatus === "任務回報完成" || taskStatus === "已完成"
                 ? "bg-green-500 text-white"
                 : "bg-gray-400"
-            } text-black`}
+            }`}
           >
             任務回報完成
           </div>
         </div>
         <div className="flex-auto border-t-2 border-black"></div>
         <div className="flex items-center justify-center">
-          <div className="flex h-40 w-40 items-center justify-center rounded-full bg-gray-400 text-xl font-bold text-black">
-            發案者已評價
+          <div
+            className={`flex h-40 w-40 items-center justify-center rounded-full text-xl font-bold ${
+              taskStatus === "已完成"
+                ? "bg-green-500 text-white"
+                : "bg-gray-400"
+            }`}
+          >
+            已完成
           </div>
         </div>
       </div>
@@ -604,19 +615,19 @@ const AcceptTaskDetail = () => {
         <div className="flex items-center">
           <div className="mb-2 flex items-center text-3xl font-semibold text-gray-700">
             驗收內容
-            {/* 條件渲染：僅在非"發案者已評價"狀態時顯示 */}
-            {taskStatus !== "發案者已評價" && (
+            {/* 條件渲染：僅在非"已完成"狀態時顯示 */}
+            {taskStatus !== "已完成" && (
               <p className="ml-3 text-xl font-extrabold text-red-500">
                 僅限上傳圖片格式為 {"("}png / jpg / gif{")"}
               </p>
             )}
           </div>
         </div>
-        <ul className="flex justify-between gap-2">
-          {taskStatus === "發案者已評價" ? (
+        <ul className="flex gap-4">
+          {taskStatus === "已完成" ? (
             taskDetails.reportFiles.length > 0 ? (
               taskDetails.reportFiles.map((fileUrl, index) => (
-                <li key={index} className="mb-2 h-48 w-48 bg-gray-700">
+                <li key={index} className="mb-2 h-52 w-52 bg-gray-700">
                   <img
                     className="h-full w-full cursor-pointer object-cover p-2"
                     src={fileUrl}
@@ -629,7 +640,8 @@ const AcceptTaskDetail = () => {
                 </li>
               ))
             ) : (
-              <li className="mb-2 h-48 w-48">
+              <li className="mb-2 flex h-52 w-52 flex-col items-center justify-center bg-gray-400 font-extrabold">
+                <span>No more images</span>
                 <Icon icon="openmoji:picture" className="text-8xl" />
               </li>
             )
@@ -659,13 +671,10 @@ const AcceptTaskDetail = () => {
             name="input1"
             rows={3}
             className={`mb-3 mt-1 block w-full resize-none rounded-md border border-gray-300 p-2.5 tracking-wider shadow-sm focus:border-blue-500 focus:outline-none focus:ring-blue-500 ${
-              taskStatus === "任務回報完成" || taskStatus === "發案者已評價"
-                ? "cursor-not-allowed"
+              taskStatus === "任務回報完成" || taskStatus === "已完成"
+                ? "cursor-not-allowed "
                 : ""
             }`}
-            // readOnly={
-            //   taskStatus === "任務回報完成" || taskStatus === "發案者已評價"
-            // }
             value={taskDetails.reportDescription}
             onChange={handleReportDescriptionChange}
           />
@@ -684,12 +693,12 @@ const AcceptTaskDetail = () => {
             rows={3}
             onChange={handleReportSupplementaryNotesChange}
             className={`mb-3 mt-1 block w-full resize-none rounded-md border border-gray-300 p-2.5 tracking-wider ${
-              taskStatus === "任務回報完成" || taskStatus === "發案者已評價"
+              taskStatus === "任務回報完成" || taskStatus === "已完成"
                 ? "cursor-not-allowed"
                 : ""
             } shadow-sm focus:border-blue-500 focus:outline-none focus:ring-blue-500`}
             // readOnly={
-            //   taskStatus === "任務回報完成" || taskStatus === "發案者已評價"
+            //   taskStatus === "任務回報完成" || taskStatus === "已完成"
             // }
             value={taskDetails.reportSupplementaryNotes}
           />
@@ -738,8 +747,12 @@ const AcceptTaskDetail = () => {
           <button
             onClick={handleReportSubmit}
             type="button"
-            disabled={taskStatus === "發案者已評價"}
-            className="group relative w-52 overflow-hidden rounded-lg bg-gray-200 px-6 py-3 [transform:translateZ(0)] before:absolute before:left-1/2 before:top-1/2 before:h-8 before:w-8 before:-translate-x-1/2 before:-translate-y-1/2 before:scale-[0] before:rounded-full before:bg-sky-600 before:opacity-0 before:transition before:duration-500 before:ease-in-out hover:before:scale-[10] hover:before:opacity-100"
+            disabled={taskStatus === "已完成"}
+            className={`${
+              taskStatus === "任務回報完成" || taskStatus === "已完成"
+                ? "cursor-not-allowed "
+                : ""
+            }}group relative w-52 overflow-hidden rounded-lg bg-gray-200 px-6 py-3 [transform:translateZ(0)] before:absolute before:left-1/2 before:top-1/2 before:h-8 before:w-8 before:-translate-x-1/2 before:-translate-y-1/2 before:scale-[0] before:rounded-full before:bg-sky-600 before:opacity-0 before:transition before:duration-500 before:ease-in-out hover:before:scale-[10] hover:before:opacity-100`}
           >
             <span className="relative z-0 text-2xl text-black transition duration-500 ease-in-out group-hover:text-gray-200">
               送出

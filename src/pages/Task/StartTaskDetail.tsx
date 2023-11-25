@@ -71,6 +71,9 @@ const StartTaskDetail = () => {
   const handleBackToTaskManagement = () => {
     navigate("/taskManagement");
   };
+  const handleToReviews = () => {
+    navigate("/reviewLists");
+  };
 
   const fetchTaskDetails = async () => {
     if (!taskId) return;
@@ -162,7 +165,7 @@ const StartTaskDetail = () => {
         await updateDoc(taskRef, {
           isFeedback: true,
           feedbackMessage: feedbackMessage,
-          status: "發案者已評價", // 更新狀態
+          status: "已完成", // 更新狀態
         });
         setIsFeedbackSubmitted(true);
         await fetchTaskDetails();
@@ -201,11 +204,11 @@ const StartTaskDetail = () => {
   useEffect(() => {
     const checkAndUpdateOverlayStatus = () => {
       if (taskDetails && currentUserId) {
-        // 確保在 "任務回報完成" 或 "發案者已評價" 狀態下遮罩不顯示
+        // 確保在 "任務回報完成" 或 "已完成" 狀態下遮罩不顯示
         if (
           taskDetails.createdBy === currentUserId &&
           (taskDetails.status === "任務回報完成" ||
-            taskDetails.status === "發案者已評價")
+            taskDetails.status === "已完成")
         ) {
           setShowOverlay(false);
         } else {
@@ -238,7 +241,7 @@ const StartTaskDetail = () => {
           taskDetails.status === "任務回報完成"
         ),
       );
-      setShowFeedbackContent(taskDetails.status === "發案者已評價");
+      setShowFeedbackContent(taskDetails.status === "已完成");
     }
   }, [taskDetails, currentUserId]);
 
@@ -298,6 +301,7 @@ const StartTaskDetail = () => {
           任務管理
         </button>
         <button
+          onClick={handleToReviews}
           type="button"
           className="w-1/5 rounded bg-gray-300 p-4 text-center"
         >
@@ -331,7 +335,7 @@ const StartTaskDetail = () => {
           <div
             className={`flex h-40 w-40 items-center justify-center rounded-full text-xl font-bold ${
               (taskDetails && taskDetails.status === "任務回報完成") ||
-              taskDetails.status === "發案者已評價"
+              taskDetails.status === "已完成"
                 ? "bg-green-500 text-white"
                 : "bg-gray-400"
             }`}
@@ -343,7 +347,7 @@ const StartTaskDetail = () => {
         <div className="flex items-center justify-center">
           <div
             className={`flex h-40 w-40 items-center justify-center rounded-full text-xl font-bold ${
-              taskDetails && taskDetails.status === "發案者已評價"
+              taskDetails && taskDetails.status === "已完成"
                 ? "bg-green-500 text-white"
                 : "bg-gray-400 text-black"
             }`}

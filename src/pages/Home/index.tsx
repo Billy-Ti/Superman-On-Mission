@@ -14,6 +14,10 @@ const Home = () => {
     navigate("/SignIn");
   };
 
+  const handleToReviews = () => {
+    navigate("/reviewLists");
+  }
+
   const handleLogout = async () => {
     Swal.fire({
       title: "確定要登出嗎？",
@@ -98,6 +102,7 @@ const Home = () => {
                       任務管理
                     </button>
                     <button
+                    onClick={handleToReviews}
                       type="button"
                       className="w-36 rounded bg-gray-200 px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-300"
                     >
