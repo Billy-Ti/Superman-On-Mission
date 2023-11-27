@@ -1,14 +1,18 @@
 import { Icon } from "@iconify/react";
-import { User, getAuth, onAuthStateChanged } from "firebase/auth";
+import { getAuth, onAuthStateChanged } from "firebase/auth";
 import {
+  Firestore,
   Timestamp,
   addDoc,
   collection,
+  doc,
+  getDoc,
   getDocs,
   getFirestore,
   onSnapshot,
   query,
   serverTimestamp,
+  setDoc,
   where,
 } from "firebase/firestore";
 import { useEffect, useRef, useState } from "react";
@@ -27,6 +31,11 @@ interface UserList {
   id: string;
   name: string;
 }
+interface User {
+  id: string; // 使用 Firebase User ID 作為 id
+  name: string;
+  email: string;
+}
 const ChatRoomWindow = ({ onCloseRoom }: ChatRoomWindowProps) => {
   const [message, setMessage] = useState("");
   const [messages, setMessages] = useState<Message[]>([]);
@@ -36,13 +45,59 @@ const ChatRoomWindow = ({ onCloseRoom }: ChatRoomWindowProps) => {
   const [userList, setUserList] = useState<UserList[]>([]); // 儲存用戶列表
   const [hasSearched, setHasSearched] = useState(false); // 判斷是否搜尋過了，要出現 " 查無此使用者 " 文字
   const [selectedUserId, setSelectedUserId] = useState<string | null>(null); // 點擊所選的使用者進行聊天
+  // useEffect(() => {
+  //   const auth = getAuth();
+  //   const unsubscribe = onAuthStateChanged(
+  //     auth,
+  //     (firebaseUser: FirebaseUser | null) => {
+  //       if (firebaseUser) {
+  //         const user: User = {
+  //           id: firebaseUser.uid,
+  //           name: firebaseUser.displayName || "未知用戶",
+  //           email: firebaseUser.email || "未提供電子郵件", // 設置電子郵件
+  //         };
+  //         setCurrentUser(user);
+  //       } else {
+  //         setCurrentUser(null);
+  //       }
+  //     },
+  //   );
+  //   return () => unsubscribe();
+  // }, []);
   useEffect(() => {
     const auth = getAuth();
-    const unsubscribe = onAuthStateChanged(auth, (user) => {
-      setCurrentUser(user);
+    const firestore = getFirestore();
+
+    const unsubscribe = onAuthStateChanged(auth, async (firebaseUser) => {
+      if (firebaseUser) {
+        // 從 Firestore 的 users 集合中獲取用戶資料
+        const userRef = doc(firestore, "users", firebaseUser.uid);
+        const docSnap = await getDoc(userRef);
+        if (docSnap.exists()) {
+          const userData = docSnap.data();
+          // 使用從 Firestore 獲得的名稱和電子郵件
+          setCurrentUser({
+            id: firebaseUser.uid,
+            name: userData.name, // 使用從 Firestore 獲得的名稱
+            email: userData.email || firebaseUser.email || "未提供電子郵件",
+          });
+        } else {
+          // 處理找不到用戶的情況
+          setCurrentUser({
+            id: firebaseUser.uid,
+            name: "未知用戶",
+            email: firebaseUser.email || "未提供電子郵件",
+          });
+        }
+      } else {
+        // 沒有用戶登入
+        setCurrentUser(null);
+      }
     });
+
     return () => unsubscribe();
   }, []);
+
   useEffect(() => {
     // 訊息更新時，自動滑動到底部
     if (messagesEndRef.current) {
@@ -63,19 +118,56 @@ const ChatRoomWindow = ({ onCloseRoom }: ChatRoomWindowProps) => {
     });
     return () => unsubscribe();
   }, []);
+  useEffect(() => {
+    const firestore = getFirestore();
+    const usersRef = collection(firestore, "users");
+    const unsubscribe = onSnapshot(usersRef, (querySnapshot) => {
+      const activeUsers = querySnapshot.docs.map((doc) => {
+        const userData = doc.data();
+        return { id: doc.id, name: userData.name };
+      });
+      setUserList(activeUsers); // 更新用戶列表狀態
+    });
+    return () => unsubscribe();
+  }, []);
+  // 加載曾經聊過天的用戶列表
+  useEffect(() => {
+    if (!currentUser) return;
+    const firestore = getFirestore();
+    const userRef = doc(firestore, "users", currentUser.id);
+    getDoc(userRef).then((docSnap) => {
+      if (docSnap.exists()) {
+        const userData = docSnap.data();
+        // 假設 userData.chattedWith 存在
+        const chattedWithIds = userData.chattedWith || [];
+        loadUsers(firestore, chattedWithIds);
+      }
+    });
+  }, [currentUser]);
   const handleSendMessage = async () => {
     if (!currentUser || !selectedUserId || !message.trim()) {
       showAlert("🚨 系統提醒", "未選擇聊天對象或未登入", "error");
       return;
     }
-
     try {
       const firestore = getFirestore();
+      // 發送訊息到 'messages' 集合
       await addDoc(collection(firestore, "messages"), {
         content: message,
         sentAt: serverTimestamp(),
-        sentBy: currentUser.uid,
-        chatSessionId: `${currentUser.uid}_${selectedUserId}`, // 與選中用戶的對話
+        sentBy: currentUser.id,
+        chatSessionId: `${currentUser.id}_${selectedUserId}`, // 與選中用戶的對話
+      });
+      // 僅更新當前用戶的 'users' 集合
+      await updateChattedWith(firestore, currentUser.id, selectedUserId);
+      // 重新加載曾經聊過天的用戶列表
+      const userRef = doc(firestore, "users", currentUser.id);
+      getDoc(userRef).then((docSnap) => {
+        if (docSnap.exists()) {
+          const userData = docSnap.data();
+          const chattedWithIds = userData.chattedWith || [];
+          loadUsers(firestore, chattedWithIds);
+        }
       });
       setMessage("");
     } catch (error) {
@@ -83,7 +175,44 @@ const ChatRoomWindow = ({ onCloseRoom }: ChatRoomWindowProps) => {
       showAlert("🚨 System Alert", "Message sending failed...", "error");
     }
   };
-
+  // 更新聊過天的用戶列表的函數
+  const updateChattedWith = async (
+    firestore: Firestore,
+    userId: string,
+    chattedWithId: string,
+  ) => {
+    const userRef = doc(firestore, "users", userId);
+    const userDoc = await getDoc(userRef);
+    if (userDoc.exists()) {
+      const userData = userDoc.data();
+      const chattedWith = new Set<string>(userData.chattedWith || []);
+      chattedWith.add(chattedWithId);
+      await setDoc(
+        userRef,
+        { chattedWith: Array.from(chattedWith) },
+        { merge: true },
+      );
+    }
+  };
+  const loadUsers = async (firestore: Firestore, userIds: string[]) => {
+    const users: User[] = [];
+    for (const userId of userIds) {
+      const userRef = doc(firestore, "users", userId);
+      const userSnap = await getDoc(userRef);
+      if (userSnap.exists()) {
+        const userData = userSnap.data() as User;
+        if (userData.id !== currentUser?.id) {
+          // 確保不加載當前用戶自己
+          users.push({
+            id: userId,
+            name: userData.name,
+            email: userData.email,
+          });
+        }
+      }
+    }
+    setUserList(users);
+  };
   const executeSearch = async () => {
     const firestore = getFirestore();
     const usersRef = collection(firestore, "users");
@@ -108,6 +237,15 @@ const ChatRoomWindow = ({ onCloseRoom }: ChatRoomWindowProps) => {
       await executeSearch();
     }
   };
+
+  const handleKeyDownSendMessage = async (
+    event: React.KeyboardEvent<HTMLInputElement>,
+  ) => {
+    if (event.key === "Enter") {
+      event.preventDefault(); // 防止輸入時換行
+      await handleSendMessage();
+    }
+  };
   // 處理點擊事件
   const handleButtonClick = async () => {
     await executeSearch();
@@ -121,28 +259,23 @@ const ChatRoomWindow = ({ onCloseRoom }: ChatRoomWindowProps) => {
     return message.sentAt?.toMillis() ?? Number.MAX_SAFE_INTEGER;
   };
   const handleSelectUser = async (userId: string) => {
-    setSelectedUserId(userId);
-    setMessages([]); // 清除舊的聊天記錄
-  
+    setSelectedUserId(userId); // 設置所選用戶的 ID
+    setMessages([]); // 清空當前訊息
     if (!currentUser || !userId) return;
-  
     const firestore = getFirestore();
     const messagesRef = collection(firestore, "messages");
+    // 更新查詢條件，以反映所選用戶的對話
     const q = query(
       messagesRef,
       where("chatSessionId", "in", [
-        `${currentUser.uid}_${userId}`,
-        `${userId}_${currentUser.uid}`
-      ])
+        `${currentUser.id}_${userId}`,
+        `${userId}_${currentUser.id}`,
+      ]),
     );
-  
-    onSnapshot(q, (querySnapshot) => {
-      const userMessages = querySnapshot.docs.map((doc) => doc.data() as Message);
-      setMessages(userMessages);
-    });
+    const querySnapshot = await getDocs(q);
+    const userMessages = querySnapshot.docs.map((doc) => doc.data() as Message);
+    setMessages(userMessages);
   };
-  
-
   return (
     <div className="fixed inset-0 z-50 my-auto flex h-full items-center justify-center bg-black bg-opacity-50 py-10 text-gray-800 antialiased">
       <div className="relative flex h-[70vh] w-3/4 flex-row overflow-y-auto rounded-lg bg-white p-4 shadow-lg">
@@ -195,8 +328,10 @@ const ChatRoomWindow = ({ onCloseRoom }: ChatRoomWindowProps) => {
                 className="h-full w-full object-cover"
               />
             </div>
-            <div className="mt-2 text-sm font-semibold">Billy Ti</div>
-            <div className="text-xs text-gray-500">test@gmail.com</div>
+            <div className="mt-2 text-lg font-semibold">
+              {currentUser ? currentUser.name : "加載中..."}
+            </div>
+            <div className="text-xs text-gray-500">{currentUser?.email}</div>
           </div>
           <div className="flex flex-row items-center justify-between px-2 text-xs">
             <span className="mb-2 font-bold">Active Conversations</span>
@@ -256,87 +391,19 @@ const ChatRoomWindow = ({ onCloseRoom }: ChatRoomWindowProps) => {
             )}
           </div>
           <div className="-mx-2 mt-4 flex h-1/2 flex-col space-y-1 overflow-y-auto">
-            <button className="flex flex-row items-center rounded-xl p-2 hover:bg-gray-100">
-              <div className="flex h-8 w-8 items-center justify-center rounded-full bg-indigo-200">
-                H
-              </div>
-              <div className="ml-2 text-sm font-semibold">Henry</div>
-            </button>
-            <button className="flex flex-row items-center rounded-xl p-2 hover:bg-gray-100">
-              <div className="flex h-8 w-8 items-center justify-center rounded-full bg-indigo-200">
-                H
-              </div>
-              <div className="ml-2 text-sm font-semibold">Henry</div>
-            </button>
-            <button className="flex flex-row items-center rounded-xl p-2 hover:bg-gray-100">
-              <div className="flex h-8 w-8 items-center justify-center rounded-full bg-indigo-200">
-                H
-              </div>
-              <div className="ml-2 text-sm font-semibold">Henry</div>
-            </button>
-            <button className="flex flex-row items-center rounded-xl p-2 hover:bg-gray-100">
-              <div className="flex h-8 w-8 items-center justify-center rounded-full bg-gray-200">
-                M
-              </div>
-              <div className="ml-2 text-sm font-semibold">Mary</div>
-              <div className="ml-auto flex h-4 w-4 items-center justify-center rounded bg-red-500 text-xs leading-none text-white">
-                2
-              </div>
-            </button>
-            <button className="flex flex-row items-center rounded-xl p-2 hover:bg-gray-100">
-              <div className="flex h-8 w-8 items-center justify-center rounded-full bg-orange-200">
-                P
-              </div>
-              <div className="ml-2 text-sm font-semibold">Paul</div>
-            </button>
-            <button className="flex flex-row items-center rounded-xl p-2 hover:bg-gray-100">
-              <div className="flex h-8 w-8 items-center justify-center rounded-full bg-pink-200">
-                C
-              </div>
-              <div className="ml-2 text-sm font-semibold">Chris</div>
-            </button>
-            <button className="flex flex-row items-center rounded-xl p-2 hover:bg-gray-100">
-              <div className="flex h-8 w-8 items-center justify-center rounded-full bg-purple-200">
-                陳
-              </div>
-              <div className="ml-2 text-sm font-semibold">陳曉東</div>
-            </button>
-            <button className="flex flex-row items-center rounded-xl p-2 hover:bg-gray-100">
-              <div className="flex h-8 w-8 items-center justify-center rounded-full bg-indigo-200">
-                H
-              </div>
-              <div className="ml-2 text-sm font-semibold">Henry</div>
-            </button>
-            <button className="flex flex-row items-center rounded-xl p-2 hover:bg-gray-100">
-              <div className="flex h-8 w-8 items-center justify-center rounded-full bg-indigo-200">
-                H
-              </div>
-              <div className="ml-2 text-sm font-semibold">Henry</div>
-            </button>
-            <button className="flex flex-row items-center rounded-xl p-2 hover:bg-gray-100">
-              <div className="flex h-8 w-8 items-center justify-center rounded-full bg-indigo-200">
-                H
-              </div>
-              <div className="ml-2 text-sm font-semibold">Henry</div>
-            </button>
-            <button className="flex flex-row items-center rounded-xl p-2 hover:bg-gray-100">
-              <div className="flex h-8 w-8 items-center justify-center rounded-full bg-indigo-200">
-                H
-              </div>
-              <div className="ml-2 text-sm font-semibold">Henry</div>
-            </button>
-            <button className="flex flex-row items-center rounded-xl p-2 hover:bg-gray-100">
-              <div className="flex h-8 w-8 items-center justify-center rounded-full bg-pink-200">
-                C
-              </div>
-              <div className="ml-2 text-sm font-semibold">Chris</div>
-            </button>
-            <button className="flex flex-row items-center rounded-xl p-2 hover:bg-gray-100">
-              <div className="flex h-8 w-8 items-center justify-center rounded-full bg-pink-200">
-                C
-              </div>
-              <div className="ml-2 text-sm font-semibold">Chris</div>
-            </button>
+            {userList.map((user) => (
+              <button
+                className="flex flex-row items-center rounded-xl p-2 hover:bg-gray-100"
+                key={user.id}
+                onClick={() => handleSelectUser(user.id)}
+              >
+                <div className="flex h-8 w-8 items-center justify-center rounded-full bg-indigo-200">
+                  {user.name ? user.name.charAt(0).toLocaleUpperCase() : ""}{" "}
+                  {/* 檢查 user.name 是否存在 */}
+                </div>
+                <div className="ml-2 text-sm font-semibold">{user.name}</div>
+              </button>
+            ))}
           </div>
         </div>
         {/* 聊天視窗主體 */}
@@ -345,6 +412,14 @@ const ChatRoomWindow = ({ onCloseRoom }: ChatRoomWindowProps) => {
             <div className="flex h-full flex-auto flex-shrink-0 flex-col justify-between rounded-2xl bg-gray-100 p-4">
               <div className="h-full overflow-auto">
                 <div className="flex flex-grow flex-col items-center justify-between p-4">
+                  <div className="mb-10 text-center  font-black">
+                    {selectedUserId
+                      ? `您正在與${" "}${
+                          userList.find((user) => user.id === selectedUserId)
+                            ?.name || "未知用戶"
+                        }${" "}聯繫...`
+                      : "請選擇一個用戶以開始聯繫"}
+                  </div>
                   {messages
                     .filter((msg) => msg.content) // 過濾內容為空的訊息
                     .sort((a, b) => getTimestamp(a) - getTimestamp(b)) // 根據時間排序
@@ -359,7 +434,6 @@ const ChatRoomWindow = ({ onCloseRoom }: ChatRoomWindowProps) => {
                         {message.content}
                       </div>
                     ))}
-                  <div></div>
                   <div ref={messagesEndRef} />
                 </div>
               </div>
@@ -370,7 +444,7 @@ const ChatRoomWindow = ({ onCloseRoom }: ChatRoomWindowProps) => {
                       type="text"
                       value={message}
                       onChange={(e) => setMessage(e.target.value)}
-                      onKeyDown={handleKeyDown}
+                      onKeyDown={handleKeyDownSendMessage}
                       className="flex h-10 w-full rounded-xl border pl-4 focus:border-indigo-300 focus:outline-none"
                     />
                     {/* emoji icon button */}

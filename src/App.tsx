@@ -45,8 +45,8 @@ const App = () => {
           />
           <Route path="/reviewLists" element={<ReviewLists />} />
         </Routes>
+        <ChatRoomButton />
       </BrowserRouter>
-      <ChatRoomButton />
     </AuthProvider>
   );
 };
