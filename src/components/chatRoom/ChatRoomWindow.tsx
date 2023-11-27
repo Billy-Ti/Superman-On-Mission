@@ -35,6 +35,7 @@ const ChatRoomWindow = ({ onCloseRoom }: ChatRoomWindowProps) => {
   const [searchQuery, setSearchQuery] = useState("");
   const [userList, setUserList] = useState<UserList[]>([]); // 儲存用戶列表
   const [hasSearched, setHasSearched] = useState(false); // 判斷是否搜尋過了，要出現 " 查無此使用者 " 文字
+  const [selectedUserId, setSelectedUserId] = useState<string | null>(null); // 點擊所選的使用者進行聊天
   useEffect(() => {
     const auth = getAuth();
     const unsubscribe = onAuthStateChanged(auth, (user) => {
@@ -63,20 +64,18 @@ const ChatRoomWindow = ({ onCloseRoom }: ChatRoomWindowProps) => {
     return () => unsubscribe();
   }, []);
   const handleSendMessage = async () => {
-    if (!currentUser) {
-      showAlert("🚨 系統提醒", "未登入，無法傳送訊息...", "error");
+    if (!currentUser || !selectedUserId || !message.trim()) {
+      showAlert("🚨 系統提醒", "未選擇聊天對象或未登入", "error");
       return;
     }
-    if (!message.trim()) {
-      showAlert("🚨 系統提醒", "請輸入文字", "info");
-      return;
-    }
+
     try {
       const firestore = getFirestore();
       await addDoc(collection(firestore, "messages"), {
         content: message,
         sentAt: serverTimestamp(),
         sentBy: currentUser.uid,
+        chatSessionId: `${currentUser.uid}_${selectedUserId}`, // 與選中用戶的對話
       });
       setMessage("");
     } catch (error) {
@@ -101,7 +100,6 @@ const ChatRoomWindow = ({ onCloseRoom }: ChatRoomWindowProps) => {
     setUserList(users);
     setHasSearched(true);
   };
-
   // 處理鍵盤事件
   const handleKeyDown = async (
     event: React.KeyboardEvent<HTMLInputElement>,
@@ -110,7 +108,6 @@ const ChatRoomWindow = ({ onCloseRoom }: ChatRoomWindowProps) => {
       await executeSearch();
     }
   };
-
   // 處理點擊事件
   const handleButtonClick = async () => {
     await executeSearch();
@@ -123,9 +120,29 @@ const ChatRoomWindow = ({ onCloseRoom }: ChatRoomWindowProps) => {
   const getTimestamp = (message: Message) => {
     return message.sentAt?.toMillis() ?? Number.MAX_SAFE_INTEGER;
   };
-  const handleSelectUser = (userId: string) => {
-    console.log("Selected User ID:", userId);
+  const handleSelectUser = async (userId: string) => {
+    setSelectedUserId(userId);
+    setMessages([]); // 清除舊的聊天記錄
+  
+    if (!currentUser || !userId) return;
+  
+    const firestore = getFirestore();
+    const messagesRef = collection(firestore, "messages");
+    const q = query(
+      messagesRef,
+      where("chatSessionId", "in", [
+        `${currentUser.uid}_${userId}`,
+        `${userId}_${currentUser.uid}`
+      ])
+    );
+  
+    onSnapshot(q, (querySnapshot) => {
+      const userMessages = querySnapshot.docs.map((doc) => doc.data() as Message);
+      setMessages(userMessages);
+    });
   };
+  
+
   return (
     <div className="fixed inset-0 z-50 my-auto flex h-full items-center justify-center bg-black bg-opacity-50 py-10 text-gray-800 antialiased">
       <div className="relative flex h-[70vh] w-3/4 flex-row overflow-y-auto rounded-lg bg-white p-4 shadow-lg">
@@ -322,100 +339,86 @@ const ChatRoomWindow = ({ onCloseRoom }: ChatRoomWindowProps) => {
             </button>
           </div>
         </div>
+        {/* 聊天視窗主體 */}
         <div className="flex h-full flex-auto flex-col p-6">
-          <div className="flex h-full flex-auto flex-shrink-0 flex-col justify-between rounded-2xl bg-gray-100 p-4">
-            <div className="h-full overflow-auto">
-              <div className="flex flex-grow items-center justify-between p-4">
-                {messages
-                  .filter((msg) => msg.content) // 過濾內容為空的訊息
-                  .sort((a, b) => getTimestamp(a) - getTimestamp(b)) // 根據時間排序
-                  .map((message, index) => (
-                    <div
-                      className="relative mb-5 ml-auto w-2/4 rounded border bg-white p-2"
-                      key={index}
-                    >
-                      <p className="absolute left-0 top-[-15px] z-50 bg-gradient-to-r from-blue-500 via-blue-400 to-purple-300 bg-clip-text text-transparent">
-                        You
-                      </p>
-                      {message.content}
-                    </div>
-                  ))}
-                <div>
-                  <button className="flex h-full w-12 items-center justify-center text-gray-400 hover:text-gray-600">
-                    <svg
-                      className="h-6 w-6"
-                      fill="none"
-                      stroke="currentColor"
-                      viewBox="0 0 24 24"
-                      xmlns="http://www.w3.org/2000/svg"
-                    >
-                      <path
-                        stroke-linecap="round"
-                        stroke-linejoin="round"
-                        stroke-width="2"
-                        d="M14.828 14.828a4 4 0 01-5.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
-                      ></path>
-                    </svg>
-                  </button>
-                </div>
-                <div ref={messagesEndRef} />
-              </div>
-            </div>
-            <div className="flex h-16 w-full flex-row items-center rounded-xl bg-white px-4">
-              <div className="ml-4 flex-grow">
-                <div className="relative w-full">
-                  <input
-                    type="text"
-                    value={message}
-                    onChange={(e) => setMessage(e.target.value)}
-                    onKeyDown={handleKeyDown}
-                    className="flex h-10 w-full rounded-xl border pl-4 focus:border-indigo-300 focus:outline-none"
-                  />
-                  {/* emoji icon button */}
-                  <button className="absolute right-0 top-0 flex h-full w-12 items-center justify-center text-gray-400 hover:text-gray-600">
-                    <svg
-                      className="h-6 w-6"
-                      fill="none"
-                      stroke="currentColor"
-                      viewBox="0 0 24 24"
-                      xmlns="http://www.w3.org/2000/svg"
-                    >
-                      <path
-                        stroke-linecap="round"
-                        stroke-linejoin="round"
-                        stroke-width="2"
-                        d="M14.828 14.828a4 4 0 01-5.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
-                      ></path>
-                    </svg>
-                  </button>
+          {selectedUserId && (
+            <div className="flex h-full flex-auto flex-shrink-0 flex-col justify-between rounded-2xl bg-gray-100 p-4">
+              <div className="h-full overflow-auto">
+                <div className="flex flex-grow flex-col items-center justify-between p-4">
+                  {messages
+                    .filter((msg) => msg.content) // 過濾內容為空的訊息
+                    .sort((a, b) => getTimestamp(a) - getTimestamp(b)) // 根據時間排序
+                    .map((message, index) => (
+                      <div
+                        className="relative mb-5 ml-auto w-2/4 rounded border bg-white p-2"
+                        key={index}
+                      >
+                        <p className="absolute left-0 top-[-15px] z-50 bg-gradient-to-r from-blue-500 via-blue-400 to-purple-300 bg-clip-text text-transparent">
+                          You
+                        </p>
+                        {message.content}
+                      </div>
+                    ))}
+                  <div></div>
+                  <div ref={messagesEndRef} />
                 </div>
               </div>
-              <div className="ml-4">
-                <button
-                  onClick={handleSendMessage}
-                  className="flex flex-shrink-0 items-center justify-center rounded-xl bg-indigo-500 px-4 py-1 text-white hover:bg-indigo-600"
-                >
-                  <span>Send</span>
-                  <span className="ml-2">
-                    <svg
-                      className="-mt-px h-4 w-4 rotate-45 transform"
-                      fill="none"
-                      stroke="currentColor"
-                      viewBox="0 0 24 24"
-                      xmlns="http://www.w3.org/2000/svg"
-                    >
-                      <path
-                        stroke-linecap="round"
-                        stroke-linejoin="round"
-                        stroke-width="2"
-                        d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8"
-                      ></path>
-                    </svg>
-                  </span>
-                </button>
+              <div className="flex h-16 w-full flex-row items-center rounded-xl bg-white px-4">
+                <div className="ml-4 flex-grow">
+                  <div className="relative w-full">
+                    <input
+                      type="text"
+                      value={message}
+                      onChange={(e) => setMessage(e.target.value)}
+                      onKeyDown={handleKeyDown}
+                      className="flex h-10 w-full rounded-xl border pl-4 focus:border-indigo-300 focus:outline-none"
+                    />
+                    {/* emoji icon button */}
+                    <button className="absolute right-0 top-0 flex h-full w-12 items-center justify-center text-gray-400 hover:text-gray-600">
+                      <svg
+                        className="h-6 w-6"
+                        fill="none"
+                        stroke="currentColor"
+                        viewBox="0 0 24 24"
+                        xmlns="http://www.w3.org/2000/svg"
+                      >
+                        <path
+                          stroke-linecap="round"
+                          stroke-linejoin="round"
+                          stroke-width="2"
+                          d="M14.828 14.828a4 4 0 01-5.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+                        ></path>
+                      </svg>
+                    </button>
+                  </div>
+                </div>
+                <div className="ml-4">
+                  <button
+                    onClick={handleSendMessage}
+                    className="flex flex-shrink-0 items-center justify-center rounded-xl bg-indigo-500 px-4 py-1 text-white hover:bg-indigo-600"
+                  >
+                    <span>Send</span>
+                    <span className="ml-2">
+                      <svg
+                        className="-mt-px h-4 w-4 rotate-45 transform"
+                        fill="none"
+                        stroke="currentColor"
+                        viewBox="0 0 24 24"
+                        xmlns="http://www.w3.org/2000/svg"
+                      >
+                        <path
+                          stroke-linecap="round"
+                          stroke-linejoin="round"
+                          stroke-width="2"
+                          d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8"
+                        ></path>
+                      </svg>
+                    </span>
+                  </button>
+                </div>
               </div>
             </div>
-          </div>
+          )}
         </div>
       </div>
     </div>
