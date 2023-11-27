@@ -40,7 +40,7 @@ const ReviewContent = () => {
 
     for (const taskDoc of tasksSnapshot.docs) {
       const taskData = taskDoc.data();
-      // 獲取發案者姓名
+      // 獲取發案者名稱
       const userRef = doc(db, "users", taskData.createdBy);
       const userSnap = await getDoc(userRef);
       const userName = userSnap.exists() ? userSnap.data().name : "未知用戶";

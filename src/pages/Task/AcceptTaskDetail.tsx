@@ -13,7 +13,7 @@ import { getDownloadURL, ref, uploadBytes } from "firebase/storage";
 import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import Swal from "sweetalert2";
-import ChatRoomWindow from "../../components/ChatRoomWindow";
+import ChatRoomWindow from "../../components/chatRoom/ChatRoomWindow";
 import { db, storage } from "../../config/firebase";
 import { showAlert } from "../../utils/showAlert";
 
@@ -46,7 +46,7 @@ const AcceptTaskDetail = () => {
   const { taskId } = useParams<{ taskId: string }>();
   const [taskDetails, setTaskDetails] = useState<Task | null>(null);
   const [loading, setLoading] = useState<boolean>(true);
-  // 存發案者姓名，以存取不同集合中的 user
+  // 存發案者名稱，以存取不同集合中的 user
   const [posterName, setPosterName] = useState<string>("");
   const [showOverlay, setShowOverlay] = useState<boolean>(true);
 
@@ -532,7 +532,7 @@ const AcceptTaskDetail = () => {
               </span>
             </button>
             {isChatOpen && taskId && (
-              <ChatRoomWindow onCloseRoom={handleCloseChat} taskId={taskId} />
+              <ChatRoomWindow onCloseRoom={handleCloseChat} />
             )}
           </div>
         </div>
@@ -555,7 +555,7 @@ const AcceptTaskDetail = () => {
               </svg>
             </div>
             <div className="flex-grow tracking-wider">
-              <span className="font-semibold tracking-wider">發案者姓名：</span>
+              <span className="font-semibold tracking-wider">發案者名稱：</span>
               {posterName}
             </div>
           </div>

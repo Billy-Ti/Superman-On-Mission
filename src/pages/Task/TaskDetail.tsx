@@ -4,7 +4,6 @@ import { doc, getDoc, updateDoc } from "firebase/firestore";
 import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import Swal from "sweetalert2";
-import ChatRoomWindow from "../../components/ChatRoomWindow";
 import { db } from "../../config/firebase";
 
 interface Task {
@@ -28,7 +27,7 @@ const TaskDetail = () => {
   const { taskId } = useParams();
   const [taskDetails, setTaskDetails] = useState<Task | null>(null);
   const [loading, setLoading] = useState(true);
-  // 存發案者姓名，以存取不同集合中的 user
+  // 存發案者名稱，以存取不同集合中的 user
   const [posterName, setPosterName] = useState("");
 
   // 儲存已選擇的圖片，用作點及圖片可放大的前置準備
@@ -38,7 +37,7 @@ const TaskDetail = () => {
 
   const [currentUserID, setCurrentUserID] = useState<string | null>(null);
 
-  const [isChatOpen, setIsChatOpen] = useState(false);
+  // const [isChatOpen, setIsChatOpen] = useState(false);
 
   const navigate = useNavigate();
 
@@ -106,13 +105,13 @@ const TaskDetail = () => {
 
   const handleBackToTask = () => navigate("/acceptTask");
 
-  const handleAskDetails = () => {
-    setIsChatOpen(true);
-  };
+  // const handleAskDetails = () => {
+  //   setIsChatOpen(true);
+  // };
 
-  const handleCloseChat = () => {
-    setIsChatOpen(false);
-  };
+  // const handleCloseChat = () => {
+  //   setIsChatOpen(false);
+  // };
 
   const handleConfirmAcceptTask = async () => {
     if (!taskId || !currentUserID) {
@@ -255,7 +254,7 @@ const TaskDetail = () => {
             <Icon icon="openmoji:european-name-badge" width="50" height="50" />
           </div>
           <div className="flex-grow tracking-wider">
-            <span className="font-semibold tracking-wider">發案者姓名：</span>
+            <span className="font-semibold tracking-wider">發案者名稱：</span>
             {posterName}
           </div>
         </div>
@@ -292,7 +291,7 @@ const TaskDetail = () => {
         </div>
       </div>
       <div className="flex justify-center gap-4">
-        <button
+        {/* <button
           type="button"
           onClick={handleAskDetails}
           className="group relative overflow-hidden rounded-lg bg-gray-300 px-6 py-3 [transform:translateZ(0)] before:absolute before:bottom-0 before:left-0 before:h-full before:w-full before:origin-[100%_100%] before:scale-x-0 before:bg-sky-600 before:transition before:duration-500 before:ease-in-out hover:before:origin-[0_0] hover:before:scale-x-100"
@@ -303,8 +302,8 @@ const TaskDetail = () => {
           </span>
         </button>
         {isChatOpen && taskId && (
-              <ChatRoomWindow onCloseRoom={handleCloseChat} taskId={taskId} />
-            )}
+          <ChatRoomWindow onCloseRoom={handleCloseChat} taskId={taskId} />
+        )} */}
         <button
           type="button"
           onClick={handleConfirmAcceptTask}

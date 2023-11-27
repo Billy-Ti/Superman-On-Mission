@@ -9,7 +9,8 @@
 body {
   font-family: "Inter var experimental", "Inter var", "Inter", "-apple-system",
     "BlinkMacSystemFont", "Segoe UI", "Roboto", "Oxygen", "Ubuntu", "serif";
-  background-color: #b1cce7;
+  /* background-color: #23272F; */
+  background-color: gray;
   font-weight: 900;
 }
 

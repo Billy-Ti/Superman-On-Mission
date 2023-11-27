@@ -21,12 +21,11 @@ interface Task {
 }
 const AcceptTask = () => {
   const [tasks, setTasks] = useState<Task[]>([]);
-  // const [hoverText, setHoverText] = useState("查看任務詳情 >>");
 
   const [currentPage, setCurrentPage] = useState(1);
 
   // 目前設定每頁只會有兩則任務 useState(2);
-  const [tasksPerPage] = useState(2);
+  const [tasksPerPage] = useState(1);
 
   const navigate = useNavigate();
 

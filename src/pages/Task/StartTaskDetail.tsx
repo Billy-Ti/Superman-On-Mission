@@ -47,7 +47,7 @@ const StartTaskDetail = () => {
   const { taskId } = useParams<{ taskId: string }>(); // 如果 useParams 不帶參數，它的默認型別是 { [key: string]: string }
   const [taskDetails, setTaskDetails] = useState<Task | null>(null);
   const [loading, setLoading] = useState(true);
-  // 存發案者姓名，以存取不同集合中的 user
+  // 存發案者名稱，以存取不同集合中的 user
   const [posterName, setPosterName] = useState<string>("");
 
   // 儲存已選擇的圖片，用作點及圖片可放大的前置準備
@@ -105,7 +105,7 @@ const StartTaskDetail = () => {
           const userSnap = await getDoc(userRef);
           if (userSnap.exists()) {
             console.log("User data:", userSnap.data());
-            setPosterName(userSnap.data().name); // 更新發案者姓名
+            setPosterName(userSnap.data().name); // 更新發案者名稱
           } else {
             console.log("No such user!");
             setPosterName("找不到使用者");
@@ -463,7 +463,7 @@ const StartTaskDetail = () => {
             >
               <span className="relative z-0 flex w-60 items-center justify-center rounded p-4 text-2xl text-black transition duration-500 ease-in-out group-hover:text-gray-200">
                 <Icon icon="mingcute:search-fill" />
-                查看接案者
+                聯繫接案者
               </span>
             </button>
           </div>
@@ -487,7 +487,7 @@ const StartTaskDetail = () => {
               </svg>
             </div>
             <div className="flex-grow tracking-wider">
-              <span className="font-semibold tracking-wider">發案者姓名：</span>
+              <span className="font-semibold tracking-wider">發案者名稱：</span>
               {posterName}
             </div>
           </div>
