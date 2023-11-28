@@ -2,6 +2,19 @@
 @tailwind components;
 @tailwind utilities;
 
+* {
+  box-sizing: border-box;
+}
+
+body {
+  font-family: "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans",
+    sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol",
+    "Noto Color Emoji";
+  /* background-color: #23272f; */
+  background-color: gray;
+  font-weight: 900;
+}
+
 .container.right-panel-active .sign-in-container {
   transform: translateX(100%);
 }
@@ -23,19 +36,6 @@
 }
 .container.right-panel-active .overlay-right {
   transform: translateX(20%);
-}
-
-* {
-  box-sizing: border-box;
-}
-
-body {
-  background-color: var(--bg);
-  color: var(--fg);
-  font: 1em/1.5 sans-serif;
-  transition:
-    background-color var(--trans-dur),
-    color var(--trans-dur);
 }
 
 .rating {

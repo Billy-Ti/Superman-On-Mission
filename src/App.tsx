@@ -1,5 +1,6 @@
 import { BrowserRouter, Navigate, Route, Routes } from "react-router-dom";
 import ProtectedRoute from "./components/ProtectedRoute.tsx";
+import ChatRoomButton from "./components/chatRoom/ChatRoomButton.tsx";
 import { AuthProvider } from "./hooks/AuthProvider.tsx";
 import Home from "./pages/Home/index.tsx";
 import ReviewLists from "./pages/Review/index.tsx";
@@ -44,6 +45,7 @@ const App = () => {
           />
           <Route path="/reviewLists" element={<ReviewLists />} />
         </Routes>
+        <ChatRoomButton />
       </BrowserRouter>
     </AuthProvider>
   );

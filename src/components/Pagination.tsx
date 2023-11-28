@@ -36,14 +36,14 @@ const Pagination: React.FC<PaginationProps> = ({
     if (currentPage > 1) {
       paginate(currentPage - 1);
     } else {
-      showAlert("🚨系統提醒", "Hi 已經是第一頁囉", "info");
+      showAlert("🔊Hi 已經是第一頁囉", "", "info");
     }
   };
   const handleNextPageButton = () => {
     if (currentPage < totalPages) {
       paginate(currentPage + 1);
     } else {
-      showAlert("🚨系統提醒", "Hi 已經是最後一頁囉", "info");
+      showAlert("🙈已經是最後一頁囉", "", "info");
     }
   };
 

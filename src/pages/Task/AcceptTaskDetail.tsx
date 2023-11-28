@@ -13,6 +13,7 @@ import { getDownloadURL, ref, uploadBytes } from "firebase/storage";
 import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import Swal from "sweetalert2";
+import ChatRoomWindow from "../../components/chatRoom/ChatRoomWindow";
 import { db, storage } from "../../config/firebase";
 import { showAlert } from "../../utils/showAlert";
 
@@ -36,6 +37,7 @@ interface Task {
   address: string;
   status: string;
   ratedComment: string;
+  taskId: string;
   categorys: string[];
   photos?: string[]; // photos 是可選的
 }
@@ -44,7 +46,7 @@ const AcceptTaskDetail = () => {
   const { taskId } = useParams<{ taskId: string }>();
   const [taskDetails, setTaskDetails] = useState<Task | null>(null);
   const [loading, setLoading] = useState<boolean>(true);
-  // 存發案者姓名，以存取不同集合中的 user
+  // 存發案者名稱，以存取不同集合中的 user
   const [posterName, setPosterName] = useState<string>("");
   const [showOverlay, setShowOverlay] = useState<boolean>(true);
 
@@ -64,6 +66,8 @@ const AcceptTaskDetail = () => {
 
   const [taskStatus, setTaskStatus] = useState("");
 
+  const [isChatOpen, setIsChatOpen] = useState(false);
+
   const navigate = useNavigate();
 
   const handleBackToTaskManagement = () => {
@@ -76,6 +80,14 @@ const AcceptTaskDetail = () => {
 
   const handleOverlay = () => {
     setShowOverlay(false);
+  };
+
+  const handleAskDetails = () => {
+    setIsChatOpen(true);
+  };
+
+  const handleCloseChat = () => {
+    setIsChatOpen(false);
   };
 
   // 處理檔案選擇
@@ -510,6 +522,7 @@ const AcceptTaskDetail = () => {
               <Icon icon="icon-park:down-two" width="100" height="100" />
             </div>
             <button
+              onClick={handleAskDetails}
               type="button"
               className="group relative overflow-hidden rounded-lg bg-gray-300 px-6 py-3 [transform:translateZ(0)] before:absolute before:bottom-0 before:left-0 before:h-full before:w-full before:origin-[100%_100%] before:scale-x-0 before:bg-sky-600 before:transition before:duration-500 before:ease-in-out hover:before:origin-[0_0] hover:before:scale-x-100"
             >
@@ -518,6 +531,9 @@ const AcceptTaskDetail = () => {
                 聯繫發案者
               </span>
             </button>
+            {isChatOpen && taskId && (
+              <ChatRoomWindow onCloseRoom={handleCloseChat} />
+            )}
           </div>
         </div>
 
@@ -539,7 +555,7 @@ const AcceptTaskDetail = () => {
               </svg>
             </div>
             <div className="flex-grow tracking-wider">
-              <span className="font-semibold tracking-wider">發案者姓名：</span>
+              <span className="font-semibold tracking-wider">發案者名稱：</span>
               {posterName}
             </div>
           </div>

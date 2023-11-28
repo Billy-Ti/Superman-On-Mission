@@ -16,7 +16,7 @@ const Home = () => {
 
   const handleToReviews = () => {
     navigate("/reviewLists");
-  }
+  };
 
   const handleLogout = async () => {
     Swal.fire({
@@ -72,9 +72,13 @@ const Home = () => {
 
   return (
     <>
-      <div className="container mx-auto px-4 md:max-w-7xl">
-        <div className="mt-10 flex items-center justify-between">
-          <p className="text-center text-xl">Home</p>
+      <div className="container px-4 pt-4 mx-auto md:max-w-7xl">
+        <div className="flex items-center justify-between">
+          {/* 漸層色 */}
+          <div className="flex items-center bg-gradient-to-r from-blue-700 via-blue-500 to-purple-400 bg-clip-text text-2xl font-black text-transparent">
+            <img width="70" src="/superman_2.png" alt="" />
+            <p>Home</p>
+          </div>
           <div className="flex items-center">
             {currentUser ? (
               <>
@@ -102,7 +106,7 @@ const Home = () => {
                       任務管理
                     </button>
                     <button
-                    onClick={handleToReviews}
+                      onClick={handleToReviews}
                       type="button"
                       className="w-36 rounded bg-gray-200 px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-300"
                     >
