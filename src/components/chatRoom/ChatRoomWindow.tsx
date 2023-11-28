@@ -572,7 +572,7 @@ const ChatRoomWindow = ({ onCloseRoom }: ChatRoomWindowProps) => {
                 <div className="flex flex-grow flex-col items-center justify-between p-4">
                   <div className="mb-10 bg-gradient-to-r from-blue-700 via-blue-500 to-purple-400 bg-clip-text text-center text-2xl font-black text-transparent">
                     {selectedUserId
-                      ? `You are contacting ${
+                      ? `You are contacting to ${
                           userList.find((user) => user.id === selectedUserId)
                             ?.name || "未知用戶"
                         } ...`
