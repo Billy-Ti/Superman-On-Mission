@@ -135,44 +135,85 @@ const ChatRoomWindow = ({ onCloseRoom }: ChatRoomWindowProps) => {
     const loadConversations = async () => {
       const firestore = getFirestore();
       const messagesRef = collection(firestore, "messages");
-      // 查詢包含當前用戶 ID 的所有對話
-      const q = query(
-        messagesRef,
-        where("chatSessionId", "array-contains", currentUser.id),
-      );
+      // 查詢當前用戶發起的對話
+      const q = query(messagesRef, where("sentBy", "==", currentUser.id));
 
       const querySnapshot = await getDocs(q);
-      const userIds = new Set();
+      const userIds = new Set<string>();
 
       querySnapshot.forEach((doc) => {
         const message = doc.data() as Message;
-        const participantIds = message.chatSessionId.split("_");
-        participantIds.forEach((id) => {
-          if (id !== currentUser.id) userIds.add(id);
-        });
+        // 只添加對話接收方的ID
+        const otherUserId = message.chatSessionId
+          .replace(`${currentUser.id}_`, "")
+          .replace(`_${currentUser.id}`, "");
+        userIds.add(otherUserId);
       });
 
       const users = await Promise.all(
         Array.from(userIds).map(async (userId) => {
-          let userRef;
-          if (typeof userId === "string") {
-            userRef = doc(firestore, "users", userId);
-            const userSnap = await getDoc(userRef);
-            return userSnap.exists()
-              ? { id: userId, name: userSnap.data().name }
-              : null;
-          }
-          return null; // 如果 userId 不是字符串，返回 null
+          const userRef = doc(firestore, "users", userId);
+          const userSnap = await getDoc(userRef);
+          return userSnap.exists()
+            ? { id: userId, name: userSnap.data().name }
+            : null;
         }),
       );
+
       const validUsers = users.filter(
         (user): user is UserList => user !== null,
       );
+
       setUserList(validUsers);
     };
 
     loadConversations();
   }, [currentUser]);
+
+  // useEffect(() => {
+  //   if (!currentUser) return;
+
+  //   const loadConversations = async () => {
+  //     const firestore = getFirestore();
+  //     const messagesRef = collection(firestore, "messages");
+  //     // 查詢包含當前用戶 ID 的所有對話
+  //     const q = query(
+  //       messagesRef,
+  //       where("chatSessionId", "array-contains", currentUser.id),
+  //     );
+
+  //     const querySnapshot = await getDocs(q);
+  //     const userIds = new Set();
+
+  //     querySnapshot.forEach((doc) => {
+  //       const message = doc.data() as Message;
+  //       const participantIds = message.chatSessionId.split("_");
+  //       participantIds.forEach((id) => {
+  //         if (id !== currentUser.id) userIds.add(id);
+  //       });
+  //     });
+
+  //     const users = await Promise.all(
+  //       Array.from(userIds).map(async (userId) => {
+  //         let userRef;
+  //         if (typeof userId === "string") {
+  //           userRef = doc(firestore, "users", userId);
+  //           const userSnap = await getDoc(userRef);
+  //           return userSnap.exists()
+  //             ? { id: userId, name: userSnap.data().name }
+  //             : null;
+  //         }
+  //         return null; // 如果 userId 不是字符串，返回 null
+  //       }),
+  //     );
+  //     const validUsers = users.filter(
+  //       (user): user is UserList => user !== null,
+  //     );
+  //     setUserList(validUsers);
+  //   };
+
+  //   loadConversations();
+  // }, [currentUser]);
 
   useEffect(() => {
     if (!currentUser) return;
@@ -193,38 +234,28 @@ const ChatRoomWindow = ({ onCloseRoom }: ChatRoomWindowProps) => {
   }, [currentUser]);
 
   const handleSendMessage = async () => {
-    console.log("currentUser", currentUser);
-    console.log("selectedUserId", selectedUserId);
-    console.log("message", message || "無訊息");
-
     if (!currentUser || !selectedUserId || !message.trim()) {
-      showAlert("🚨輸入不可空白", "", "error");
+      showAlert("🚨 系統提醒", "未選擇聊天對象或未登入", "error");
       return;
     }
+
     try {
       const firestore = getFirestore();
+
       // 發送訊息到 'messages' 集合
       await addDoc(collection(firestore, "messages"), {
         content: message,
         sentAt: serverTimestamp(),
         sentBy: currentUser.id,
-        chatSessionId: `${currentUser.id}_${selectedUserId}`, // 與選中用戶的對話
+        chatSessionId: `${currentUser.id}_${selectedUserId}`,
       });
 
-      // 更新當前用戶的 'users' 集合
+      // 更新用戶間的對話記錄
       await updateChattedWith(firestore, currentUser.id, selectedUserId);
-      // 更新選中用戶的 'users' 集合
       await updateChattedWith(firestore, selectedUserId, currentUser.id);
 
-      // 重新加載曾經聊過天的用戶列表
-      const userRef = doc(firestore, "users", currentUser.id);
-      getDoc(userRef).then((docSnap) => {
-        if (docSnap.exists()) {
-          const userData = docSnap.data();
-          const chattedWithIds = userData.chattedWith || [];
-          loadUsers(firestore, chattedWithIds);
-        }
-      });
+      // 重新加載與選中用戶的對話
+      loadMessagesForSelectedUser(firestore, selectedUserId);
 
       setMessage("");
     } catch (error) {
@@ -233,7 +264,30 @@ const ChatRoomWindow = ({ onCloseRoom }: ChatRoomWindowProps) => {
     }
   };
 
-  // 更新聊過天的用戶列表的函數
+  const loadMessagesForSelectedUser = async (
+    firestore: Firestore,
+    userId: string,
+  ) => {
+    if (!currentUser || !userId) return;
+
+    // 先清空當前訊息列表，避免閃屏看到上一位使用者的對話
+    setMessages([]);
+
+    const messagesRef = collection(firestore, "messages");
+    const q = query(
+      messagesRef,
+      where("chatSessionId", "in", [
+        `${currentUser.id}_${userId}`,
+        `${userId}_${currentUser.id}`,
+      ]),
+    );
+
+    const querySnapshot = await getDocs(q);
+    const userMessages = querySnapshot.docs.map((doc) => doc.data() as Message);
+    setMessages(userMessages.sort((a, b) => getTimestamp(a) - getTimestamp(b)));
+  };
+
+  // 更新聊過天的用戶列表的 func
   const updateChattedWith = async (
     firestore: Firestore,
     userId: string,
@@ -252,15 +306,38 @@ const ChatRoomWindow = ({ onCloseRoom }: ChatRoomWindowProps) => {
       );
     }
   };
+  // const loadUsers = async (firestore: Firestore, userIds: string[]) => {
+  //   const newUsers: User[] = [];
+  //   for (const userId of userIds) {
+  //     const userRef = doc(firestore, "users", userId);
+  //     const userSnap = await getDoc(userRef);
+  //     if (userSnap.exists()) {
+  //       const userData = userSnap.data() as User;
+  //       if (userData.id !== currentUser?.id) {
+  //         newUsers.push({
+  //           id: userId,
+  //           name: userData.name,
+  //           email: userData.email,
+  //         });
+  //       }
+  //     }
+  //   }
+  //   // 只在有新用戶時更新 userList
+  //   if (JSON.stringify(newUsers) !== JSON.stringify(userList)) {
+  //     setUserList(newUsers);
+  //   }
+  // };
+
   const loadUsers = async (firestore: Firestore, userIds: string[]) => {
-    const newUsers: User[] = [];
+    const users: User[] = [];
     for (const userId of userIds) {
       const userRef = doc(firestore, "users", userId);
       const userSnap = await getDoc(userRef);
       if (userSnap.exists()) {
         const userData = userSnap.data() as User;
         if (userData.id !== currentUser?.id) {
-          newUsers.push({
+          // 確保不加載當前用戶自己
+          users.push({
             id: userId,
             name: userData.name,
             email: userData.email,
@@ -268,10 +345,7 @@ const ChatRoomWindow = ({ onCloseRoom }: ChatRoomWindowProps) => {
         }
       }
     }
-    // 只在有新用戶時更新 userList
-    if (JSON.stringify(newUsers) !== JSON.stringify(userList)) {
-      setUserList(newUsers);
-    }
+    setUserList(users);
   };
 
   const executeSearch = async () => {
@@ -515,7 +589,7 @@ const ChatRoomWindow = ({ onCloseRoom }: ChatRoomWindowProps) => {
                       return (
                         <>
                           <time
-                            className={`text-right text-xs text-gray-500 mb-8 ${
+                            className={`mb-8 text-right text-xs text-gray-500 ${
                               isCurrentUserMessage ? "mr-2" : ""
                             }`}
                           >
