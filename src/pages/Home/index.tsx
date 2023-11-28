@@ -73,10 +73,11 @@ const Home = () => {
   return (
     <>
       <div className="container mx-auto px-4 md:max-w-7xl">
-        <div className="mt-10 flex items-center justify-between">
+        <div className="flex items-center justify-between">
           {/* 漸層色 */}
-          <div className="bg-gradient-to-r from-blue-500 via-blue-400 to-purple-300 bg-clip-text text-transparent">
-            Home
+          <div className="flex items-center bg-gradient-to-r from-blue-700 via-blue-500 to-purple-400 bg-clip-text text-2xl font-black text-transparent">
+            <img width="70" src="/superman_2.png" alt="" />
+            <p>Home</p>
           </div>
           <div className="flex items-center">
             {currentUser ? (
