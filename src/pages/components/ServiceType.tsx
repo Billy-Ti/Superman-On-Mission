@@ -66,13 +66,6 @@ const ServiceType = forwardRef((_props, ref) => {
   const handleUrgentClick = (value: boolean) => {
     setUrgent(value);
   };
-
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const resetServiceType = () => {
-    setSelectedIndexes([]);
-    setUrgent(false);
-  };
-
   return (
     <>
       <div className="flex">
@@ -114,10 +107,6 @@ const ServiceType = forwardRef((_props, ref) => {
             </div>
             <div className="flex items-center">
               <p className="px-4">完成日期</p>
-              {/* 底下 span 是 calendar_month icon */}
-              {/* <span className="material-symbols-outlined">
-                  calendar_month
-                </span> */}
               <input
                 className="border"
                 type="date"

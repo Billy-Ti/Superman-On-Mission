@@ -1,7 +1,7 @@
 import { Icon } from "@iconify/react";
 import { getAuth, onAuthStateChanged } from "firebase/auth";
 import { useEffect } from "react";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import Swal from "sweetalert2";
 import { useAuth } from "../../hooks/AuthProvider";
 import TaskButton from "../Task/TaskButton";
@@ -72,13 +72,16 @@ const Home = () => {
 
   return (
     <>
-      <div className="container px-4 pt-4 mx-auto md:max-w-7xl">
+      <div className="container mx-auto px-4 pt-4 md:max-w-7xl">
         <div className="flex items-center justify-between">
           {/* 漸層色 */}
-          <div className="flex items-center bg-gradient-to-r from-blue-700 via-blue-500 to-purple-400 bg-clip-text text-2xl font-black text-transparent">
+          <Link
+            to="/"
+            className="flex items-center bg-gradient-to-r from-blue-700 via-blue-500 to-purple-400 bg-clip-text text-2xl font-black text-transparent"
+          >
             <img width="70" src="/superman_2.png" alt="" />
-            <p>Home</p>
-          </div>
+            <p>Super task co.</p>
+          </Link>
           <div className="flex items-center">
             {currentUser ? (
               <>

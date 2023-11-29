@@ -617,13 +617,6 @@ const ChatRoomWindow = ({ onCloseRoom }: ChatRoomWindowProps) => {
                                   )?.name || "未知用户"}
                             </p>
                             {message.content}
-                            {/* <time
-                              className={`text-right text-xs text-gray-500 absolute bottom-[-5px] right-0 ${
-                                isCurrentUserMessage ? "mr-2" : ""
-                              }`}
-                            >
-                              {messageTime}
-                            </time> */}
                           </div>
                         </>
                       );

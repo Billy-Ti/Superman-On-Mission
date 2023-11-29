@@ -91,12 +91,12 @@ const Task = () => {
         const userDoc = await getDoc(userDocRef);
 
         if (userDoc.exists()) {
-          // 從Firestore讀取用戶資訊
+          // 從 Firestore 讀取用戶資訊
           const userData = userDoc.data();
           setUserName(userData.name || "未知用戶");
-          // 讀取userName字段
+          // 讀取 userName字段
         } else {
-          // 若用戶資料不存在於Firestore，則建立初始資料
+          // 若用戶資料不存在於 Firestore，則建立初始資料
           await setDoc(userDocRef, {
             userId: user.uid,
             userName: user.displayName || "未設置名稱",
@@ -172,14 +172,14 @@ const Task = () => {
   ) => {
     event.preventDefault();
 
-    // 獲取所有選擇的文件
+    // 取得所有選擇的文件
     const fileInputs = document.querySelectorAll('input[type="file"]');
     const files = Array.from(fileInputs).flatMap((input) => {
       const inputElement = input as HTMLInputElement;
       if (inputElement.files && inputElement.files.length > 0) {
-        return [inputElement.files[0]]; // 確保文件存在，並返回一個含有該文件的陣列
+        return [inputElement.files[0]]; // 確保文件存在，並回傳一個含有該文件的陣列
       }
-      return []; // 如果沒有文件，返回一個空陣列
+      return []; // 如果沒有文件，回傳一個空陣列
     });
 
     if (!currentUserId) {
@@ -192,76 +192,10 @@ const Task = () => {
       showAlert("錯誤", "無效的任務報酬");
       return;
     }
-    // const remainingSuperCoins = originalSuperCoins - taskRewardValue;
 
-    // 上傳文件並獲取 URL
-    const uploadPromises = files.map((file) => uploadFile(file));
-    const photoUrls = await Promise.all(uploadPromises);
-
-    const userDocRef = doc(db, "users", currentUserId);
-    const userDoc = await getDoc(userDocRef);
-    if (!userDoc.exists() || userDoc.data().superCoins === undefined) {
-      showAlert("錯誤", "無法獲取用戶的 Super Coins");
-      return;
-    }
-
-    const currentSuperCoins = userDoc.data().superCoins;
-    if (taskRewardValue > currentSuperCoins) {
-      showAlert("錯誤", "金幣不足，無法提交任務");
-      return;
-    }
-
-    try {
-      const taskId = uuidv4();
-      const createdAt = new Date().toLocaleDateString();
-
-      // 從 ServiceType 讀取選中的服務類別
-      const selectedServiceTypes =
-        serviceTypeRef.current?.getSelectedServiceTypes();
-      const urgentStatus = serviceTypeRef.current?.getUrgentStatus();
-      const dueDate = serviceTypeRef.current?.getDate();
-
-      // 建立新任務
-      const taskData = {
-        title: taskTitle,
-        city: selectedCounty,
-        district: selectedRegion,
-        address: detailedAddress,
-        description: taskDescription,
-        notes: additionalNotes,
-        categorys: selectedServiceTypes,
-        isUrgent: urgentStatus,
-        dueDate: dueDate,
-        status: "任務媒合中",
-        photos: photoUrls,
-        createdBy: currentUserId,
-        taskId,
-        createdAt,
-        cost: taskRewardValue,
-        acceptedBy: "",
-      };
-      await addDoc(collection(db, "tasks"), taskData);
-
-      // 更新用戶的 Super Coins
-      await updateDoc(userDocRef, {
-        superCoins: currentSuperCoins - taskRewardValue,
-      });
-
-      setSuperCoins(currentSuperCoins - taskRewardValue);
-
-      Swal.fire("成功", "任務訊息已更新", "success");
-      resetFormFields();
-      if (serviceTypeRef.current) {
-        serviceTypeRef.current.resetServiceType();
-      }
-    } catch (error) {
-      console.error("捕獲到錯誤：", error);
-      await Swal.fire("錯誤", "任務提交失敗或無可用 Super Coin");
-    }
-
-    // 如果文件存在，顯示提交成功訊息
     const result = await Swal.fire({
-      title: "是否提交任務?",
+      title: "🚨系統提醒",
+      html: `<strong style='color: #8D91AA;'>Hi ${userName}${" "}，是否提交任務?</strong>`,
       text: "請再次確認所有資訊皆已填寫",
       icon: "question",
       confirmButtonText: "確定",
@@ -270,29 +204,65 @@ const Task = () => {
       reverseButtons: true,
       allowOutsideClick: false,
     });
+
     if (result.isConfirmed) {
-      await Swal.fire({
-        title: "🍻 提交任務成功",
-        icon: "success",
-        timer: 1500,
-        timerProgressBar: true,
-        showConfirmButton: false,
-        allowOutsideClick: false,
-      });
-      navigate("/");
-      resetFormFields();
+      try {
+        // 上傳文件並取得 URL
+        const uploadPromises = files.map((file) => uploadFile(file));
+        const photoUrls = await Promise.all(uploadPromises);
+
+        // 建立新的任務資料
+        const taskData = {
+          title: taskTitle,
+          city: selectedCounty,
+          district: selectedRegion,
+          address: detailedAddress,
+          description: taskDescription,
+          notes: additionalNotes,
+          categorys: serviceTypeRef.current?.getSelectedServiceTypes(),
+          isUrgent: serviceTypeRef.current?.getUrgentStatus(),
+          dueDate: serviceTypeRef.current?.getDate(),
+          status: "任務媒合中",
+          photos: photoUrls,
+          createdBy: currentUserId,
+          taskId: uuidv4(),
+          createdAt: new Date().toLocaleDateString(),
+          cost: taskRewardValue,
+          acceptedBy: "",
+        };
+
+        // 將任務存到資料庫
+        await addDoc(collection(db, "tasks"), taskData);
+
+        // 更新用戶的 Super Coins
+        await updateDoc(doc(db, "users", currentUserId), {
+          superCoins: superCoins - taskRewardValue,
+        });
+
+        setSuperCoins(superCoins - taskRewardValue);
+        Swal.fire("提交成功", "任務訊息已更新，謝謝您", "success");
+        resetFormFields();
+        if (serviceTypeRef.current) {
+          serviceTypeRef.current.resetServiceType();
+        }
+        navigate("/");
+      } catch (error) {
+        console.error("錯誤：", error);
+        await Swal.fire("錯誤", "任務提交失敗或無可用 Super Coin");
+      }
     }
   };
+
   const resetFormFields = () => {
     setSelectedCounty("");
     setSelectedRegion("");
     setTaskTitle("");
-    // setTaskDetails("");
     setTaskDescription("");
     setDetailedAddress("");
     setAdditionalNotes("");
     setTaskReward("");
   };
+
   return (
     <>
       <Home />
@@ -322,7 +292,7 @@ const Task = () => {
               服務類別
             </p>
             <select
-              className="mr-3 flex items-center border bg-gray-200 p-2"
+              className="mr-3 flex items-center rounded border bg-gray-200 p-2"
               name="county"
               id="county"
               value={selectedCounty}
@@ -352,7 +322,7 @@ const Task = () => {
             {selectedCounty && (
               <div className="mr-3 flex items-center">
                 <select
-                  className="flex items-center border bg-gray-200 p-2"
+                  className="flex items-center rounded border bg-gray-200 p-2"
                   name="region"
                   id="region"
                   onChange={handleRegionChange}

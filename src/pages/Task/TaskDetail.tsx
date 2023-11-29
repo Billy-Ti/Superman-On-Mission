@@ -53,7 +53,6 @@ const TaskDetail = () => {
       }
     });
 
-    // 清理函數
     return () => unsubscribe();
   }, []);
 
@@ -104,14 +103,6 @@ const TaskDetail = () => {
   }
 
   const handleBackToTask = () => navigate("/acceptTask");
-
-  // const handleAskDetails = () => {
-  //   setIsChatOpen(true);
-  // };
-
-  // const handleCloseChat = () => {
-  //   setIsChatOpen(false);
-  // };
 
   const handleConfirmAcceptTask = async () => {
     if (!taskId || !currentUserID) {
