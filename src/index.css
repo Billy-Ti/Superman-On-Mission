@@ -3,9 +3,9 @@
 @tailwind utilities;
 
 body {
-  font-family: "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans",
-    sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol",
-    "Noto Color Emoji";
+  font-family: "Segoe UI", "Roboto", "Helvetica Neue", Arial, "Noto Sans",
+    "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji",
+    sans-serif;
 }
 
 /* Custom task cards style */
@@ -460,4 +460,14 @@ body {
   to {
     transform: rotate(144deg);
   }
+}
+
+/* Custom Directly */
+.toggle-checkbox:checked {
+  @apply: right-0 border-green-400;
+  right: 0;
+  border-color: #5074e8;
+}
+.toggle-checkbox:checked + .toggle-label {
+  background-image: linear-gradient(to right, #3b82f6, #f6037d, #f99659);
 }

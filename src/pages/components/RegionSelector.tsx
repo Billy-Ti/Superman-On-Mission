@@ -16,7 +16,7 @@ const RegionSelector: React.FC<RegionSelectorProps> = ({
   return (
     <>
       <select
-        className="rounded mr-3 flex items-center border bg-gray-200 p-2"
+        className="mr-3 flex items-center rounded-md border bg-gray-200 p-2"
         name="county"
         id="county"
         value={selectedCounty}
@@ -47,7 +47,7 @@ const RegionSelector: React.FC<RegionSelectorProps> = ({
         <div className="mr-3 flex items-center">
           <select
             value={selectedRegion}
-            className="rounded flex items-center border bg-gray-200 p-2"
+            className="flex items-center rounded-md border bg-gray-200 p-2"
             name="region"
             id="region"
             onChange={(e) => onRegionChange(e.target.value)}

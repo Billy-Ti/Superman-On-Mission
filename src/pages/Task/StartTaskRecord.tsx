@@ -101,11 +101,11 @@ const StartTaskRecord = () => {
                     <p>任務截止日期 : {task.dueDate}</p>
                   </div>
                   <div className="mt-1">
-                  <span className="text-lg font-bold">任務狀態 :</span>
-                  <span className="ml-2 text-lg font-bold">
-                    {task.status || "未知"}
-                  </span>
-                </div>
+                    <span className="text-lg font-bold">任務狀態 :</span>
+                    <span className="ml-2 text-lg font-bold">
+                      {task.status || "未知"}
+                    </span>
+                  </div>
                 </div>
               </div>
               <div className="flex flex-col items-center justify-center">
@@ -133,7 +133,7 @@ const StartTaskRecord = () => {
                   )}
                 </div>
                 <div
-                  className="group relative cursor-pointer overflow-hidden rounded-lg bg-gray-200 px-6 py-3 [transform:translateZ(0)] before:absolute before:bottom-0 before:left-0 before:h-full before:w-full before:origin-[100%_100%] before:scale-x-0 before:bg-sky-600 before:transition before:duration-500 before:ease-in-out hover:before:origin-[0_0] hover:before:scale-x-100"
+                  className="group relative cursor-pointer overflow-hidden rounded-md bg-gray-200 px-6 py-3 [transform:translateZ(0)] before:absolute before:bottom-0 before:left-0 before:h-full before:w-full before:origin-[100%_100%] before:scale-x-0 before:bg-sky-600 before:transition before:duration-500 before:ease-in-out hover:before:origin-[0_0] hover:before:scale-x-100"
                   onMouseMove={() => setHoverText("發案紀錄查詢 >>")}
                   onMouseOut={() => setHoverText("查看任務詳情 >>")}
                   onClick={() => handleStartTask(task.id)}

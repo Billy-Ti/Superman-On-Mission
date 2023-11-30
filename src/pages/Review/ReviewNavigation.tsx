@@ -1,8 +1,12 @@
 import { Link } from "react-router-dom";
+import { Icon } from '@iconify/react';
 
 const ReviewNavigation = () => {
   return (
-    <div className="flex justify-between bg-[#b1cce7] px-2 py-2 sm:rounded-xl lg:flex-col lg:px-4 lg:py-10">
+    <div className="flex justify-between bg-[#b1cce7] px-2 py-2 sm:rounded-xl lg:flex-col lg:px-4">
+      <div className="flex items-center justify-between">
+        <h3 className="text-3xl font-extrabold text-white">我的評價</h3>
+      </div>
       <nav className="flex flex-row items-center space-x-2 lg:flex-col lg:space-x-0 lg:space-y-2">
         <Link
           to="/"
@@ -18,19 +22,11 @@ const ReviewNavigation = () => {
             <path d="M10.707 2.293a1 1 0 00-1.414 0l-7 7a1 1 0 001.414 1.414L4 10.414V17a1 1 0 001 1h2a1 1 0 001-1v-2a1 1 0 011-1h2a1 1 0 011 1v2a1 1 0 001 1h2a1 1 0 001-1v-6.586l.293.293a1 1 0 001.414-1.414l-7-7z" />
           </svg>
         </Link>
-        {/* <!-- Active: bg-gray-800 text-white, Not active: text-white/50 --> */}
         <a
           className="inline-flex justify-center rounded-md bg-gray-800 p-4 text-white"
           href="#"
         >
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            className="h-5 w-5 sm:h-6 sm:w-6"
-            viewBox="0 0 20 20"
-            fill="currentColor"
-          >
-            <path d="M9 6a3 3 0 11-6 0 3 3 0 016 0zM17 6a3 3 0 11-6 0 3 3 0 016 0zM12.93 17c.046-.327.07-.66.07-1a6.97 6.97 0 00-1.5-4.33A5 5 0 0119 16v1h-6.07zM6 11a5 5 0 015 5v1H1v-1a5 5 0 015-5z" />
-          </svg>
+          <Icon icon="solar:star-bold" width="24" height="24" />
         </a>
         <a
           className="smooth-hover inline-flex justify-center rounded-md p-4 text-white/50 hover:bg-gray-800 hover:text-white"

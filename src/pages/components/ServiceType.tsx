@@ -73,7 +73,7 @@ const ServiceType = forwardRef((_props, ref) => {
           {serviceType.map((item, index) => (
             <div
               key={index}
-              className={`flex cursor-pointer items-center justify-center rounded border p-2 ${
+              className={`flex cursor-pointer items-center justify-center rounded-md border p-2 ${
                 selectedIndexes.includes(index) ? "bg-gray-200" : ""
               }`}
               onClick={() => handleServiceTypeClick(index)}
@@ -82,14 +82,14 @@ const ServiceType = forwardRef((_props, ref) => {
             </div>
           ))}
         </div>
-        <div className="flex space-x-2 rounded p-2">
+        <div className="flex space-x-2 rounded-md p-2">
           <div className="flex flex-col">
             <div className="mb-4 flex">
-              <p className="flex-1 rounded bg-white px-4 py-2 text-center text-2xl">
+              <p className="flex-1 rounded-md bg-white px-4 py-2 text-center text-2xl">
                 是否十萬火急
               </p>
               <div
-                className={`flex cursor-pointer items-center rounded px-4 py-2 shadow ${
+                className={`flex cursor-pointer items-center rounded-md px-4 py-2 shadow ${
                   urgent ? "bg-gray-200" : "bg-white"
                 }`}
                 onClick={() => handleUrgentClick(true)}
@@ -97,7 +97,7 @@ const ServiceType = forwardRef((_props, ref) => {
                 是
               </div>
               <div
-                className={`flex cursor-pointer items-center rounded px-4 py-2 shadow ${
+                className={`flex cursor-pointer items-center rounded-md px-4 py-2 shadow ${
                   urgent === false ? "bg-gray-200" : "bg-white"
                 }`}
                 onClick={() => handleUrgentClick(false)}

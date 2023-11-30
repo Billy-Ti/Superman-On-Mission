@@ -1,6 +1,6 @@
 import { Icon } from "@iconify/react";
 import { getAuth, onAuthStateChanged } from "firebase/auth";
-import "firebase/firestore"; // 確保引入 firestore 功能
+import "firebase/firestore";
 import {
   collection,
   doc,
@@ -13,7 +13,6 @@ import {
 import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import Swal from "sweetalert2";
-// import RatingModal from "../../components/RatingModal";
 import StarRating from "../../components/StarRating";
 import { db } from "../../config/firebase";
 
@@ -39,12 +38,11 @@ interface Task {
   acceptedBy: string;
   categorys: string[];
   photos?: string[];
-  hasBeenRated?: boolean; // 添加 hasBeenRated 屬性
-  // assignedUserId?: string; // 添加 assignedUserId 屬性
+  hasBeenRated?: boolean;
 }
 
 const StartTaskDetail = () => {
-  const { taskId } = useParams<{ taskId: string }>(); // 如果 useParams 不帶參數，它的默認型別是 { [key: string]: string }
+  const { taskId } = useParams<{ taskId: string }>(); // 如果 useParams 不帶參數，它的預設型別是 { [key: string]: string }
   const [taskDetails, setTaskDetails] = useState<Task | null>(null);
   const [loading, setLoading] = useState(true);
   // 存發案者名稱，以存取不同集合中的 user
@@ -198,7 +196,7 @@ const StartTaskDetail = () => {
       }
     });
 
-    return () => unsubscribe(); // 清理訂閱
+    return () => unsubscribe();
   }, []);
 
   useEffect(() => {
@@ -257,6 +255,7 @@ const StartTaskDetail = () => {
         setCurrentUserId(user.uid);
       } else {
         // 使用者未登入
+        console.log("使用者未登入");
       }
     });
   }, []);
@@ -290,20 +289,20 @@ const StartTaskDetail = () => {
       <div className="flex justify-between py-4">
         <button
           type="button"
-          className="w-1/5 rounded bg-gray-300 p-4 text-center"
+          className="w-1/5 rounded-md bg-gray-300 p-4 text-center"
         >
           會員中心
         </button>
         <button
           type="button"
-          className="w-1/5 rounded bg-gray-300 p-4 text-center"
+          className="w-1/5 rounded-md bg-gray-300 p-4 text-center"
         >
           任務管理
         </button>
         <button
           onClick={handleToReviews}
           type="button"
-          className="w-1/5 rounded bg-gray-300 p-4 text-center"
+          className="w-1/5 rounded-md bg-gray-300 p-4 text-center"
         >
           我的評價
         </button>
@@ -459,9 +458,9 @@ const StartTaskDetail = () => {
             </div>
             <button
               type="button"
-              className="group relative overflow-hidden rounded-lg bg-gray-300 px-6 py-3 [transform:translateZ(0)] before:absolute before:bottom-0 before:left-0 before:h-full before:w-full before:origin-[100%_100%] before:scale-x-0 before:bg-sky-600 before:transition before:duration-500 before:ease-in-out hover:before:origin-[0_0] hover:before:scale-x-100"
+              className="group relative overflow-hidden rounded-md bg-gray-300 px-6 py-3 [transform:translateZ(0)] before:absolute before:bottom-0 before:left-0 before:h-full before:w-full before:origin-[100%_100%] before:scale-x-0 before:bg-sky-600 before:transition before:duration-500 before:ease-in-out hover:before:origin-[0_0] hover:before:scale-x-100"
             >
-              <span className="relative z-0 flex w-60 items-center justify-center rounded p-4 text-2xl text-black transition duration-500 ease-in-out group-hover:text-gray-200">
+              <span className="relative z-0 flex w-60 items-center justify-center rounded-md p-4 text-2xl text-black transition duration-500 ease-in-out group-hover:text-gray-200">
                 <Icon icon="mingcute:search-fill" />
                 聯繫接案者
               </span>
@@ -674,7 +673,7 @@ const StartTaskDetail = () => {
             <button
               onClick={handleFeedBack}
               type="button"
-              className="group relative w-52 overflow-hidden rounded-lg bg-gray-200 px-6 py-3 [transform:translateZ(0)] before:absolute before:left-1/2 before:top-1/2 before:h-8 before:w-8 before:-translate-x-1/2 before:-translate-y-1/2 before:scale-[0] before:rounded-full before:bg-sky-600 before:opacity-0 before:transition before:duration-500 before:ease-in-out hover:before:scale-[10] hover:before:opacity-100"
+              className="group relative w-52 overflow-hidden rounded-md bg-gray-200 px-6 py-3 [transform:translateZ(0)] before:absolute before:left-1/2 before:top-1/2 before:h-8 before:w-8 before:-translate-x-1/2 before:-translate-y-1/2 before:scale-[0] before:rounded-full before:bg-sky-600 before:opacity-0 before:transition before:duration-500 before:ease-in-out hover:before:scale-[10] hover:before:opacity-100"
             >
               <span className="relative z-0 text-2xl text-black transition duration-500 ease-in-out group-hover:text-gray-200">
                 送出
@@ -812,7 +811,7 @@ const StartTaskDetail = () => {
               onClick={handleFeedBack}
               type="button"
               disabled={isFeedbackSubmitted} // 禁用按鈕
-              className={`group relative w-52 overflow-hidden rounded-lg bg-gray-200 px-6 py-3 [transform:translateZ(0)] ${
+              className={`group relative w-52 overflow-hidden rounded-md bg-gray-200 px-6 py-3 [transform:translateZ(0)] ${
                 isFeedbackSubmitted ? "opacity-50" : ""
               } before:absolute before:left-1/2 before:top-1/2 before:h-8 before:w-8 before:-translate-x-1/2 before:-translate-y-1/2 before:scale-[0] before:rounded-full before:bg-sky-600 before:opacity-0 before:transition before:duration-500 before:ease-in-out hover:before:scale-[10] hover:before:opacity-100`}
             >

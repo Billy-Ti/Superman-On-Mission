@@ -12,7 +12,7 @@ const Pagination: React.FC<PaginationProps> = ({
   totalTasks,
   paginate,
   currentPage,
-  className = ""
+  className = "",
 }) => {
   const totalPages = Math.ceil(totalTasks / tasksPerPage);
 

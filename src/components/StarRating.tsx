@@ -86,7 +86,7 @@ const StarRating: React.FC<StarRatingProps> = ({
   return (
     <>
       <div className="rating fixed inset-0 z-50 flex flex-col items-center justify-center bg-gray-400 bg-opacity-50">
-        <div className="mx-4 h-[600px] w-[500px] rounded-2xl bg-slate-50 p-10 text-center shadow-lg md:mx-0 md:w-[600px]">
+        <div className="rounded-md-2xl mx-4 h-[600px] w-[500px] bg-slate-50 p-10 text-center shadow-lg md:mx-0 md:w-[600px]">
           <h3 className="mx-auto mb-3 text-3xl font-bold">請評價此次感受</h3>
           <div className="rating__stars mb-3 flex justify-center">
             <input
@@ -252,7 +252,7 @@ const StarRating: React.FC<StarRatingProps> = ({
           </div>
           <div className="flex flex-col items-center">
             <textarea
-              className="mb-10 resize-none rounded-2xl p-4 text-xl focus:outline-none"
+              className="rounded-md-2xl mb-10 resize-none p-4 text-xl focus:outline-none"
               name="ratedComment"
               cols={30}
               rows={10}
@@ -263,7 +263,7 @@ const StarRating: React.FC<StarRatingProps> = ({
             <button
               onClick={handleSubmit}
               type="button"
-              className="w-1/3 rounded bg-blue-500 p-6 text-2xl font-extrabold text-white transition-colors hover:bg-[#355c7d]"
+              className="w-1/3 rounded-md bg-blue-500 p-6 text-2xl font-extrabold text-white transition-colors hover:bg-[#355c7d]"
             >
               送出評價
             </button>

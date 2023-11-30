@@ -284,7 +284,7 @@ const Task = () => {
               value={taskTitle} // 綁定 taskTitle 狀態
               onChange={(e) => setTaskTitle(e.target.value)} // 更新狀態
               placeholder="例如 : 請人幫我...，請盡量輸入明白的任務需求"
-              className="mb-4 rounded-[10px] border p-3 focus:outline-none"
+              className="rounded-md-[10px] mb-4 border p-3 focus:outline-none"
             />
           </div>
           <div className="mb-4 flex items-center">
@@ -292,7 +292,7 @@ const Task = () => {
               服務類別
             </p>
             <select
-              className="mr-3 flex items-center rounded border bg-gray-200 p-2"
+              className="mr-3 flex items-center rounded-md border bg-gray-200 p-2"
               name="county"
               id="county"
               value={selectedCounty}
@@ -322,7 +322,7 @@ const Task = () => {
             {selectedCounty && (
               <div className="mr-3 flex items-center">
                 <select
-                  className="flex items-center rounded border bg-gray-200 p-2"
+                  className="flex items-center rounded-md border bg-gray-200 p-2"
                   name="region"
                   id="region"
                   onChange={handleRegionChange}
@@ -339,7 +339,7 @@ const Task = () => {
             <input
               type="text"
               placeholder="請輸入詳細地址，例如 : xx 路 x 巷 x 弄 x 號 x 樓"
-              className="w-full rounded-[10px] border p-3 focus:outline-none"
+              className="rounded-md-[10px] w-full border p-3 focus:outline-none"
               value={detailedAddress}
               onChange={(e) => setDetailedAddress(e.target.value)}
             />
@@ -352,7 +352,7 @@ const Task = () => {
             </p>
           </div>
           <textarea
-            className="mb-4 h-80 w-full resize-none rounded-[20px] border p-4 text-xl focus:outline-none"
+            className="rounded-md-[20px] mb-4 h-80 w-full resize-none border p-4 text-xl focus:outline-none"
             name="startTaskContent"
             id="startTaskContent"
             value={taskDescription} // 綁定 taskDescription 狀態
@@ -362,7 +362,7 @@ const Task = () => {
             <p className="mr-3 text-3xl font-black">其它備註</p>
           </div>
           <textarea
-            className="h-30 mb-4 w-full resize-none rounded-[20px] border p-4 text-xl focus:outline-none"
+            className="h-30 rounded-md-[20px] mb-4 w-full resize-none border p-4 text-xl focus:outline-none"
             name="additionalNotes"
             id="additionalNotes"
             value={additionalNotes}
@@ -375,7 +375,7 @@ const Task = () => {
                 type="text"
                 id="taskReward"
                 placeholder="願支付多少 Coin 請人完成任務"
-                className="mr-4 w-72 rounded-[10px] border p-3 focus:outline-none"
+                className="rounded-md-[10px] mr-4 w-72 border p-3 focus:outline-none"
                 value={taskReward}
                 onChange={handleTaskRewardChange}
               />
@@ -409,7 +409,7 @@ const Task = () => {
               </li>
             </ul>
             <div className="mt-10 flex text-2xl">
-              <div className="group pointer-events-auto relative w-full overflow-hidden rounded-lg bg-gray-200 px-6 py-3 text-center [transform:translateZ(0)] before:absolute before:left-1/2 before:top-1/2 before:h-8 before:w-8 before:-translate-x-1/2 before:-translate-y-1/2 before:scale-[0] before:rounded-full before:bg-pink-600 before:opacity-0 before:transition before:duration-500 before:ease-in-out hover:before:scale-[25] hover:before:opacity-100">
+              <div className="group pointer-events-auto relative w-full overflow-hidden rounded-md bg-gray-200 px-6 py-3 text-center [transform:translateZ(0)] before:absolute before:left-1/2 before:top-1/2 before:h-8 before:w-8 before:-translate-x-1/2 before:-translate-y-1/2 before:scale-[0] before:rounded-full before:bg-pink-600 before:opacity-0 before:transition before:duration-500 before:ease-in-out hover:before:scale-[25] hover:before:opacity-100">
                 刪除任務
                 <button
                   type="button"
@@ -419,7 +419,7 @@ const Task = () => {
                   {"刪除任務"}
                 </button>
               </div>
-              <div className="group pointer-events-auto relative w-full overflow-hidden rounded-lg bg-gray-200 px-6 py-3 text-center [transform:translateZ(0)] before:absolute before:left-1/2 before:top-1/2 before:h-8 before:w-8 before:-translate-x-1/2 before:-translate-y-1/2 before:scale-[0] before:rounded-full before:bg-teal-600 before:opacity-0 before:transition before:duration-500 before:ease-in-out hover:before:scale-[25] hover:before:opacity-100">
+              <div className="group pointer-events-auto relative w-full overflow-hidden rounded-md bg-gray-200 px-6 py-3 text-center [transform:translateZ(0)] before:absolute before:left-1/2 before:top-1/2 before:h-8 before:w-8 before:-translate-x-1/2 before:-translate-y-1/2 before:scale-[0] before:rounded-full before:bg-teal-600 before:opacity-0 before:transition before:duration-500 before:ease-in-out hover:before:scale-[25] hover:before:opacity-100">
                 提交任務
                 <button
                   type="button"

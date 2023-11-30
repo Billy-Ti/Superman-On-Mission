@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import Pagination from "../../components/Pagination";
 import { db } from "../../config/firebase";
+import DisplaySwitchButton from "../components/DisplaySwitchButton";
 import ServiceTypeSelector from "../components/ServiceTypeSelectorProps";
 import RegionFilter from "./RegionFilter";
 
@@ -33,9 +34,6 @@ const AcceptTask = () => {
   // 目前設定每頁只會有兩則任務 useState(2);
   const [tasksPerPage] = useState(3);
 
-  // 任務卡片的動畫狀態
-  // const [animationClass, setAnimationClass] = useState("");
-
   // 選擇地區、縣市的狀態
   const [selectedCity, setSelectedCity] = useState("");
   const [selectedDistrict, setSelectedDistrict] = useState("");
@@ -46,10 +44,16 @@ const AcceptTask = () => {
     string[]
   >([]);
 
+  const [isUrgentSelected, setIsUrgentSelected] = useState(false);
+
   const navigate = useNavigate();
 
   const handleAcceptTask = async (taskId: string) => {
     navigate(`/acceptDetail/${taskId}`);
+  };
+
+  const handleToggleUrgent = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setIsUrgentSelected(event.target.checked);
   };
 
   const [serviceType] = useState<string[]>([
@@ -158,6 +162,17 @@ const AcceptTask = () => {
 
     setFilteredTasks(filtered);
   }, [selectedCity, selectedDistrict, tasks]); // 注意這裡是依賴 tasks，而非 tasksData
+
+  useEffect(() => {
+    // 根據 isUrgentSelected 的值來過濾任務
+    const filteredTasks = isUrgentSelected
+      ? tasks.filter((task) => task.isUrgent) // 若 isUrgentSelected 為 true，則只顯示標記為急件的任務
+      : tasks; // 若 isUrgentSelected 為 false，則顯示所有任務
+
+    setFilteredTasks(filteredTasks); // 更新 filteredTasks 狀態
+
+    // 這裡可以加入其他相關邏輯，如基於其他篩選條件進一步過濾任務
+  }, [tasks, isUrgentSelected]); // useEffect 依賴於 tasks 和 isUrgentSelected
 
   // 獲取當前頁的任務
   const indexOfLastTask = currentPage * tasksPerPage;
@@ -277,7 +292,7 @@ const AcceptTask = () => {
           <input
             id="searchTask"
             placeholder="生活...程式...家教"
-            className="rounded px-2 py-1 focus:outline-none"
+            className="rounded-md px-2 py-1 focus:outline-none"
             type="text"
             value={searchQuery}
             onChange={handleInputChange}
@@ -291,12 +306,16 @@ const AcceptTask = () => {
             <Icon icon="ri:search-line" width="30" color="#e0e7ff" />
           </button>
           {searchQuery && (
-            <div className="px-2 autocomplete-suggestions absolute left-0 cursor-pointer bg-gray-300 w-full">
+            <div className="autocomplete-suggestions absolute left-0 w-full cursor-pointer bg-gray-300 px-2">
               {renderAutocompleteSuggestions()}
             </div>
           )}
         </div>
       </div>
+      <DisplaySwitchButton
+        buttonText="顯示所有急件"
+        onToggleUrgent={handleToggleUrgent}
+      />
       <Pagination
         tasksPerPage={tasksPerPage}
         totalTasks={tasks.length}
@@ -309,15 +328,12 @@ const AcceptTask = () => {
           <p className="text-xl">目前還沒有可接的任務...</p>
         </div>
       ) : (
-        <div
-          // className={`${animationClass} mb-4 grid grid-cols-1 gap-4 md:grid-cols-3`}
-          className="mb-4 grid grid-cols-1 gap-4 md:grid-cols-3"
-        >
+        <div className="mb-4 grid grid-cols-1 gap-4 md:grid-cols-3">
           {currentTasks.map((task) => (
             <>
               <div
                 key={task.id}
-                className="border-gradient relative flex grow flex-col rounded-lg border-2 border-gray-200 p-4"
+                className="border-gradient relative flex grow flex-col rounded-md border-2 border-gray-200 p-4"
               >
                 <div className="flex min-h-[300px] grow items-start gap-2">
                   <div className="border-2 border-gray-300 p-2">
@@ -430,7 +446,7 @@ const AcceptTask = () => {
                 </div>
                 <button
                   onClick={() => handleAcceptTask(task.id)}
-                  className="group relative cursor-pointer overflow-hidden rounded-lg border border-blue-300 bg-gray-200 from-blue-400 via-blue-300 to-purple-200 bg-clip-text px-6 py-3 text-2xl font-black text-transparent [transform:translateZ(0)] before:absolute before:bottom-0 before:left-0 before:h-full before:w-full before:origin-[100%_100%] before:scale-x-0 before:bg-gradient-to-r before:transition before:duration-500 before:ease-in-out hover:border-0 hover:before:origin-[0_0] hover:before:scale-x-100"
+                  className="border-blue-sky-300 group relative cursor-pointer overflow-hidden rounded-md border bg-gray-200 from-blue-400 via-blue-300 to-purple-200 bg-clip-text px-6 py-3 text-2xl font-black text-transparent [transform:translateZ(0)] before:absolute before:bottom-0 before:left-0 before:h-full before:w-full before:origin-[100%_100%] before:scale-x-0 before:bg-gradient-to-r before:transition before:duration-500 before:ease-in-out hover:border-0 hover:before:origin-[0_0] hover:before:scale-x-100"
                 >
                   <span className="relative z-0 text-black transition duration-500 ease-in-out group-hover:text-black">
                     查看任務詳情 {">>"}

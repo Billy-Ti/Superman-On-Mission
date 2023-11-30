@@ -15,7 +15,7 @@ const ServiceTypeSelector: React.FC<ServiceTypeSelectorProps> = ({
       {serviceType.map((item, index) => (
         <div
           key={index}
-          className={`flex cursor-pointer items-center justify-center rounded border p-2 ${
+          className={`flex cursor-pointer items-center justify-center rounded-md border p-2 ${
             selectedIndexes.includes(index) ? "bg-gray-200" : ""
           }`}
           onClick={() => handleServiceTypeClick(index)}
