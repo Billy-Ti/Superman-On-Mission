@@ -368,7 +368,7 @@ const countyToRegion: CountyToRegionMap = {
     "卓溪鄉",
   ],
   台東縣: [
-    "臺東市",
+    "台東市",
     "成功鎮",
     "關山鎮",
     "長濱鄉",

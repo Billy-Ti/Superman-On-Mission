@@ -62,7 +62,7 @@ const TaskManagement = () => {
 
       {activeButton !== "post" && activeButton !== "accept" && (
         <div className="flex h-64 items-center justify-center">
-          <div className="w-3/4 rounded-lg border border-gray-300 bg-white p-6 text-center shadow-lg">
+          <div className="w-3/4 rounded-md border border-gray-300 bg-white p-6 text-center shadow-lg">
             <p className="mb-3 text-2xl font-semibold text-gray-700">
               列表說明 :
             </p>

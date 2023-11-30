@@ -37,8 +37,6 @@ const TaskDetail = () => {
 
   const [currentUserID, setCurrentUserID] = useState<string | null>(null);
 
-  // const [isChatOpen, setIsChatOpen] = useState(false);
-
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -53,7 +51,6 @@ const TaskDetail = () => {
       }
     });
 
-    // 清理函數
     return () => unsubscribe();
   }, []);
 
@@ -104,14 +101,6 @@ const TaskDetail = () => {
   }
 
   const handleBackToTask = () => navigate("/acceptTask");
-
-  // const handleAskDetails = () => {
-  //   setIsChatOpen(true);
-  // };
-
-  // const handleCloseChat = () => {
-  //   setIsChatOpen(false);
-  // };
 
   const handleConfirmAcceptTask = async () => {
     if (!taskId || !currentUserID) {
@@ -294,9 +283,9 @@ const TaskDetail = () => {
         {/* <button
           type="button"
           onClick={handleAskDetails}
-          className="group relative overflow-hidden rounded-lg bg-gray-300 px-6 py-3 [transform:translateZ(0)] before:absolute before:bottom-0 before:left-0 before:h-full before:w-full before:origin-[100%_100%] before:scale-x-0 before:bg-sky-600 before:transition before:duration-500 before:ease-in-out hover:before:origin-[0_0] hover:before:scale-x-100"
+          className="group relative overflow-hidden rounded-md bg-gray-300 px-6 py-3 [transform:translateZ(0)] before:absolute before:bottom-0 before:left-0 before:h-full before:w-full before:origin-[100%_100%] before:scale-x-0 before:bg-sky-600 before:transition before:duration-500 before:ease-in-out hover:before:origin-[0_0] hover:before:scale-x-100"
         >
-          <span className="relative z-0 flex w-60 items-center justify-center rounded p-4 text-2xl text-black transition duration-500 ease-in-out group-hover:text-gray-200">
+          <span className="relative z-0 flex w-60 items-center justify-center rounded-md p-4 text-2xl text-black transition duration-500 ease-in-out group-hover:text-gray-200">
             <Icon icon="uiw:message" className="mr-3" />
             點我詢問細節
           </span>
@@ -307,9 +296,9 @@ const TaskDetail = () => {
         <button
           type="button"
           onClick={handleConfirmAcceptTask}
-          className="group relative overflow-hidden rounded-lg bg-gray-300 px-6 py-3 [transform:translateZ(0)] before:absolute before:bottom-0 before:left-0 before:h-full before:w-full before:origin-[100%_100%] before:scale-x-0 before:bg-green-500 before:transition before:duration-500 before:ease-in-out hover:before:origin-[0_0] hover:before:scale-x-100"
+          className="group relative overflow-hidden rounded-md bg-gray-300 px-6 py-3 [transform:translateZ(0)] before:absolute before:bottom-0 before:left-0 before:h-full before:w-full before:origin-[100%_100%] before:scale-x-0 before:bg-green-500 before:transition before:duration-500 before:ease-in-out hover:before:origin-[0_0] hover:before:scale-x-100"
         >
-          <span className="relative z-0 flex w-60 items-center justify-center rounded p-4 text-2xl text-black transition duration-500 ease-in-out group-hover:text-gray-200">
+          <span className="relative z-0 flex w-60 items-center justify-center rounded-md p-4 text-2xl text-black transition duration-500 ease-in-out group-hover:text-gray-200">
             <Icon icon="icon-park-outline:check-correct" className="mr-3" />
             確認接案
           </span>

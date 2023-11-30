@@ -34,7 +34,7 @@ const RatingModal: React.FC<RatingModalProps> = ({
 
   return isOpen ? (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
-      <div className="rounded bg-white p-6 mx-4 md:mx-0 shadow-lg w-[500px] md:w-[800px]">
+      <div className="mx-4 w-[500px] rounded-md bg-white p-6 shadow-lg md:mx-0 md:w-[800px]">
         <div className="mx-auto flex  items-center justify-between ">
           <h3 className="mx-auto text-3xl font-bold">請評價此次感受</h3>
           <button onClick={onClose}>X</button>
@@ -70,7 +70,7 @@ const RatingModal: React.FC<RatingModalProps> = ({
         </div>
         <button
           onClick={handleSubmit}
-          className="w-full rounded bg-blue-500 px-4 py-2 text-white hover:bg-blue-700"
+          className="w-full rounded-md bg-blue-500 px-4 py-2 text-white hover:bg-blue-700"
         >
           送出
         </button>

@@ -358,20 +358,20 @@ const AcceptTaskDetail = () => {
       <div className="flex justify-between py-4">
         <button
           type="button"
-          className="w-1/5 rounded bg-gray-300 p-4 text-center"
+          className="w-1/5 rounded-md bg-gray-300 p-4 text-center"
         >
           會員中心
         </button>
         <button
           type="button"
-          className="w-1/5 rounded bg-gray-300 p-4 text-center"
+          className="w-1/5 rounded-md bg-gray-300 p-4 text-center"
         >
           任務管理
         </button>
         <button
           onClick={handleToReviews}
           type="button"
-          className="w-1/5 rounded bg-gray-300 p-4 text-center"
+          className="w-1/5 rounded-md bg-gray-300 p-4 text-center"
         >
           我的評價
         </button>
@@ -524,9 +524,9 @@ const AcceptTaskDetail = () => {
             <button
               onClick={handleAskDetails}
               type="button"
-              className="group relative overflow-hidden rounded-lg bg-gray-300 px-6 py-3 [transform:translateZ(0)] before:absolute before:bottom-0 before:left-0 before:h-full before:w-full before:origin-[100%_100%] before:scale-x-0 before:bg-sky-600 before:transition before:duration-500 before:ease-in-out hover:before:origin-[0_0] hover:before:scale-x-100"
+              className="group relative overflow-hidden rounded-md bg-gray-300 px-6 py-3 [transform:translateZ(0)] before:absolute before:bottom-0 before:left-0 before:h-full before:w-full before:origin-[100%_100%] before:scale-x-0 before:bg-sky-600 before:transition before:duration-500 before:ease-in-out hover:before:origin-[0_0] hover:before:scale-x-100"
             >
-              <span className="relative z-0 flex w-60 items-center justify-center rounded p-4 text-2xl text-black transition duration-500 ease-in-out group-hover:text-gray-200">
+              <span className="relative z-0 flex w-60 items-center justify-center rounded-md p-4 text-2xl text-black transition duration-500 ease-in-out group-hover:text-gray-200">
                 <Icon icon="ant-design:message-filled" className="mr-3" />
                 聯繫發案者
               </span>
@@ -713,9 +713,6 @@ const AcceptTaskDetail = () => {
                 ? "cursor-not-allowed"
                 : ""
             } shadow-sm focus:border-blue-500 focus:outline-none focus:ring-blue-500`}
-            // readOnly={
-            //   taskStatus === "任務回報完成" || taskStatus === "已完成"
-            // }
             value={taskDetails.reportSupplementaryNotes}
           />
         </div>
@@ -733,7 +730,7 @@ const AcceptTaskDetail = () => {
             rows={3}
             className={`mb-3 mt-1 block w-full cursor-not-allowed resize-none rounded-md border border-gray-300 p-2.5 tracking-wider shadow-sm focus:border-blue-500 focus:outline-none focus:ring-blue-500`}
             readOnly
-            value={ratedComment} // 假設 ratedComment 是從 reviews 集合獲取
+            value={ratedComment} // ratedComment 是從 reviews 集合獲取
           />
         </div>
         {/* 發案者回饋 */}
@@ -754,7 +751,7 @@ const AcceptTaskDetail = () => {
             rows={3}
             className="mb-10 mt-1 block w-full cursor-not-allowed resize-none rounded-md border border-gray-300 bg-blue-200 p-2.5 tracking-wider shadow-sm focus:border-blue-500 focus:outline-none focus:ring-blue-500"
             readOnly
-            value={taskDetails.feedbackMessage} // 假設 feedbackMessage 是從 taskDetails 獲取
+            value={taskDetails.feedbackMessage} // feedbackMessage 是從 taskDetails 獲取
           />
         </div>
 
@@ -768,7 +765,7 @@ const AcceptTaskDetail = () => {
               taskStatus === "任務回報完成" || taskStatus === "已完成"
                 ? "cursor-not-allowed "
                 : ""
-            }}group relative w-52 overflow-hidden rounded-lg bg-gray-200 px-6 py-3 [transform:translateZ(0)] before:absolute before:left-1/2 before:top-1/2 before:h-8 before:w-8 before:-translate-x-1/2 before:-translate-y-1/2 before:scale-[0] before:rounded-full before:bg-sky-600 before:opacity-0 before:transition before:duration-500 before:ease-in-out hover:before:scale-[10] hover:before:opacity-100`}
+            }}group relative w-52 overflow-hidden rounded-md bg-gray-200 px-6 py-3 [transform:translateZ(0)] before:absolute before:left-1/2 before:top-1/2 before:h-8 before:w-8 before:-translate-x-1/2 before:-translate-y-1/2 before:scale-[0] before:rounded-full before:bg-sky-600 before:opacity-0 before:transition before:duration-500 before:ease-in-out hover:before:scale-[10] hover:before:opacity-100`}
           >
             <span className="relative z-0 text-2xl text-black transition duration-500 ease-in-out group-hover:text-gray-200">
               送出
@@ -799,7 +796,7 @@ const AcceptTaskDetail = () => {
                     </p>
                     <button
                       type="button"
-                      className="absolute bottom-5 left-1/2 -translate-x-1/2 transform rounded bg-blue-500 px-4 py-2 text-white"
+                      className="absolute bottom-5 left-1/2 -translate-x-1/2 transform rounded-md bg-blue-500 px-4 py-2 text-white"
                       onClick={handleOverlay}
                     >
                       確定

@@ -1,7 +1,7 @@
 import { Icon } from "@iconify/react";
 import { getAuth, onAuthStateChanged } from "firebase/auth";
 import { useEffect } from "react";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import Swal from "sweetalert2";
 import { useAuth } from "../../hooks/AuthProvider";
 import TaskButton from "../Task/TaskButton";
@@ -72,13 +72,16 @@ const Home = () => {
 
   return (
     <>
-      <div className="container px-4 pt-4 mx-auto md:max-w-7xl">
+      <div className="container mx-auto px-4 pt-4 md:max-w-7xl">
         <div className="flex items-center justify-between">
           {/* 漸層色 */}
-          <div className="flex items-center bg-gradient-to-r from-blue-700 via-blue-500 to-purple-400 bg-clip-text text-2xl font-black text-transparent">
+          <Link
+            to="/"
+            className="flex items-center bg-gradient-to-r from-blue-700 via-blue-500 to-purple-400 bg-clip-text text-2xl font-black text-transparent"
+          >
             <img width="70" src="/superman_2.png" alt="" />
-            <p>Home</p>
-          </div>
+            <p>SuperTask co.</p>
+          </Link>
           <div className="flex items-center">
             {currentUser ? (
               <>
@@ -91,24 +94,24 @@ const Home = () => {
                     height="40"
                     onClick={handleSignIn}
                   />
-                  <div className="absolute z-10 hidden flex-col space-y-2 rounded bg-white p-4 opacity-0 group-hover:flex group-hover:opacity-100">
+                  <div className="absolute z-10 hidden flex-col space-y-2 rounded-md bg-white p-4 opacity-0 group-hover:flex group-hover:opacity-100">
                     <button
                       type="button"
-                      className="w-36 rounded bg-gray-200 px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-300"
+                      className="w-36 rounded-md bg-gray-200 px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-300"
                     >
                       會員中心
                     </button>
                     <button
                       type="button"
                       onClick={handleTaskManagement}
-                      className="w-36 rounded bg-gray-200 px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-300"
+                      className="w-36 rounded-md bg-gray-200 px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-300"
                     >
                       任務管理
                     </button>
                     <button
                       onClick={handleToReviews}
                       type="button"
-                      className="w-36 rounded bg-gray-200 px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-300"
+                      className="w-36 rounded-md bg-gray-200 px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-300"
                     >
                       我的評價
                     </button>

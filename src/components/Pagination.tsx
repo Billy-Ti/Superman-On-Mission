@@ -5,12 +5,14 @@ interface PaginationProps {
   totalTasks: number;
   paginate: (pageNumber: number) => void;
   currentPage: number;
+  className?: string;
 }
 const Pagination: React.FC<PaginationProps> = ({
   tasksPerPage,
   totalTasks,
   paginate,
   currentPage,
+  className = "",
 }) => {
   const totalPages = Math.ceil(totalTasks / tasksPerPage);
 
@@ -48,7 +50,7 @@ const Pagination: React.FC<PaginationProps> = ({
   };
 
   return (
-    <div className="flex justify-center">
+    <div className={`flex ${className}`}>
       <nav className="flex space-x-2" aria-label="Pagination">
         <a
           onClick={handlePreviousPageButton}

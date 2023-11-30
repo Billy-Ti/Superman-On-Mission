@@ -435,7 +435,7 @@ const ChatRoomWindow = ({ onCloseRoom }: ChatRoomWindowProps) => {
 
   return (
     <div className="fixed inset-0 z-50 my-auto flex h-full items-center justify-center bg-black bg-opacity-50 py-10 text-gray-800 antialiased">
-      <div className="relative flex h-[70vh] w-3/4 flex-row overflow-y-auto rounded-lg bg-white p-4 shadow-lg">
+      <div className="relative flex h-[70vh] w-3/4 flex-row overflow-y-auto rounded-md bg-white p-4 shadow-lg">
         <span className="absolute right-5 top-6 h-6 w-6 animate-ping rounded-full bg-gray-200 opacity-75" />
         <button
           onClick={onCloseRoom}
@@ -459,7 +459,7 @@ const ChatRoomWindow = ({ onCloseRoom }: ChatRoomWindowProps) => {
         </button>
         <div className="flex w-64 flex-shrink-0 flex-grow-0 flex-col bg-white py-1 pl-6 pr-2">
           <div className="flex h-12 w-full flex-row items-center justify-center">
-            <div className="flex h-10 w-10 items-center justify-center rounded-2xl bg-indigo-100 text-indigo-700">
+            <div className="rounded-md-2xl flex h-10 w-10 items-center justify-center bg-indigo-100 text-indigo-700">
               <svg
                 className="h-6 w-6"
                 fill="none"
@@ -477,7 +477,7 @@ const ChatRoomWindow = ({ onCloseRoom }: ChatRoomWindowProps) => {
             </div>
             <div className="ml-2 text-2xl font-bold">Chat Room</div>
           </div>
-          <div className="mb-2 mt-1 flex w-full flex-col items-center rounded-lg border border-gray-200 bg-indigo-100 px-4 py-6">
+          <div className="mb-2 mt-1 flex w-full flex-col items-center rounded-md border border-gray-200 bg-indigo-100 px-4 py-6">
             <div className="h-20 w-20 overflow-hidden rounded-full border">
               <img
                 src="https://i.postimg.cc/vBxKKcnj/025395d6-6d20-4aca-864f-b6b601335cf9.png"
@@ -498,7 +498,7 @@ const ChatRoomWindow = ({ onCloseRoom }: ChatRoomWindowProps) => {
           </div>
           <div className="relative ">
             <input
-              className="w-full rounded border p-2 focus:outline-none"
+              className="w-full rounded-md border p-2 focus:outline-none"
               placeholder="Search user"
               type="text"
               value={searchQuery}
@@ -519,7 +519,7 @@ const ChatRoomWindow = ({ onCloseRoom }: ChatRoomWindowProps) => {
             ) : (
               searchResults.map((user) => (
                 <div
-                  className="flex cursor-pointer items-center justify-between rounded p-2 hover:bg-gray-300"
+                  className="flex cursor-pointer items-center justify-between rounded-md p-2 hover:bg-gray-300"
                   key={user.id}
                   onClick={() => handleSelectUser(user.id)}
                 >
@@ -550,7 +550,7 @@ const ChatRoomWindow = ({ onCloseRoom }: ChatRoomWindowProps) => {
           <div className="-mx-2 mt-4 flex h-1/2 flex-col space-y-1 overflow-y-auto">
             {userList.map((user) => (
               <button
-                className="flex flex-row items-center rounded-xl p-2 hover:bg-gray-100"
+                className="rounded-md-xl flex flex-row items-center p-2 hover:bg-gray-100"
                 key={user.id}
                 onClick={() => handleSelectUser(user.id)}
               >
@@ -566,13 +566,13 @@ const ChatRoomWindow = ({ onCloseRoom }: ChatRoomWindowProps) => {
         {/* 聊天視窗主體 */}
         <div className="flex h-full flex-auto flex-col overflow-y-auto p-6">
           {selectedUserId && (
-            <div className="flex h-full flex-auto flex-shrink-0 flex-col justify-between break-words rounded-2xl bg-gray-100 p-4">
+            <div className="rounded-md-2xl flex h-full flex-auto flex-shrink-0 flex-col justify-between break-words bg-gray-100 p-4">
               <div className="h-full overflow-auto">
                 {/* 訊息列表 */}
                 <div className="flex flex-grow flex-col items-center justify-between p-4">
                   <div className="mb-10 bg-gradient-to-r from-blue-700 via-blue-500 to-purple-400 bg-clip-text text-center text-2xl font-black text-transparent">
                     {selectedUserId
-                      ? `You are contacting ${
+                      ? `You are contacting to ${
                           userList.find((user) => user.id === selectedUserId)
                             ?.name || "未知用戶"
                         } ...`
@@ -596,7 +596,7 @@ const ChatRoomWindow = ({ onCloseRoom }: ChatRoomWindowProps) => {
                             {messageTime}
                           </time>
                           <div
-                            className={`relative mb-5 max-w-[50%] rounded border p-2 text-lg ${
+                            className={`relative mb-5 max-w-[50%] rounded-md border p-2 text-lg ${
                               isCurrentUserMessage
                                 ? "ml-auto bg-blue-100"
                                 : "mr-auto bg-gray-200"
@@ -617,13 +617,6 @@ const ChatRoomWindow = ({ onCloseRoom }: ChatRoomWindowProps) => {
                                   )?.name || "未知用户"}
                             </p>
                             {message.content}
-                            {/* <time
-                              className={`text-right text-xs text-gray-500 absolute bottom-[-5px] right-0 ${
-                                isCurrentUserMessage ? "mr-2" : ""
-                              }`}
-                            >
-                              {messageTime}
-                            </time> */}
                           </div>
                         </>
                       );
@@ -631,7 +624,7 @@ const ChatRoomWindow = ({ onCloseRoom }: ChatRoomWindowProps) => {
                   <div ref={messagesEndRef} />
                 </div>
               </div>
-              <div className="flex h-16 w-full flex-row items-center rounded-xl bg-white px-4">
+              <div className="rounded-md-xl flex h-16 w-full flex-row items-center bg-white px-4">
                 <div className="ml-4 flex-grow">
                   <div className="relative w-full">
                     <input
@@ -639,7 +632,7 @@ const ChatRoomWindow = ({ onCloseRoom }: ChatRoomWindowProps) => {
                       value={message}
                       onChange={(e) => setMessage(e.target.value)}
                       onKeyDown={handleKeyDownSendMessage}
-                      className="flex h-10 w-full rounded-xl border pl-4 focus:border-indigo-300 focus:outline-none"
+                      className="rounded-md-xl flex h-10 w-full border pl-4 focus:border-indigo-300 focus:outline-none"
                     />
                     {/* emoji icon button */}
                     <button className="absolute right-0 top-0 flex h-full w-12 items-center justify-center text-gray-400 hover:text-gray-600">
@@ -663,7 +656,7 @@ const ChatRoomWindow = ({ onCloseRoom }: ChatRoomWindowProps) => {
                 <div className="ml-4">
                   <button
                     onClick={handleSendMessage}
-                    className="flex flex-shrink-0 items-center justify-center rounded-xl bg-indigo-500 px-4 py-1 text-white hover:bg-indigo-600"
+                    className="rounded-md-xl flex flex-shrink-0 items-center justify-center bg-indigo-500 px-4 py-1 text-white hover:bg-indigo-600"
                   >
                     <span>Send</span>
                     <span className="ml-2">

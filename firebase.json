@@ -1,6 +1,20 @@
 {
   "hosting": {
+    "site": "superman-4eb28",
     "public": "dist",
     "ignore": ["firebase.json", "**/.*", "**/node_modules/**"]
-  }
+  },
+  "firestore": {
+    "rules": "firestore.rules",
+    "indexes": "firestore.indexes.json"
+  },
+  "storage": {
+    "rules": "storage.rules"
+  },
+  "rewrites": [
+    {
+      "source": "**",
+      "destination": "/index.html"
+    }
+  ]
 }

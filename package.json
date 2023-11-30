@@ -10,18 +10,18 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@iconify/react": "^4.1.1",
+    "autoprefixer": "^10.4.16",
     "firebase": "^10.6.0",
+    "postcss": "^8.4.31",
+    "prettier": "^3.1.0",
+    "prettier-plugin-tailwindcss": "^0.5.7",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "react-router-dom": "^6.18.0",
     "sweetalert2": "^11.10.0",
-    "uuid": "^9.0.1",
-    "@iconify/react": "^4.1.1",
-    "autoprefixer": "^10.4.16",
-    "postcss": "^8.4.31",
-    "prettier": "^3.1.0",
-    "prettier-plugin-tailwindcss": "^0.5.7",
-    "tailwindcss": "^3.3.5"
+    "tailwindcss": "^3.3.5",
+    "uuid": "^9.0.1"
   },
   "devDependencies": {
     "@types/react": "^18.2.15",

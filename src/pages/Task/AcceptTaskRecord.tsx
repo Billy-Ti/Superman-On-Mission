@@ -129,7 +129,7 @@ const AcceptTaskRecord = () => {
                 )}
               </div>
               <div
-                className="group relative cursor-pointer overflow-hidden rounded-lg bg-gray-200 px-6 py-3 [transform:translateZ(0)] before:absolute before:bottom-0 before:left-0 before:h-full before:w-full before:origin-[100%_100%] before:scale-x-0 before:bg-sky-600 before:transition before:duration-500 before:ease-in-out hover:before:origin-[0_0] hover:before:scale-x-100"
+                className="group relative cursor-pointer overflow-hidden rounded-md bg-gray-200 px-6 py-3 [transform:translateZ(0)] before:absolute before:bottom-0 before:left-0 before:h-full before:w-full before:origin-[100%_100%] before:scale-x-0 before:bg-sky-600 before:transition before:duration-500 before:ease-in-out hover:before:origin-[0_0] hover:before:scale-x-100"
                 onMouseMove={() => setHoverText("接案紀錄查詢 >>")}
                 onMouseOut={() => setHoverText("查看任務詳情 >>")}
                 onClick={() => handleViewTaskDetails(task.id)}

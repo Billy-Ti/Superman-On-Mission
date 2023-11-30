@@ -92,7 +92,7 @@ const SignIn = () => {
           回到首頁
         </p>
         <div
-          className={`container relative min-h-[480px] w-[768px] max-w-full overflow-hidden rounded-[10px] bg-[#fff] ${
+          className={`rounded-md-[10px] container relative min-h-[480px] w-[768px] max-w-full overflow-hidden bg-[#fff] ${
             isRightPanelActive ? "right-panel-active" : ""
           }`}
           id="container"
@@ -127,7 +127,7 @@ const SignIn = () => {
                 placeholder="Password"
                 onChange={(e) => setPassword(e.target.value)}
               />
-              <button className="rounded-[20px] border-[1px] border-[#FF4B2B] border-[solid] bg-[#FF4B2B] px-[45px] py-[12px] text-[12px] font-bold uppercase tracking-[1px] text-[#FFFFFF] [transition:transform_80ms_ease-in] focus:outline-[none] active:scale-[0.95]">
+              <button className="rounded-md-[20px] border-[1px] border-[#FF4B2B] border-[solid] bg-[#FF4B2B] px-[45px] py-[12px] text-[12px] font-bold uppercase tracking-[1px] text-[#FFFFFF] [transition:transform_80ms_ease-in] focus:outline-[none] active:scale-[0.95]">
                 Sign Up
               </button>
             </form>
@@ -156,7 +156,7 @@ const SignIn = () => {
               >
                 Forgot your password?
               </a>
-              <button className="rounded-[20px] border-[1px] border-[#FF4B2B] border-[solid] bg-[#FF4B2B] px-[45px] py-[12px] text-[12px] font-bold uppercase tracking-[1px] text-[#FFFFFF] [transition:transform_80ms_ease-in] focus:outline-[none] active:scale-[0.95]">
+              <button className="rounded-md-[20px] border-[1px] border-[#FF4B2B] border-[solid] bg-[#FF4B2B] px-[45px] py-[12px] text-[12px] font-bold uppercase tracking-[1px] text-[#FFFFFF] [transition:transform_80ms_ease-in] focus:outline-[none] active:scale-[0.95]">
                 Sign In
               </button>
             </form>
@@ -169,7 +169,7 @@ const SignIn = () => {
                   To keep connected with us please login with your personal info
                 </p>
                 <button
-                  className="ghost rounded-[20px] border-[1px] border-[#FF4B2B] border-[solid] bg-[#FF4B2B] px-[45px] py-[12px] text-[12px] font-bold uppercase tracking-[1px] text-[#FFFFFF] [transition:transform_80ms_ease-in] focus:outline-[none] active:scale-[0.95] "
+                  className="ghost rounded-md-[20px] border-[1px] border-[#FF4B2B] border-[solid] bg-[#FF4B2B] px-[45px] py-[12px] text-[12px] font-bold uppercase tracking-[1px] text-[#FFFFFF] [transition:transform_80ms_ease-in] focus:outline-[none] active:scale-[0.95] "
                   id="signIn"
                   onClick={handleSignInClick}
                 >
@@ -182,7 +182,7 @@ const SignIn = () => {
                   Enter your personal details and start journey with us
                 </p>
                 <button
-                  className="ghost rounded-[20px] border-[1px] border-[#FF4B2B] border-[solid] bg-[#FF4B2B] px-[45px] py-[12px] text-[12px] font-bold uppercase tracking-[1px] text-[#FFFFFF] [transition:transform_80ms_ease-in] focus:outline-[none] active:scale-[0.95] "
+                  className="ghost rounded-md-[20px] border-[1px] border-[#FF4B2B] border-[solid] bg-[#FF4B2B] px-[45px] py-[12px] text-[12px] font-bold uppercase tracking-[1px] text-[#FFFFFF] [transition:transform_80ms_ease-in] focus:outline-[none] active:scale-[0.95] "
                   id="signUp"
                   onClick={handleSignUpClick}
                 >
