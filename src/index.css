@@ -1,11 +1,24 @@
+@import url("https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;700;900&display=swap");
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
 body {
-  font-family: "Segoe UI", "Roboto", "Helvetica Neue", Arial, "Noto Sans",
+  font-family: "Segoe UI", "Noto Sans TC", "Roboto", "Helvetica Neue", Arial,
     "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji",
     sans-serif;
+}
+.typed-container .typed-cursor {
+  @apply text-5xl;
+}
+
+.crediCard.seeBack {
+  transform: rotateY(-180deg);
+}
+
+.highlight {
+  border-bottom: 16px solid #6366f1;
+  font-weight: bold;
 }
 
 /* Custom task cards style */

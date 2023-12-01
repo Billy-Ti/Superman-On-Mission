@@ -1,12 +1,13 @@
 import { Icon } from "@iconify/react";
 import { getAuth, onAuthStateChanged } from "firebase/auth";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import Swal from "sweetalert2";
 import { useAuth } from "../../hooks/AuthProvider";
 
 const Header = () => {
   const { currentUser, logout } = useAuth();
+  const [isScrolled, setIsScrolled] = useState(false);
   const navigate = useNavigate();
 
   const handleSignIn = () => {
@@ -68,84 +69,108 @@ const Header = () => {
     // 清理監聽器
     return () => unsubscribe();
   }, []);
+
+  useEffect(() => {
+    const handleScroll = () => {
+      setIsScrolled(window.scrollY > 0);
+    };
+
+    window.addEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
   return (
-    <div className="flex items-center mb-16">
-      <Link
-        to="/"
-        className="flex items-center bg-gradient-to-r from-blue-700 via-blue-500 to-purple-400 bg-clip-text text-2xl font-black text-transparent"
+    <>
+      {/* 背景色层 */}
+      <header
+        className={`${
+          isScrolled ? "bg-white shadow-md" : ""
+        } sticky top-0 z-10 w-full transition-all duration-300`}
       >
-        <img width="70" src="/superman_2.png" alt="" />
-        <p className="mr-1 italic">SuperTask co.</p>
-        <span className="hidden lg:block">|</span>
-      </Link>
-      <p className="hidden pl-2 pt-2 text-sm font-black text-gray-500 lg:block">
-        只有不想發的案，沒有超人做不到的事
-      </p>
+        <div
+          className={`${
+            isScrolled ? "bg-white shadow-md" : ""
+          } sticky top-0 z-10 w-full transition-all duration-300`}
+        ></div>
+        <div className={`sticky top-0 z-20 w-full transition-all duration-300`}>
+          <div className="mx-auto flex max-w-[1280px] items-center">
+            <Link
+              to="/"
+              className="flex items-center bg-gradient-to-r from-blue-700 via-blue-500 to-purple-400 bg-clip-text text-3xl font-black text-transparent"
+            >
+              <img width="70" src="/superman_2.png" alt="" />
+              <p className="mr-1 italic">SuperTask co.</p>
+              <span className="hidden lg:block">|</span>
+            </Link>
+            <p className="hidden pl-2 pt-2 text-lg font-black text-gray-400 lg:block">
+              只有不想發的案，沒有做不到的事
+            </p>
 
-      {currentUser ? (
-        <>
-          <div className="group relative ml-auto flex items-center">
-            
-            <Icon
-              className="cursor-pointer"
-              icon="mingcute:user-4-fill"
-              color="rgba(0, 0, 255, 0.3333333333333333)"
-              width="40"
-              height="40"
-            />
-            <div className="absolute top-[40px] z-10 hidden flex-col space-y-2 rounded-md bg-red-300 p-4 opacity-0 group-hover:flex group-hover:opacity-100">
-              <button
-                onClick={handleSignIn}
-                type="button"
-                className="w-36 rounded-md bg-gray-200 px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-300"
-              >
-                {currentUser ? "會員中心" : "Login"}
-              </button>
-              <button
-                type="button"
-                onClick={handleTaskManagement}
-                className="w-36 rounded-md bg-gray-200 px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-300"
-              >
-                任務管理
-              </button>
-              <button
-                onClick={handleToReviews}
-                type="button"
-                className="w-36 rounded-md bg-gray-200 px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-300"
-              >
-                我的評價
-              </button>
-            </div>
+            {currentUser ? (
+              <>
+                <div className="group relative ml-auto flex items-center">
+                  <Icon
+                    className="cursor-pointer"
+                    icon="mingcute:user-4-fill"
+                    color="rgba(0, 0, 255, 0.3333333333333333)"
+                    width="40"
+                    height="40"
+                  />
+                  <div className="absolute top-[40px] z-10 hidden flex-col space-y-2 rounded-md bg-red-300 p-4 opacity-0 group-hover:flex group-hover:opacity-100">
+                    <button
+                      onClick={handleSignIn}
+                      type="button"
+                      className="w-36 rounded-md bg-gray-200 px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-300"
+                    >
+                      {currentUser ? "會員中心" : "Login"}
+                    </button>
+                    <button
+                      type="button"
+                      onClick={handleTaskManagement}
+                      className="w-36 rounded-md bg-gray-200 px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-300"
+                    >
+                      任務管理
+                    </button>
+                    <button
+                      onClick={handleToReviews}
+                      type="button"
+                      className="w-36 rounded-md bg-gray-200 px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-300"
+                    >
+                      我的評價
+                    </button>
+                  </div>
 
-            <div className="ml-3" title="登出">
-              <Icon
-                className="cursor-pointer"
-                icon="material-symbols:logout-sharp"
-                color="rgba(0, 0, 255, 0.3333333333333333)"
-                width="30"
-                height="30"
-                onClick={handleLogout}
-              />
-            </div>
+                  <div className="ml-3" title="登出">
+                    <Icon
+                      className="cursor-pointer"
+                      icon="material-symbols:logout-sharp"
+                      color="rgba(0, 0, 255, 0.3333333333333333)"
+                      width="30"
+                      height="30"
+                      onClick={handleLogout}
+                    />
+                  </div>
+                </div>
+              </>
+            ) : (
+              // 如果用戶未登入，顯示登入按鈕
+              <div className="ml-auto" title="註冊 | 登入">
+                <Link to="/signIn" className="flex items-center">
+                  <Icon
+                    className="mr-1 cursor-pointer"
+                    icon="mingcute:user-4-fill"
+                    color="rgba(0, 0, 255, 0.3333333333333333)"
+                    width="40"
+                    height="40"
+                    onClick={handleSignIn}
+                  />
+                  {currentUser ? "" : <p className="text-[#8591F0]">Login</p>}
+                </Link>
+              </div>
+            )}
           </div>
-        </>
-      ) : (
-        // 如果用戶未登入，顯示登入按鈕
-        <div className="ml-auto" title="註冊 | 登入">
-          <Link to="/signIn" className="flex items-center">
-            <Icon
-              className="mr-1 cursor-pointer"
-              icon="mingcute:user-4-fill"
-              color="rgba(0, 0, 255, 0.3333333333333333)"
-              width="40"
-              height="40"
-              onClick={handleSignIn}
-            />
-            {currentUser ? "" : <p className="text-[#8591F0]">Login</p>}
-          </Link>
         </div>
-      )}
-    </div>
+      </header>
+    </>
   );
 };
 

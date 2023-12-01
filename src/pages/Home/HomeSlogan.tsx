@@ -3,14 +3,16 @@ import ActionButton from "./ActionButton";
 const HomeSlogan = () => {
   return (
     <>
-      <div className="mb-20">
-        <p className="mb-4 text-6xl">想挑戰不可能的任務 ?</p>
-        <div className="flex items-center justify-center">
-          <p className="mr-3 pt-2 text-3xl">想找的</p>
-          <h1 className="mr-2 inline bg-gradient-to-r from-blue-700 via-blue-500 to-purple-400 bg-clip-text text-5xl font-black text-transparent">
-            Super Task co.{" "}
+      <div className="py-24">
+        <p className="mb-4 text-6xl text-right">想挑戰不可能的任務 ?</p>
+        <div className="mb-10 flex items-center justify-end">
+          <h1 className="mr-3 inline bg-gradient-to-r from-blue-700 via-blue-500 to-purple-400 bg-clip-text text-5xl font-black italic text-transparent">
+            Super Task co.
           </h1>
-          <p className="pt-2 text-3xl">( 應該 ) 都找的到</p>
+          <div className="flex items-center pt-2 text-3xl">
+            <p className="text-3xl">( 應該 )</p>
+            <p className="text-3xl">都找的到</p>
+          </div>
         </div>
         <ActionButton />
       </div>
