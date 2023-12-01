@@ -107,27 +107,27 @@ const SignIn = () => {
                 or use your email for registration
               </span>
               <input
-                className="mx-0 my-2 w-full border-[none] bg-[#eee] px-[15px] py-[12px] focus:outline-none"
+                className="mx-0 my-2 w-full rounded-md border-[none] bg-[#eee] px-[15px] py-[12px] focus:outline-none"
                 type="text"
                 value={name}
                 placeholder="Name"
                 onChange={(e) => setName(e.target.value)}
               />
               <input
-                className="mx-0 my-2 w-full border-[none] bg-[#eee] px-[15px] py-[12px] focus:outline-none"
+                className="mx-0 my-2 w-full rounded-md border-[none] bg-[#eee] px-[15px] py-[12px] focus:outline-none"
                 type="email"
                 value={email}
                 placeholder="Email"
                 onChange={(e) => setEmail(e.target.value)}
               />
               <input
-                className="mx-0 my-2 w-full border-[none] bg-[#eee] px-[15px] py-[12px] focus:outline-none"
+                className="mx-0 my-2 w-full rounded-md border-[none] bg-[#eee] px-[15px] py-[12px] focus:outline-none"
                 type="password"
                 value={password}
                 placeholder="Password"
                 onChange={(e) => setPassword(e.target.value)}
               />
-              <button className="rounded-md-[20px] border-[1px] border-[#FF4B2B] border-[solid] bg-[#FF4B2B] px-[45px] py-[12px] text-[12px] font-bold uppercase tracking-[1px] text-[#FFFFFF] [transition:transform_80ms_ease-in] focus:outline-[none] active:scale-[0.95]">
+              <button className="rounded-md border-[1px] border-[#FF4B2B] border-[solid] bg-[#FF4B2B] px-[45px] py-[12px] text-[12px] font-bold uppercase tracking-[1px] text-[#FFFFFF] [transition:transform_80ms_ease-in] focus:outline-[none] active:scale-[0.95]">
                 Sign Up
               </button>
             </form>
@@ -139,13 +139,13 @@ const SignIn = () => {
             >
               <p>Sign in</p>
               <input
-                className="mx-0 my-2 w-full border-[none] bg-[#eee] px-[15px] py-[12px] focus:outline-none"
+                className="mx-0 my-2 w-full rounded-md border-[none] bg-[#eee] px-[15px] py-[12px] focus:outline-none"
                 type="email"
                 placeholder="Email"
                 onChange={(e) => setEmail(e.target.value)}
               />
               <input
-                className="mx-0 my-2 w-full border-[none] bg-[#eee] px-[15px] py-[12px] focus:outline-none"
+                className="mx-0 my-2 w-full rounded-md border-[none] bg-[#eee] px-[15px] py-[12px] focus:outline-none"
                 type="password"
                 placeholder="Password"
                 onChange={(e) => setPassword(e.target.value)}
@@ -156,7 +156,7 @@ const SignIn = () => {
               >
                 Forgot your password?
               </a>
-              <button className="rounded-md-[20px] border-[1px] border-[#FF4B2B] border-[solid] bg-[#FF4B2B] px-[45px] py-[12px] text-[12px] font-bold uppercase tracking-[1px] text-[#FFFFFF] [transition:transform_80ms_ease-in] focus:outline-[none] active:scale-[0.95]">
+              <button className="rounded-md border-[1px] border-[#FF4B2B] border-[solid] bg-[#FF4B2B] px-[45px] py-[12px] text-[12px] font-bold uppercase tracking-[1px] text-[#FFFFFF] [transition:transform_80ms_ease-in] focus:outline-[none] active:scale-[0.95]">
                 Sign In
               </button>
             </form>
@@ -169,7 +169,7 @@ const SignIn = () => {
                   To keep connected with us please login with your personal info
                 </p>
                 <button
-                  className="ghost rounded-md-[20px] border-[1px] border-[#FF4B2B] border-[solid] bg-[#FF4B2B] px-[45px] py-[12px] text-[12px] font-bold uppercase tracking-[1px] text-[#FFFFFF] [transition:transform_80ms_ease-in] focus:outline-[none] active:scale-[0.95] "
+                  className="ghost rounded-md border-[1px] border-[#FF4B2B] border-[solid] bg-[#FF4B2B] px-[45px] py-[12px] text-[12px] font-bold uppercase tracking-[1px] text-[#FFFFFF] [transition:transform_80ms_ease-in] focus:outline-[none] active:scale-[0.95] "
                   id="signIn"
                   onClick={handleSignInClick}
                 >
@@ -182,7 +182,7 @@ const SignIn = () => {
                   Enter your personal details and start journey with us
                 </p>
                 <button
-                  className="ghost rounded-md-[20px] border-[1px] border-[#FF4B2B] border-[solid] bg-[#FF4B2B] px-[45px] py-[12px] text-[12px] font-bold uppercase tracking-[1px] text-[#FFFFFF] [transition:transform_80ms_ease-in] focus:outline-[none] active:scale-[0.95] "
+                  className="ghost rounded-md border-[1px] border-[#FF4B2B] border-[solid] bg-[#FF4B2B] px-[45px] py-[12px] text-[12px] font-bold uppercase tracking-[1px] text-[#FFFFFF] [transition:transform_80ms_ease-in] focus:outline-[none] active:scale-[0.95] "
                   id="signUp"
                   onClick={handleSignUpClick}
                 >
