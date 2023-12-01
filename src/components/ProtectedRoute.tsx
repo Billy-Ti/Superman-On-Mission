@@ -21,7 +21,7 @@ const ProtectedRoute: React.FC<ProtectedRouteProps> = ({ children }) => {
         allowOutsideClick: false,
       }).then((result) => {
         if (result.isConfirmed) {
-          navigate("/SignIn");
+          navigate("/signIn");
         }
       });
     }
