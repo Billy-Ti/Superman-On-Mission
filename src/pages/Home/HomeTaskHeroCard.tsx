@@ -10,7 +10,7 @@ const HomeTaskHeroCard: React.FC = () => {
 
   return (
     <>
-      <div className="relative mb-20">
+      <div className="relative mb-20 select-none">
         <div className="container relative mx-[auto] my-[0] h-[200px] w-[250px] [perspective:1000px]">
           <div
             className="carousel absolute h-full w-full [transform-style:preserve-3d] [transition:transform_1s]"

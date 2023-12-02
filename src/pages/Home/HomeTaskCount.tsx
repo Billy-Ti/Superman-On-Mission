@@ -2,7 +2,8 @@ import { Icon } from "@iconify/react";
 
 const HomeTaskCount = () => {
   return (
-    <div className="mb-10 flex items-center justify-center gap-36 shadow-xl shadow-neutral-100">
+    // shadow-xl shadow-neutral-100
+    <div className="mb-10 flex items-center justify-center gap-36">
       <div className="flex flex-col items-center gap-3">
         <Icon icon="clarity:note-solid" width="70" height="70" />
         <p className="rounded-full bg-gradient-to-r from-blue-500 via-[#f493c4] to-[#f99659] p-5 py-3 text-5xl  font-black text-white">

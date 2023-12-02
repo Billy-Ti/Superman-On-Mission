@@ -82,7 +82,7 @@ const Header = () => {
     <>
       <header
         className={`sticky top-0 z-10 w-full ${
-          isScrolled ? "backdrop-blur-sm border-b border-gray-100" : ""
+          isScrolled ? "border-b border-gray-100 backdrop-blur-sm" : ""
         } transition-all duration-300`}
       >
         <div className="container mx-auto flex max-w-[1280px] items-center md:px-20">
@@ -94,13 +94,22 @@ const Header = () => {
             <p className="mr-1 italic">SuperTask co.</p>
             <span className="hidden lg:block">|</span>
           </Link>
-          <p className="hidden pl-2 pt-2 text-lg font-black text-gray-400 lg:block">
+          <p className="text-gray hidden pl-2 pt-2 text-lg font-black lg:block">
             只有不想發的案，沒有做不到的事
           </p>
+          <ul className="ml-auto flex items-center text-lg md:mr-4 md:gap-4">
+            <li className="relative after:absolute after:bottom-0 after:left-0 after:h-[5px] after:w-full after:translate-y-1 after:bg-[#6366f1] after:opacity-0 after:transition after:duration-200 after:ease-in-out hover:after:translate-y-0 hover:after:opacity-100">
+              <Link to="/acceptTask">接任務</Link>
+            </li>
+            <li>|</li>
+            <li className="relative after:absolute after:bottom-0 after:left-0 after:h-[5px] after:w-full after:translate-y-1 after:bg-[#6366f1] after:opacity-0 after:transition after:duration-200 after:ease-in-out hover:after:translate-y-0 hover:after:opacity-100">
+              <Link to="/taskPage">發任務</Link>
+            </li>
+          </ul>
 
           {currentUser ? (
             <>
-              <div className="group relative ml-auto flex items-center">
+              <div className="group relative flex items-center">
                 <Icon
                   className="cursor-pointer"
                   icon="mingcute:user-4-fill"

@@ -23,7 +23,7 @@ const HomePainPoints = () => {
 
   return (
     <>
-      <div className="mb-10 p-10">
+      <div className="mb-10 py-10">
         <div className="flex flex-col items-center md:flex-row">
           <p className="text-4xl font-bold md:mr-4 md:w-1/2">
             或許你曾經有過...

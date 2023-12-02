@@ -3,8 +3,9 @@ import { useNavigate } from "react-router";
 const HomeSolutionList: React.FC = () => {
   const navigate = useNavigate();
   return (
-    <div className="mb-10 rounded-md shadow-xl shadow-neutral-100">
-      <div className="flex w-full items-center justify-between p-10  ">
+    // shadow-xl shadow-neutral-100
+    <div className="mb-10 rounded-md">
+      <div className="flex w-full items-center justify-between py-10">
         <p>
           {" "}
           <span className="text-3xl font-bold">
@@ -21,7 +22,7 @@ const HomeSolutionList: React.FC = () => {
         </div>
       </div>
       <div className="group grid grid-cols-1 gap-3 md:lg:xl:grid-cols-3 ">
-        <div className="group flex flex-col items-center p-10 text-center hover:bg-[#f7f4f0]">
+        <div className="group flex flex-col items-center py-10 text-center hover:bg-[#f7f4f0]">
           {/* <span className="rounded-full bg-red-500 p-5 text-white shadow-lg shadow-red-200">
             <svg
               xmlns="http://www.w3.org/2000/svg"
@@ -48,7 +49,7 @@ const HomeSolutionList: React.FC = () => {
             簡單接 case，操作簡便，節省您寶貴的時間，完成十萬火急的任務
           </p>
         </div>
-        <div className="group flex flex-col items-center p-10 text-center hover:bg-[#f7f4f0]">
+        <div className="group flex flex-col items-center py-10 text-center hover:bg-[#f7f4f0]">
           {/* <span className="rounded-full bg-orange-500 p-5 text-white shadow-lg shadow-orange-200">
             <svg
               xmlns="http://www.w3.org/2000/svg"

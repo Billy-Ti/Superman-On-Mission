@@ -2,7 +2,8 @@ import { Icon } from "@iconify/react";
 
 const HomeTaskStep = () => {
   return (
-    <div className="mb-20 p-6 py-20 shadow-xl shadow-neutral-100">
+    // shadow-xl shadow-neutral-100
+    <div className="mb-20 py-20">
       <p className="mb-10 text-center text-4xl">發案 3 步驟，跟著一起 go</p>
       <div className="flex justify-between px-5">
         <p className="mb-1 text-2xl font-bold">Step 1</p>

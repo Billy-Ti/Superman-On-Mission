@@ -1,6 +1,6 @@
 import { useNavigate } from "react-router-dom";
 
-const ActionButton = () => {
+const HomeActionButton = () => {
   const navigate = useNavigate();
 
   const handleStartTask = () => {
@@ -28,4 +28,4 @@ const ActionButton = () => {
   );
 };
 
-export default ActionButton;
+export default HomeActionButton;
