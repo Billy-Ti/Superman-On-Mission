@@ -3,7 +3,7 @@ import { Icon } from "@iconify/react";
 const HomeTaskStep = () => {
   return (
     <div className="mb-20 p-6 py-20 shadow-xl shadow-neutral-100">
-      <p className="mb-10 text-center text-4xl">發案 3 步驟，任務一起 go</p>
+      <p className="mb-10 text-center text-4xl">發案 3 步驟，跟著一起 go</p>
       <div className="flex justify-between px-5">
         <p className="mb-1 text-2xl font-bold">Step 1</p>
         <p className="text-2xl font-bold">Step 2</p>
@@ -60,30 +60,24 @@ const HomeTaskStep = () => {
               className="flex h-full w-full flex-col items-center justify-between rounded-xl bg-white p-4 shadow-xl transition-all duration-300 ease-in-out hover:shadow-2xl"
               key={index}
             >
-              {/* 图片 */}
               <img
                 src="https://upload.wikimedia.org/wikipedia/commons/thumb/9/9e/Telenor_Logo.svg/1600px-Telenor_Logo.svg.png"
                 className="w-12"
                 alt="Telenor Logo"
               />
-              {/* 标题 */}
               <div className="mt-2 text-lg font-semibold">幫我抓米奇...</div>
-              {/* 日期 */}
               <div className="flex items-center gap-1 text-sm font-semibold">
                 <Icon icon="uim:clock" className="text-gray-400" />
                 <span>2023/09/01</span>
               </div>
-              {/* 位置 */}
               <div className="flex items-center gap-1 text-sm font-semibold">
                 <Icon icon="mdi:location" className="text-gray-400" />
                 <span>台北市仁愛路三段14巷五號五樓</span>
               </div>
-              {/* 价格 */}
               <div className="my-4 bg-gradient-to-r from-blue-700 via-blue-500 to-purple-400 bg-clip-text font-black text-transparent">
                 <span className="text-base font-bold">500</span>
                 <span className="text-sm font-semibold">/ Super Coin</span>
               </div>
-              {/* 按钮 */}
               <button className="mt-2 w-full rounded-full border border-[#F0F0F6] bg-[#F4F5FA] px-4 py-3 shadow-lg transition duration-300 ease-in-out hover:bg-slate-300">
                 See more
               </button>

@@ -2,7 +2,6 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
-
 body {
   font-family: "Segoe UI", "Noto Sans TC", "Roboto", "Helvetica Neue", Arial,
     "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji",
@@ -11,16 +10,13 @@ body {
 .typed-container .typed-cursor {
   @apply text-5xl;
 }
-
 .crediCard.seeBack {
   transform: rotateY(-180deg);
 }
-
 .highlight {
   border-bottom: 16px solid #6366f1;
   font-weight: bold;
 }
-
 /* Custom task cards style */
 @-webkit-keyframes fadeIn {
   from {
@@ -44,7 +40,6 @@ body {
     animation: fadeIn 0.5s ease-in-out;
   }
 }
-
 @-webkit-keyframes gradientAnimation {
   0% {
     background-position: 0% 50%;
@@ -53,7 +48,6 @@ body {
     background-position: 100% 50%;
   }
 }
-
 @-webkit-keyframes gradientAnimation {
   0% {
     background-position: 0% 50%;
@@ -62,7 +56,6 @@ body {
     background-position: 100% 50%;
   }
 }
-
 @keyframes gradientAnimation {
   0% {
     background-position: 0% 50%;
@@ -71,7 +64,6 @@ body {
     background-position: 100% 50%;
   }
 }
-
 @keyframes gradientAnimation {
   0% {
     background-position: 0% 50%;
@@ -83,7 +75,6 @@ body {
     background-position: 100% 50%;
   }
 }
-
 .border-gradient {
   background-image: linear-gradient(
     to right,
@@ -95,7 +86,6 @@ body {
   -webkit-animation: gradientAnimation 5s linear infinite;
   animation: gradientAnimation 5s linear infinite;
 }
-
 /* Custom login style */
 .container.right-panel-active .sign-in-container {
   transform: translateX(100%);
@@ -119,17 +109,14 @@ body {
 .container.right-panel-active .overlay-right {
   transform: translateX(20%);
 }
-
 /* Custom rating style */
 .rating {
   margin: auto;
 }
-
 .rating__stars {
   display: flex;
   position: relative;
 }
-
 .rating__star {
   display: block;
   overflow: visible;
@@ -137,7 +124,6 @@ body {
   width: 2em;
   height: 2em;
 }
-
 .rating__star-body,
 .rating__star-body-g,
 .rating__star-shadow {
@@ -148,20 +134,17 @@ body {
   -webkit-animation-fill-mode: forwards;
   animation-fill-mode: forwards;
 }
-
 .rating__star-body {
   fill: var(--star-dim);
   transform-origin: 16px 17.45px;
   transition: fill var(--trans-dur) var(--bezier);
 }
-
 .rating__star-body-g {
   -webkit-animation-name: starShrink;
   animation-name: starShrink;
   transform: scale(0.67);
   transform-origin: 16px 31px;
 }
-
 .rating__star-shadow {
   -webkit-animation-name: starShadowShrink;
   animation-name: starShadowShrink;
@@ -169,55 +152,46 @@ body {
   transform: scale(0.67);
   transform-origin: 16px 31px;
 }
-
 .rating--pristine .rating__star-body,
 .rating--pristine .rating__star-body-g,
 .rating--pristine .rating__star-shadow {
   -webkit-animation-duration: 0s;
   animation-duration: 0s;
 }
-
 .rating__label,
 .rating__input {
   -webkit-tap-highlight-color: transparent;
 }
-
 .rating__label {
   cursor: pointer;
   padding: 0.1875em;
 }
-
 .rating__label--delay1 .rating__star-body,
 .rating__label--delay1 .rating__star-body-g {
   -webkit-animation-delay: 0.05s;
   animation-delay: 0.05s;
 }
-
 .rating__label--delay2 .rating__star-body,
 .rating__label--delay2 .rating__star-body-g {
   -webkit-animation-delay: 0.1s;
   animation-delay: 0.1s;
 }
-
 .rating__label--delay3 .rating__star-body,
 .rating__label--delay3 .rating__star-body-g {
   -webkit-animation-delay: 0.15s;
   animation-delay: 0.15s;
 }
-
 .rating__label--delay4 .rating__star-body,
 .rating__label--delay4 .rating__star-body-g {
   -webkit-animation-delay: 0.2s;
   animation-delay: 0.2s;
 }
-
 .rating__input {
   position: absolute;
   -webkit-appearance: none;
   -moz-appearance: none;
   appearance: none;
 }
-
 .rating__input-1:hover ~ .rating__label:first-of-type .rating__star-body,
 .rating__input-2:hover ~ .rating__label:nth-of-type(-n + 2) .rating__star-body,
 .rating__input-3:hover ~ .rating__label:nth-of-type(-n + 3) .rating__star-body,
@@ -225,7 +199,6 @@ body {
 .rating__input-5:hover ~ .rating__label:nth-of-type(-n + 5) .rating__star-body {
   fill: var(--star);
 }
-
 .rating__input-1:checked ~ .rating__label:first-of-type .rating__star-body,
 .rating__input-2:checked
   ~ .rating__label:nth-of-type(-n + 2)
@@ -243,7 +216,6 @@ body {
   animation-name: starSpin;
   fill: rgb(251, 251, 13);
 }
-
 .rating__input-1:checked ~ .rating__label:first-of-type .rating__star-body-g,
 .rating__input-2:checked
   ~ .rating__label:nth-of-type(-n + 2)
@@ -260,7 +232,6 @@ body {
   -webkit-animation-name: starJump;
   animation-name: starJump;
 }
-
 .rating__input-1:checked ~ .rating__label:first-of-type .rating__star-shadow,
 .rating__input-2:checked
   ~ .rating__label:nth-of-type(-n + 2)
@@ -277,7 +248,6 @@ body {
   -webkit-animation-name: starShadow;
   animation-name: starShadow;
 }
-
 .rating__input-2:checked
   ~ .rating__label:nth-of-type(-n + 1):hover
   .rating__star-body,
@@ -292,7 +262,6 @@ body {
   .rating__star-body {
   fill: rgb(251, 251, 13);
 }
-
 .rating__sr {
   clip: rect(1px, 1px, 1px, 1px);
   overflow: hidden;
@@ -300,7 +269,6 @@ body {
   width: 1px;
   height: 1px;
 }
-
 @-webkit-keyframes starJump {
   from {
     transform: translateY(0) scale(0.67, 0.67);
@@ -321,7 +289,6 @@ body {
     transform: translateY(0) scale(1, 1);
   }
 }
-
 @keyframes starJump {
   from {
     transform: translateY(0) scale(0.67, 0.67);
@@ -342,7 +309,6 @@ body {
     transform: translateY(0) scale(1, 1);
   }
 }
-
 @-webkit-keyframes starShadow {
   from {
     transform: scale(0.67, 1);
@@ -363,7 +329,6 @@ body {
     transform: scale(1, 1);
   }
 }
-
 @keyframes starShadow {
   from {
     transform: scale(0.67, 1);
@@ -384,7 +349,6 @@ body {
     transform: scale(1, 1);
   }
 }
-
 @-webkit-keyframes starShrink {
   from {
     -webkit-animation-timing-function: ease-in;
@@ -401,7 +365,6 @@ body {
     transform: scale(0.67, 0.67);
   }
 }
-
 @keyframes starShrink {
   from {
     -webkit-animation-timing-function: ease-in;
@@ -418,7 +381,6 @@ body {
     transform: scale(0.67, 0.67);
   }
 }
-
 @-webkit-keyframes starShadowShrink {
   from {
     -webkit-animation-timing-function: ease-in;
@@ -435,7 +397,6 @@ body {
     transform: scale(0.67, 1);
   }
 }
-
 @keyframes starShadowShrink {
   from {
     -webkit-animation-timing-function: ease-in;
@@ -452,7 +413,6 @@ body {
     transform: scale(0.67, 1);
   }
 }
-
 @-webkit-keyframes starSpin {
   from,
   20% {
@@ -463,7 +423,6 @@ body {
     transform: rotate(144deg);
   }
 }
-
 @keyframes starSpin {
   from,
   20% {
@@ -474,7 +433,6 @@ body {
     transform: rotate(144deg);
   }
 }
-
 /* Custom Directly */
 .toggle-checkbox:checked {
   @apply: right-0 border-green-400;

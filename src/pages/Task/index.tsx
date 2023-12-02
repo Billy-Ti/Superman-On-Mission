@@ -19,9 +19,9 @@ import { useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import Swal from "sweetalert2";
 import { v4 as uuidv4 } from "uuid";
+import Header from "../../components/layout/Header";
 import { app, auth } from "../../config/firebase"; // 導入初始化的 Firebase app
 import { showAlert } from "../../utils/showAlert";
-import Home from "../Home";
 import ServiceType, { ServiceTypeRef } from "../components/ServiceType";
 import countyToRegion from "../components/TaiwanRegion";
 
@@ -265,7 +265,7 @@ const Task = () => {
 
   return (
     <>
-      <Home />
+      <Header />
       <div className="container mx-auto px-4 md:max-w-7xl">
         <div className="mb-4 mt-10 flex items-center border-b-8 border-black">
           <h3 className="pb-3 text-4xl font-bold">發任務 {`>>`}</h3>
