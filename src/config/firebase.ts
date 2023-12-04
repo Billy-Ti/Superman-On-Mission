@@ -32,9 +32,12 @@ function requestPermission() {
   Notification.requestPermission().then((permission) => {
     if (permission === "granted") {
       console.log("Notification permission granted.");
-      // 獲取令牌
+      // 獲取令牌c
       const messaging = getMessaging();
-      getToken(messaging, { vapidKey: "YOUR_VAPID_KEY" })
+      getToken(messaging, {
+        vapidKey:
+          "BBhsTBgNYE93liO54Xp_mGeR-8YrnzOg-RtJtzoCOu8jrH5ULT0rUBnfYtrXBGUOLBjzOEj_a6669L4_8-Tx9PM",
+      })
         .then((currentToken) => {
           if (currentToken) {
             console.log("FCM Token:", currentToken);

@@ -5,6 +5,6 @@ import { defineConfig } from 'vite';
 export default defineConfig({
   plugins: [react()],
   build: {
-    chunkSizeWarningLimit: 1000, // 將警告限制提高到 1000KB
+    chunkSizeWarningLimit: 2000, // 將警告限制提高到 1000KB
   },
 });

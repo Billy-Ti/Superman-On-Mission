@@ -31,27 +31,25 @@ const RegionFilter: React.FC<RegionFilterProps> = ({
   };
 
   return (
-    <>
-      <div>
-        <div className="mb-4 flex items-center">
-          <p className="mr-2 bg-gradient-to-r from-blue-600 via-blue-500 to-purple-400 bg-clip-text text-2xl font-black text-transparent">
-            依照地區搜尋
-          </p>
-          <RegionSelector
-            selectedCounty={selectedCounty}
-            selectedRegion={selectedRegion}
-            onCountyChange={handleCountyChange}
-            onRegionChange={handleRegionChange}
-          />
-          <a
-            onClick={handleClearSelected}
-            className="cursor-pointer rounded-md bg-gradient-to-r from-indigo-300 to-violet-300 px-4 py-2 text-white"
-          >
-            Clear selected
-          </a>
-        </div>
+    <div className="mb-4 flex items-center">
+      <div className="flex items-center">
+        <span className="mr-2 h-8 w-2 bg-[#A7B4FC]"></span>
+        <p className="mr-2 text-2xl font-black">依照地區搜尋</p>
       </div>
-    </>
+
+      <RegionSelector
+        selectedCounty={selectedCounty}
+        selectedRegion={selectedRegion}
+        onCountyChange={handleCountyChange}
+        onRegionChange={handleRegionChange}
+      />
+      <a
+        onClick={handleClearSelected}
+        className="cursor-pointer rounded-md bg-gradient-to-r from-indigo-300 to-violet-300 px-4 py-2 text-white"
+      >
+        Clear selected
+      </a>
+    </div>
   );
 };
 

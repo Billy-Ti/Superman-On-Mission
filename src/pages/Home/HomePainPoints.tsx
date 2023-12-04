@@ -1,37 +1,40 @@
-import { TypeAnimation } from "react-type-animation";
+import { useEffect } from "react";
+import Typed from "typed.js";
 
 const HomePainPoints = () => {
+  useEffect(() => {
+    const options = {
+      strings: [
+        "想找人幫你<span class='highlight body'>抓蟲蟲</span> ?",
+        "想找人幫你<span class='highlight body'>做報告</span> ?",
+        "又或者想兼職<span class='highlight body'>賺奶粉錢</span> ?",
+        "都找不到管道...",
+      ],
+      typeSpeed: 50,
+      backSpeed: 50,
+      loop: true,
+      startDelay: 1000,
+    };
+    const typed = new Typed(".typed", options);
+    return () => {
+      typed.destroy();
+    };
+  }, []);
+
   return (
-    <div>
-      <div className="flex justify-between">
-        <div className="flex w-1/2 flex-col">
-          <p className="mb-6 text-6xl">或許你曾經有過...</p>
-        </div>
-        <div>
-          <TypeAnimation
-            sequence={[
-              1000,
-              "想找人幫你抓害蟲 ?", // initially rendered starting point
-              1000,
-              "還是想找人教你做報告 ?",
-              1000,
-              "又或者想兼職賺奶粉錢 ?",
-              1000,
-              "都找不到管道...",
-              1000,
-            ]}
-            speed={50}
-            style={{ fontSize: "2em", color: "red", width: "50%" }}
-            repeat={Infinity}
-          />
+    <div className="container mx-auto max-w-[1280px] px-4 pt-4 md:px-20">
+      <div className="mb-10 py-10">
+        <div className="flex flex-col items-center md:flex-row">
+          <p className="text-4xl font-bold md:mr-4 md:w-1/2">
+            或許你曾經有過...
+          </p>
+          <div className="flex h-24 items-center justify-center md:w-1/2">
+            <div className="typed-container w-full text-center">
+              <span className="typed text-2xl md:text-4xl md:font-bold"></span>
+            </div>
+          </div>
         </div>
       </div>
-      <button
-        className="w-40 rounded-md bg-gradient-to-r from-blue-300 via-[#f796c7] to-[#f5c1a2] py-3 text-2xl font-black text-white"
-        type="button"
-      >
-        來看成果
-      </button>
     </div>
   );
 };

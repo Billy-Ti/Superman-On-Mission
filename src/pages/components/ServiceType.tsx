@@ -68,13 +68,15 @@ const ServiceType = forwardRef((_props, ref) => {
   };
   return (
     <>
-      <div className="flex">
-        <div className="grid grid-cols-2 gap-4 text-2xl md:grid-cols-3 lg:grid-cols-4">
+      <div className="mb-4 flex flex-col font-medium lg:flex-row lg:justify-between">
+        <div className="grid grid-cols-2 border rounded-md border-slate-500 gap-4 text-2xl md:grid-cols-3 text-gray-500 lg:grid-cols-4">
           {serviceType.map((item, index) => (
             <div
               key={index}
-              className={`flex cursor-pointer items-center justify-center rounded-md border p-2 ${
-                selectedIndexes.includes(index) ? "bg-gray-200" : ""
+              className={`flex cursor-pointer items-center justify-center rounded-md p-2 ${
+                selectedIndexes.includes(index)
+                  ? "bg-slate-500 font-semibold text-white"
+                  : ""
               }`}
               onClick={() => handleServiceTypeClick(index)}
             >
@@ -82,12 +84,15 @@ const ServiceType = forwardRef((_props, ref) => {
             </div>
           ))}
         </div>
-        <div className="flex space-x-2 rounded-md p-2">
+        <div className="mt-4 mb-4 flex space-x-2 rounded-md lg:mt-0">
           <div className="flex flex-col">
             <div className="mb-4 flex">
-              <p className="flex-1 rounded-md bg-white px-4 py-2 text-center text-2xl">
-                是否十萬火急
-              </p>
+              <div className="flex items-center">
+                <span className="mr-2 h-8 w-2 bg-blue-500"></span>
+                <p className="flex-1 rounded-md py-2 pr-4 text-center text-2xl">
+                  是否十萬火急
+                </p>
+              </div>
               <div
                 className={`flex cursor-pointer items-center rounded-md px-4 py-2 shadow ${
                   urgent ? "bg-gray-200" : "bg-white"
@@ -106,7 +111,10 @@ const ServiceType = forwardRef((_props, ref) => {
               </div>
             </div>
             <div className="flex items-center">
-              <p className="px-4">完成日期</p>
+              <div className="flex items-center">
+                <span className="mr-2 h-8 w-2 bg-blue-500"></span>
+                <p className="pr-4 text-2xl">完成日期</p>
+              </div>
               <input
                 className="border"
                 type="date"
