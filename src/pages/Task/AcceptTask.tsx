@@ -265,8 +265,12 @@ const AcceptTask = () => {
   return (
     <>
       <Header />
+      <div className="bg-[#c4cdfd]">
+        <div className="container mx-auto mb-[100px] max-w-[1280px] px-4 md:max-w-7xl lg:px-20">
+          <Carousel />
+        </div>
+      </div>
       <div className="container mx-auto max-w-[1280px] px-4 md:max-w-7xl lg:px-20">
-      <Carousel />
         <div className="mb-4">
           <div className="mb-4 flex items-center">
             <span className="mr-2 h-8 w-2 bg-[#A7B4FC]"></span>
@@ -486,6 +490,7 @@ const AcceptTask = () => {
           className="justify-center"
         />
       </div>
+
       <Footer />
     </>
   );

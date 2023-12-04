@@ -18,6 +18,7 @@ const ReviewLists: React.FC = () => {
           <DisplaySwitchButton
             onToggleUrgent={handleToggleDisplay}
             buttonText="顯示已給出的評價"
+            className="block"
           />
           <ReviewContent showReviews={showReviews} />
         </div>
