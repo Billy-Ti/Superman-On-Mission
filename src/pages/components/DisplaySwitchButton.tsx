@@ -1,14 +1,16 @@
 interface DisplaySwitchButtonProps {
   onToggleUrgent: (event: React.ChangeEvent<HTMLInputElement>) => void;
   buttonText: string; // 傳一個新的 prop 來自定義文字
+  className: string;
 }
 
 const DisplaySwitchButton = ({
   onToggleUrgent,
   buttonText,
+  className,
 }: DisplaySwitchButtonProps) => {
   return (
-    <div className="mb-4 flex items-center">
+    <div className={`mb-4 flex items-center ${className}`}>
       <p className="mr-2 bg-gradient-to-r from-blue-600 via-blue-500 to-purple-400 bg-clip-text text-2xl font-black text-transparent">
         {buttonText}
       </p>

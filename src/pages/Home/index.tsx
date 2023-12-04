@@ -12,7 +12,7 @@ const Home = () => {
   return (
     <>
       <Header />
-      <div className="container mx-auto max-w-[1280px] px-4 pt-4 md:px-20">
+      {/* <div className="container mx-auto max-w-[1280px] px-4 pt-4 md:px-20"> */}
         <HomeSlogan />
         <HomePainPoints />
         <HomeSolutionList />
@@ -22,7 +22,7 @@ const Home = () => {
         <HomeTaskHeroCard />
         <HomeEndingButton />
         <Footer />
-      </div>
+      {/* </div> */}
     </>
   );
 };

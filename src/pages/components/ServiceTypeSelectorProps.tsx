@@ -11,12 +11,12 @@ const ServiceTypeSelector: React.FC<ServiceTypeSelectorProps> = ({
   handleServiceTypeClick,
 }) => {
   return (
-    <div className="mb-4 grid grid-cols-2 gap-4 text-2xl md:grid-cols-3 lg:grid-cols-4">
+    <div className="mb-4 grid grid-cols-2 border rounded-md border-slate-500 gap-4 text-2xl md:grid-cols-3 lg:grid-cols-4">
       {serviceType.map((item, index) => (
         <div
           key={index}
-          className={`flex cursor-pointer items-center justify-center rounded-md border p-2 ${
-            selectedIndexes.includes(index) ? "bg-gray-200" : ""
+          className={`flex cursor-pointer items-center justify-center rounded-md text-gray-500 font-medium p-2 ${
+            selectedIndexes.includes(index) ? "bg-slate-500 font-semibold text-white" : ""
           }`}
           onClick={() => handleServiceTypeClick(index)}
         >

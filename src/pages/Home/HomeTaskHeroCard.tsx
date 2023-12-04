@@ -1,5 +1,6 @@
 import { Icon } from "@iconify/react";
 import { useState } from "react";
+import InteractiveBlock from "../components/InteractiveBlock";
 
 const HomeTaskHeroCard: React.FC = () => {
   const [currdeg, setCurrdeg] = useState(0);
@@ -9,7 +10,7 @@ const HomeTaskHeroCard: React.FC = () => {
   };
 
   return (
-    <>
+    <div className="container mx-auto max-w-[1280px] px-4 pt-4 md:px-20">
       <div className="relative mb-20 select-none">
         <div className="container relative mx-[auto] my-[0] h-[200px] w-[250px] [perspective:1000px]">
           <div
@@ -18,30 +19,158 @@ const HomeTaskHeroCard: React.FC = () => {
               transform: `rotateY(${currdeg}deg)`,
             }}
           >
-            <div className="absolute block h-52 w-64 rounded-[10px] bg-[#bfdbfe] text-center text-[5em] text-white opacity-95 [transform:rotateY(0deg)_translateZ(250px)]">
-              A
-            </div>
-            <div className="absolute block h-52 w-64 rounded-[10px] bg-[#f7f4f0] text-center text-[5em] text-white opacity-95 [transform:rotateY(60deg)_translateZ(250px)]">
-              B
-            </div>
-            <div className="absolute block h-52 w-64 rounded-[10px] bg-[#d5adfd] text-center text-[5em] text-white opacity-95 [transform:rotateY(120deg)_translateZ(250px)]">
-              C
-            </div>
-            <div className="absolute block h-52 w-64 rounded-[10px] bg-[#bfdbfe] text-center text-[5em] text-white opacity-95 [transform:rotateY(180deg)_translateZ(250px)]">
-              D
-            </div>
-            <div className="absolute block h-52 w-64 rounded-[10px] bg-[#f7f4f0] text-center text-[5em] text-white opacity-95 [transform:rotateY(240deg)_translateZ(250px)]">
-              E
-            </div>
-            <div className="absolute block h-52 w-64 rounded-[10px] bg-[#d5adfd] text-center text-[5em] text-white opacity-95 [transform:rotateY(300deg)_translateZ(250px)]">
-              F
-            </div>
+            <InteractiveBlock
+              bgColor="bg-[#bfdbfe]"
+              transform="[transform:rotateY(0deg)_translateZ(250px)]"
+              content={
+                <>
+                  <img
+                    src="/slogan.png"
+                    alt="描述"
+                    className="mb-4 h-32 w-32 rounded-full"
+                  />
+                  <div className="flex items-center text-gray-600">
+                    <p className="text-[1em]">Tasker Name :</p>
+                    <p className="text-[1em]"></p>
+                  </div>
+                  <div className="flex items-center text-gray-600">
+                    <p className="text-[1em]">Professionalism :</p>
+                    <p className="text-[1em]">/5</p>
+                  </div>
+                </>
+              }
+              link1="your-link-1"
+              link2="your-link-2"
+              link3="your-link-3"
+            />
+
+            {/* 其他區塊的實例 */}
+            <InteractiveBlock
+              bgColor="bg-[#f7f4f0]"
+              transform="[transform:rotateY(60deg)_translateZ(250px)]"
+              content={
+                <>
+                  <img
+                    src="/slogan.png"
+                    alt="描述"
+                    className="mb-4 h-32 w-32 rounded-full"
+                  />
+                  <div className="flex items-center text-gray-600">
+                    <p className="text-[1em]">Tasker Name :</p>
+                    <p className="text-[1em]"></p>
+                  </div>
+                  <div className="flex items-center text-gray-600">
+                    <p className="text-[1em]">Professionalism :</p>
+                    <p className="text-[1em]">/5</p>
+                  </div>
+                </>
+              }
+              link1="your-link-1"
+              link2="your-link-2"
+              link3="your-link-3"
+            />
+            <InteractiveBlock
+              bgColor="bg-[#d5adfd]"
+              transform="[transform:rotateY(120deg)_translateZ(250px)]"
+              content={
+                <>
+                  <img
+                    src="/slogan.png"
+                    alt="描述"
+                    className="mb-4 h-32 w-32 rounded-full"
+                  />
+                  <div className="flex items-center text-gray-600">
+                    <p className="text-[1em]">Tasker Name :</p>
+                    <p className="text-[1em]"></p>
+                  </div>
+                  <div className="flex items-center text-gray-600">
+                    <p className="text-[1em]">Professionalism :</p>
+                    <p className="text-[1em]">/5</p>
+                  </div>
+                </>
+              }
+              link1="your-link-1"
+              link2="your-link-2"
+              link3="your-link-3"
+            />
+            <InteractiveBlock
+              bgColor="bg-[#bfdbfe]"
+              transform="[transform:rotateY(180deg)_translateZ(250px)]"
+              content={
+                <>
+                  <img
+                    src="/slogan.png"
+                    alt="描述"
+                    className="mb-4 h-32 w-32 rounded-full"
+                  />
+                  <div className="flex items-center text-gray-600">
+                    <p className="text-[1em]">Tasker Name :</p>
+                    <p className="text-[1em]"></p>
+                  </div>
+                  <div className="flex items-center text-gray-600">
+                    <p className="text-[1em]">Professionalism :</p>
+                    <p className="text-[1em]">/5</p>
+                  </div>
+                </>
+              }
+              link1="your-link-1"
+              link2="your-link-2"
+              link3="your-link-3"
+            />
+            <InteractiveBlock
+              bgColor="bg-[#f7f4f0]"
+              transform="[transform:rotateY(240deg)_translateZ(250px)]"
+              content={
+                <>
+                  <img
+                    src="/slogan.png"
+                    alt="描述"
+                    className="mb-4 h-32 w-32 rounded-full"
+                  />
+                  <div className="flex items-center text-gray-600">
+                    <p className="text-[1em]">Tasker Name :</p>
+                    <p className="text-[1em]"></p>
+                  </div>
+                  <div className="flex items-center text-gray-600">
+                    <p className="text-[1em]">Professionalism :</p>
+                    <p className="text-[1em]">/5</p>
+                  </div>
+                </>
+              }
+              link1="your-link-1"
+              link2="your-link-2"
+              link3="your-link-3"
+            />
+            <InteractiveBlock
+              bgColor="bg-[#d5adfd]"
+              transform="[transform:rotateY(300deg)_translateZ(250px)]"
+              content={
+                <>
+                  <img
+                    src="/slogan.png"
+                    alt="描述"
+                    className="mb-4 h-32 w-32 rounded-full"
+                  />
+                  <div className="flex items-center text-gray-600">
+                    <p className="text-[1em]">Tasker Name :</p>
+                    <p className="text-[1em]"></p>
+                  </div>
+                  <div className="flex items-center text-gray-600">
+                    <p className="text-[1em]">Professionalism :</p>
+                    <p className="text-[1em]">/5</p>
+                  </div>
+                </>
+              }
+              link1="your-link-1"
+              link2="your-link-2"
+              link3="your-link-3"
+            />
           </div>
         </div>
 
         <button
           type="button"
-          className="next absolute bottom-0 right-[10%] top-0 mx-auto bg-transparent"
+          className="next absolute right-[20px] top-[-90px] mx-auto bg-transparent sm:bottom-0 sm:right-[10%] sm:top-0"
           onClick={() => rotate("next")}
         >
           <Icon
@@ -53,7 +182,7 @@ const HomeTaskHeroCard: React.FC = () => {
         </button>
         <button
           type="button"
-          className="next absolute bottom-0 left-[10%] top-0 mx-auto bg-transparent"
+          className="next absolute left-[20px] top-[-90px] mx-auto bg-transparent sm:bottom-0 sm:left-[10%] sm:top-0"
           onClick={() => rotate("prev")}
         >
           <Icon
@@ -64,7 +193,7 @@ const HomeTaskHeroCard: React.FC = () => {
           />
         </button>
       </div>
-    </>
+    </div>
   );
 };
 

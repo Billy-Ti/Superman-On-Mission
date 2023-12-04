@@ -3,8 +3,10 @@ import { collection, getDocs, orderBy, query, where } from "firebase/firestore";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import Pagination from "../../components/Pagination";
+import Footer from "../../components/layout/Footer";
 import Header from "../../components/layout/Header";
 import { db } from "../../config/firebase";
+import Carousel from "../components/Carousel";
 import DisplaySwitchButton from "../components/DisplaySwitchButton";
 import ServiceTypeSelector from "../components/ServiceTypeSelectorProps";
 import RegionFilter from "./RegionFilter";
@@ -191,7 +193,7 @@ const AcceptTask = () => {
     }
   };
 
-  const handleBackToTask = () => navigate("/");
+  // const handleBackToTask = () => navigate("/");
 
   const handleCityChange = (city: string) => {
     setSelectedCity(city);
@@ -263,63 +265,69 @@ const AcceptTask = () => {
   return (
     <>
       <Header />
+      <div className="container mx-auto max-w-[1280px] px-4 md:max-w-7xl lg:px-20">
+      <Carousel />
+        <div className="mb-4">
+          <div className="mb-4 flex items-center">
+            <span className="mr-2 h-8 w-2 bg-[#A7B4FC]"></span>
+            <p className="text-2xl">依照分類搜尋</p>
+          </div>
+          <ServiceTypeSelector
+            serviceType={serviceType}
+            selectedIndexes={selectedIndexes}
+            handleServiceTypeClick={handleServiceTypeClick}
+          />
+          <RegionFilter
+            onCountyChange={handleCityChange}
+            onRegionChange={handleDistrictChange}
+          />
+          <div className="relative mb-4 flex items-center">
+            <div className="flex items-center">
+              <span className="mr-2 h-8 w-2 bg-[#A7B4FC]"></span>
+              <label htmlFor="searchTask" className="mr-2 text-2xl font-black">
+                試試直接搜尋吧
+              </label>
+            </div>
 
-      <div className="container mx-auto max-w-[1280px] px-20 md:max-w-7xl">
-        <h3 className="mb-4 mt-10 border-b-8 border-black pb-3 text-4xl font-bold">
-          找任務 {`>>`}
-          <button onClick={handleBackToTask} type="button" className="text-xl">
-            回首頁
-          </button>
-        </h3>
-        <p className="bg-gradient-to-r from-blue-600 to-purple-400 bg-clip-text text-2xl text-transparent">
-          依照分類搜尋
-        </p>
-
-        <ServiceTypeSelector
-          serviceType={serviceType}
-          selectedIndexes={selectedIndexes}
-          handleServiceTypeClick={handleServiceTypeClick}
-        />
-        <RegionFilter
-          onCountyChange={handleCityChange}
-          onRegionChange={handleDistrictChange}
-        />
-
-        <div className="relative mb-10 flex items-center">
-          <label
-            htmlFor="searchTask"
-            className="mr-2 bg-gradient-to-r from-blue-600 via-blue-500 to-purple-400 bg-clip-text text-2xl font-black text-transparent"
-          >
-            試試直接搜尋吧
-          </label>
-          <div className="relative">
-            <input
-              id="searchTask"
-              placeholder="生活...程式...家教"
-              className="rounded-md px-2 py-1 focus:outline-none"
-              type="text"
-              value={searchQuery}
-              onChange={handleInputChange}
-              onKeyDown={handleKeyDown}
+            <div className="relative">
+              <input
+                id="searchTask"
+                placeholder="生活...程式...家教"
+                className="rounded-md px-2 py-3 focus:outline-none"
+                type="text"
+                value={searchQuery}
+                onChange={handleInputChange}
+                onKeyDown={handleKeyDown}
+              />
+              <button
+                onClick={() => handleTaskSearch()}
+                type="button"
+                className="translate-x-[-30px] translate-y-[10px]"
+              >
+                <Icon icon="ri:search-line" width="30" color="#e0e7ff" />
+              </button>
+              {searchQuery && (
+                <div className="autocomplete-suggestions absolute left-0 w-full cursor-pointer bg-gray-300 px-2">
+                  {renderAutocompleteSuggestions()}
+                </div>
+              )}
+            </div>
+          </div>
+          <div className="flex items-center">
+            <Icon
+              className="mr-2 animate-scale-pulse"
+              icon="bi:fire"
+              color="red"
+              width="40"
+              height="40"
             />
-            <button
-              onClick={() => handleTaskSearch()}
-              type="button"
-              className="translate-x-[-30px] translate-y-[10px]"
-            >
-              <Icon icon="ri:search-line" width="30" color="#e0e7ff" />
-            </button>
-            {searchQuery && (
-              <div className="autocomplete-suggestions absolute left-0 w-full cursor-pointer bg-gray-300 px-2">
-                {renderAutocompleteSuggestions()}
-              </div>
-            )}
+            <DisplaySwitchButton
+              buttonText="顯示所有急件"
+              className="mb-0"
+              onToggleUrgent={handleToggleUrgent}
+            />
           </div>
         </div>
-        <DisplaySwitchButton
-          buttonText="顯示所有急件"
-          onToggleUrgent={handleToggleUrgent}
-        />
         <Pagination
           tasksPerPage={tasksPerPage}
           totalTasks={tasks.length}
@@ -332,7 +340,7 @@ const AcceptTask = () => {
             <p className="text-xl">目前還沒有可接的任務...</p>
           </div>
         ) : (
-          <div className="mb-4 grid grid-cols-1 gap-4 md:grid-cols-3">
+          <div className="mb-4 grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3">
             {currentTasks.map((task) => (
               <>
                 <div
@@ -340,7 +348,7 @@ const AcceptTask = () => {
                   className="border-gradient relative flex grow flex-col rounded-md border-2 border-gray-200 p-4"
                 >
                   <div className="flex min-h-[300px] grow items-start gap-2">
-                    <div className="border-2 border-gray-300 p-2">
+                    <div className="border-2 border-gray-300">
                       {task.photos?.[0] ? (
                         <img
                           src={task.photos[0]}
@@ -399,19 +407,22 @@ const AcceptTask = () => {
                             </>
                           ) : (
                             <>
-                              <Icon
-                                className="absolute right-[-5px] top-[-15px]"
-                                icon="bxs:label"
-                                color="red"
-                                width="40"
-                                height="40"
-                                rotate={3}
-                                hFlip={true}
-                                vFlip={true}
-                              />
-                              <span className="absolute right-[2.5%] top-[-2%] text-lg text-white">
-                                T
-                              </span>
+                              <div className="absolute right-0 top-0 h-10 w-10 p-2">
+                                <Icon
+                                  className="absolute inset-0"
+                                  icon="bxs:label"
+                                  color="red"
+                                  width="40"
+                                  height="40"
+                                  rotate={3}
+                                  hFlip={true}
+                                  vFlip={true}
+                                />
+                                <span className="absolute inset-0 flex items-center justify-center text-lg text-white">
+                                  T
+                                </span>
+                              </div>
+
                               <span className="text-lg font-bold">
                                 是否急件&emsp;:
                               </span>
@@ -452,9 +463,13 @@ const AcceptTask = () => {
                   </div>
                   <button
                     onClick={() => handleAcceptTask(task.id)}
-                    className="border-blue-sky-300 group relative cursor-pointer overflow-hidden rounded-md border bg-gray-200 from-blue-400 via-blue-300 to-purple-200 bg-clip-text px-6 py-3 text-2xl font-black text-transparent [transform:translateZ(0)] before:absolute before:bottom-0 before:left-0 before:h-full before:w-full before:origin-[100%_100%] before:scale-x-0 before:bg-gradient-to-r before:transition before:duration-500 before:ease-in-out hover:border-0 hover:before:origin-[0_0] hover:before:scale-x-100"
+                    className="border-blue-sky-300 group relative cursor-pointer overflow-hidden rounded-md border bg-gray-200 from-blue-400 via-blue-300 to-purple-200 bg-clip-text px-6 py-3 text-2xl font-black text-transparent transition duration-500 ease-in-out before:absolute before:bottom-0 before:left-0 before:h-full before:w-full before:origin-[100%_100%] before:scale-x-0 before:bg-gradient-to-r before:transition before:duration-500 before:ease-in-out hover:border-0 hover:before:origin-[0_0] hover:before:scale-x-100"
                   >
-                    <span className="relative z-0 text-black transition duration-500 ease-in-out group-hover:text-black">
+                    <Icon
+                      icon="icon-park:click-tap"
+                      className="mr-2 inline-block h-6 w-6"
+                    />
+                    <span className="relative z-10 text-black">
                       查看任務詳情 {">>"}
                     </span>
                   </button>
@@ -471,6 +486,7 @@ const AcceptTask = () => {
           className="justify-center"
         />
       </div>
+      <Footer />
     </>
   );
 };

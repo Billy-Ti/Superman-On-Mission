@@ -8,7 +8,6 @@ import {
   setDoc,
   updateDoc,
 } from "firebase/firestore";
-
 import {
   getDownloadURL,
   getStorage,
@@ -19,16 +18,16 @@ import { useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import Swal from "sweetalert2";
 import { v4 as uuidv4 } from "uuid";
+import Footer from "../../components/layout/Footer";
 import Header from "../../components/layout/Header";
 import { app, auth } from "../../config/firebase"; // 導入初始化的 Firebase app
 import { showAlert } from "../../utils/showAlert";
+import HomeTaskStep from "../Home/HomeTaskStep";
 import ServiceType, { ServiceTypeRef } from "../components/ServiceType";
 import countyToRegion from "../components/TaiwanRegion";
-
 const db = getFirestore(app);
 // 使用Firebase App實例獲取Storage的參考
 const storage = getStorage(app);
-
 const Task = () => {
   const [selectedCounty, setSelectedCounty] = useState<string>("");
   const [taskTitle, setTaskTitle] = useState("");
@@ -44,7 +43,7 @@ const Task = () => {
   const [currentUserId, setCurrentUserId] = useState<string | null>(null);
   const serviceTypeRef = useRef<ServiceTypeRef>(null);
   const [userName, setUserName] = useState("");
-
+  const [uploadedImages, setUploadedImages] = useState(["", "", "", ""]);
   const navigate = useNavigate();
   const handleCountyChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
     const county = event.target.value;
@@ -69,27 +68,40 @@ const Task = () => {
       showAlert("🚨系統提醒", "請輸入有效的數字...");
     }
   };
-
+  const handleImageChange = (
+    event: React.ChangeEvent<HTMLInputElement>,
+    index: number,
+  ) => {
+    const file = event.target.files ? event.target.files[0] : null;
+    if (file) {
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        // 更新對應 index 的圖片 URL
+        setUploadedImages((prevImages) => {
+          const newImages = [...prevImages];
+          newImages[index] = reader.result as string;
+          return newImages;
+        });
+      };
+      reader.readAsDataURL(file);
+    }
+  };
   const backToHome = () => {
     navigate("/");
   };
-
   useEffect(() => {
     const rewardValue = Number(taskReward);
     if (!isNaN(rewardValue) && rewardValue <= originalSuperCoins) {
       setSuperCoins(originalSuperCoins - rewardValue);
     }
   }, [taskReward, originalSuperCoins]);
-
   useEffect(() => {
     const auth = getAuth();
     const unsubscribe = onAuthStateChanged(auth, async (user) => {
       if (user) {
         setCurrentUserId(user.uid);
-
         const userDocRef = doc(db, "users", user.uid);
         const userDoc = await getDoc(userDocRef);
-
         if (userDoc.exists()) {
           // 從 Firestore 讀取用戶資訊
           const userData = userDoc.data();
@@ -111,7 +123,6 @@ const Task = () => {
     });
     return () => unsubscribe();
   }, []);
-
   useEffect(() => {
     const fetchUserCoins = async () => {
       const user = auth.currentUser;
@@ -123,17 +134,14 @@ const Task = () => {
         }
       }
     };
-
     fetchUserCoins();
   }, []);
-
   const uploadFile = async (file: File) => {
     const fileRef = storageRef(storage, "some/path/" + file.name);
     await uploadBytes(fileRef, file);
     return await getDownloadURL(fileRef);
   };
   const fileInputs = document.querySelectorAll('input[type="file"]');
-
   const deleteTask = (event: React.MouseEvent<HTMLButtonElement>) => {
     event.preventDefault();
     fileInputs.forEach((input) => {
@@ -151,7 +159,6 @@ const Task = () => {
       cancelButtonText: "取消",
       reverseButtons: true,
       allowOutsideClick: false,
-      background: "#ffe4e6",
     }).then((result) => {
       if (result.isConfirmed) {
         Swal.fire({
@@ -164,6 +171,7 @@ const Task = () => {
           allowOutsideClick: false,
         });
         resetFormFields();
+        navigate("/");
       }
     });
   };
@@ -171,7 +179,6 @@ const Task = () => {
     event: React.MouseEvent<HTMLButtonElement>,
   ) => {
     event.preventDefault();
-
     // 取得所有選擇的文件
     const fileInputs = document.querySelectorAll('input[type="file"]');
     const files = Array.from(fileInputs).flatMap((input) => {
@@ -181,18 +188,15 @@ const Task = () => {
       }
       return []; // 如果沒有文件，回傳一個空陣列
     });
-
     if (!currentUserId) {
       showAlert("錯誤", "無法識別用戶身份");
       return;
     }
-
     const taskRewardValue = Number(taskReward);
     if (isNaN(taskRewardValue) || taskRewardValue < 0) {
       showAlert("錯誤", "無效的任務報酬");
       return;
     }
-
     const result = await Swal.fire({
       title: "🚨系統提醒",
       html: `<strong style='color: #8D91AA;'>Hi ${userName}${" "}，是否提交任務?</strong>`,
@@ -204,13 +208,11 @@ const Task = () => {
       reverseButtons: true,
       allowOutsideClick: false,
     });
-
     if (result.isConfirmed) {
       try {
         // 上傳文件並取得 URL
         const uploadPromises = files.map((file) => uploadFile(file));
         const photoUrls = await Promise.all(uploadPromises);
-
         // 建立新的任務資料
         const taskData = {
           title: taskTitle,
@@ -230,15 +232,12 @@ const Task = () => {
           cost: taskRewardValue,
           acceptedBy: "",
         };
-
         // 將任務存到資料庫
         await addDoc(collection(db, "tasks"), taskData);
-
         // 更新用戶的 Super Coins
         await updateDoc(doc(db, "users", currentUserId), {
           superCoins: superCoins - taskRewardValue,
         });
-
         setSuperCoins(superCoins - taskRewardValue);
         Swal.fire("提交成功", "任務訊息已更新，謝謝您", "success");
         resetFormFields();
@@ -252,7 +251,6 @@ const Task = () => {
       }
     }
   };
-
   const resetFormFields = () => {
     setSelectedCounty("");
     setSelectedRegion("");
@@ -262,177 +260,215 @@ const Task = () => {
     setAdditionalNotes("");
     setTaskReward("");
   };
-
   return (
     <>
       <Header />
-      <div className="container mx-auto px-4 md:max-w-7xl">
+      <div className="container mx-auto px-4 md:max-w-7xl lg:px-20">
         <div className="mb-4 mt-10 flex items-center border-b-8 border-black">
           <h3 className="pb-3 text-4xl font-bold">發任務 {`>>`}</h3>
           <button onClick={backToHome} type="button">
             回首頁
           </button>
         </div>
-        <form>
-          <div className="flex flex-col">
-            <label htmlFor="taskTitle" className="mb-4 text-3xl font-black">
-              標題
-            </label>
-            <input
-              type="text"
-              id="taskTitle"
-              value={taskTitle} // 綁定 taskTitle 狀態
-              onChange={(e) => setTaskTitle(e.target.value)} // 更新狀態
-              placeholder="例如 : 請人幫我...，請盡量輸入明白的任務需求"
-              className="rounded-md-[10px] mb-4 border p-3 focus:outline-none"
-            />
-          </div>
-          <div className="mb-4 flex items-center">
-            <p className="mr-3 whitespace-nowrap text-3xl font-black">
-              服務類別
-            </p>
-            <select
-              className="mr-3 flex items-center rounded-md border bg-gray-200 p-2"
-              name="county"
-              id="county"
-              value={selectedCounty}
-              onChange={handleCountyChange}
-            >
-              <option value="">請選擇任務縣市</option>
-              <option value="台北市">台北市</option>
-              <option value="新北市">新北市</option>
-              <option value="桃園市">桃園市</option>
-              <option value="台中市">台中市</option>
-              <option value="台南市">台南市</option>
-              <option value="高雄市">高雄市</option>
-              <option value="基隆市">基隆市</option>
-              <option value="新竹市">新竹市</option>
-              <option value="新竹縣">新竹縣</option>
-              <option value="苗栗縣">苗栗縣</option>
-              <option value="彰化縣">彰化縣</option>
-              <option value="南投縣">南投縣</option>
-              <option value="雲林縣">雲林縣</option>
-              <option value="嘉義市">嘉義市</option>
-              <option value="嘉義縣">嘉義縣</option>
-              <option value="屏東縣">屏東縣</option>
-              <option value="宜蘭縣">宜蘭縣</option>
-              <option value="花蓮縣">花蓮縣</option>
-              <option value="台東縣">台東縣</option>
-            </select>
-            {selectedCounty && (
-              <div className="mr-3 flex items-center">
-                <select
-                  className="flex items-center rounded-md border bg-gray-200 p-2"
-                  name="region"
-                  id="region"
-                  onChange={handleRegionChange}
-                >
-                  <option value="">請選擇任務地區</option>
-                  {countyToRegion[selectedCounty]?.map((region) => (
-                    <option key={region} value={region}>
-                      {region}
-                    </option>
-                  ))}
-                </select>
+        <div className="">
+          <form>
+            <div className="flex flex-col">
+              <div className="mb-4 flex items-center">
+                <span className="mr-2 h-8 w-2 bg-blue-500"></span>
+                <label htmlFor="taskTitle" className="text-3xl font-black">
+                  標題
+                </label>
               </div>
-            )}
-            <input
-              type="text"
-              placeholder="請輸入詳細地址，例如 : xx 路 x 巷 x 弄 x 號 x 樓"
-              className="rounded-md-[10px] w-full border p-3 focus:outline-none"
-              value={detailedAddress}
-              onChange={(e) => setDetailedAddress(e.target.value)}
-            />
-          </div>
-          <ServiceType ref={serviceTypeRef} />
-          <div className="mb-4 flex">
-            <p className="mr-3 text-3xl font-black">任務說明</p>
-            <p className="flex flex-col justify-end text-lg font-black text-red-600">
-              嚴格要求30字以上，好讓人明白要做什麼事情
-            </p>
-          </div>
-          <textarea
-            className="rounded-md-[20px] mb-4 h-80 w-full resize-none border p-4 text-xl focus:outline-none"
-            name="startTaskContent"
-            id="startTaskContent"
-            value={taskDescription} // 綁定 taskDescription 狀態
-            onChange={(e) => setTaskDescription(e.target.value)} // 更新狀態
-          ></textarea>
-          <div className="mb-4 flex">
-            <p className="mr-3 text-3xl font-black">其它備註</p>
-          </div>
-          <textarea
-            className="h-30 rounded-md-[20px] mb-4 w-full resize-none border p-4 text-xl focus:outline-none"
-            name="additionalNotes"
-            id="additionalNotes"
-            value={additionalNotes}
-            onChange={(e) => setAdditionalNotes(e.target.value)}
-          ></textarea>
-          <div className="mb-20 flex items-center justify-between">
-            <div className="flex items-center">
-              <p className="mr-3 text-3xl font-black">任務報酬</p>
               <input
                 type="text"
-                id="taskReward"
-                placeholder="願支付多少 Coin 請人完成任務"
-                className="rounded-md-[10px] mr-4 w-72 border p-3 focus:outline-none"
-                value={taskReward}
-                onChange={handleTaskRewardChange}
+                id="taskTitle"
+                value={taskTitle} // 綁定 taskTitle 狀態
+                onChange={(e) => setTaskTitle(e.target.value)} // 更新狀態
+                placeholder="例如 : 請人幫我...，請盡量輸入明白的任務需求"
+                className="mb-4 w-full rounded-md border bg-gray-200 p-3 focus:bg-white focus:outline-none"
               />
-              <span className="text-xl font-black">Super Coin</span>
             </div>
-            <div className="flex items-center text-xl font-black">
-              <p>我的 Super Coin :</p>
-              <span className="ml-1">{superCoins}</span>{" "}
-              {/* 顯示當前 Super Coin 數量 */}
-            </div>
-          </div>
-          <div className="mb-4">
-            <div className="flex">
-              <p className="mr-3 text-3xl font-black">上傳照片</p>
-              <p className="flex flex-col justify-end text-lg font-black text-red-600">
-                建議上傳
+            <div className="mb-4 flex flex-wrap items-center">
+              <div className="mb-4 flex items-center">
+                <span className="mr-2 h-8 w-2 bg-blue-500"></span>
+              </div>
+              <p className="mb-4 mr-3 whitespace-nowrap text-3xl font-black">
+                需求類別 / 地址
               </p>
+              <select
+                className="mb-4 mr-3 flex items-center rounded-md border bg-gray-300 p-2 focus:outline-none"
+                name="county"
+                id="county"
+                value={selectedCounty}
+                onChange={handleCountyChange}
+              >
+                <option value="">請選擇任務縣市</option>
+                <option value="台北市">台北市</option>
+                <option value="新北市">新北市</option>
+                <option value="桃園市">桃園市</option>
+                <option value="台中市">台中市</option>
+                <option value="台南市">台南市</option>
+                <option value="高雄市">高雄市</option>
+                <option value="基隆市">基隆市</option>
+                <option value="新竹市">新竹市</option>
+                <option value="新竹縣">新竹縣</option>
+                <option value="苗栗縣">苗栗縣</option>
+                <option value="彰化縣">彰化縣</option>
+                <option value="南投縣">南投縣</option>
+                <option value="雲林縣">雲林縣</option>
+                <option value="嘉義市">嘉義市</option>
+                <option value="嘉義縣">嘉義縣</option>
+                <option value="屏東縣">屏東縣</option>
+                <option value="宜蘭縣">宜蘭縣</option>
+                <option value="花蓮縣">花蓮縣</option>
+                <option value="台東縣">台東縣</option>
+              </select>
+              {selectedCounty && (
+                <div className="mr-3 flex items-center">
+                  <select
+                    className="mb-4 flex flex-wrap items-center  rounded-md border bg-gray-300 p-2 focus:outline-none"
+                    name="region"
+                    id="region"
+                    onChange={handleRegionChange}
+                  >
+                    <option value="">請選擇任務地區</option>
+                    {countyToRegion[selectedCounty]?.map((region) => (
+                      <option key={region} value={region}>
+                        {region}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+              )}
+              <input
+                type="text"
+                placeholder="請輸入詳細地址，例如 : xx 路 x 巷 x 弄 x 號 x 樓"
+                className="w-full rounded-md border bg-gray-200 p-3 focus:bg-white focus:outline-none"
+                value={detailedAddress}
+                onChange={(e) => setDetailedAddress(e.target.value)}
+              />
             </div>
-            <ul className="mb-28 flex justify-evenly border p-4">
-              <li className="border">
-                <input className="w-[200px]" type="file" name="taskPhoto" />
-              </li>
-              <li className="border">
-                <input className="w-[200px]" type="file" name="taskPhoto" />
-              </li>
-              <li className="border">
-                <input className="w-[200px]" type="file" name="taskPhoto" />
-              </li>
-              <li className="border">
-                <input className="w-[200px]" type="file" name="taskPhoto" />
-              </li>
-            </ul>
-            <div className="mt-10 flex text-2xl">
-              <div className="group pointer-events-auto relative w-full overflow-hidden rounded-md bg-gray-200 px-6 py-3 text-center [transform:translateZ(0)] before:absolute before:left-1/2 before:top-1/2 before:h-8 before:w-8 before:-translate-x-1/2 before:-translate-y-1/2 before:scale-[0] before:rounded-full before:bg-pink-600 before:opacity-0 before:transition before:duration-500 before:ease-in-out hover:before:scale-[25] hover:before:opacity-100">
-                刪除任務
-                <button
-                  type="button"
-                  onClick={deleteTask}
-                  className="absolute inset-0 h-full w-full text-white opacity-0 transition duration-500 ease-in-out hover:opacity-100"
-                >
-                  {"刪除任務"}
-                </button>
+            <ServiceType ref={serviceTypeRef} />
+            <div className="flex flex-col items-center justify-between gap-4 lg:flex-row">
+              <div className="flex w-full flex-col lg:w-1/2">
+                <div className="mb-4 flex items-center">
+                  <div className="flex items-center">
+                    <span className="mr-2 h-8 w-2 bg-blue-500"></span>
+
+                    <p className="mr-3 text-3xl font-black">任務說明</p>
+                    <p className="flex flex-col justify-end font-black text-red-600">
+                      請輸入20字以上，好讓人明白要做什麼事情
+                    </p>
+                  </div>
+                </div>
+                <textarea
+                  className="h-30 mb-4 w-full resize-none rounded-md border bg-gray-200 p-4 focus:bg-white focus:outline-none"
+                  name="startTaskContent"
+                  id="startTaskContent"
+                  placeholder="例：我需要為我的網站設計 LOGO，未來我想用在作品集"
+                  value={taskDescription} // 綁定 taskDescription 狀態
+                  onChange={(e) => setTaskDescription(e.target.value)} // 更新狀態
+                ></textarea>
               </div>
-              <div className="group pointer-events-auto relative w-full overflow-hidden rounded-md bg-gray-200 px-6 py-3 text-center [transform:translateZ(0)] before:absolute before:left-1/2 before:top-1/2 before:h-8 before:w-8 before:-translate-x-1/2 before:-translate-y-1/2 before:scale-[0] before:rounded-full before:bg-teal-600 before:opacity-0 before:transition before:duration-500 before:ease-in-out hover:before:scale-[25] hover:before:opacity-100">
-                提交任務
-                <button
-                  type="button"
-                  onClick={confirmSubmitTask}
-                  className="absolute inset-0 h-full w-full text-white opacity-0 transition duration-500 ease-in-out hover:opacity-100"
-                >
-                  {"提交任務"}
-                </button>
+              <div className="flex w-full flex-col items-start lg:w-1/2">
+                <div className="flex items-center text-right">
+                  <span className="mb-4 mr-2 h-8 w-2 bg-blue-500"></span>
+                  <p className="mb-4 mr-3 text-3xl font-black">其它備註</p>
+                </div>
+                <textarea
+                  className="h-30 mb-4 w-full resize-none rounded-md border bg-gray-200 p-4 focus:bg-white focus:outline-none"
+                  name="additionalNotes"
+                  id="additionalNotes"
+                  placeholder="例：誠信交易，請有經驗的帥哥美女幫幫忙"
+                  value={additionalNotes}
+                  onChange={(e) => setAdditionalNotes(e.target.value)}
+                ></textarea>
               </div>
             </div>
-          </div>
-        </form>
+            <div className="mb-20 flex items-center justify-between">
+              <div className="flex items-center">
+                <div className="flex items-center text-right">
+                  <span className="mr-2 h-8 w-2 bg-blue-500"></span>
+                  <p className="mr-3 text-3xl font-black">任務報酬</p>
+                </div>
+                <input
+                  type="text"
+                  id="taskReward"
+                  placeholder="願支付多少 Coin 請人完成任務"
+                  className="mr-4 w-72 rounded-md border bg-gray-200 p-3 focus:bg-white focus:outline-none"
+                  value={taskReward}
+                  onChange={handleTaskRewardChange}
+                />
+                <span className="text-xl font-black">Super Coin</span>
+              </div>
+              <div className="flex items-center text-xl font-black">
+                <p>我的 Super Coin :</p>
+                <span className="ml-1">{superCoins}</span>{" "}
+              </div>
+            </div>
+            <div className="mb-4">
+              <div className="flex">
+                <span className="mr-2 h-8 w-2 bg-blue-500"></span>
+                <p className="mr-3 text-3xl font-black">上傳照片</p>
+                <p className="flex flex-col justify-end text-lg font-black text-red-600">
+                  建議上傳
+                </p>
+              </div>
+              <ul className="flex items-center justify-between">
+                {uploadedImages.map((image, index) => (
+                  <li
+                    key={index}
+                    className="relative m-2 h-64 w-64 border-2 border-dashed border-black"
+                  >
+                    <input
+                      type="file"
+                      onChange={(e) => handleImageChange(e, index)}
+                      className="absolute left-0 top-0 h-full w-full cursor-pointer opacity-0"
+                    />
+                    {image && (
+                      <img
+                        src={image}
+                        alt={`Uploaded ${index}`}
+                        className="max-h-full max-w-full object-cover"
+                      />
+                    )}
+                    {!image && (
+                      <span className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 transform text-center text-gray-600">
+                        選擇上傳檔案
+                      </span>
+                    )}
+                  </li>
+                ))}
+              </ul>
+              <div className="mt-10 flex text-2xl">
+                <div className="group pointer-events-auto relative w-full overflow-hidden rounded-md bg-pink-600 px-6 py-3 text-center [transform:translateZ(0)] before:absolute before:left-1/2 before:top-1/2 before:h-8 before:w-8 before:-translate-x-1/2 before:-translate-y-1/2 before:scale-[0] before:rounded-full before:bg-pink-600 before:opacity-0 before:transition before:duration-500 before:ease-in-out hover:before:scale-[25] hover:before:opacity-100">
+                  刪除任務
+                  <button
+                    type="button"
+                    onClick={deleteTask}
+                    className="absolute inset-0 h-full w-full text-white opacity-0 transition duration-500 ease-in-out hover:opacity-100"
+                  >
+                    {"刪除任務"}
+                  </button>
+                </div>
+                <div className="group pointer-events-auto relative w-full overflow-hidden rounded-md bg-teal-600 px-6 py-3 text-center [transform:translateZ(0)] before:absolute before:left-1/2 before:top-1/2 before:h-8 before:w-8 before:-translate-x-1/2 before:-translate-y-1/2 before:scale-[0] before:rounded-full before:bg-teal-600 before:opacity-0 before:transition before:duration-500 before:ease-in-out hover:before:scale-[25] hover:before:opacity-100">
+                  刊登任務
+                  <button
+                    type="button"
+                    onClick={confirmSubmitTask}
+                    className="absolute inset-0 h-full w-full text-white opacity-0 transition duration-500 ease-in-out hover:opacity-100"
+                  >
+                    {"刊登任務"}
+                  </button>
+                </div>
+              </div>
+            </div>
+          </form>
+
+          <HomeTaskStep />
+        </div>
       </div>
+      <Footer />
     </>
   );
 };

@@ -91,11 +91,11 @@ const SignIn = () => {
     <>
       <Header />
       <div className="mx-0 -mt-5 flex h-[calc(100vh-70px)] flex-col items-center justify-center bg-white bg-gradient-to-r from-blue-200 via-blue-100 to-[#f7f4f0]">
-        <div
+        <div title="首頁"
           className="mb-3 cursor-pointer bg-gradient-to-r from-blue-700 via-blue-500 to-purple-400 bg-clip-text text-2xl text-transparent"
           onClick={backToHome}
         >
-          <Icon icon="mdi:home" color="#609af9" width="50" height="50" />
+          <Icon icon="mdi:home" color="#609af9" width="40" height="40" />
         </div>
         <div
           className={`rounded-md-[10px] container relative min-h-[480px] w-[768px] max-w-full overflow-hidden bg-[#fff] ${

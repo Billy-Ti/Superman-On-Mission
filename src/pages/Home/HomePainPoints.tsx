@@ -22,7 +22,7 @@ const HomePainPoints = () => {
   }, []);
 
   return (
-    <>
+    <div className="container mx-auto max-w-[1280px] px-4 pt-4 md:px-20">
       <div className="mb-10 py-10">
         <div className="flex flex-col items-center md:flex-row">
           <p className="text-4xl font-bold md:mr-4 md:w-1/2">
@@ -35,7 +35,7 @@ const HomePainPoints = () => {
           </div>
         </div>
       </div>
-    </>
+    </div>
   );
 };
 
