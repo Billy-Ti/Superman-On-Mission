@@ -34,7 +34,7 @@ const RegionFilter: React.FC<RegionFilterProps> = ({
     <div className="mb-4 flex items-center">
       <div className="flex items-center">
         <span className="mr-2 h-8 w-2 bg-[#A7B4FC]"></span>
-        <p className="mr-2 text-2xl font-black">依照地區搜尋</p>
+        <p className="mr-2 text-2xl font-black">地區搜尋</p>
       </div>
 
       <RegionSelector

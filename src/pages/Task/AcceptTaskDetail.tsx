@@ -11,7 +11,7 @@ import {
 } from "firebase/firestore";
 import { getDownloadURL, ref, uploadBytes } from "firebase/storage";
 import { useEffect, useState } from "react";
-import { useNavigate, useParams } from "react-router-dom";
+import { Link, useNavigate, useParams } from "react-router-dom";
 import Swal from "sweetalert2";
 import ChatRoomWindow from "../../components/chatRoom/ChatRoomWindow";
 import { db, storage } from "../../config/firebase";
@@ -72,10 +72,6 @@ const AcceptTaskDetail = () => {
 
   const handleBackToTaskManagement = () => {
     navigate("/taskManagement");
-  };
-
-  const handleToReviews = () => {
-    navigate("/reviewLists");
   };
 
   const handleOverlay = () => {
@@ -356,25 +352,24 @@ const AcceptTaskDetail = () => {
         </button>
       </div>
       <div className="flex justify-between py-4">
-        <button
-          type="button"
+        <Link
+          to="/signIn"
           className="w-1/5 rounded-md bg-gray-300 p-4 text-center"
         >
           會員中心
-        </button>
-        <button
-          type="button"
+        </Link>
+        <Link
+          to="/taskManagement"
           className="w-1/5 rounded-md bg-gray-300 p-4 text-center"
         >
           任務管理
-        </button>
-        <button
-          onClick={handleToReviews}
-          type="button"
+        </Link>
+        <Link
+          to="/reviewLists"
           className="w-1/5 rounded-md bg-gray-300 p-4 text-center"
         >
           我的評價
-        </button>
+        </Link>
       </div>
       {/* 任務進度 */}
       <div className="mb-10 h-3 bg-black"></div>
@@ -532,7 +527,11 @@ const AcceptTaskDetail = () => {
               </span>
             </button>
             {isChatOpen && taskId && (
-              <ChatRoomWindow onCloseRoom={handleCloseChat} />
+              <ChatRoomWindow
+                onCloseRoom={handleCloseChat}
+                externalSelectedUserId={null} // 如果当前场景中不需要此属性，可以传递 null
+                onSelectUser={() => {}} // 如果当前场景中不需要此函数，可以传递一个空函数
+              />
             )}
           </div>
         </div>

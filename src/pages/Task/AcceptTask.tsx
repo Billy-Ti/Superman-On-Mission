@@ -274,7 +274,7 @@ const AcceptTask = () => {
         <div className="mb-4">
           <div className="mb-4 flex items-center">
             <span className="mr-2 h-8 w-2 bg-[#A7B4FC]"></span>
-            <p className="text-2xl">依照分類搜尋</p>
+            <p className="text-2xl">分類搜尋</p>
           </div>
           <ServiceTypeSelector
             serviceType={serviceType}
@@ -289,7 +289,7 @@ const AcceptTask = () => {
             <div className="flex items-center">
               <span className="mr-2 h-8 w-2 bg-[#A7B4FC]"></span>
               <label htmlFor="searchTask" className="mr-2 text-2xl font-black">
-                試試直接搜尋吧
+                關鍵字搜尋
               </label>
             </div>
 
@@ -473,7 +473,7 @@ const AcceptTask = () => {
                       icon="icon-park:click-tap"
                       className="mr-2 inline-block h-6 w-6"
                     />
-                    <span className="relative z-10 text-black">
+                    <span className="z-2 relative text-black">
                       查看任務詳情 {">>"}
                     </span>
                   </button>
