@@ -4,7 +4,7 @@ const HomeSlogan = () => {
   return (
     <div className="min-h-[750px] bg-[url('/test6.png')] bg-cover bg-fixed  bg-center object-cover">
       <div className="container mx-auto  max-w-[1280px] px-4 pt-4 lg:px-20">
-        <div className="py-20">
+        <div className="py-24">
           <div>
             <p className="mb-4 bg-gradient-to-r from-blue-600 via-[#f6037d] to-[#f99659] bg-clip-text text-right text-4xl text-transparent  sm:text-right md:text-6xl lg:pt-10">
               想挑戰不可能的任務 ?

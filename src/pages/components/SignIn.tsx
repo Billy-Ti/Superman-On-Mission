@@ -6,6 +6,7 @@ import {
 import { doc, setDoc } from "firebase/firestore";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import Footer from "../../components/layout/Footer";
 import Header from "../../components/layout/Header";
 import { auth, db } from "../../config/firebase";
 import { showAlert } from "../../utils/showAlert";
@@ -53,6 +54,7 @@ const SignIn = () => {
         totalCompletedTasks: 0,
         progressTasks: 0,
         superCoins: 5000,
+        averageRating: 0,
       });
 
       // 清除輸入狀態
@@ -90,8 +92,9 @@ const SignIn = () => {
   return (
     <>
       <Header />
-      <div className="mx-0 -mt-5 flex h-[calc(100vh-70px)] flex-col items-center justify-center bg-white bg-gradient-to-r from-blue-200 via-blue-100 to-[#f7f4f0]">
-        <div title="首頁"
+      <div className="mx-0 -mt-5 flex h-[calc(100vh-70px-335px)] flex-col items-center justify-center bg-white bg-gradient-to-r from-blue-200 via-blue-100 to-[#f7f4f0]">
+        <div
+          title="首頁"
           className="mb-3 cursor-pointer bg-gradient-to-r from-blue-700 via-blue-500 to-purple-400 bg-clip-text text-2xl text-transparent"
           onClick={backToHome}
         >
@@ -197,6 +200,7 @@ const SignIn = () => {
           </div>
         </div>
       </div>
+      <Footer />
     </>
   );
 };

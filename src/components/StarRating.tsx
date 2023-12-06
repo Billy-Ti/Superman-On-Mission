@@ -3,7 +3,9 @@ import {
   collection,
   doc,
   getDoc,
+  getDocs,
   serverTimestamp,
+  updateDoc,
 } from "firebase/firestore";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
@@ -58,6 +60,24 @@ const StarRating: React.FC<StarRatingProps> = ({
           try {
             const docRef = await addDoc(collection(db, "reviews"), review);
             console.log("Review submitted successfully, ID: ", docRef.id);
+
+            // 計算新的平均評分
+            const reviewsSnapshot = await getDocs(collection(db, "reviews"));
+            let totalRating = 0;
+            let count = 0;
+            reviewsSnapshot.forEach((doc) => {
+              if (doc.data().ratedUser === ratedUser) {
+                totalRating += doc.data().rating;
+                count += 1;
+              }
+            });
+            const newAverageRating = count > 0 ? totalRating / count : 0;
+
+            // 更新 `users` 集合中的 `averageRating`
+            const userRef = doc(db, "users", ratedUser);
+            await updateDoc(userRef, {
+              averageRating: newAverageRating,
+            });
             Swal.fire({
               title: "已送出評價",
               text: "感謝您的反饋",
