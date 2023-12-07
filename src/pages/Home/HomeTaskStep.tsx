@@ -108,9 +108,9 @@ const HomeTaskStep = () => {
                 </div>
                 <button
                   onClick={() => navigate(`/acceptDetail/${task.id}`)}
-                  className="mt-2 w-full rounded-full border border-[#F0F0F6] bg-[#F4F5FA] px-4 py-3 shadow-lg transition duration-300 ease-in-out hover:bg-slate-300"
+                  className="mt-2 w-full rounded-full border border-[#F0F0F6] bg-[#F4F5FA] px-4 py-3 tracking-widest shadow-lg transition duration-300 ease-in-out hover:bg-slate-300"
                 >
-                  See more
+                  看更多
                 </button>
               </div>
             ))}
@@ -119,7 +119,7 @@ const HomeTaskStep = () => {
         <div className="flex justify-center">
           <button
             onClick={() => navigate("/taskPage")}
-            className="rounded-md bg-indigo-500 p-3 text-xl font-semibold tracking-wider text-white transition duration-500 ease-in-out hover:bg-indigo-700"
+            className="tracking-widest rounded-md bg-indigo-500 p-3 text-xl font-semibold text-white transition duration-500 ease-in-out hover:bg-indigo-700"
           >
             立即刊登任務
           </button>

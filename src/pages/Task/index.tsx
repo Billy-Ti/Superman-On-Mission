@@ -22,7 +22,6 @@ import Footer from "../../components/layout/Footer";
 import Header from "../../components/layout/Header";
 import { app, auth } from "../../config/firebase"; // 導入初始化的 Firebase app
 import { showAlert } from "../../utils/showAlert";
-import HomeTaskStep from "../Home/HomeTaskStep";
 import ServiceType, { ServiceTypeRef } from "../components/ServiceType";
 import countyToRegion from "../components/TaiwanRegion";
 const db = getFirestore(app);
@@ -264,11 +263,9 @@ const Task = () => {
     <>
       <Header />
       <div className="container mx-auto px-4 md:max-w-7xl lg:px-20">
-        <div className="mb-4 mt-10 flex items-center border-b-8 border-black">
-          <h3 className="pb-3 text-4xl font-bold">發任務 {`>>`}</h3>
-          <button onClick={backToHome} type="button">
-            回首頁
-          </button>
+        <div className="mb- mt-10  flex items-center border-b-8 border-l-[10px] border-black border-l-indigo-500">
+          <h3 className="mb-4 text-4xl font-bold">發任務</h3>
+          {/* <div className="flex flex-col border-l-[10px] border-l-indigo-500"></div> */}
         </div>
         <div className="">
           <form>
@@ -399,11 +396,12 @@ const Task = () => {
                   value={taskReward}
                   onChange={handleTaskRewardChange}
                 />
-                <span className="text-xl font-black">Super Coin</span>
+                <span className="text-xl font-black">Super Coins</span>
               </div>
-              <div className="flex items-center text-xl font-black">
-                <p>我的 Super Coin :</p>
-                <span className="ml-1">{superCoins}</span>{" "}
+              <div className="flex items-center text-xl font-medium">
+                <p>剩餘 :</p>
+                <span className="ml-1 underline">&emsp;{superCoins}&emsp;</span>
+                <span className="ml-1">Super Coins</span>
               </div>
             </div>
             <div className="mb-4">
@@ -464,8 +462,6 @@ const Task = () => {
               </div>
             </div>
           </form>
-
-          <HomeTaskStep />
         </div>
       </div>
       <Footer />

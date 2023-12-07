@@ -223,7 +223,7 @@ const AcceptTask = () => {
                         <img
                           src={task.photos[0]}
                           alt="任務"
-                          className="h-full w-full object-cover"
+                          className="h-full w-full object-cover transition-transform duration-300 ease-in-out hover:scale-110"
                         />
                       ) : (
                         <span className="text-center text-lg text-gray-600">
@@ -268,16 +268,14 @@ const AcceptTask = () => {
                         <div className="flex items-center">
                           {task.isUrgent ? (
                             <>
-                              <Icon
+                              {/* 火焰 */}
+                              {/* <Icon
                                 className="absolute right-0 top-[-15px] animate-scale-pulse"
                                 icon="bi:fire"
                                 color="red"
                                 width="40"
                                 height="40"
-                              />
-                            </>
-                          ) : (
-                            <>
+                              /> */}
                               <div className="absolute right-0 top-0 h-10 w-10 p-2">
                                 <Icon
                                   className="absolute inset-0"
@@ -290,7 +288,25 @@ const AcceptTask = () => {
                                   vFlip={true}
                                 />
                                 <span className="absolute inset-0 flex items-center justify-center text-lg text-white">
-                                  T
+                                  急
+                                </span>
+                              </div>
+                            </>
+                          ) : (
+                            <>
+                              <div className="absolute right-0 top-0 h-10 w-10 p-2">
+                                <Icon
+                                  className="absolute inset-0"
+                                  icon="bxs:label"
+                                  color="blue"
+                                  width="40"
+                                  height="40"
+                                  rotate={3}
+                                  hFlip={true}
+                                  vFlip={true}
+                                />
+                                <span className="absolute inset-0 flex items-center justify-center text-white">
+                                  推
                                 </span>
                               </div>
 
