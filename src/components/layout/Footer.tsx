@@ -51,12 +51,10 @@ const Footer: React.FC = () => {
       </svg>
       <div className="mx-auto flex max-w-6xl flex-col items-center justify-between lg:flex-row">
         <div className="mb-10 flex flex-col lg:mb-0">
-          <h5 className="mb-3 text-lg font-bold">
-            Welcome to leave your valuable feedback
-          </h5>
+          <h5 className="mb-3 text-lg font-bold">歡迎留下您的寶貴意見</h5>
           <form onSubmit={handleSubmit} className="flex">
             <input
-              className="mr-2 rounded border border-gray-300 p-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="rounded border border-gray-300 p-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
               type="email"
               placeholder="Email Address"
               value={email}
@@ -64,9 +62,9 @@ const Footer: React.FC = () => {
             />
             <button
               type="submit"
-              className="rounded bg-blue-500 p-2 text-white hover:bg-blue-600"
+              className="rounded bg-blue-500 px-6 py-4 text-lg font-medium tracking-widest text-white hover:bg-blue-600"
             >
-              Subscribe
+              訂閱
             </button>
           </form>
         </div>

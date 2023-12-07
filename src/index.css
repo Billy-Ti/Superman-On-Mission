@@ -75,12 +75,13 @@ body {
     background-position: 100% 50%;
   }
 }
+/* 接任務卡片漸層被景色 */
 .border-gradient {
   background-image: linear-gradient(
     to right,
-    #c8dae8,
-    #c3b5fd,
-    rgb(74, 158, 242)
+    rgb(219 234 254 / 0),
+    #b3ddfd,
+    rgb(121, 185, 249)
   );
   background-size: 200% auto;
   -webkit-animation: gradientAnimation 5s linear infinite;
@@ -437,10 +438,10 @@ body {
 .toggle-checkbox:checked {
   @apply: right-0 border-green-400;
   right: 0;
-  border-color: #5074e8;
+  border-color: #6366fe;
 }
 .toggle-checkbox:checked + .toggle-label {
-  background-image: linear-gradient(to right, #3b82f6, #f6037d, #f99659);
+  background-color: #6366fe;
 }
 /* Custom Carousel block */
 

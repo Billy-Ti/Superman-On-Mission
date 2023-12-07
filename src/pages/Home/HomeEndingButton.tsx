@@ -1,3 +1,4 @@
+import { Icon } from "@iconify/react";
 import { Link } from "react-router-dom";
 
 const HomeEndingButton = () => {
@@ -22,12 +23,13 @@ const HomeEndingButton = () => {
             一起寫下新篇章！
           </span>
         </p>
-        <div className="group relative transition duration-1000 hover:duration-200">
+        <div className="group relative mx-auto w-1/5 transition duration-1000 hover:duration-200">
           <Link
             to="/signIn"
-            className="rounded-md bg-gradient-to-r from-pink-300 to-purple-300 px-10 py-4 text-black  hover:from-purple-300 hover:to-pink-300"
+            className="flex w-full items-center justify-center rounded-full bg-gradient-to-r from-pink-300 to-purple-300 px-10 py-4  text-xl text-black hover:from-purple-300 hover:to-pink-300"
           >
-            Join us !
+            加入我們
+            <Icon icon="ep:right" width="20" height="20" />
           </Link>
         </div>
       </div>
