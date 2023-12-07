@@ -4,6 +4,8 @@ import { doc, getDoc, updateDoc } from "firebase/firestore";
 import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import Swal from "sweetalert2";
+import Footer from "../../components/layout/Footer";
+import Header from "../../components/layout/Header";
 import { db } from "../../config/firebase";
 
 interface Task {
@@ -144,143 +146,166 @@ const TaskDetail = () => {
   };
 
   return (
-    <div className="bg-gray-200 p-4">
-      <div className="mb-2 text-3xl font-semibold text-gray-700">
-        任務資訊{">>"}
-        <button onClick={handleBackToTask} type="button" className="text-xl">
-          回任務頁
-        </button>
-      </div>
-      <div className="grid grid-cols-4 gap-4">
-        <div className="bg-white p-4">
-          <div className="mb-3 bg-gray-200 text-center font-black text-gray-500">
-            任務名稱
-          </div>
-          <div>{taskDetails.title}</div>
-        </div>
-        <div className="bg-white p-4">
-          <div className="mb-3 bg-gray-200 text-center font-black text-gray-500">
-            任務地點
-          </div>
-          <div>
-            {taskDetails.city}
-            {taskDetails.district}
-            {taskDetails.address}
-          </div>
-        </div>
-        <div className="bg-white p-4">
-          <div className="mb-3 bg-gray-200 text-center font-black text-gray-500">
-            任務類型
-          </div>
-          <div>
-            {taskDetails.categorys.map((category) => `#${category}`).join(" ")}
-          </div>
-        </div>
-        <div className="bg-white p-4">
-          <div className="mb-3 bg-gray-200 text-center font-black text-gray-500">
-            任務報酬 Super Coin
-          </div>
-          <div className="flex items-center justify-center text-4xl font-extrabold text-amber-400">
-            <span>{taskDetails.cost}</span>
-          </div>
-        </div>
-        {/* 任務照片 */}
-        <div className="mb-2 text-2xl font-semibold text-gray-700">
-          任務照片
-        </div>
-      </div>
-      <div className="flex items-center justify-center">
-        <ul className="flex gap-4">
-          {taskDetails.photos?.map((photo) => (
-            <li key={photo} className="h-52 w-52 bg-gray-400">
-              <img
-                className="h-full w-full cursor-pointer object-cover p-2"
-                src={photo}
-                alt="Task photo"
-                onClick={() => {
-                  setSelectedPhoto(photo);
-                  setIsModalOpen(true);
-                }}
-              />
-            </li>
-          ))}
-
-          {[...Array(4 - (taskDetails.photos?.length || 0))].map((_, index) => (
-            <li
-              key={index}
-              className="mb-2 flex h-52 w-52 flex-col items-center justify-center bg-gray-400 font-extrabold"
+    <>
+      <Header />
+      <div className="container mx-auto max-w-[1280px] px-4 pt-4 md:px-20">
+        <div className="p-4">
+          <div className="mb-2 text-3xl font-semibold text-gray-700">
+            任務資訊{">>"}
+            <button
+              onClick={handleBackToTask}
+              type="button"
+              className="text-xl"
             >
-              <span>No more images</span>
-              <Icon icon="openmoji:picture" className="text-8xl" />
-            </li>
-          ))}
-        </ul>
-
-        {isModalOpen && (
-          <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
-            <div className=" relative max-w-full overflow-auto bg-white p-4">
-              <img
-                className="min-w-[500px] max-w-[800px] object-cover"
-                src={selectedPhoto || "defaultImagePath"}
-                alt="Enlarged task photo"
-              />
-              <button
-                className="absolute bottom-10 left-1/2 mt-4 flex h-10 w-10 -translate-x-1/2 transform items-center justify-center rounded-full bg-gray-200 p-2 text-black"
-                onClick={() => setIsModalOpen(false)}
-              >
-                <span className="absolute -left-4 -top-4 h-16 w-16 animate-ping rounded-full bg-gray-200 opacity-75" />
-                <span className="absolute -left-4 -top-4 h-16 w-16 rounded-full bg-red-200" />
-                <span className="relative z-10 text-center text-sm">Close</span>
-              </button>
+              回任務頁
+            </button>
+          </div>
+          <div className="grid grid-cols-4 gap-4">
+            <div className="bg-white p-4">
+              <div className="mb-3 bg-gray-200 text-center font-black text-gray-500">
+                任務名稱
+              </div>
+              <div>{taskDetails.title}</div>
+            </div>
+            <div className="bg-white p-4">
+              <div className="mb-3 bg-gray-200 text-center font-black text-gray-500">
+                任務地點
+              </div>
+              <div>
+                {taskDetails.city}
+                {taskDetails.district}
+                {taskDetails.address}
+              </div>
+            </div>
+            <div className="bg-white p-4">
+              <div className="mb-3 bg-gray-200 text-center font-black text-gray-500">
+                任務類型
+              </div>
+              <div>
+                {taskDetails.categorys
+                  .map((category) => `#${category}`)
+                  .join(" ")}
+              </div>
+            </div>
+            <div className="bg-white p-4">
+              <div className="mb-3 bg-gray-200 text-center font-black text-gray-500">
+                任務報酬 Super Coin
+              </div>
+              <div className="flex items-center justify-center text-4xl font-extrabold text-amber-400">
+                <span>{taskDetails.cost}</span>
+              </div>
+            </div>
+            {/* 任務照片 */}
+            <div className="mb-2 text-2xl font-semibold text-gray-700">
+              任務照片
             </div>
           </div>
-        )}
-      </div>
+          <div className="flex items-center justify-between">
+            <ul className="flex gap-4 ">
+              {taskDetails.photos?.map((photo) => (
+                <li key={photo} className="h-52 w-52 bg-gray-400">
+                  <img
+                    className="h-full w-full cursor-pointer object-cover p-2"
+                    src={photo}
+                    alt="Task photo"
+                    onClick={() => {
+                      setSelectedPhoto(photo);
+                      setIsModalOpen(true);
+                    }}
+                  />
+                </li>
+              ))}
 
-      <div className="space-y-4 p-4">
-        <div className="flex items-center space-x-2">
-          <div className="flex-none">
-            <Icon icon="openmoji:european-name-badge" width="50" height="50" />
+              {[...Array(4 - (taskDetails.photos?.length || 0))].map(
+                (_, index) => (
+                  <li
+                    key={index}
+                    className="mb-2 flex h-52 w-52 flex-col items-center justify-center bg-gray-400 font-extrabold"
+                  >
+                    <span>No more images</span>
+                    <Icon icon="openmoji:picture" className="text-8xl" />
+                  </li>
+                ),
+              )}
+            </ul>
+
+            {isModalOpen && (
+              <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
+                <div className=" relative max-w-full overflow-auto bg-white p-4">
+                  <img
+                    className="min-w-[500px] max-w-[800px] object-cover"
+                    src={selectedPhoto || "defaultImagePath"}
+                    alt="Enlarged task photo"
+                  />
+                  <button
+                    className="absolute bottom-10 left-1/2 mt-4 flex h-10 w-10 -translate-x-1/2 transform items-center justify-center rounded-full bg-gray-200 p-2 text-black"
+                    onClick={() => setIsModalOpen(false)}
+                  >
+                    <span className="absolute -left-4 -top-4 h-16 w-16 animate-ping rounded-full bg-gray-200 opacity-75" />
+                    <span className="absolute -left-4 -top-4 h-16 w-16 rounded-full bg-red-200" />
+                    <span className="relative z-10 text-center text-sm">
+                      Close
+                    </span>
+                  </button>
+                </div>
+              </div>
+            )}
           </div>
-          <div className="flex-grow tracking-wider">
-            <span className="font-semibold tracking-wider">發案者名稱：</span>
-            {posterName}
+
+          <div className="space-y-4 p-4">
+            <div className="flex items-center space-x-2">
+              <div className="flex-none">
+                <Icon
+                  icon="openmoji:european-name-badge"
+                  width="50"
+                  height="50"
+                />
+              </div>
+              <div className="flex-grow tracking-wider">
+                <span className="font-semibold tracking-wider">
+                  發案者名稱：
+                </span>
+                {posterName}
+              </div>
+            </div>
+            <div className="flex items-center space-x-2">
+              <div className="flex-none">
+                <Icon
+                  icon="material-symbols:other-admission"
+                  width="50"
+                  height="50"
+                />
+              </div>
+              <div className="flex-grow tracking-wider">
+                <span className="font-semibold tracking-wider">任務說明：</span>
+                {taskDetails.description}
+              </div>
+            </div>
+            <div className="flex items-center space-x-2">
+              <div className="flex-none">
+                <Icon icon="uiw:date" width="50" height="50" />
+              </div>
+              <div className="flex-grow tracking-wider">
+                <span className="font-semibold tracking-wider">
+                  任務截止日期：
+                </span>
+                {taskDetails.dueDate}
+              </div>
+            </div>
+            <div className="flex items-center space-x-2">
+              <div className="flex-none">
+                <Icon icon="fxemoji:note" width="50" height="50" />
+              </div>
+              <div className="flex-grow tracking-wider">
+                <span className="font-semibold tracking-wider">
+                  其他備註 :{" "}
+                </span>
+                {taskDetails.notes}
+              </div>
+            </div>
           </div>
-        </div>
-        <div className="flex items-center space-x-2">
-          <div className="flex-none">
-            <Icon
-              icon="material-symbols:other-admission"
-              width="50"
-              height="50"
-            />
-          </div>
-          <div className="flex-grow tracking-wider">
-            <span className="font-semibold tracking-wider">任務說明：</span>
-            {taskDetails.description}
-          </div>
-        </div>
-        <div className="flex items-center space-x-2">
-          <div className="flex-none">
-            <Icon icon="uiw:date" width="50" height="50" />
-          </div>
-          <div className="flex-grow tracking-wider">
-            <span className="font-semibold tracking-wider">任務截止日期：</span>
-            {taskDetails.dueDate}
-          </div>
-        </div>
-        <div className="flex items-center space-x-2">
-          <div className="flex-none">
-            <Icon icon="fxemoji:note" width="50" height="50" />
-          </div>
-          <div className="flex-grow tracking-wider">
-            <span className="font-semibold tracking-wider">其他備註 : </span>
-            {taskDetails.notes}
-          </div>
-        </div>
-      </div>
-      <div className="flex justify-center gap-4">
-        {/* <button
+          <div className="flex justify-center gap-4">
+            {/* <button
           type="button"
           onClick={handleAskDetails}
           className="group relative overflow-hidden rounded-md bg-gray-300 px-6 py-3 [transform:translateZ(0)] before:absolute before:bottom-0 before:left-0 before:h-full before:w-full before:origin-[100%_100%] before:scale-x-0 before:bg-sky-600 before:transition before:duration-500 before:ease-in-out hover:before:origin-[0_0] hover:before:scale-x-100"
@@ -293,18 +318,21 @@ const TaskDetail = () => {
         {isChatOpen && taskId && (
           <ChatRoomWindow onCloseRoom={handleCloseChat} taskId={taskId} />
         )} */}
-        <button
-          type="button"
-          onClick={handleConfirmAcceptTask}
-          className="group relative overflow-hidden rounded-md bg-gray-300 px-6 py-3 [transform:translateZ(0)] before:absolute before:bottom-0 before:left-0 before:h-full before:w-full before:origin-[100%_100%] before:scale-x-0 before:bg-green-500 before:transition before:duration-500 before:ease-in-out hover:before:origin-[0_0] hover:before:scale-x-100"
-        >
-          <span className="relative z-0 flex w-60 items-center justify-center rounded-md p-4 text-2xl text-black transition duration-500 ease-in-out group-hover:text-gray-200">
-            <Icon icon="icon-park-outline:check-correct" className="mr-3" />
-            確認接案
-          </span>
-        </button>
+            <button
+              type="button"
+              onClick={handleConfirmAcceptTask}
+              className="group relative overflow-hidden rounded-md bg-gray-300 px-6 py-3 [transform:translateZ(0)] before:absolute before:bottom-0 before:left-0 before:h-full before:w-full before:origin-[100%_100%] before:scale-x-0 before:bg-green-500 before:transition before:duration-500 before:ease-in-out hover:before:origin-[0_0] hover:before:scale-x-100"
+            >
+              <span className="relative z-0 flex w-60 items-center justify-center rounded-md p-4 text-2xl text-black transition duration-500 ease-in-out group-hover:text-gray-200">
+                <Icon icon="icon-park-outline:check-correct" className="mr-3" />
+                確認接案
+              </span>
+            </button>
+          </div>
+        </div>
       </div>
-    </div>
+      <Footer />
+    </>
   );
 };
 

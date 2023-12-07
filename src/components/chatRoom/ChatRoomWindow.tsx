@@ -10,6 +10,7 @@ import {
   getDocs,
   getFirestore,
   onSnapshot,
+  orderBy,
   query,
   serverTimestamp,
   setDoc,
@@ -21,6 +22,8 @@ import { showAlert } from "../../utils/showAlert";
 import ChatRoomTitle from "./ChatRoomTitle";
 interface ChatRoomWindowProps {
   onCloseRoom: () => void;
+  onSelectUser: (userId: string) => void;
+  externalSelectedUserId: string | null;
 }
 interface Message {
   content: string;
@@ -41,14 +44,17 @@ interface User {
   name: string;
   email: string;
 }
-const ChatRoomWindow = ({ onCloseRoom }: ChatRoomWindowProps) => {
+const ChatRoomWindow = ({
+  onCloseRoom,
+  externalSelectedUserId,
+}: ChatRoomWindowProps) => {
   const [message, setMessage] = useState("");
   const [messages, setMessages] = useState<Message[]>([]);
   const [currentUser, setCurrentUser] = useState<User | null>(null);
   const [searchQuery, setSearchQuery] = useState("");
   const [userList, setUserList] = useState<UserList[]>([]); // 儲存用戶列表
   const [hasSearched, setHasSearched] = useState(false); // 判斷是否搜尋過了，要出現 " 查無此使用者 " 文字
-  const [selectedUserId, setSelectedUserId] = useState<string | null>(null); // 點擊所選的使用者進行聊天
+  // const [externalSelectedUserId, setSelectedUserId] = useState<string | null>(null); // 點擊所選的使用者進行聊天
   const [searchResults, setSearchResults] = useState<UserList[]>([]); // 新增一個狀態來單獨管理搜索結果
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const [newMessageCount, setNewMessageCount] = useState(0);
@@ -87,6 +93,37 @@ const ChatRoomWindow = ({ onCloseRoom }: ChatRoomWindowProps) => {
 
     return () => unsubscribe();
   }, []);
+
+  useEffect(() => {
+    const loadMessages = async () => {
+      if (externalSelectedUserId && currentUser) {
+        try {
+          const firestore = getFirestore();
+          const messagesRef = collection(firestore, "messages");
+          const q = query(
+            messagesRef,
+            where("chatSessionId", "in", [
+              `${currentUser.id}_${externalSelectedUserId}`,
+              `${externalSelectedUserId}_${currentUser.id}`,
+            ]),
+            orderBy("sentAt", "asc"),
+          );
+
+          const querySnapshot = await getDocs(q);
+          const fetchedMessages = querySnapshot.docs.map((doc) => ({
+            ...doc.data(),
+            messageId: doc.id,
+          })) as Message[];
+          setMessages(fetchedMessages);
+        } catch (error) {
+          console.error("Error loading messages: ", error);
+        }
+        console.log(externalSelectedUserId);
+      }
+    };
+
+    loadMessages();
+  }, [externalSelectedUserId, currentUser?.id]);
 
   useEffect(() => {
     if (!currentUser) return;
@@ -236,10 +273,17 @@ const ChatRoomWindow = ({ onCloseRoom }: ChatRoomWindowProps) => {
   }, [currentUser]);
 
   const handleSendMessage = async () => {
-    if (!currentUser || !selectedUserId || !message.trim()) {
+    if (!currentUser || !externalSelectedUserId || !message.trim()) {
       showAlert("🚨 系統提醒", "未選擇聊天對象或未登入", "error");
       return;
     }
+    console.log(
+      "currentUser ID:",
+      currentUser?.id,
+      "externalSelectedUserId:",
+      externalSelectedUserId,
+    );
+    console.log("externalSelectedUserId:", externalSelectedUserId); // 檢查該值
 
     try {
       const firestore = getFirestore();
@@ -249,17 +293,20 @@ const ChatRoomWindow = ({ onCloseRoom }: ChatRoomWindowProps) => {
         content: message,
         sentAt: serverTimestamp(),
         sentBy: currentUser.id,
-        chatSessionId: `${currentUser.id}_${selectedUserId}`,
-        sentTo: selectedUserId,
+        chatSessionId: `${currentUser.id}_${externalSelectedUserId}`,
+        sentTo: externalSelectedUserId,
         isRead: false,
       });
 
       // 更新用戶間的對話記錄
-      await updateChattedWith(firestore, currentUser.id, selectedUserId);
-      await updateChattedWith(firestore, selectedUserId, currentUser.id);
+      await updateChattedWith(
+        firestore,
+        externalSelectedUserId,
+        currentUser.id,
+      );
 
       // 重新加載與選中用戶的對話
-      loadMessagesForSelectedUser(firestore, selectedUserId);
+      loadMessagesForSelectedUser(firestore, externalSelectedUserId);
 
       setMessage("");
     } catch (error) {
@@ -287,6 +334,10 @@ const ChatRoomWindow = ({ onCloseRoom }: ChatRoomWindowProps) => {
     );
 
     const querySnapshot = await getDocs(q);
+    console.log(
+      "Loaded messages:",
+      querySnapshot.docs.map((doc) => doc.data()),
+    );
     const userMessages = querySnapshot.docs.map((doc) => doc.data() as Message);
     setMessages(userMessages.sort((a, b) => getTimestamp(a) - getTimestamp(b)));
   };
@@ -322,7 +373,6 @@ const ChatRoomWindow = ({ onCloseRoom }: ChatRoomWindowProps) => {
       if (userSnap.exists()) {
         const userData = userSnap.data() as User;
         if (userData.id !== currentUser?.id) {
-          // 確保不加載當前用戶自己
           users.push({
             id: userId,
             name: userData.name,
@@ -346,7 +396,7 @@ const ChatRoomWindow = ({ onCloseRoom }: ChatRoomWindowProps) => {
         name: userData.name,
       };
     });
-    setSearchResults(users); // 更新搜索結果狀態
+    setSearchResults(users);
     setHasSearched(true);
   };
   // 處理鍵盤事件
@@ -362,7 +412,7 @@ const ChatRoomWindow = ({ onCloseRoom }: ChatRoomWindowProps) => {
     event: React.KeyboardEvent<HTMLInputElement>,
   ) => {
     if (event.key === "Enter") {
-      event.preventDefault(); // 防止輸入時換行
+      event.preventDefault();
       await handleSendMessage();
     }
   };
@@ -381,7 +431,6 @@ const ChatRoomWindow = ({ onCloseRoom }: ChatRoomWindowProps) => {
   const handleSelectUser = async (userId: string) => {
     console.log("選擇的用戶 ID:", userId);
 
-    setSelectedUserId(userId); // 設置所選用戶的 ID
     setMessages([]); // 清空當前訊息
 
     if (!currentUser || !userId) return;
@@ -419,7 +468,7 @@ const ChatRoomWindow = ({ onCloseRoom }: ChatRoomWindowProps) => {
   };
 
   return (
-    <div className="fixed inset-0 z-50 my-auto flex h-full items-center justify-center bg-black bg-opacity-50 py-10 text-gray-800 antialiased">
+    <div className="z-100 fixed inset-0 my-auto flex h-full items-center justify-center bg-black bg-opacity-50 py-10 text-gray-800 antialiased">
       <div className="relative flex h-[70vh] w-3/4 flex-row overflow-y-auto rounded-md bg-white p-4 shadow-lg">
         <span className="absolute right-5 top-6 h-6 w-6 animate-ping rounded-full bg-gray-200 opacity-75" />
         <button
@@ -458,7 +507,7 @@ const ChatRoomWindow = ({ onCloseRoom }: ChatRoomWindowProps) => {
             </div>
             <div className="text-xs text-gray-500">{currentUser?.email}</div>
           </div>
-          <div className="flex flex-row items-center justify-between px-2 text-xs mb-2">
+          <div className="mb-2 flex flex-row items-center justify-between px-2 text-xs">
             <span className="font-bold">Unread messages</span>
             <span className="flex h-4 w-4 items-center justify-center rounded-full bg-gray-300">
               {newMessageCount}
@@ -518,7 +567,7 @@ const ChatRoomWindow = ({ onCloseRoom }: ChatRoomWindowProps) => {
           <div className="-mx-2 mt-4 flex h-1/2 flex-col space-y-1 overflow-y-auto">
             {userList.map((user) => (
               <button
-                className="rounded-md relative flex flex-row items-center p-2 hover:bg-gray-100 hover:rounded-md"
+                className="relative flex flex-row items-center rounded-md p-2 hover:rounded-md hover:bg-gray-100"
                 key={user.id}
                 onClick={() => handleSelectUser(user.id)}
               >
@@ -540,16 +589,17 @@ const ChatRoomWindow = ({ onCloseRoom }: ChatRoomWindowProps) => {
         </div>
         {/* 聊天視窗主體 */}
         <div className="flex h-full flex-auto flex-col overflow-y-auto p-6">
-          {selectedUserId && (
-            <div className="rounded-md flex h-full flex-auto flex-shrink-0 flex-col justify-between break-words bg-gray-100 p-4">
+          {externalSelectedUserId && (
+            <div className="flex h-full flex-auto flex-shrink-0 flex-col justify-between break-words rounded-md bg-gray-100 p-4">
               <div className="h-full overflow-auto">
                 {/* 訊息列表 */}
                 <div className="flex flex-grow flex-col items-center justify-between p-4">
                   <div className="mb-10 bg-gradient-to-r from-blue-700 via-blue-500 to-purple-400 bg-clip-text text-center text-2xl font-black text-transparent">
-                    {selectedUserId
+                    {externalSelectedUserId
                       ? `You are contacting to ${
-                          userList.find((user) => user.id === selectedUserId)
-                            ?.name || "未知用戶"
+                          userList.find(
+                            (user) => user.id === externalSelectedUserId,
+                          )?.name || "未知用戶"
                         } ...`
                       : "請選擇一個用戶以開始聯繫"}
                   </div>
@@ -560,7 +610,7 @@ const ChatRoomWindow = ({ onCloseRoom }: ChatRoomWindowProps) => {
                       const isCurrentUserMessage =
                         message.sentBy === currentUser?.id;
                       const messageTime =
-                        message.sentAt?.toDate().toLocaleString() || "时间未知";
+                        message.sentAt?.toDate().toLocaleString() || "時間未知";
                       return (
                         <>
                           <time
@@ -599,7 +649,7 @@ const ChatRoomWindow = ({ onCloseRoom }: ChatRoomWindowProps) => {
                   <div ref={messagesEndRef} />
                 </div>
               </div>
-              <div className="rounded-md flex h-16 w-full flex-row items-center bg-white px-4">
+              <div className="flex h-16 w-full flex-row items-center rounded-md bg-white px-4">
                 <div className="ml-4 flex-grow">
                   <div className="relative w-full">
                     <input
@@ -607,7 +657,7 @@ const ChatRoomWindow = ({ onCloseRoom }: ChatRoomWindowProps) => {
                       value={message}
                       onChange={(e) => setMessage(e.target.value)}
                       onKeyDown={handleKeyDownSendMessage}
-                      className="rounded-md flex h-10 w-full border pl-4 focus:border-indigo-300 focus:outline-none"
+                      className="flex h-10 w-full rounded-md border pl-4 focus:border-indigo-300 focus:outline-none"
                     />
                     {/* emoji icon button */}
                     <button className="absolute right-0 top-0 flex h-full w-12 items-center justify-center text-gray-400 hover:text-gray-600">
@@ -631,7 +681,7 @@ const ChatRoomWindow = ({ onCloseRoom }: ChatRoomWindowProps) => {
                 <div className="ml-4">
                   <button
                     onClick={handleSendMessage}
-                    className="rounded-md flex flex-shrink-0 items-center justify-center bg-indigo-500 px-4 py-1 text-white hover:bg-indigo-600"
+                    className="flex flex-shrink-0 items-center justify-center rounded-md bg-indigo-500 px-4 py-1 text-white hover:bg-indigo-600"
                   >
                     <span>Send</span>
                     <span className="ml-2">
