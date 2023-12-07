@@ -266,7 +266,7 @@ const AcceptTask = () => {
     <>
       <Header />
       <div className="container mx-auto max-w-[1280px] px-4 md:max-w-7xl lg:px-20">
-      <Carousel />
+        <Carousel />
         <div className="mb-4">
           <div className="mb-4 flex items-center">
             <span className="mr-2 h-8 w-2 bg-[#A7B4FC]"></span>
@@ -469,7 +469,7 @@ const AcceptTask = () => {
                       icon="icon-park:click-tap"
                       className="mr-2 inline-block h-6 w-6"
                     />
-                    <span className="relative z-10 text-black">
+                    <span className="z-5 relative text-black">
                       查看任務詳情 {">>"}
                     </span>
                   </button>
