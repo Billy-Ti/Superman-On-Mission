@@ -443,15 +443,16 @@ body {
   background-image: linear-gradient(to right, #3b82f6, #f6037d, #f99659);
 }
 /* Custom Carousel block */
+
 .slick-dots li.slick-active button:before {
   color: #fff;
 }
 .slick-thumb {
-  bottom: -20px;
+  bottom: -22px;
 }
 .slick-thumb > li {
   width: 60px;
-  margin: 0 20px;
+  margin: 0 10px;
 }
 /* 點點 paging 樣式 */
 .slick-thumb li a img {
@@ -460,6 +461,8 @@ body {
     rgb(0 0 0 / 20%) 0px 16px 10px -10px;
   width: 60px;
   height: 60px;
+  -o-object-fit: cover;
+  object-fit: cover;
 }
 .slick-thumb li a img:hover {
   border: 4px solid rgba(249, 249, 249, 0.8);

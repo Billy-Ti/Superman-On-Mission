@@ -4,7 +4,6 @@ const HomeEndingButton = () => {
   return (
     <div className="container mx-auto max-w-[1280px] px-4 pt-4 md:px-20">
       <div className="py-10 text-center md:py-20">
-        {/* <img className="mx-auto w-1/2" src="/superman_2.png" alt="superman-pic" /> */}
         <div>
           <p className="mb-10 min-w-max bg-gradient-to-r from-blue-700 to-purple-400 bg-clip-text text-4xl italic text-transparent sm:text-6xl">
             SuperTask co.

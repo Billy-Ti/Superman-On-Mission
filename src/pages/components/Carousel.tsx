@@ -23,9 +23,11 @@ const Carousel = () => {
     };
     fetchTasks();
   }, []);
+
+  const showDots = tasks.length <= 10;
   // Slider 的設定
   const CarouselSetting = {
-    dots: true,
+    dots: showDots,
     infinite: true,
     speed: 500,
     slidesToShow: 3, // 一次要顯示幾張圖片
@@ -51,7 +53,8 @@ const Carousel = () => {
           slidesToShow: 2,
           slidesToScroll: 2,
           infinite: true,
-          dots: true,
+          dots: false,
+          centerMode: false,
         },
       },
       {
@@ -60,6 +63,7 @@ const Carousel = () => {
           slidesToShow: 1,
           slidesToScroll: 1,
           initialSlide: 1,
+          dots: false,
         },
       },
     ],
@@ -82,13 +86,12 @@ const Carousel = () => {
     },
   };
   return (
-    <div className="container mx-auto flex items-center">
-      <div className="mr-2 h-24 w-2 bg-[#00f5a2]"></div>
-      <div className="flex flex-col">
-        <div className="mr-4 flex items-center">
+    <div className="mb-10 items-center lg:mb-20 lg:flex">
+      <div className="flex flex-col border-l-[10px] border-[#00f5a2]">
+        <div className="mr-4 flex items-center pl-2">
           <h2 className="text-4xl font-bold leading-normal">找任務</h2>
         </div>
-        <div className="flex flex-col">
+        <div className="flex flex-col pl-2">
           <p className="mb-1 text-xl font-medium leading-normal text-gray-600">
             大顯身手的時候到了！
           </p>
@@ -103,7 +106,7 @@ const Carousel = () => {
           </p>
         </div>
       </div>
-      <div className="mx-auto w-1/2 md:w-3/4">
+      <div className="mx-auto w-2/3 md:w-3/4">
         <Slider {...CarouselSetting}>
           {tasks.map((task, index) => (
             <div
