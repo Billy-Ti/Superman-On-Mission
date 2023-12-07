@@ -1,28 +1,15 @@
-import { Icon } from "@iconify/react";
-import { getAuth, onAuthStateChanged } from "firebase/auth";
-import {
-  collection,
-  getFirestore,
-  onSnapshot,
-  query,
-  where,
-} from "firebase/firestore";
 import { useEffect, useState } from "react";
+import { getAuth, onAuthStateChanged } from "firebase/auth";
+import { collection, query, where, onSnapshot, getFirestore } from "firebase/firestore";
 import { useNavigate } from "react-router-dom";
 import ChatRoomWindow from "./ChatRoomWindow";
+import { Icon } from "@iconify/react";
 
 const ChatRoomButton = () => {
   const [isChatOpen, setIsChatOpen] = useState(false);
   const [newMessageCount, setNewMessageCount] = useState(0);
-  const [selectedUserId, setSelectedUserId] = useState<string | null>(null);
-
   const navigate = useNavigate();
   const auth = getAuth();
-
-  const handleSelectUser = (userId: string) => {
-    setSelectedUserId(userId); // 存储选中的用户 ID
-    setIsChatOpen(true); // 打开聊天窗口
-  };
 
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (user) => {
@@ -33,7 +20,7 @@ const ChatRoomButton = () => {
         const q = query(
           messagesRef,
           where("sentTo", "==", user.uid), // 根據您的數據模型調整此條件
-          where("isRead", "==", false),
+          where("isRead", "==", false)
         );
         const unsubscribeMessages = onSnapshot(q, (snapshot) => {
           setNewMessageCount(snapshot.docs.length);
@@ -44,20 +31,11 @@ const ChatRoomButton = () => {
     return () => unsubscribe();
   }, [auth]);
 
-  // const handleChatButtonClick = () => {
-  //   if (auth.currentUser) {
-  //     setIsChatOpen(true);
-  //   } else {
-  //     navigate("/signIn");
-  //   }
-  // };
-
-  // 在 ChatRoomButton 中
   const handleChatButtonClick = () => {
     if (auth.currentUser) {
       setIsChatOpen(true);
     } else {
-      navigate("/signIn");
+      navigate("/SignIn");
     }
   };
 
@@ -65,13 +43,7 @@ const ChatRoomButton = () => {
     <div className="fixed right-[1%] top-1/2">
       <button type="button" onClick={handleChatButtonClick}>
         <div className="w-50 h-50 flex items-center justify-center rounded-full bg-gradient-to-r from-blue-500 to-purple-400">
-          <Icon
-            icon="uiw:message"
-            color="white"
-            width="50"
-            height="50"
-            hFlip={true}
-          />
+          <Icon icon="uiw:message" color="white" width="50" height="50" hFlip={true} />
           {newMessageCount > 0 && (
             <span className="absolute -right-2 -top-2 flex h-6 w-6 items-center justify-center rounded-full bg-red-500 text-xs text-white">
               !
@@ -79,13 +51,7 @@ const ChatRoomButton = () => {
           )}
         </div>
       </button>
-      {isChatOpen && (
-        <ChatRoomWindow
-          externalSelectedUserId={selectedUserId}
-          onSelectUser={handleSelectUser} // 将 handleSelectUser 传递给 ChatRoomWindow
-          onCloseRoom={() => setIsChatOpen(false)}
-        />
-      )}
+      {isChatOpen && <ChatRoomWindow onCloseRoom={() => setIsChatOpen(false)} />}
     </div>
   );
 };
