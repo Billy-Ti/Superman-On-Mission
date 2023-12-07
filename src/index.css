@@ -6,6 +6,7 @@ body {
   font-family: "Segoe UI", "Noto Sans TC", "Roboto", "Helvetica Neue", Arial,
     "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji",
     sans-serif;
+  line-height: 1.5 !important;
 }
 .typed-container .typed-cursor {
   @apply text-5xl;
@@ -14,7 +15,7 @@ body {
   transform: rotateY(-180deg);
 }
 .highlight {
-  border-bottom: 16px solid #6366f1;
+  border-bottom: 8px solid #2b79b4;
   font-weight: bold;
 }
 /* Custom task cards style */

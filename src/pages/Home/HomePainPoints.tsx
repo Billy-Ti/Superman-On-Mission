@@ -23,14 +23,14 @@ const HomePainPoints = () => {
 
   return (
     <div className="container mx-auto max-w-[1280px] px-4 pt-4 md:px-20">
-      <div className="mb-10 py-10">
-        <div className="flex flex-col items-center md:flex-row">
-          <p className="text-4xl font-bold md:mr-4 md:w-1/2">
-            或許你曾經有過...
+      <div className="py-10">
+        <div className="flex flex-col items-center">
+          <p className="text-3xl font-medium text-center">
+            在你的生活當中，是否有過以下困擾?
           </p>
           <div className="flex h-24 items-center justify-center md:w-1/2">
             <div className="typed-container w-full text-center">
-              <span className="typed text-2xl md:text-4xl md:font-bold"></span>
+              <span className="typed text-xl md:text-2xl font-medium"></span>
             </div>
           </div>
         </div>

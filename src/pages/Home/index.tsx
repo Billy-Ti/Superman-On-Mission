@@ -7,6 +7,7 @@ import HomeSolutionList from "./HomeSolutionList";
 import HomeTaskCount from "./HomeTaskCount";
 import HomeTaskHeroCard from "./HomeTaskHeroCard";
 import HomeTaskStep from "./HomeTaskStep";
+
 const Home = () => {
   return (
     <>

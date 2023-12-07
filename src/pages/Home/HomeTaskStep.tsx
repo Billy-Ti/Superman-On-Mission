@@ -37,7 +37,7 @@ const HomeTaskStep = () => {
     fetchTasks();
   }, []);
   return (
-    <div className="container mx-auto max-w-[1280px] px-4 shadow-xl shadow-neutral-100 md:px-20">
+    <div className="container mx-auto max-w-[1280px] px-4 md:px-20">
       {/* shadow-xl shadow-neutral-100 */}
       <div className="mb-20 py-20">
         <p className="mb-10 text-center text-4xl">發案 3 步驟，跟著一起 go</p>
@@ -119,7 +119,7 @@ const HomeTaskStep = () => {
         <div className="flex justify-center">
           <button
             onClick={() => navigate("/taskPage")}
-            className="tracking-widest rounded-md bg-indigo-500 p-3 text-xl font-semibold text-white transition duration-500 ease-in-out hover:bg-indigo-700"
+            className="rounded-md bg-[#368DCF] p-3 text-xl font-medium tracking-widest text-white transition duration-500 ease-in-out hover:bg-[#3178C6]"
           >
             立即刊登任務
           </button>

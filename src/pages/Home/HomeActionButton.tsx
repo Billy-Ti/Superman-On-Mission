@@ -11,9 +11,9 @@ const HomeActionButton = () => {
     <div className="flex justify-end gap-4 text-2xl">
       <button
         onClick={handleAcceptTask}
-        className="items-center justify-center rounded-md bg-gradient-to-r from-blue-600 via-[#f6037d] to-[#f99659] p-5 py-3 text-2xl font-black text-white transition duration-500 ease-in-out hover:bg-gradient-to-r hover:from-pink-500 hover:via-blue-600 hover:to-[#ff7f50] lg:w-1/6"
+        className="items-center justify-center rounded-md  p-3 text-2xl font-black text-white transition bg-[#368DCF] hover:bg-[#2b79b4] duration-500 ease-in-out lg:w-1/4"
       >
-        立即接任務
+        就從這裡開始
       </button>
     </div>
   );
