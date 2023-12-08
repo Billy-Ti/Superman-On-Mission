@@ -2,15 +2,16 @@ import ActionButton from "./HomeActionButton";
 
 const HomeSlogan = () => {
   return (
-    <div className="min-h-[600px] bg-[url('/bg2.png')] bg-cover bg-fixed relative  bg-center object-cover">
-      <img className="absolute bottom-0 left-0 w-[500px]" src="/testpic2.png" alt="testpic2" />
+    <div className="relative bg-[url('/bg2.png')] bg-cover bg-fixed bg-center object-cover md:min-h-[600px]">
+      <img
+        className="absolute bottom-0 left-0 hidden w-[250px] sm:block md:w-[500px]"
+        src="/testpic2.png"
+        alt="testpic2"
+      />
       <div className="container mx-auto  max-w-[1280px] px-4 pt-4 lg:px-20">
         <div className="py-24">
           <div>
-            {/* <p className="mb-4 bg-gradient-to-r from-blue-600 via-[#f6037d] to-[#f99659] bg-clip-text text-right text-4xl text-transparent  sm:text-right md:text-6xl lg:pt-10">
-              想挑戰不可能的任務 ?
-            </p> */}
-            <p className="mb-4 text-[#3178C6] text-right text-4xl sm:text-right md:text-6xl lg:pt-10">
+            <p className="mb-4 text-right text-4xl text-[#3178C6] sm:text-right md:text-6xl lg:pt-10">
               想挑戰不可能的任務 ?
             </p>
           </div>

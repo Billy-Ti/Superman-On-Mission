@@ -172,7 +172,7 @@ const AcceptTask = () => {
         <div className="container mx-auto mb-20 max-w-[1280px] px-4 py-4 md:max-w-7xl lg:px-20">
           <div className="mb-4">
             <div className="mb-4 flex items-center">
-              <span className="mr-2 h-8 w-2 bg-[#A7B4FC]"></span>
+              <span className="mr-2 h-8 w-2 bg-[#368DCF]"></span>
               <p className="text-2xl">依照分類搜尋</p>
             </div>
             <ServiceTypeSelector
@@ -185,7 +185,7 @@ const AcceptTask = () => {
               onRegionChange={handleDistrictChange}
             />
             <div className="flex items-center">
-              <span className="mr-2 h-8 w-2 bg-[#A7B4FC]"></span>
+              <span className="mr-2 h-8 w-2 bg-[#368DCF]"></span>
               <DisplaySwitchButton
                 buttonText="顯示所有急件"
                 className="mb-0"
@@ -267,45 +267,35 @@ const AcceptTask = () => {
                       <div className="flex grow flex-col">
                         <div className="flex items-center">
                           {task.isUrgent ? (
-                            <>
-                              {/* 火焰 */}
-                              {/* <Icon
-                                className="absolute right-0 top-[-15px] animate-scale-pulse"
-                                icon="bi:fire"
+                            <div className="absolute right-0 top-0 h-10 w-10 p-2">
+                              <Icon
+                                className="absolute inset-0"
+                                icon="bxs:label"
                                 color="red"
                                 width="40"
                                 height="40"
-                              /> */}
-                              <div className="absolute right-0 top-0 h-10 w-10 p-2">
-                                <Icon
-                                  className="absolute inset-0"
-                                  icon="bxs:label"
-                                  color="red"
-                                  width="40"
-                                  height="40"
-                                  rotate={3}
-                                  hFlip={true}
-                                  vFlip={true}
-                                />
-                                <span className="absolute inset-0 flex items-center justify-center text-lg text-white">
-                                  急
-                                </span>
-                              </div>
-                            </>
+                                rotate={3}
+                                hFlip={true}
+                                vFlip={true}
+                              />
+                              <span className="absolute inset-0 flex items-center justify-center text-lg font-semibold text-white">
+                                急
+                              </span>
+                            </div>
                           ) : (
                             <>
                               <div className="absolute right-0 top-0 h-10 w-10 p-2">
                                 <Icon
                                   className="absolute inset-0"
                                   icon="bxs:label"
-                                  color="blue"
+                                  color="#3178C6"
                                   width="40"
                                   height="40"
                                   rotate={3}
                                   hFlip={true}
                                   vFlip={true}
                                 />
-                                <span className="absolute inset-0 flex items-center justify-center text-white">
+                                <span className="absolute inset-0 flex items-center justify-center font-semibold text-white">
                                   推
                                 </span>
                               </div>

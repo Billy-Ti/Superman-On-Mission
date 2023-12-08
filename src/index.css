@@ -439,10 +439,10 @@ body {
 .toggle-checkbox:checked {
   @apply: right-0 border-green-400;
   right: 0;
-  border-color: #6366fe;
+  border-color: #3178c6;
 }
 .toggle-checkbox:checked + .toggle-label {
-  background-color: #6366fe;
+  background-color: #3178c6;
 }
 /* Custom Carousel block */
 
@@ -484,4 +484,16 @@ body {
 .slick-slide:not(.slick-current) div div img {
   -webkit-filter: grayscale(100%);
   filter: grayscale(100%);
+}
+
+/* 改變按鈕的背景色 */
+.slick-prev:before,
+.slick-next:before {
+  color: #368dcf;
+}
+
+/* 改變按鈕懸停時的背景色 */
+.slick-prev:hover:before,
+.slick-next:hover:before {
+  color: #368dcf;
 }

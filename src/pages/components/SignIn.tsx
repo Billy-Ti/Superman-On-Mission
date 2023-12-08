@@ -56,6 +56,7 @@ const SignIn = () => {
       setName("");
       setEmail("");
       setPassword("");
+      navigate("/");
     } catch (error) {
       showAlert("🚨系統提醒", "註冊錯誤", "error");
       if (error instanceof Error) {

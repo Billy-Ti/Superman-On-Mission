@@ -132,25 +132,25 @@ const Header = () => {
                 width="40"
                 height="40"
               />
-              <div className="absolute top-[40px] z-10 hidden flex-col space-y-2 rounded-md bg-white p-4 opacity-0 group-hover:flex group-hover:opacity-100">
+              <div className="absolute top-[40px] z-10 hidden flex-col space-y-2 rounded-md border border-[#B3D7FF] opacity-0 group-hover:flex group-hover:opacity-100">
                 <button
                   onClick={handleSignIn}
                   type="button"
-                  className="w-36 rounded-md bg-gray-200 px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-300"
+                  className="w-36 rounded-md px-4 py-2 text-sm font-medium text-gray-700 hover:bg-[#368DCF] hover:text-white"
                 >
                   {currentUser ? "會員中心" : "Login"}
                 </button>
                 <button
                   type="button"
                   onClick={handleTaskManagement}
-                  className="w-36 rounded-md bg-gray-200 px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-300"
+                  className="w-36 rounded-md  px-4 py-2 text-sm font-medium text-gray-700 hover:bg-[#368DCF] hover:text-white"
                 >
                   任務管理
                 </button>
                 <button
                   onClick={handleToReviews}
                   type="button"
-                  className="w-36 rounded-md bg-gray-200 px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-300"
+                  className="w-36 rounded-md  px-4 py-2 text-sm font-medium text-gray-700 hover:bg-[#368DCF] hover:text-white"
                 >
                   我的評價
                 </button>
@@ -198,7 +198,7 @@ const Header = () => {
               <button
                 onClick={handleSignIn}
                 type="button"
-                className="text-medium w-full rounded-md text-gray-700 hover:bg-gray-300"
+                className="text-medium w-full rounded-md text-gray-700 hover:bg-[#368DCF] hover:text-white"
               >
                 {currentUser ? "會員中心" : "Login"}
               </button>
@@ -207,7 +207,7 @@ const Header = () => {
               <button
                 type="button"
                 onClick={handleTaskManagement}
-                className="text-medium w-full rounded-md text-gray-700 hover:bg-gray-300"
+                className="text-medium w-full rounded-md text-gray-700 hover:bg-[#368DCF] hover:text-white"
               >
                 任務管理
               </button>
@@ -216,7 +216,7 @@ const Header = () => {
               <button
                 onClick={handleToReviews}
                 type="button"
-                className="text-medium w-full rounded-md text-gray-700 hover:bg-gray-300"
+                className="text-medium w-full rounded-md text-gray-700 hover:bg-[#368DCF] hover:text-white"
               >
                 我的評價
               </button>

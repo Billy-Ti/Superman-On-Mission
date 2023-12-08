@@ -13,7 +13,7 @@ const Footer: React.FC = () => {
   };
 
   return (
-    <footer className="container mx-auto w-full max-w-[1280px] px-4 pb-4 pt-10 md:px-20 md:pt-20">
+    <footer className="container mx-auto w-full max-w-[1280px] px-4 py-4 md:px-20 md:py-8">
       <svg
         width="100"
         height="100"
@@ -60,10 +60,7 @@ const Footer: React.FC = () => {
               value={email}
               onChange={(e) => setEmail(e.target.value)}
             />
-            <button
-              type="submit"
-              className="rounded bg-blue-500 px-6 py-4 text-lg font-medium tracking-widest text-white hover:bg-blue-600"
-            >
+            <button className="rounded-md bg-[#368DCF] p-3 text-xl font-medium tracking-widest text-white transition duration-500 ease-in-out hover:bg-[#3178C6]">
               訂閱
             </button>
           </form>

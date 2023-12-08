@@ -10,12 +10,21 @@ const HomeTaskHeroCard: React.FC = () => {
   };
 
   return (
-    <div className="container mx-auto max-w-[1280px] px-4 pt-4 md:px-20">
-      <div className="mb-24 px-4 text-center md:px-0 lg:text-left">
-        <p className="inline bg-gradient-to-r from-blue-700 via-blue-500 to-purple-400 bg-clip-text text-4xl font-black text-transparent">
-          優秀超人榜
-        </p>
+    <div className="container mx-auto max-w-[1280px] px-4 py-10 md:px-20 md:py-20">
+      <div className="mb-24 px-4 text-center md:px-0">
+        <div className="relative inline-block bg-[#2B79B4] px-10 py-4">
+          <Icon
+            className="absolute left-[20px] top-0 -translate-x-full -translate-y-1/2 transform"
+            icon="mdi:crown"
+            color="#2b79b4"
+            width="50"
+            height="50"
+            rotate={1.5}
+          />
+          <p className="text-4xl font-bold text-white">優秀超人榜</p>
+        </div>
       </div>
+
       <div className="relative mb-20 select-none">
         <div className="container relative mx-[auto] my-[0] h-[200px] w-[250px] [perspective:1000px]">
           <div
@@ -44,12 +53,7 @@ const HomeTaskHeroCard: React.FC = () => {
                   </div>
                 </>
               }
-              link1="your-link-1"
-              link2="your-link-2"
-              link3="your-link-3"
             />
-
-            {/* 其他區塊的實例 */}
             <InteractiveBlock
               bgColor="bg-[#f7f4f0]"
               transform="[transform:rotateY(60deg)_translateZ(250px)]"
@@ -70,9 +74,6 @@ const HomeTaskHeroCard: React.FC = () => {
                   </div>
                 </>
               }
-              link1="your-link-1"
-              link2="your-link-2"
-              link3="your-link-3"
             />
             <InteractiveBlock
               bgColor="bg-[#d5adfd]"
@@ -94,9 +95,6 @@ const HomeTaskHeroCard: React.FC = () => {
                   </div>
                 </>
               }
-              link1="your-link-1"
-              link2="your-link-2"
-              link3="your-link-3"
             />
             <InteractiveBlock
               bgColor="bg-[#bfdbfe]"
@@ -118,9 +116,6 @@ const HomeTaskHeroCard: React.FC = () => {
                   </div>
                 </>
               }
-              link1="your-link-1"
-              link2="your-link-2"
-              link3="your-link-3"
             />
             <InteractiveBlock
               bgColor="bg-[#f7f4f0]"
@@ -142,9 +137,6 @@ const HomeTaskHeroCard: React.FC = () => {
                   </div>
                 </>
               }
-              link1="your-link-1"
-              link2="your-link-2"
-              link3="your-link-3"
             />
             <InteractiveBlock
               bgColor="bg-[#d5adfd]"
@@ -166,9 +158,6 @@ const HomeTaskHeroCard: React.FC = () => {
                   </div>
                 </>
               }
-              link1="your-link-1"
-              link2="your-link-2"
-              link3="your-link-3"
             />
           </div>
         </div>

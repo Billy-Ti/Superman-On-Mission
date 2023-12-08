@@ -11,7 +11,7 @@ const DisplaySwitchButton = ({
 }: DisplaySwitchButtonProps) => {
   return (
     <div className={`flex items-center ${className}`}>
-      <p className="mr-2 bg-gradient-to-r from-blue-600 via-blue-500 to-purple-400 bg-clip-text text-2xl font-black text-transparent">
+      <p className="mr-2 text-2xl font-black text-[#3178C6]">
         {buttonText}
       </p>
       <div className="relative mr-2 inline-block w-10 select-none align-middle transition duration-200 ease-in">

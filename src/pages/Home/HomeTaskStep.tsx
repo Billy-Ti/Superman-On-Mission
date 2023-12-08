@@ -39,8 +39,9 @@ const HomeTaskStep = () => {
   return (
     <div className="container mx-auto max-w-[1280px] px-4 md:px-20">
       {/* shadow-xl shadow-neutral-100 */}
-      <div className="mb-20 py-20">
-        <p className="mb-10 text-center text-4xl">發案 3 步驟，跟著一起 go</p>
+      <div className="py-10 md:py-20">
+        <p className="mb-3 text-center text-4xl font-bold">發案 3 步驟，跟著一起 go</p>
+        <div className="mx-auto mb-10 h-[10px] w-1/5 bg-[#2B79B4]"></div>
         <div className="flex justify-between ">
           <p className="mb-1 font-bold sm:text-2xl">Step 1</p>
           <p className="font-bold sm:text-2xl">Step 2</p>
