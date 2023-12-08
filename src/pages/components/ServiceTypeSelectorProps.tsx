@@ -12,11 +12,11 @@ const ServiceTypeSelector: React.FC<ServiceTypeSelectorProps> = ({
   handleServiceTypeClick,
 }) => {
   return (
-    <div className="mb-20 grid grid-cols-2 gap-4 rounded-md text-center text-xl md:grid-cols-4 lg:grid-cols-9">
+    <div className="mb-10 grid grid-cols-2 gap-4 rounded-md text-center text-xl md:grid-cols-4 lg:grid-cols-9">
       {serviceType.map((item, index) => (
         <div
           key={index}
-          className={`flex cursor-pointer flex-col items-center justify-center rounded-md p-2 font-normal text-gray-500 hover:bg-[#368DCF] hover:text-white ${
+          className={`flex cursor-pointer flex-col items-center transition duration-200 ease-in-out justify-center rounded-md p-2 font-normal text-gray-500 hover:bg-[#368DCF] hover:text-white ${
             selectedIndexes.includes(index)
               ? "bg-[#3178C6] font-medium text-white"
               : ""

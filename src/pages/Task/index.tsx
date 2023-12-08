@@ -138,40 +138,6 @@ const Task = () => {
     await uploadBytes(fileRef, file);
     return await getDownloadURL(fileRef);
   };
-  const fileInputs = document.querySelectorAll('input[type="file"]');
-  const deleteTask = (event: React.MouseEvent<HTMLButtonElement>) => {
-    event.preventDefault();
-    fileInputs.forEach((input) => {
-      (input as HTMLInputElement).value = ""; // 直接操作 DOM 清除選擇的檔案
-    });
-    if (serviceTypeRef.current) {
-      serviceTypeRef.current.resetServiceType();
-    }
-    Swal.fire({
-      title: "確定要刪除任務嗎？",
-      html: "<strong style='color: red;'>此操作將清空所有已填寫的資訊</strong>",
-      icon: "warning",
-      showCancelButton: true,
-      confirmButtonText: "確定",
-      cancelButtonText: "取消",
-      reverseButtons: true,
-      allowOutsideClick: false,
-    }).then((result) => {
-      if (result.isConfirmed) {
-        Swal.fire({
-          title: "已刪除",
-          text: "任務資訊已清空",
-          icon: "success",
-          timer: 1500,
-          timerProgressBar: true,
-          showConfirmButton: false,
-          allowOutsideClick: false,
-        });
-        resetFormFields();
-        navigate("/");
-      }
-    });
-  };
   const confirmSubmitTask = async (
     event: React.MouseEvent<HTMLButtonElement>,
   ) => {
@@ -261,37 +227,34 @@ const Task = () => {
     <>
       <Header />
       <div className="container mx-auto px-4 md:max-w-7xl lg:px-20">
-        <div className="mb- mt-10  flex items-center border-b-8 border-l-[10px] border-black border-l-indigo-500">
-          <h3 className="mb-4 text-4xl font-bold">發任務</h3>
-          {/* <div className="flex flex-col border-l-[10px] border-l-indigo-500"></div> */}
+        <div className="mb-20 mt-10 flex items-center  border-l-[10px] border-l-[#368dcf]">
+          <h3 className="pl-2 text-4xl font-bold">發任務</h3>
         </div>
-        <div className="">
-          <form>
-            <div className="flex flex-col">
-              <div className="mb-4 flex items-center">
-                <span className="mr-2 h-8 w-2 bg-blue-500"></span>
-                <label htmlFor="taskTitle" className="text-3xl font-black">
-                  標題
-                </label>
-              </div>
-              <input
-                type="text"
-                id="taskTitle"
-                value={taskTitle} // 綁定 taskTitle 狀態
-                onChange={(e) => setTaskTitle(e.target.value)} // 更新狀態
-                placeholder="例如 : 請人幫我...，請盡量輸入明白的任務需求"
-                className="mb-4 w-full rounded-md border bg-gray-200 p-3 focus:bg-white focus:outline-none"
-              />
+        <form>
+          <div className="mb-8 flex flex-col font-semibold">
+            <div className="mb-4 flex items-center">
+              <span className="mr-2 h-8 w-2 bg-[#368dcf]"></span>
+              <label htmlFor="taskTitle" className="text-3xl">
+                標題
+              </label>
             </div>
-            <div className="mb-4 flex flex-wrap items-center">
-              <div className="mb-4 flex items-center">
-                <span className="mr-2 h-8 w-2 bg-blue-500"></span>
-              </div>
-              <p className="mb-4 mr-3 whitespace-nowrap text-3xl font-black">
-                需求類別 / 地址
+            <input
+              type="text"
+              id="taskTitle"
+              value={taskTitle}
+              onChange={(e) => setTaskTitle(e.target.value)}
+              placeholder="例如 : 請人幫我...，請盡量輸入明白的任務需求"
+              className="w-full rounded-md border bg-[#EFF7FF] p-3 font-semibold focus:bg-white focus:outline-none"
+            />
+          </div>
+          <div className="mb-8 flex flex-wrap items-center">
+            <div className="mb-4 flex items-center">
+              <span className="mr-2 h-8 w-2 bg-[#368dcf]"></span>
+              <p className="mr-3 whitespace-nowrap text-3xl font-semibold">
+                選擇類別 / 輸入地址
               </p>
               <select
-                className="mb-4 mr-3 flex items-center rounded-md border bg-gray-300 p-2 focus:outline-none"
+                className="mr-3 flex items-center rounded-md border bg-gray-300 p-2 focus:outline-none"
                 name="county"
                 id="county"
                 value={selectedCounty}
@@ -335,132 +298,117 @@ const Task = () => {
                   </select>
                 </div>
               )}
+            </div>
+            <input
+              type="text"
+              placeholder="請輸入詳細地址，例如 : xx 路 x 巷 x 弄 x 號 x 樓"
+              className="w-full rounded-md border bg-[#EFF7FF] p-3 font-semibold focus:bg-white focus:outline-none"
+              value={detailedAddress}
+              onChange={(e) => setDetailedAddress(e.target.value)}
+            />
+          </div>
+          <ServiceType ref={serviceTypeRef} />
+          <div className="flex flex-col items-center justify-between gap-4 lg:flex-row">
+            <div className="flex w-full flex-col lg:w-1/2">
+              <div className="mb-4 flex items-center">
+                <div className="flex items-center">
+                  <span className="mr-2 h-8 w-2 bg-[#368dcf]"></span>
+                  <p className="mr-3 text-3xl font-semibold">任務說明</p>
+                  <p className="flex flex-col justify-end text-lg font-semibold text-red-600">
+                    請輸入20字以上，以明白要做什麼事情
+                  </p>
+                </div>
+              </div>
+              <textarea
+                className="h-30 mb-4 w-full resize-none rounded-md border bg-[#EFF7FF] p-4 font-semibold focus:bg-white focus:outline-none"
+                name="startTaskContent"
+                id="startTaskContent"
+                placeholder="例：我需要為我的網站設計 LOGO，未來我想用在作品集"
+                value={taskDescription} // 綁定 taskDescription 狀態
+                onChange={(e) => setTaskDescription(e.target.value)} // 更新狀態
+              ></textarea>
+            </div>
+            <div className="flex w-full flex-col items-start lg:w-1/2">
+              <div className="mb-4 flex items-center text-right">
+                <span className="mr-2 h-8 w-2 bg-[#368dcf]"></span>
+                <p className="mr-3 text-3xl font-semibold">其它備註</p>
+              </div>
+              <textarea
+                className="h-30 mb-4 w-full resize-none rounded-md border bg-[#EFF7FF] p-4 font-semibold focus:bg-white focus:outline-none"
+                name="additionalNotes"
+                id="additionalNotes"
+                placeholder="例：誠信交易，請有經驗的帥哥美女幫幫忙"
+                value={additionalNotes}
+                onChange={(e) => setAdditionalNotes(e.target.value)}
+              ></textarea>
+            </div>
+          </div>
+          <div className="mb-20 flex items-center justify-between">
+            <div className="flex items-center">
+              <div className="flex items-center text-right">
+                <span className="mr-2 h-8 w-2 bg-[#368dcf]"></span>
+                <p className="mr-3 text-3xl font-semibold">任務報酬</p>
+              </div>
               <input
                 type="text"
-                placeholder="請輸入詳細地址，例如 : xx 路 x 巷 x 弄 x 號 x 樓"
-                className="w-full rounded-md border bg-gray-200 p-3 focus:bg-white focus:outline-none"
-                value={detailedAddress}
-                onChange={(e) => setDetailedAddress(e.target.value)}
+                id="taskReward"
+                placeholder="願支付多少 Coin 請人完成任務"
+                className="mr-4 w-72 rounded-md border bg-[#EFF7FF] p-3 font-semibold focus:bg-white focus:outline-none"
+                value={taskReward}
+                onChange={handleTaskRewardChange}
               />
+              <span className="text-xl font-semibold">Super Coins</span>
             </div>
-            <ServiceType ref={serviceTypeRef} />
-            <div className="flex flex-col items-center justify-between gap-4 lg:flex-row">
-              <div className="flex w-full flex-col lg:w-1/2">
-                <div className="mb-4 flex items-center">
-                  <div className="flex items-center">
-                    <span className="mr-2 h-8 w-2 bg-blue-500"></span>
-
-                    <p className="mr-3 text-3xl font-black">任務說明</p>
-                    <p className="flex flex-col justify-end font-black text-red-600">
-                      請輸入20字以上，好讓人明白要做什麼事情
-                    </p>
-                  </div>
-                </div>
-                <textarea
-                  className="h-30 mb-4 w-full resize-none rounded-md border bg-gray-200 p-4 focus:bg-white focus:outline-none"
-                  name="startTaskContent"
-                  id="startTaskContent"
-                  placeholder="例：我需要為我的網站設計 LOGO，未來我想用在作品集"
-                  value={taskDescription} // 綁定 taskDescription 狀態
-                  onChange={(e) => setTaskDescription(e.target.value)} // 更新狀態
-                ></textarea>
-              </div>
-              <div className="flex w-full flex-col items-start lg:w-1/2">
-                <div className="flex items-center text-right">
-                  <span className="mb-4 mr-2 h-8 w-2 bg-blue-500"></span>
-                  <p className="mb-4 mr-3 text-3xl font-black">其它備註</p>
-                </div>
-                <textarea
-                  className="h-30 mb-4 w-full resize-none rounded-md border bg-gray-200 p-4 focus:bg-white focus:outline-none"
-                  name="additionalNotes"
-                  id="additionalNotes"
-                  placeholder="例：誠信交易，請有經驗的帥哥美女幫幫忙"
-                  value={additionalNotes}
-                  onChange={(e) => setAdditionalNotes(e.target.value)}
-                ></textarea>
-              </div>
+            <div className="flex items-center text-xl font-medium">
+              <p>剩餘 :</p>
+              <span className="ml-1 underline">&emsp;{superCoins}&emsp;</span>
+              <span className="ml-1">Super Coins</span>
             </div>
-            <div className="mb-20 flex items-center justify-between">
-              <div className="flex items-center">
-                <div className="flex items-center text-right">
-                  <span className="mr-2 h-8 w-2 bg-blue-500"></span>
-                  <p className="mr-3 text-3xl font-black">任務報酬</p>
-                </div>
-                <input
-                  type="text"
-                  id="taskReward"
-                  placeholder="願支付多少 Coin 請人完成任務"
-                  className="mr-4 w-72 rounded-md border bg-gray-200 p-3 focus:bg-white focus:outline-none"
-                  value={taskReward}
-                  onChange={handleTaskRewardChange}
-                />
-                <span className="text-xl font-black">Super Coins</span>
-              </div>
-              <div className="flex items-center text-xl font-medium">
-                <p>剩餘 :</p>
-                <span className="ml-1 underline">&emsp;{superCoins}&emsp;</span>
-                <span className="ml-1">Super Coins</span>
-              </div>
+          </div>
+          <div className="mb-">
+            <div className="mb-4 flex">
+              <span className="mr-2 h-8 w-2 bg-[#368dcf]"></span>
+              <p className="mr-3 text-3xl font-semibold">上傳照片</p>
+              <p className="flex flex-col justify-end text-lg font-semibold text-red-600">
+                建議上傳
+              </p>
             </div>
-            <div className="mb-4">
-              <div className="flex">
-                <span className="mr-2 h-8 w-2 bg-blue-500"></span>
-                <p className="mr-3 text-3xl font-black">上傳照片</p>
-                <p className="flex flex-col justify-end text-lg font-black text-red-600">
-                  建議上傳
-                </p>
-              </div>
-              <ul className="flex items-center justify-between">
-                {uploadedImages.map((image, index) => (
-                  <li
-                    key={index}
-                    className="relative m-2 h-64 w-64 border-2 border-dashed border-black"
-                  >
-                    <input
-                      type="file"
-                      onChange={(e) => handleImageChange(e, index)}
-                      className="absolute left-0 top-0 h-full w-full cursor-pointer opacity-0"
+            <ul className="mb-8 flex items-center justify-between">
+              {uploadedImages.map((image, index) => (
+                <li
+                  key={index}
+                  className="relative m-2 h-64 w-64 border-2 border-dashed border-[#368dcf]"
+                >
+                  <input
+                    type="file"
+                    onChange={(e) => handleImageChange(e, index)}
+                    className="absolute left-0 top-0 z-10 h-full w-full cursor-pointer opacity-0"
+                  />
+                  {!image && (
+                    <span className="absolute left-1/2 top-1/2 z-0 -translate-x-1/2 -translate-y-1/2 transform text-center font-medium text-[#368dcf]">
+                      選擇圖片檔案
+                    </span>
+                  )}
+                  {image && (
+                    <img
+                      src={image}
+                      alt={`Uploaded ${index}`}
+                      className="max-h-full max-w-full object-cover"
                     />
-                    {image && (
-                      <img
-                        src={image}
-                        alt={`Uploaded ${index}`}
-                        className="max-h-full max-w-full object-cover"
-                      />
-                    )}
-                    {!image && (
-                      <span className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 transform text-center text-gray-600">
-                        選擇上傳檔案
-                      </span>
-                    )}
-                  </li>
-                ))}
-              </ul>
-              <div className="mt-10 flex text-2xl">
-                <div className="group pointer-events-auto relative w-full overflow-hidden rounded-md bg-pink-600 px-6 py-3 text-center [transform:translateZ(0)] before:absolute before:left-1/2 before:top-1/2 before:h-8 before:w-8 before:-translate-x-1/2 before:-translate-y-1/2 before:scale-[0] before:rounded-full before:bg-pink-600 before:opacity-0 before:transition before:duration-500 before:ease-in-out hover:before:scale-[25] hover:before:opacity-100">
-                  刪除任務
-                  <button
-                    type="button"
-                    onClick={deleteTask}
-                    className="absolute inset-0 h-full w-full text-white opacity-0 transition duration-500 ease-in-out hover:opacity-100"
-                  >
-                    {"刪除任務"}
-                  </button>
-                </div>
-                <div className="group pointer-events-auto relative w-full overflow-hidden rounded-md bg-teal-600 px-6 py-3 text-center [transform:translateZ(0)] before:absolute before:left-1/2 before:top-1/2 before:h-8 before:w-8 before:-translate-x-1/2 before:-translate-y-1/2 before:scale-[0] before:rounded-full before:bg-teal-600 before:opacity-0 before:transition before:duration-500 before:ease-in-out hover:before:scale-[25] hover:before:opacity-100">
-                  刊登任務
-                  <button
-                    type="button"
-                    onClick={confirmSubmitTask}
-                    className="absolute inset-0 h-full w-full text-white opacity-0 transition duration-500 ease-in-out hover:opacity-100"
-                  >
-                    {"刊登任務"}
-                  </button>
-                </div>
-              </div>
+                  )}
+                </li>
+              ))}
+            </ul>
+            <div className="flex justify-center">
+              <button
+                onClick={confirmSubmitTask}
+                className="rounded-md bg-[#368DCF] p-4 text-2xl font-medium tracking-wider text-white transition duration-500 ease-in-out hover:bg-[#3178C6]"
+              >
+                刊登任務
+              </button>
             </div>
-          </form>
-        </div>
+          </div>
+        </form>
       </div>
       <Footer />
     </>

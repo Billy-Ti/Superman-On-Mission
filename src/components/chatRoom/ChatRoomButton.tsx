@@ -48,7 +48,7 @@ const ChatRoomButton = () => {
   return (
     <div className="fixed right-[1%] top-1/2 z-50">
       <button type="button" onClick={handleChatButtonClick}>
-        <div className="w-50 h-50 flex items-center justify-center rounded-full bg-gradient-to-r from-blue-500 to-purple-400">
+        <div className="w-50 h-50 flex items-center justify-center rounded-full bg-[#368DCF]">
           <Icon
             icon="uiw:message"
             color="white"

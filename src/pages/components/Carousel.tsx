@@ -88,7 +88,7 @@ const Carousel = () => {
     },
   };
   return (
-    <div className="container mx-auto max-w-[1280px] px-4 md:max-w-7xl lg:px-20">
+    <div className="container mx-auto max-w-[1280px] px-4 py-10 md:py-20 md:max-w-7xl lg:px-20">
       <div className="mb-10 items-center lg:mb-20 lg:flex">
         <div className="flex flex-col border-l-[10px] border-l-[#368DCF]">
           <div className="mr-4 flex items-center pl-2">

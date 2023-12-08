@@ -93,7 +93,7 @@ const Header = () => {
   return (
     <>
       <header
-        className={`sticky top-0 z-10 mb-10 w-full ${
+        className={`sticky top-0 z-10 w-full ${
           isScrolled
             ? "border-b border-blue-100 shadow-xl shadow-neutral-100 backdrop-blur-xl"
             : ""
@@ -114,11 +114,11 @@ const Header = () => {
           <SearchBar onSearch={handleSearch} placeholder="快速搜尋任務" />
           <div className={`${isMenuOpen ? "hidden" : "block"} hidden lg:block`}>
             <ul className="ml-auto flex items-center text-xl md:mr-4 md:gap-4">
-              <li className="relative tracking-widest after:absolute after:bottom-0 after:left-0 after:h-[5px] after:w-full after:translate-y-1 after:bg-[#6366f1] after:opacity-0 after:transition after:duration-200 after:ease-in-out hover:after:translate-y-0 hover:after:opacity-100">
+              <li className="relative font-semibold tracking-widest after:absolute after:bottom-0 after:left-0 after:h-[5px] after:w-full after:translate-y-1 after:bg-[#6366f1] after:opacity-0 after:transition after:duration-200 after:ease-in-out hover:after:translate-y-0 hover:after:opacity-100">
                 <Link to="/acceptTask">接任務</Link>
               </li>
-              <li>|</li>
-              <li className="relative tracking-widest after:absolute after:bottom-0 after:left-0 after:h-[5px] after:w-full after:translate-y-1 after:bg-[#6366f1] after:opacity-0 after:transition after:duration-200 after:ease-in-out hover:after:translate-y-0 hover:after:opacity-100">
+              <li className="font-semibold">|</li>
+              <li className="relative font-semibold tracking-widest after:absolute after:bottom-0 after:left-0 after:h-[5px] after:w-full after:translate-y-1 after:bg-[#6366f1] after:opacity-0 after:transition after:duration-200 after:ease-in-out hover:after:translate-y-0 hover:after:opacity-100">
                 <Link to="/taskPage">發任務</Link>
               </li>
             </ul>
@@ -128,7 +128,7 @@ const Header = () => {
               <Icon
                 className="cursor-pointer"
                 icon="mingcute:user-4-fill"
-                color="rgba(0, 0, 255, 0.3333333333333333)"
+                color="#3178C6"
                 width="40"
                 height="40"
               />
@@ -159,7 +159,7 @@ const Header = () => {
               <div className="ml-3" title="登出">
                 <Icon
                   onClick={handleLogout}
-                  color="rgba(0, 0, 255, 0.3333333333333333)"
+                  color="#3178C6"
                   className="cursor-pointer"
                   icon="solar:logout-bold-duotone"
                   width="40"

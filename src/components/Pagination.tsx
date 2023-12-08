@@ -64,8 +64,8 @@ const Pagination: React.FC<PaginationProps> = ({
             onClick={() => paginate(number)}
             className={`cursor-pointer rounded-md px-4 py-2 font-medium ${
               currentPage === number
-                ? "bg-[#368DCF] text-white transition duration-500 ease-in-out hover:bg-[#3178C6]"
-                : "bg-white text-gray-700"
+                ? "bg-[#368DCF] text-white transition duration-500 ease-in-out hover:bg-[#368DCF]"
+                : "bg-white text-gray-700 hover:bg-[#368DCF] hover:text-white"
             }`}
           >
             {number}

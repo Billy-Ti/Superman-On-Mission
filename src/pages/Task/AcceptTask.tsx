@@ -168,30 +168,28 @@ const AcceptTask = () => {
     <>
       <Header />
       <Carousel />
-      <div className="shadow-xl shadow-blue-200">
-        <div className="container mx-auto mb-20 max-w-[1280px] px-4 py-4 md:max-w-7xl lg:px-20">
-          <div className="mb-4">
-            <div className="mb-4 flex items-center">
-              <span className="mr-2 h-8 w-2 bg-[#368DCF]"></span>
-              <p className="text-2xl">依照分類搜尋</p>
-            </div>
-            <ServiceTypeSelector
-              serviceType={serviceType}
-              selectedIndexes={selectedIndexes}
-              handleServiceTypeClick={handleServiceTypeClick}
+      <div className="container mx-auto max-w-[1280px] px-4 pb-10 md:max-w-7xl lg:px-20">
+        <div className="mb-4">
+          <div className="mb-4 flex items-center font-semibold">
+            <span className="mr-2 h-8 w-2 bg-[#368DCF]"></span>
+            <p className="text-2xl">依照分類搜尋</p>
+          </div>
+          <ServiceTypeSelector
+            serviceType={serviceType}
+            selectedIndexes={selectedIndexes}
+            handleServiceTypeClick={handleServiceTypeClick}
+          />
+          <RegionFilter
+            onCountyChange={handleCityChange}
+            onRegionChange={handleDistrictChange}
+          />
+          <div className="flex items-center">
+            <span className="mr-2 h-8 w-2 bg-[#368DCF]"></span>
+            <DisplaySwitchButton
+              buttonText="顯示所有急件"
+              className="mb-0"
+              onToggleUrgent={handleToggleUrgent}
             />
-            <RegionFilter
-              onCountyChange={handleCityChange}
-              onRegionChange={handleDistrictChange}
-            />
-            <div className="flex items-center">
-              <span className="mr-2 h-8 w-2 bg-[#368DCF]"></span>
-              <DisplaySwitchButton
-                buttonText="顯示所有急件"
-                className="mb-0"
-                onToggleUrgent={handleToggleUrgent}
-              />
-            </div>
           </div>
         </div>
       </div>
@@ -331,11 +329,11 @@ const AcceptTask = () => {
                       <button
                         onClick={() => handleAcceptTask(task.id)}
                         type="button"
-                        className="transition-border-b rounded-lg border-b-4 border-b-gray-400 bg-gray-200 px-6 py-3 font-semibold text-black duration-100 ease-in-out hover:border-b-transparent"
+                        className="transition-border-b duration-all-100 rounded-lg border-b-4 border-b-gray-400 px-6 py-3 font-semibold text-black transition ease-in-out hover:border-b-transparent hover:bg-[#368DCF] hover:text-white"
                       >
                         <Icon
                           icon="icon-park:click-tap"
-                          className="mr-2 inline-block h-6 w-6"
+                          className="mr-2 inline-block h-6 w-6 text-black hover:text-white"
                         />
                         查看任務詳情
                       </button>
