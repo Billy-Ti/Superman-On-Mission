@@ -85,9 +85,7 @@ const Task = () => {
       reader.readAsDataURL(file);
     }
   };
-  const backToHome = () => {
-    navigate("/");
-  };
+
   useEffect(() => {
     const rewardValue = Number(taskReward);
     if (!isNaN(rewardValue) && rewardValue <= originalSuperCoins) {

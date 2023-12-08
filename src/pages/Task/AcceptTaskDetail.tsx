@@ -529,8 +529,6 @@ const AcceptTaskDetail = () => {
             {isChatOpen && taskId && (
               <ChatRoomWindow
                 onCloseRoom={handleCloseChat}
-                externalSelectedUserId={null} // 如果当前场景中不需要此属性，可以传递 null
-                onSelectUser={() => {}} // 如果当前场景中不需要此函数，可以传递一个空函数
               />
             )}
           </div>
