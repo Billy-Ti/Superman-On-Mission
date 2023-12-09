@@ -76,18 +76,6 @@ body {
     background-position: 100% 50%;
   }
 }
-/* 接任務卡片漸層被景色 */
-.border-gradient {
-  background-image: linear-gradient(
-    to right,
-    rgb(219 234 254 / 0),
-    #b3ddfd,
-    rgb(121, 185, 249)
-  );
-  background-size: 200% auto;
-  -webkit-animation: gradientAnimation 5s linear infinite;
-  animation: gradientAnimation 5s linear infinite;
-}
 /* Custom login style */
 .container.right-panel-active .sign-in-container {
   transform: translateX(100%);

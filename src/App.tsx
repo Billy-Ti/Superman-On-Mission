@@ -11,6 +11,8 @@ import TaskDetail from "./pages/Task/TaskDetail.tsx";
 import TaskManagement from "./pages/Task/TaskManagement.tsx";
 import Task from "./pages/Task/index.tsx";
 import SignIn from "./pages/components/SignIn.tsx";
+import Admin from "./pages/Admin/index.tsx";
+import Profile from "./pages/Admin/Profile.tsx";
 
 const App = () => {
   return (
@@ -44,6 +46,8 @@ const App = () => {
             element={<AcceptTaskDetail />}
           />
           <Route path="/reviewLists" element={<ReviewLists />} />
+          <Route path="/admin" element={<Admin />} />
+          <Route path="/profile" element={<Profile />} />
         </Routes>
         <ChatRoomButton />
       </BrowserRouter>

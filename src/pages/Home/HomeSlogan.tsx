@@ -2,7 +2,7 @@ import ActionButton from "./HomeActionButton";
 
 const HomeSlogan = () => {
   return (
-    <div className="relative bg-[url('/bg2.png')] bg-cover bg-fixed bg-center object-cover md:min-h-[600px]">
+    <div className="relative bg-[url('/test.png')] bg-cover bg-fixed bg-center object-cover md:min-h-[600px]">
       <img
         className="absolute bottom-0 left-0 hidden w-[250px] sm:block md:w-[500px]"
         src="/testpic2.png"

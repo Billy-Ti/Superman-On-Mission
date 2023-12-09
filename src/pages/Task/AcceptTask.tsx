@@ -211,12 +211,11 @@ const AcceptTask = () => {
               <>
                 <div
                   key={task.id}
-                  className="border-gradient relative flex grow flex-col rounded-md border-2 border-gray-200 p-4"
+                  className="border-gradient relative flex grow flex-col rounded-md border-2 border-gray-200 p-4 bg-gray-100"
                 >
-                  {/* min-h-[300px] */}
                   <div className="flex grow flex-col items-start gap-2">
                     <div className="flex h-64 w-full items-center justify-center overflow-hidden rounded-md border-2 border-gray-300">
-                      {" "}
+                      {" "}   
                       {task.photos?.[0] ? (
                         <img
                           src={task.photos[0]}

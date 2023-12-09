@@ -15,9 +15,9 @@ const ReviewLists: React.FC = () => {
   return (
     <>
       <Header />
-      <div className="container mx-auto w-full max-w-[1280px] px-4 pb-4 pt-10 md:px-20">
+      <div className="container mx-auto w-full max-w-[1280px] px-4 pb-4 py-10 md:py-20 md:px-20">
         <div className="flex items-center justify-center">
-          <div className="sm:rounded-md-2xl flex max-w-7xl flex-1 flex-col space-y-5 bg-[#b1cce7] sm:my-2 sm:p-6 lg:flex-row lg:space-x-10 lg:space-y-0">
+          <div className="sm:rounded-md-2xl flex max-w-7xl flex-1 flex-col space-y-5 lg:flex-row lg:space-x-10 lg:space-y-0">
             <ReviewNavigation />
             <div className="flex">
               <DisplaySwitchButton

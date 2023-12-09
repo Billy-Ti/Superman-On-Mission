@@ -12,7 +12,7 @@ const HomeTaskCount = () => {
               width="70"
               height="70"
             />
-            <p className="rounded-full p-5 py-3 text-3xl font-black text-[#368DCF] sm:text-5xl">
+            <p className="rounded-full p-5 py-3 text-3xl font-black text-[#224968] sm:text-5xl">
               600+
             </p>
             <p className="text-2xl font-semibold text-[#368DCF]">
@@ -22,7 +22,7 @@ const HomeTaskCount = () => {
           <p className="text-4xl text-[#368DCF]">VS</p>
           <div className="flex flex-col items-center gap-3">
             <Icon icon="mdi:crown" color="#368DCF" width="70" height="70" />
-            <p className="rounded-full p-5 py-3 text-3xl font-black text-[#368DCF] sm:text-5xl">
+            <p className="rounded-full p-5 py-3 text-3xl font-black text-[#224968] sm:text-5xl">
               300+
             </p>
             <p className="text-2xl font-semibold text-[#368DCF]">

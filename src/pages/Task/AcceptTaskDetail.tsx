@@ -551,6 +551,7 @@ const AcceptTaskDetail = () => {
                 />
               </svg>
             </div>
+            
             <div className="flex-grow tracking-wider">
               <span className="font-semibold tracking-wider">發案者名稱：</span>
               {posterName}
@@ -601,21 +602,6 @@ const AcceptTaskDetail = () => {
             </div>
           </div>
           <div className="flex items-center space-x-2">
-            <div className="flex-none">
-              <svg
-                className="h-6 w-6 text-gray-700"
-                fill="none"
-                viewBox="0 0 24 24"
-                stroke="currentColor"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M5 13l4 4L19 7"
-                />
-              </svg>
-            </div>
             <div className="flex-grow tracking-wider">
               <span className="font-semibold tracking-wider">其他備註 : </span>
               {taskDetails.notes}

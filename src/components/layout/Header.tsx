@@ -17,6 +17,10 @@ const Header = () => {
     navigate("/signIn");
   };
 
+  const handleToAdmin = () => {
+    navigate("/admin");
+  };
+
   const handleToReviews = () => {
     navigate("/reviewLists");
   };
@@ -114,11 +118,11 @@ const Header = () => {
           <SearchBar onSearch={handleSearch} placeholder="快速搜尋任務" />
           <div className={`${isMenuOpen ? "hidden" : "block"} hidden lg:block`}>
             <ul className="ml-auto flex items-center text-xl md:mr-4 md:gap-4">
-              <li className="relative font-semibold tracking-widest after:absolute after:bottom-0 after:left-0 after:h-[5px] after:w-full after:translate-y-1 after:bg-[#6366f1] after:opacity-0 after:transition after:duration-200 after:ease-in-out hover:after:translate-y-0 hover:after:opacity-100">
+              <li className="relative font-semibold tracking-widest after:absolute after:bottom-0 after:left-0 after:h-[5px] after:w-full after:translate-y-1 after:bg-[#368dcf] after:opacity-0 after:transition after:duration-200 after:ease-in-out hover:after:translate-y-0 hover:after:opacity-100">
                 <Link to="/acceptTask">接任務</Link>
               </li>
               <li className="font-semibold">|</li>
-              <li className="relative font-semibold tracking-widest after:absolute after:bottom-0 after:left-0 after:h-[5px] after:w-full after:translate-y-1 after:bg-[#6366f1] after:opacity-0 after:transition after:duration-200 after:ease-in-out hover:after:translate-y-0 hover:after:opacity-100">
+              <li className="relative font-semibold tracking-widest after:absolute after:bottom-0 after:left-0 after:h-[5px] after:w-full after:translate-y-1 after:bg-[#368dcf] after:opacity-0 after:transition after:duration-200 after:ease-in-out hover:after:translate-y-0 hover:after:opacity-100">
                 <Link to="/taskPage">發任務</Link>
               </li>
             </ul>
@@ -134,7 +138,7 @@ const Header = () => {
               />
               <div className="absolute top-[40px] z-10 hidden flex-col space-y-2 rounded-md border border-[#B3D7FF] opacity-0 group-hover:flex group-hover:opacity-100">
                 <button
-                  onClick={handleSignIn}
+                  onClick={handleToAdmin}
                   type="button"
                   className="w-36 rounded-md px-4 py-2 text-sm font-medium text-gray-700 hover:bg-[#368DCF] hover:text-white"
                 >

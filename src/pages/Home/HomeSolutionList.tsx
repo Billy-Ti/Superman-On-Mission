@@ -3,7 +3,7 @@ import { useNavigate } from "react-router";
 const HomeSolutionList: React.FC = () => {
   const navigate = useNavigate();
   return (
-    <div className="bg-[#B3D7FF]">
+    <div className="bg-[#B3D7FF] ">
       <div className="container mx-auto max-w-[1280px] px-4 py-10 md:px-20 md:py-20">
         <div className="flex w-full flex-col items-center justify-center">
           <span className="mb-3 text-3xl font-bold">

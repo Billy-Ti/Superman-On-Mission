@@ -88,7 +88,7 @@ const SignIn = () => {
   return (
     <>
       <Header />
-      <div className="mx-0 -mt-5 flex h-[calc(100vh-70px-335px)] flex-col items-center justify-center bg-white bg-gradient-to-r from-blue-200 via-blue-100 to-[#f7f4f0] px-4 pt-20 opacity-80">
+      <div className="mx-0 -mt-5 flex flex-col items-center justify-center bg-white bg-gradient-to-r from-blue-200 via-blue-100 to-[#f7f4f0] px-4 pt-20 opacity-80">
         <div
           className={`rounded-md-[10px] container relative min-h-[480px] w-[768px] max-w-full overflow-hidden bg-[#fff] ${
             isRightPanelActive ? "right-panel-active" : ""
