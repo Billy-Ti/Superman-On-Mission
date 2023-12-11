@@ -103,6 +103,23 @@ const TaskDetail = () => {
   }
 
   const handleConfirmAcceptTask = async () => {
+    if (!currentUserID) {
+      Swal.fire({
+        title: "未登入",
+        text: "您需要登入才能開始接案",
+        icon: "warning",
+        confirmButtonText: "好的",
+        customClass: {
+          confirmButton:
+            "hover:bg-[#368DCF] text-white font-bold py-2 px-4 rounded",
+        },
+      }).then((result) => {
+        if (result.isConfirmed) {
+          navigate("/signIn");
+        }
+      });
+      return;
+    }
     if (!taskId || !currentUserID) {
       console.error("Task ID or User ID is missing");
       return;
