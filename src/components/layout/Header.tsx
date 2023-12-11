@@ -18,7 +18,7 @@ const Header = () => {
   };
 
   const handleToAdmin = () => {
-    navigate("/admin");
+    navigate("/profile");
   };
 
   const handleToReviews = () => {

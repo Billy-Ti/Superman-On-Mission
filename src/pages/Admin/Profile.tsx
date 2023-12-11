@@ -5,9 +5,9 @@ const Profile = () => {
     <>
       <div className="flex min-h-screen">
         <SideBar />
-        <div className="container mx-auto my-32 ml-[160px] flex-grow px-4">
+        <div className="container mx-auto my-32 md:ml-[160px] flex-grow px-4 ">
           <div>
-            <div className="relative w-3/4 rounded-lg bg-white shadow sm:mx-auto md:w-1/2 ">
+            <div className="relative rounded-lg bg-white shadow sm:mx-auto md:w-1/2 ">
               <div className="flex justify-center">
                 <img
                   src="https://cdn-icons-png.flaticon.com/512/149/149071.png"

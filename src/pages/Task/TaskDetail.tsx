@@ -153,167 +153,164 @@ const TaskDetail = () => {
     <>
       <Header />
       <div className="container mx-auto max-w-[1280px] px-4 pt-4 md:px-20">
-        <div className="p-4">
-          <div className="mb-4 flex text-3xl font-semibold text-gray-700">
-            <span className="h-8 w-2 bg-[#368dcf]"></span>
-            <p className="pl-2">任務資訊</p>
-          </div>
-
-          <div className="flex flex-col lg:flex-row">
-            {/* 左邊區塊開始 */}
-            <div className="space-y-4 p-4 lg:w-1/3">
-              {/* 案主 */}
-              <div className="flex items-center space-x-2">
-                <div className="flex-grow items-center tracking-wider">
-                  <span className="font-semibold tracking-wider">
-                    發案者名稱：
-                  </span>
-                  {posterName}
-                </div>
-              </div>
-              {/* 任務截止日期 */}
-              <div className="flex items-center space-x-2">
-                <div className="flex-grow tracking-wider">
-                  <span className="font-semibold tracking-wider">
-                    任務截止日期：
-                  </span>
-                  {taskDetails.dueDate}
-                </div>
+        <div className="mb-4 flex text-3xl font-semibold text-gray-700">
+          <span className="h-8 w-2 bg-[#368dcf]"></span>
+          <p className="pl-2">任務資訊</p>
+        </div>
+        <div className="flex flex-col lg:flex-row">
+          {/* 左邊區塊開始 */}
+          <div className="space-y-4 p-4 lg:w-1/3">
+            {/* 案主 */}
+            <div className="flex items-center space-x-2">
+              <div className="flex-grow items-center text-xl tracking-wider text-[#3178C6]">
+                <span className="font-semibold tracking-wider">
+                  發案者名稱：
+                </span>
+                {posterName}
               </div>
             </div>
-            {/* 左邊區塊結束 */}
-
-            {/* 右邊區塊開始 */}
-            <div className="grid grid-cols-1 gap-4 rounded-md bg-[#B3D7FF] p-4 md:grid-cols-2 lg:w-2/3">
-              {/* 以下是六個欄位，根據屏幕大小分為一列或兩列 */}
-              <div className="rounded-md bg-white p-4">
-                {/* 任務名稱 */}
-                <div className="mb-3  border-b-4 border-b-[#B3D7FF] text-center text-xl font-black text-gray-500">
-                  任務名稱
-                </div>
-                <div className="font-medium text-[#3178C6]">
-                  {taskDetails.title}
-                </div>
-              </div>
-              <div className="rounded-md bg-white p-4">
-                {/* 任務地點 */}
-                <div className="mb-3  border-b-4 border-b-[#B3D7FF] text-center text-xl font-black text-gray-500">
-                  任務地點
-                </div>
-                <div className="font-medium text-[#3178C6]">
-                  {taskDetails.city}
-                  {taskDetails.district}
-                  {taskDetails.address}
-                </div>
-              </div>
-              <div className="rounded-md bg-white p-4">
-                {/* 任務類型 */}
-                <div className="mb-3  border-b-4 border-b-[#B3D7FF] text-center text-xl font-black text-gray-500">
-                  任務類型
-                </div>
-                <div className="font-medium text-[#3178C6]">
-                  {taskDetails.categorys
-                    .map((category) => `#${category}`)
-                    .join(" ")}
-                </div>
-              </div>
-              <div className="rounded-md bg-white p-4">
-                {/* 任務報酬 Super Coin */}
-                <div className="mb-3  border-b-4 border-b-[#B3D7FF] text-center text-xl font-black text-gray-500">
-                  任務報酬 Super Coin
-                </div>
-                <div className="flex items-center font-medium text-[#3178C6]">
-                  <span>{taskDetails.cost}</span>
-                </div>
-              </div>
-              <div className="rounded-md bg-white p-4">
-                {/* 任務說明 */}
-                <div className="border-b-4  border-b-[#B3D7FF] text-center text-xl font-semibold tracking-wider">
-                  任務說明
-                </div>
-                <div className="font-medium text-[#3178C6]">
-                  {taskDetails.description}
-                </div>
-              </div>
-              <div className="rounded-md bg-white p-4">
-                {/* 其他備註 */}
-                <div className="border-b-4  border-b-[#B3D7FF] text-center text-xl font-semibold tracking-wider">
-                  其他備註
-                </div>
-                <div className="font-medium text-[#3178C6]">
-                  {taskDetails.notes}
-                </div>
+            {/* 任務截止日期 */}
+            <div className="flex items-center space-x-2">
+              <div className="flex-grow tracking-wider">
+                <span className="font-semibold tracking-wider">
+                  任務截止日期：
+                </span>
+                {taskDetails.dueDate}
               </div>
             </div>
-            {/* 右邊區塊結束 */}
           </div>
+          {/* 左邊區塊結束 */}
 
-          <div className="mb-4 flex text-3xl font-semibold text-gray-700">
-            <span className="h-8 w-2 bg-[#368dcf]"></span>
-            <p className="pl-2">任務照片</p>
+          {/* 右邊區塊開始 */}
+          <div className="grid grid-cols-1 gap-4 rounded-md bg-[#B3D7FF] p-4 md:grid-cols-2 lg:w-2/3">
+            {/* 以下是六個欄位，根據屏幕大小分為一列或兩列 */}
+            <div className="rounded-md bg-white p-4">
+              {/* 任務名稱 */}
+              <div className="mb-3  border-b-4 border-b-[#B3D7FF] text-center text-xl font-black text-gray-500">
+                任務名稱
+              </div>
+              <div className="font-medium text-[#3178C6]">
+                {taskDetails.title}
+              </div>
+            </div>
+            <div className="rounded-md bg-white p-4">
+              {/* 任務地點 */}
+              <div className="mb-3  border-b-4 border-b-[#B3D7FF] text-center text-xl font-black text-gray-500">
+                任務地點
+              </div>
+              <div className="font-medium text-[#3178C6]">
+                {taskDetails.city}
+                {taskDetails.district}
+                {taskDetails.address}
+              </div>
+            </div>
+            <div className="rounded-md bg-white p-4">
+              {/* 任務類型 */}
+              <div className="mb-3  border-b-4 border-b-[#B3D7FF] text-center text-xl font-black text-gray-500">
+                任務類型
+              </div>
+              <div className="font-medium text-[#3178C6]">
+                {taskDetails.categorys
+                  .map((category) => `#${category}`)
+                  .join(" ")}
+              </div>
+            </div>
+            <div className="rounded-md bg-white p-4">
+              {/* 任務報酬 Super Coin */}
+              <div className="mb-3  border-b-4 border-b-[#B3D7FF] text-center text-xl font-black text-gray-500">
+                任務報酬 Super Coin
+              </div>
+              <div className="flex items-center font-medium text-[#3178C6]">
+                <span>{taskDetails.cost}</span>
+              </div>
+            </div>
+            <div className="rounded-md bg-white p-4">
+              {/* 任務說明 */}
+              <div className="mb-3 border-b-4 border-b-[#B3D7FF] text-center text-xl font-black text-gray-500">
+                任務說明
+              </div>
+              <div className="font-medium text-[#3178C6]">
+                {taskDetails.description}
+              </div>
+            </div>
+            <div className="rounded-md bg-white p-4">
+              {/* 其他備註 */}
+              <div className="mb-3 border-b-4 border-b-[#B3D7FF] text-center text-xl font-black text-gray-500">
+                其他備註
+              </div>
+              <div className="font-medium text-[#3178C6]">
+                {taskDetails.notes}
+              </div>
+            </div>
           </div>
-          <div className="mb-10 flex items-center justify-center">
-            <ul className="flex flex-wrap justify-center gap-4">
-              {taskDetails.photos?.map((photo) => (
+          {/* 右邊區塊結束 */}
+        </div>
+
+        <div className="mb-4 flex text-3xl font-semibold text-gray-700">
+          <span className="h-8 w-2 bg-[#368dcf]"></span>
+          <p className="pl-2">任務照片</p>
+        </div>
+        <div className="mb-10 flex items-center justify-center">
+          <ul className="flex flex-wrap justify-center gap-4">
+            {taskDetails.photos?.map((photo) => (
+              <li
+                key={photo}
+                className="h-52 w-52 border-2 border-dashed border-[#368dcf]"
+              >
+                <img
+                  className="h-full w-full cursor-pointer object-cover p-2"
+                  src={photo}
+                  alt="Task photo"
+                  onClick={() => {
+                    setSelectedPhoto(photo);
+                    setIsModalOpen(true);
+                  }}
+                />
+              </li>
+            ))}
+
+            {[...Array(4 - (taskDetails.photos?.length || 0))].map(
+              (_, index) => (
                 <li
-                  key={photo}
-                  className="h-52 w-52 border-2 border-dashed border-[#368dcf]"
+                  key={index}
+                  className="flex h-52 w-52 items-center justify-center border-2 border-dashed border-[#368dcf] font-extrabold"
                 >
-                  <img
-                    className="h-full w-full cursor-pointer object-cover p-2"
-                    src={photo}
-                    alt="Task photo"
-                    onClick={() => {
-                      setSelectedPhoto(photo);
-                      setIsModalOpen(true);
-                    }}
-                  />
+                  <span>未提供圖片</span>
                 </li>
-              ))}
-
-              {[...Array(4 - (taskDetails.photos?.length || 0))].map(
-                (_, index) => (
-                  <li
-                    key={index}
-                    className="flex h-52 w-52 items-center justify-center border-2 border-dashed border-[#368dcf] font-extrabold"
-                  >
-                    <span>未提供圖片</span>
-                  </li>
-                ),
-              )}
-            </ul>
-
-            {isModalOpen && (
-              <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
-                <div className=" relative max-w-full overflow-auto ">
-                  <img
-                    className="min-w-[500px] max-w-[800px] object-cover"
-                    src={selectedPhoto || "defaultImagePath"}
-                    alt="Enlarged task photo"
-                  />
-                  <button
-                    className="absolute bottom-10 left-1/2 mt-4 flex h-10 w-10 -translate-x-1/2 transform items-center justify-center rounded-full  p-2 text-black"
-                    onClick={() => setIsModalOpen(false)}
-                  >
-                    <span className="absolute -left-4 -top-4 h-16 w-16 animate-ping rounded-full  opacity-75" />
-                    <span className="absolute -left-4 -top-4 h-16 w-16 rounded-full bg-red-200" />
-                    <span className="relative z-10 text-center text-sm">
-                      Close
-                    </span>
-                  </button>
-                </div>
-              </div>
+              ),
             )}
-          </div>
-          <div className="flex justify-center gap-4">
-            <button
-              onClick={handleConfirmAcceptTask}
-              className="flex items-center rounded-md bg-[#368DCF] p-3 text-xl font-medium tracking-wider text-white transition duration-500 ease-in-out hover:bg-[#3178C6]"
-            >
-              <Icon icon="icon-park-outline:check-correct" className="mr-3" />
-              確認接案
-            </button>
-          </div>
+          </ul>
+
+          {isModalOpen && (
+            <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
+              <div className=" relative max-w-full overflow-auto ">
+                <img
+                  className="min-w-[500px] max-w-[800px] object-cover"
+                  src={selectedPhoto || "defaultImagePath"}
+                  alt="Enlarged task photo"
+                />
+                <button
+                  className="absolute bottom-10 left-1/2 mt-4 flex h-10 w-10 -translate-x-1/2 transform items-center justify-center rounded-full  p-2 text-black"
+                  onClick={() => setIsModalOpen(false)}
+                >
+                  <span className="absolute -left-4 -top-4 h-16 w-16 animate-ping rounded-full  opacity-75" />
+                  <span className="absolute -left-4 -top-4 h-16 w-16 rounded-full bg-red-200" />
+                  <span className="relative z-10 text-center text-sm">
+                    Close
+                  </span>
+                </button>
+              </div>
+            </div>
+          )}
+        </div>
+        <div className="flex justify-center gap-4">
+          <button
+            onClick={handleConfirmAcceptTask}
+            className="flex items-center rounded-md bg-[#368DCF] p-3 text-xl font-medium tracking-wider text-white transition duration-500 ease-in-out hover:bg-[#3178C6]"
+          >
+            <Icon icon="icon-park-outline:check-correct" className="mr-3" />
+            確認接案
+          </button>
         </div>
       </div>
       <Footer />
