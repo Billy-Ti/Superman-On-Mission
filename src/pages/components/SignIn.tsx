@@ -50,6 +50,7 @@ const SignIn = () => {
         progressTasks: 0,
         superCoins: 5000,
         averageRating: 0,
+        profilePicUrl: "https://cdn-icons-png.flaticon.com/512/149/149071.png",
       });
 
       // 清除輸入狀態

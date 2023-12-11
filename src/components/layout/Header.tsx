@@ -1,6 +1,6 @@
 import { Icon } from "@iconify/react";
 import { getAuth, onAuthStateChanged } from "firebase/auth";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import Swal from "sweetalert2";
 import { useAuth } from "../../hooks/AuthProvider";
@@ -10,21 +10,22 @@ const Header = () => {
   const { currentUser, logout } = useAuth();
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
-
+  const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+  const dropdownRef = useRef<HTMLDivElement | null>(null);
   const navigate = useNavigate();
-
   const handleSignIn = () => {
     navigate("/signIn");
   };
-
   const handleToAdmin = () => {
     navigate("/profile");
   };
-
   const handleToReviews = () => {
     navigate("/reviewLists");
   };
 
+  const toggleDropdown = () => {
+    setIsDropdownOpen(!isDropdownOpen);
+  };
   const handleLogout = async () => {
     Swal.fire({
       title: "確定要登出嗎？",
@@ -55,16 +56,13 @@ const Header = () => {
       }
     });
   };
-
   const handleTaskManagement = () => {
     navigate("/taskManagement");
   };
-
   const handleSearch = (searchQuery: string) => {
     console.log(`搜尋: ${searchQuery}`);
     // 這裡你可以添加更多的邏輯來處理搜索查詢，比如將其發送到API或更新應用狀態
   };
-
   useEffect(() => {
     const auth = getAuth();
     const unsubscribe = onAuthStateChanged(auth, (user) => {
@@ -77,20 +75,39 @@ const Header = () => {
         console.log("沒有用戶登錄");
       }
     });
-
     // 清理監聽器
     return () => unsubscribe();
   }, []);
-
   useEffect(() => {
     const handleScroll = () => {
       setIsScrolled(window.scrollY > 0);
     };
-
     window.addEventListener("scroll", handleScroll);
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      // 檢查 event.target 是否為 Node 類型
+      if (event.target instanceof Node) {
+        if (
+          isDropdownOpen &&
+          dropdownRef.current &&
+          !dropdownRef.current.contains(event.target)
+        ) {
+          setIsDropdownOpen(false);
+        }
+      }
+    };
+
+    // 添加全局點擊事件監聽器
+    document.addEventListener("mousedown", handleClickOutside);
+
+    return () => {
+      // 清理監聽器
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, [isDropdownOpen]);
   const toggleMenu = () => {
     setIsMenuOpen(!isMenuOpen);
   };
@@ -135,8 +152,15 @@ const Header = () => {
                 color="#3178C6"
                 width="40"
                 height="40"
+                onClick={toggleDropdown}
               />
-              <div className="absolute top-[40px] z-10 hidden flex-col space-y-2 rounded-md border border-[#B3D7FF] opacity-0 group-hover:flex group-hover:opacity-100">
+              {/* Header 點擊頭像之後的選單 */}
+              <div
+                ref={dropdownRef}
+                className={`absolute -right-[-40px] top-[50px] z-10 flex-col space-y-2 rounded-md border border-[#B3D7FF] transition-opacity duration-300 ease-in-out ${
+                  isDropdownOpen ? "flex opacity-100" : "hidden opacity-0"
+                }`}
+              >
                 <button
                   onClick={handleToAdmin}
                   type="button"
@@ -159,7 +183,6 @@ const Header = () => {
                   我的評價
                 </button>
               </div>
-
               <div className="ml-3" title="登出">
                 <Icon
                   onClick={handleLogout}
@@ -170,7 +193,6 @@ const Header = () => {
                   height="40"
                 />
               </div>
-
               <div className="lg:hidden">
                 <button onClick={toggleMenu}>
                   <Icon icon="mdi:menu" width="40" height="40" />
@@ -193,16 +215,19 @@ const Header = () => {
           )}
         </div>
         <div
-          className={`${
-            isMenuOpen ? "hidden" : "block"
-          } lg:absolute lg:right-0 lg:top-0 lg:mt-4 lg:bg-transparent lg:shadow-none`}
+          className={`absolute left-0 top-0 z-20 w-full bg-[#B3D7FF] transition-transform duration-300 ease-in-out lg:hidden ${
+            isMenuOpen ? "translate-y-[70px]" : "-translate-y-full"
+          }`}
         >
-          <ul className="mt-4 flex flex-col items-center space-y-4 lg:hidden">
-            <li className="w-full">
+          <ul className="flex flex-col items-center">
+            <li>
+              <img className="w-24" src="/superman_3.png" alt="" />
+            </li>
+            <li className="w-full ">
               <button
                 onClick={handleSignIn}
                 type="button"
-                className="text-medium w-full rounded-md text-gray-700 hover:bg-[#368DCF] hover:text-white"
+                className="w-full rounded-md p-5 text-lg font-bold text-[#3178C6] hover:bg-[#368DCF] hover:text-white"
               >
                 {currentUser ? "會員中心" : "Login"}
               </button>
@@ -211,7 +236,7 @@ const Header = () => {
               <button
                 type="button"
                 onClick={handleTaskManagement}
-                className="text-medium w-full rounded-md text-gray-700 hover:bg-[#368DCF] hover:text-white"
+                className="w-full rounded-md p-5 text-lg font-bold text-[#3178C6] hover:bg-[#368DCF] hover:text-white"
               >
                 任務管理
               </button>
@@ -220,7 +245,7 @@ const Header = () => {
               <button
                 onClick={handleToReviews}
                 type="button"
-                className="text-medium w-full rounded-md text-gray-700 hover:bg-[#368DCF] hover:text-white"
+                className="w-full rounded-md p-5 text-lg font-bold text-[#3178C6] hover:bg-[#368DCF] hover:text-white"
               >
                 我的評價
               </button>
@@ -228,7 +253,7 @@ const Header = () => {
             <li className="w-full text-center">
               <Link
                 to="/acceptTask"
-                className="text-medium block w-full"
+                className="block w-full p-5 text-lg font-bold text-[#3178C6] hover:bg-[#368DCF] hover:text-white"
                 onClick={toggleMenu}
               >
                 接任務
@@ -237,13 +262,12 @@ const Header = () => {
             <li className="w-full text-center">
               <Link
                 to="/taskPage"
-                className="text-medium block w-full"
+                className="block w-full p-5 text-lg font-bold text-[#3178C6] hover:bg-[#368DCF] hover:text-white"
                 onClick={toggleMenu}
               >
                 發任務
               </Link>
             </li>
-
             {/* ... 其他移动端导航项目 */}
           </ul>
         </div>
@@ -251,5 +275,4 @@ const Header = () => {
     </>
   );
 };
-
 export default Header;

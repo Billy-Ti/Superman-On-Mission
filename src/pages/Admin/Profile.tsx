@@ -1,36 +1,160 @@
+import { Icon } from "@iconify/react";
+import { getAuth } from "firebase/auth";
+import { doc, getDoc, updateDoc } from "firebase/firestore";
+import {
+  getDownloadURL,
+  getStorage,
+  ref as storageRef,
+  uploadBytes,
+} from "firebase/storage";
+import { useEffect, useState } from "react";
+import Footer from "../../components/layout/Footer";
+import Header from "../../components/layout/Header";
+import { db } from "../../config/firebase";
 import SideBar from "./SideBar";
 
 const Profile = () => {
+  const [profilePic, setProfilePic] = useState(
+    "https://cdn-icons-png.flaticon.com/512/149/149071.png",
+  );
+  const [userName, setUserName] = useState("");
+  const [openAccordions, setOpenAccordions] = useState<number[]>([]);
+  const [userEmail, setUserEmail] = useState("");
+  const [joinedAt, setJoinedAt] = useState("");
+  const [superCoins, setSuperCoins] = useState(0);
+  const [averageRating, setAverageRating] = useState(0);
+
+  const auth = getAuth();
+  const storage = getStorage();
+
+  const accordionItems = [
+    {
+      title: "個人資訊",
+      content: [
+        {
+          "使用者名稱 ": userName,
+          "E-mail ": userEmail,
+          "加入平台時間 ": joinedAt,
+        },
+      ],
+    },
+    {
+      title: "帳戶資訊",
+      content: [
+        {
+          "擁有的 Super Coins ": superCoins,
+          "信用卡綁定 ": "未綁定",
+        },
+      ],
+    },
+    {
+      title: "案件資訊",
+      content: [
+        {
+          "已完成案件 ": "數字",
+          "平均星等 ": averageRating,
+        },
+      ],
+    },
+  ];
+
+  const toggleAccordion = (index: number) => {
+    setOpenAccordions((currentOpenAccordions) => {
+      // 檢查是否已經打開了這個項目
+      if (currentOpenAccordions.includes(index)) {
+        // 如果已經打開，則將它移除
+        return currentOpenAccordions.filter((itemIndex) => itemIndex !== index);
+      } else {
+        // 如果還沒打開，則將它添加到陣列中
+        return [...currentOpenAccordions, index];
+      }
+    });
+  };
+
+  useEffect(() => {
+    // 獲取用戶資料
+    const fetchUserData = async () => {
+      if (auth.currentUser) {
+        const docRef = doc(db, "users", auth.currentUser.uid);
+        const docSnap = await getDoc(docRef);
+
+        if (docSnap.exists()) {
+          const userData = docSnap.data();
+          setProfilePic(
+            userData.profilePicUrl ||
+              "https://cdn-icons-png.flaticon.com/512/149/149071.png",
+          );
+          setUserName(userData.name);
+          setUserEmail(userData.email);
+          setJoinedAt(userData.joinedAt);
+          setSuperCoins(userData.superCoins);
+          setAverageRating(userData.averageRating);
+        }
+      }
+    };
+
+    fetchUserData();
+  }, [auth]);
+
+  const handleImageUpload = async (
+    event: React.ChangeEvent<HTMLInputElement>,
+  ) => {
+    const file = event.target.files?.[0];
+    if (!file || !auth.currentUser) return;
+
+    // 創建 storage 參考
+    const fileRef = storageRef(
+      storage,
+      `profilePics/${auth.currentUser.uid}/${file.name}`,
+    );
+    await uploadBytes(fileRef, file);
+    const newProfilePicUrl = await getDownloadURL(fileRef);
+
+    // 更新 Firestore 中的用戶資料
+    const userDocRef = doc(db, "users", auth.currentUser.uid);
+    await updateDoc(userDocRef, {
+      profilePicUrl: newProfilePicUrl,
+    });
+
+    setProfilePic(newProfilePicUrl); // 更新本地狀態
+  };
+
   return (
     <>
+      <div className="md:hidden">
+        <Header />
+      </div>
       <div className="flex min-h-screen">
         <SideBar />
-        <div className="container mx-auto my-32 md:ml-[160px] flex-grow px-4 ">
-          <div>
-            <div className="relative rounded-lg bg-white shadow sm:mx-auto md:w-1/2 ">
-              <div className="flex justify-center">
-                <img
-                  src="https://cdn-icons-png.flaticon.com/512/149/149071.png"
-                  alt=""
-                  className="absolute -top-20 mx-auto h-32 w-32 transform rounded-full border-4 border-white shadow-md transition duration-200 hover:scale-110"
+        <div className="container mx-auto max-w-[1280px] px-4 pt-40 md:py-0  lg:px-20">
+          <div className="relative rounded-lg bg-white shadow sm:mx-auto md:ml-56 md:mt-40 md:max-w-full">
+            <div className="flex justify-center">
+              <img
+                src={profilePic}
+                alt="Profile"
+                className="absolute -top-20 mx-auto h-32 w-32 transform rounded-full border-4 border-white shadow-md transition duration-200 hover:scale-125"
+              />
+            </div>
+            <div className="mt-16">
+              <h2 className="text-center text-3xl font-bold text-gray-900">
+                {userName}
+              </h2>
+
+              <div className="my-5 px-6">
+                <input
+                  type="file"
+                  onChange={handleImageUpload}
+                  className="hidden"
+                  id="fileInput"
                 />
+                <label
+                  htmlFor="fileInput"
+                  className="block w-full cursor-pointer rounded-md bg-[#368DCF] p-3 text-center text-xl font-medium tracking-wider text-white transition duration-1000 ease-in-out hover:bg-[#3178C6]"
+                >
+                  修改會員照
+                </label>
               </div>
-              <div className="mt-16">
-                <h1 className="text-center text-3xl font-bold text-gray-900">
-                  Pantazi Software
-                </h1>
-                <p>
-                  <span></span>
-                </p>
-                <div className="my-5 px-6">
-                  <a
-                    href="#"
-                    className="block rounded-lg bg-gray-900 px-6 py-3 text-center font-medium leading-6 text-gray-200 hover:bg-black hover:text-white"
-                  >
-                    Connect with <span className="font-bold">@pantazisoft</span>
-                  </a>
-                </div>
-                <div className="my-5 flex items-center justify-between px-6">
+              {/* <div className="my-5 flex items-center justify-between px-6">
                   <a
                     href=""
                     className="w-full rounded py-3 text-center text-sm font-medium text-gray-500 transition duration-150 ease-in hover:bg-gray-100 hover:text-gray-900"
@@ -55,79 +179,62 @@ const Profile = () => {
                   >
                     Email
                   </a>
-                </div>
-                <div className="w-full">
-                  <h3 className="px-6 text-left font-medium text-gray-900">
-                    Recent activites
-                  </h3>
-                  <div className="mt-5 flex w-full flex-col items-center overflow-hidden text-sm">
-                    <a
-                      href="#"
-                      className="block w-full border-t border-gray-100 py-4 pl-6 pr-3 text-gray-600 transition duration-150 hover:bg-gray-100"
-                    >
-                      <img
-                        src="https://avatars0.githubusercontent.com/u/35900628?v=4"
-                        alt=""
-                        className="mr-2 inline-block h-6 rounded-full shadow-md"
-                      />
-                      Updated his status
-                      <span className="text-xs text-gray-500">24 min ago</span>
-                    </a>
-                    <a
-                      href="#"
-                      className="block w-full border-t border-gray-100 py-4 pl-6 pr-3 text-gray-600 transition duration-150 hover:bg-gray-100"
-                    >
-                      <img
-                        src="https://avatars0.githubusercontent.com/u/35900628?v=4"
-                        alt=""
-                        className="mr-2 inline-block h-6 rounded-full shadow-md"
-                      />
-                      Added new profile picture
-                      <span className="text-xs text-gray-500">42 min ago</span>
-                    </a>
-                    <a
-                      href="#"
-                      className="block w-full border-t border-gray-100 py-4 pl-6 pr-3 text-gray-600 transition duration-150 hover:bg-gray-100"
-                    >
-                      <img
-                        src="https://avatars0.githubusercontent.com/u/35900628?v=4"
-                        alt=""
-                        className="mr-2 inline-block h-6 rounded-full shadow-md"
-                      />
-                      Posted new article in{" "}
-                      <span className="font-bold">#Web Dev</span>
-                      <span className="text-xs text-gray-500">49 min ago</span>
-                    </a>
-                    <a
-                      href="#"
-                      className="block w-full border-t border-gray-100 py-4 pl-6 pr-3 text-gray-600 transition duration-150 hover:bg-gray-100"
-                    >
-                      <img
-                        src="https://avatars0.githubusercontent.com/u/35900628?v=4"
-                        alt=""
-                        className="mr-2 inline-block h-6 rounded-full shadow-md"
-                      />
-                      Edited website settings
-                      <span className="text-xs text-gray-500">1 day ago</span>
-                    </a>
-                    <a
-                      href="#"
-                      className="block w-full overflow-hidden border-t border-gray-100 py-4 pl-6 pr-3 text-gray-600 transition duration-150 hover:bg-gray-100"
-                    >
-                      <img
-                        src="https://avatars0.githubusercontent.com/u/35900628?v=4"
-                        alt=""
-                        className="mr-2 inline-block h-6 rounded-full shadow-md"
-                      />
-                      Added new rank
-                      <span className="text-xs text-gray-500">5 days ago</span>
-                    </a>
-                  </div>
+                </div> */}
+              <div className="w-full shadow-xl">
+                <div className="mt-5 flex w-full flex-col items-center overflow-hidden text-sm">
+                  <ul className="accordion w-full rounded-lg bg-gray-50 px-6 shadow-lg shadow-gray-100">
+                    {accordionItems.map((item, index) => (
+                      <li key={index} className="my-10 cursor-pointer">
+                        <span
+                          onClick={() => toggleAccordion(index)}
+                          className="flex flex-row items-center justify-between bg-[#2B79B4] text-xl font-medium tracking-tight text-gray-500 hover:bg-[#368DCF]"
+                        >
+                          <p className="p-2 text-white">{item.title}</p>
+                          <Icon
+                            color="#fff"
+                            icon={
+                              openAccordions.includes(index)
+                                ? "eva:arrow-up-fill"
+                                : "eva:arrow-down-fill"
+                            }
+                            className={`transform transition duration-500 ${
+                              openAccordions.includes(index)
+                                ? "rotate-180"
+                                : "rotate-0"
+                            }`}
+                          />
+                        </span>
+                        {openAccordions.includes(index) && (
+                          <div className="max-h-96 overflow-hidden transition-[max-height] duration-500 ease-in-out">
+                            <ul className="text-md p-2 text-gray-500">
+                              {item.content.map((contentItem, contentIndex) => (
+                                <li
+                                  className="text-lg font-medium"
+                                  key={contentIndex}
+                                >
+                                  {Object.entries(contentItem).map(
+                                    ([key, value]) => (
+                                      <p className="" key={key}>
+                                        {key}: {value}
+                                      </p>
+                                    ),
+                                  )}
+                                </li>
+                              ))}
+                            </ul>
+                          </div>
+                        )}
+                      </li>
+                    ))}
+                  </ul>
                 </div>
               </div>
             </div>
           </div>
         </div>
+      </div>
+      <div className="md:hidden">
+        <Footer />
       </div>
     </>
   );
