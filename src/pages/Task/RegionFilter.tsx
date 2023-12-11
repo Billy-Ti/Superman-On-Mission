@@ -31,10 +31,10 @@ const RegionFilter: React.FC<RegionFilterProps> = ({
   };
 
   return (
-    <div className="mb-4 flex items-center">
-      <div className="flex items-center">
-        <span className="mr-2 h-8 w-2 bg-[#A7B4FC]"></span>
-        <p className="mr-2 text-2xl font-black">地區搜尋</p>
+    <div className="mb-10 flex items-center">
+      <div className="flex items-center font-semibold">
+        <span className="mr-2 h-8 w-2 bg-[#368DCF]"></span>
+        <p className="mr-2 text-2xl">地區搜尋</p>
       </div>
 
       <RegionSelector
@@ -45,9 +45,9 @@ const RegionFilter: React.FC<RegionFilterProps> = ({
       />
       <a
         onClick={handleClearSelected}
-        className="cursor-pointer rounded-md bg-gradient-to-r from-indigo-300 to-violet-300 px-4 py-2 text-white"
+        className="cursor-pointer rounded-md bg-[#368DCF] p-3 py-2 font-medium tracking-widest text-white transition duration-500 ease-in-out backdrop:px-4 hover:bg-[#3178C6]"
       >
-        Clear selected
+        清除所選地區
       </a>
     </div>
   );

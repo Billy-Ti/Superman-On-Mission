@@ -6,6 +6,7 @@ body {
   font-family: "Segoe UI", "Noto Sans TC", "Roboto", "Helvetica Neue", Arial,
     "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji",
     sans-serif;
+  line-height: 1.5 !important;
 }
 .typed-container .typed-cursor {
   @apply text-5xl;
@@ -14,7 +15,7 @@ body {
   transform: rotateY(-180deg);
 }
 .highlight {
-  border-bottom: 16px solid #6366f1;
+  border-bottom: 8px solid #2b79b4;
   font-weight: bold;
 }
 /* Custom task cards style */
@@ -74,17 +75,6 @@ body {
   100% {
     background-position: 100% 50%;
   }
-}
-.border-gradient {
-  background-image: linear-gradient(
-    to right,
-    #c8dae8,
-    #c3b5fd,
-    rgb(74, 158, 242)
-  );
-  background-size: 200% auto;
-  -webkit-animation: gradientAnimation 5s linear infinite;
-  animation: gradientAnimation 5s linear infinite;
 }
 /* Custom login style */
 .container.right-panel-active .sign-in-container {
@@ -437,10 +427,10 @@ body {
 .toggle-checkbox:checked {
   @apply: right-0 border-green-400;
   right: 0;
-  border-color: #5074e8;
+  border-color: #3178c6;
 }
 .toggle-checkbox:checked + .toggle-label {
-  background-image: linear-gradient(to right, #3b82f6, #f6037d, #f99659);
+  background-color: #3178c6;
 }
 /* Custom Carousel block */
 
@@ -482,4 +472,16 @@ body {
 .slick-slide:not(.slick-current) div div img {
   -webkit-filter: grayscale(100%);
   filter: grayscale(100%);
+}
+
+/* 改變按鈕的背景色 */
+.slick-prev:before,
+.slick-next:before {
+  color: #368dcf;
+}
+
+/* 改變按鈕懸停時的背景色 */
+.slick-prev:hover:before,
+.slick-next:hover:before {
+  color: #368dcf;
 }

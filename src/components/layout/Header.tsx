@@ -17,6 +17,10 @@ const Header = () => {
     navigate("/signIn");
   };
 
+  const handleToAdmin = () => {
+    navigate("/profile");
+  };
+
   const handleToReviews = () => {
     navigate("/reviewLists");
   };
@@ -94,7 +98,9 @@ const Header = () => {
     <>
       <header
         className={`sticky top-0 z-10 w-full ${
-          isScrolled ? "border-b border-blue-100 backdrop-blur-xl shadow-xl shadow-neutral-100" : ""
+          isScrolled
+            ? "border-b border-blue-100 shadow-xl shadow-neutral-100 backdrop-blur-xl"
+            : ""
         } transition-all duration-300`}
       >
         <div className="container relative mx-auto flex max-w-[1280px] items-center justify-between px-4 lg:px-20">
@@ -112,11 +118,11 @@ const Header = () => {
           <SearchBar onSearch={handleSearch} placeholder="快速搜尋任務" />
           <div className={`${isMenuOpen ? "hidden" : "block"} hidden lg:block`}>
             <ul className="ml-auto flex items-center text-xl md:mr-4 md:gap-4">
-              <li className="relative tracking-widest after:absolute after:bottom-0 after:left-0 after:h-[5px] after:w-full after:translate-y-1 after:bg-[#6366f1] after:opacity-0 after:transition after:duration-200 after:ease-in-out hover:after:translate-y-0 hover:after:opacity-100">
+              <li className="relative font-semibold tracking-widest after:absolute after:bottom-0 after:left-0 after:h-[5px] after:w-full after:translate-y-1 after:bg-[#368dcf] after:opacity-0 after:transition after:duration-200 after:ease-in-out hover:after:translate-y-0 hover:after:opacity-100">
                 <Link to="/acceptTask">接任務</Link>
               </li>
-              <li>|</li>
-              <li className="relative tracking-widest after:absolute after:bottom-0 after:left-0 after:h-[5px] after:w-full after:translate-y-1 after:bg-[#6366f1] after:opacity-0 after:transition after:duration-200 after:ease-in-out hover:after:translate-y-0 hover:after:opacity-100">
+              <li className="font-semibold">|</li>
+              <li className="relative font-semibold tracking-widest after:absolute after:bottom-0 after:left-0 after:h-[5px] after:w-full after:translate-y-1 after:bg-[#368dcf] after:opacity-0 after:transition after:duration-200 after:ease-in-out hover:after:translate-y-0 hover:after:opacity-100">
                 <Link to="/taskPage">發任務</Link>
               </li>
             </ul>
@@ -126,29 +132,29 @@ const Header = () => {
               <Icon
                 className="cursor-pointer"
                 icon="mingcute:user-4-fill"
-                color="rgba(0, 0, 255, 0.3333333333333333)"
+                color="#3178C6"
                 width="40"
                 height="40"
               />
-              <div className="absolute top-[40px] z-10 hidden flex-col space-y-2 rounded-md bg-white p-4 opacity-0 group-hover:flex group-hover:opacity-100">
+              <div className="absolute top-[40px] z-10 hidden flex-col space-y-2 rounded-md border border-[#B3D7FF] opacity-0 group-hover:flex group-hover:opacity-100">
                 <button
-                  onClick={handleSignIn}
+                  onClick={handleToAdmin}
                   type="button"
-                  className="w-36 rounded-md bg-gray-200 px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-300"
+                  className="w-36 rounded-md px-4 py-2 text-sm font-medium text-gray-700 hover:bg-[#368DCF] hover:text-white"
                 >
                   {currentUser ? "會員中心" : "Login"}
                 </button>
                 <button
                   type="button"
                   onClick={handleTaskManagement}
-                  className="w-36 rounded-md bg-gray-200 px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-300"
+                  className="w-36 rounded-md  px-4 py-2 text-sm font-medium text-gray-700 hover:bg-[#368DCF] hover:text-white"
                 >
                   任務管理
                 </button>
                 <button
                   onClick={handleToReviews}
                   type="button"
-                  className="w-36 rounded-md bg-gray-200 px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-300"
+                  className="w-36 rounded-md  px-4 py-2 text-sm font-medium text-gray-700 hover:bg-[#368DCF] hover:text-white"
                 >
                   我的評價
                 </button>
@@ -157,7 +163,7 @@ const Header = () => {
               <div className="ml-3" title="登出">
                 <Icon
                   onClick={handleLogout}
-                  color="rgba(0, 0, 255, 0.3333333333333333)"
+                  color="#3178C6"
                   className="cursor-pointer"
                   icon="solar:logout-bold-duotone"
                   width="40"
@@ -196,7 +202,7 @@ const Header = () => {
               <button
                 onClick={handleSignIn}
                 type="button"
-                className="text-medium w-full rounded-md text-gray-700 hover:bg-gray-300"
+                className="text-medium w-full rounded-md text-gray-700 hover:bg-[#368DCF] hover:text-white"
               >
                 {currentUser ? "會員中心" : "Login"}
               </button>
@@ -205,7 +211,7 @@ const Header = () => {
               <button
                 type="button"
                 onClick={handleTaskManagement}
-                className="text-medium w-full rounded-md text-gray-700 hover:bg-gray-300"
+                className="text-medium w-full rounded-md text-gray-700 hover:bg-[#368DCF] hover:text-white"
               >
                 任務管理
               </button>
@@ -214,7 +220,7 @@ const Header = () => {
               <button
                 onClick={handleToReviews}
                 type="button"
-                className="text-medium w-full rounded-md text-gray-700 hover:bg-gray-300"
+                className="text-medium w-full rounded-md text-gray-700 hover:bg-[#368DCF] hover:text-white"
               >
                 我的評價
               </button>

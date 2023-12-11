@@ -37,10 +37,11 @@ const HomeTaskStep = () => {
     fetchTasks();
   }, []);
   return (
-    <div className="container mx-auto max-w-[1280px] px-4 shadow-xl shadow-neutral-100 md:px-20">
+    <div className="container mx-auto max-w-[1280px] px-4 md:px-20">
       {/* shadow-xl shadow-neutral-100 */}
-      <div className="mb-20 py-20">
-        <p className="mb-10 text-center text-4xl">發案 3 步驟，跟著一起 go</p>
+      <div className="py-10 md:py-20">
+        <p className="mb-3 text-center text-4xl font-bold">發案 3 步驟，跟著一起 go</p>
+        <div className="mx-auto mb-10 h-[10px] w-1/5 bg-[#2B79B4]"></div>
         <div className="flex justify-between ">
           <p className="mb-1 font-bold sm:text-2xl">Step 1</p>
           <p className="font-bold sm:text-2xl">Step 2</p>
@@ -108,9 +109,9 @@ const HomeTaskStep = () => {
                 </div>
                 <button
                   onClick={() => navigate(`/acceptDetail/${task.id}`)}
-                  className="mt-2 w-full rounded-full border border-[#F0F0F6] bg-[#F4F5FA] px-4 py-3 shadow-lg transition duration-300 ease-in-out hover:bg-slate-300"
+                  className="mt-2 w-full rounded-full border border-[#F0F0F6] bg-[#F4F5FA] px-4 py-3 tracking-widest shadow-lg transition duration-300 ease-in-out hover:bg-slate-300"
                 >
-                  See more
+                  看更多
                 </button>
               </div>
             ))}
@@ -119,7 +120,7 @@ const HomeTaskStep = () => {
         <div className="flex justify-center">
           <button
             onClick={() => navigate("/taskPage")}
-            className="rounded-md bg-indigo-500 p-3 text-xl font-black tracking-wider text-white transition duration-500 ease-in-out hover:bg-indigo-700"
+            className="rounded-md bg-[#368DCF] p-3 text-xl font-medium tracking-widest text-white transition duration-500 ease-in-out hover:bg-[#3178C6]"
           >
             立即刊登任務
           </button>

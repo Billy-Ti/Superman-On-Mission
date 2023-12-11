@@ -5,7 +5,7 @@ const ReviewNavigation = () => {
   return (
     <div className="flex justify-between bg-[#b1cce7] px-2 py-2 sm:rounded-xl lg:flex-col lg:px-4">
       <div className="flex items-center justify-between">
-        <h3 className="text-3xl font-extrabold text-white">我的評價</h3>
+        <h3 className="text-3xl font-extrabold text-[#3178C6]">會員中心</h3>
       </div>
       <nav className="flex flex-row items-center space-x-2 lg:flex-col lg:space-x-0 lg:space-y-2">
         <Link

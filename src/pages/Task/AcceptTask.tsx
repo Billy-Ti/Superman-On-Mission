@@ -1,5 +1,5 @@
 import { Icon } from "@iconify/react";
-import { collection, getDocs, orderBy, query, where } from "firebase/firestore";
+import { collection, getDocs, orderBy, query } from "firebase/firestore";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import Pagination from "../../components/Pagination";
@@ -31,22 +31,12 @@ const AcceptTask = () => {
   const [tasks, setTasks] = useState<Task[]>([]);
   const [filteredTasks, setFilteredTasks] = useState<Task[]>([]);
   // 新增一個狀態來儲存用戶選擇的服務類型
-
   const [currentPage, setCurrentPage] = useState(1);
-
   // 目前設定每頁只會有兩則任務 useState(2);
   const [tasksPerPage] = useState(3);
-
   // 選擇地區、縣市的狀態
   const [selectedCity, setSelectedCity] = useState("");
   const [selectedDistrict, setSelectedDistrict] = useState("");
-
-  const [searchQuery, setSearchQuery] = useState("");
-
-  const [autocompleteSuggestions, setAutocompleteSuggestions] = useState<
-    string[]
-  >([]);
-
   const [isUrgentSelected, setIsUrgentSelected] = useState(false);
 
   const navigate = useNavigate();
@@ -105,31 +95,7 @@ const AcceptTask = () => {
           )
         : tasks;
     setFilteredTasks(newFilteredTasks);
-
-    // 觸發動畫
-    // setAnimationClass("");
-    // setTimeout(() => setAnimationClass("animate-fadeIn"), 10);
   }, [tasks, selectedIndexes, serviceType]);
-
-  useEffect(() => {
-    const fetchSuggestions = async () => {
-      const q = query(collection(db, "tasks"));
-      const querySnapshot = await getDocs(q);
-      const allSuggestions: string[] = [];
-      querySnapshot.forEach((doc) => {
-        const data = doc.data();
-        if (data.categorys && Array.isArray(data.categorys)) {
-          allSuggestions.push(...data.categorys);
-        }
-        if (data.title && typeof data.title === "string") {
-          allSuggestions.push(data.title);
-        }
-      });
-      setAutocompleteSuggestions([...new Set(allSuggestions)]); // 移除重複項
-    };
-
-    fetchSuggestions();
-  }, []);
 
   // 排序任務
   useEffect(() => {
@@ -171,11 +137,8 @@ const AcceptTask = () => {
     const filteredTasks = isUrgentSelected
       ? tasks.filter((task) => task.isUrgent) // 若 isUrgentSelected 為 true，則只顯示標記為急件的任務
       : tasks; // 若 isUrgentSelected 為 false，則顯示所有任務
-
     setFilteredTasks(filteredTasks); // 更新 filteredTasks 狀態
-
-    // 這裡可以加入其他相關邏輯，如基於其他篩選條件進一步過濾任務
-  }, [tasks, isUrgentSelected]); // useEffect 依賴於 tasks 和 isUrgentSelected
+  }, [tasks, isUrgentSelected]);
 
   // 獲取當前頁的任務
   const indexOfLastTask = currentPage * tasksPerPage;
@@ -193,8 +156,6 @@ const AcceptTask = () => {
     }
   };
 
-  // const handleBackToTask = () => navigate("/");
-
   const handleCityChange = (city: string) => {
     setSelectedCity(city);
     setSelectedDistrict("");
@@ -203,73 +164,14 @@ const AcceptTask = () => {
   const handleDistrictChange = (district: string) => {
     setSelectedDistrict(district);
   };
-
-  const handleKeyDown = async (
-    event: React.KeyboardEvent<HTMLInputElement>,
-  ) => {
-    if (event.key === "Enter") {
-      await handleTaskSearch();
-    }
-  };
-
-  const handleTaskSearch = async (queryParam?: string) => {
-    const searchQueryTrimmed = queryParam
-      ? queryParam.trim().toLowerCase()
-      : searchQuery.trim().toLowerCase();
-
-    if (searchQueryTrimmed) {
-      const q = query(
-        collection(db, "tasks"),
-        where("categorys", "array-contains", searchQueryTrimmed),
-        // 可以加其他查詢條件，如 where("title", "==", searchQueryTrimmed) 等
-      );
-      const querySnapshot = await getDocs(q);
-      const foundTasks = querySnapshot.docs.map((doc) => {
-        const data = doc.data() as Task;
-        return {
-          ...data, // 將所有 Task 屬性包含在內
-          id: doc.id,
-        };
-      });
-
-      setFilteredTasks(foundTasks);
-    } else {
-      console.log("搜尋詞為空，未執行查詢");
-    }
-  };
-
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setSearchQuery(e.target.value);
-    if (!e.target.value) {
-      setFilteredTasks(tasks); // 如果輸入框為空，則顯示所有任務
-    }
-  };
-
-  const renderAutocompleteSuggestions = () => {
-    const filteredSuggestions = autocompleteSuggestions.filter((suggestion) =>
-      suggestion.toLowerCase().includes(searchQuery.toLowerCase()),
-    );
-
-    return filteredSuggestions.map((suggestion) => (
-      <div key={suggestion} onClick={() => handleSuggestionClick(suggestion)}>
-        {suggestion}
-      </div>
-    ));
-  };
-
-  const handleSuggestionClick = (suggestion: string) => {
-    setSearchQuery(suggestion);
-    handleTaskSearch(suggestion); // 執行搜索
-  };
-
   return (
     <>
       <Header />
-      <div className="container mx-auto max-w-[1280px] px-4 md:max-w-7xl lg:px-20">
-        <Carousel />
+      <Carousel />
+      <div className="container mx-auto max-w-[1280px] px-4 pb-10 md:max-w-7xl lg:px-20">
         <div className="mb-4">
-          <div className="mb-4 flex items-center">
-            <span className="mr-2 h-8 w-2 bg-[#A7B4FC]"></span>
+          <div className="mb-4 flex items-center font-semibold">
+            <span className="mr-2 h-8 w-2 bg-[#368DCF]"></span>
             <p className="text-2xl">依照分類搜尋</p>
           </div>
           <ServiceTypeSelector
@@ -281,46 +183,8 @@ const AcceptTask = () => {
             onCountyChange={handleCityChange}
             onRegionChange={handleDistrictChange}
           />
-          <div className="relative mb-4 flex items-center">
-            <div className="flex items-center">
-              <span className="mr-2 h-8 w-2 bg-[#A7B4FC]"></span>
-              <label htmlFor="searchTask" className="mr-2 text-2xl font-black">
-                試試直接搜尋吧
-              </label>
-            </div>
-
-            <div className="relative">
-              <input
-                id="searchTask"
-                placeholder="生活...程式...家教"
-                className="rounded-md px-2 py-3 focus:outline-none"
-                type="text"
-                value={searchQuery}
-                onChange={handleInputChange}
-                onKeyDown={handleKeyDown}
-              />
-              <button
-                onClick={() => handleTaskSearch()}
-                type="button"
-                className="translate-x-[-30px] translate-y-[10px]"
-              >
-                <Icon icon="ri:search-line" width="30" color="#e0e7ff" />
-              </button>
-              {searchQuery && (
-                <div className="autocomplete-suggestions absolute left-0 w-full cursor-pointer bg-gray-300 px-2">
-                  {renderAutocompleteSuggestions()}
-                </div>
-              )}
-            </div>
-          </div>
           <div className="flex items-center">
-            <Icon
-              className="mr-2 animate-scale-pulse"
-              icon="bi:fire"
-              color="red"
-              width="40"
-              height="40"
-            />
+            <span className="mr-2 h-8 w-2 bg-[#368DCF]"></span>
             <DisplaySwitchButton
               buttonText="顯示所有急件"
               className="mb-0"
@@ -328,6 +192,8 @@ const AcceptTask = () => {
             />
           </div>
         </div>
+      </div>
+      <div className="container mx-auto max-w-[1280px] px-4 md:max-w-7xl lg:px-20">
         <Pagination
           tasksPerPage={tasksPerPage}
           totalTasks={tasks.length}
@@ -345,81 +211,89 @@ const AcceptTask = () => {
               <>
                 <div
                   key={task.id}
-                  className="border-gradient relative flex grow flex-col rounded-md border-2 border-gray-200 p-4"
+                  className="border-gradient relative flex grow flex-col rounded-md border-2 border-gray-200 p-4 bg-gray-100"
                 >
-                  <div className="flex min-h-[300px] grow items-start gap-2">
-                    <div className="border-2 border-gray-300">
+                  <div className="flex grow flex-col items-start gap-2">
+                    <div className="flex h-64 w-full items-center justify-center overflow-hidden rounded-md border-2 border-gray-300">
+                      {" "}   
                       {task.photos?.[0] ? (
                         <img
                           src={task.photos[0]}
                           alt="任務"
-                          className="h-32 w-32 object-cover"
+                          className="h-full w-full object-cover transition-transform duration-300 ease-in-out hover:scale-110"
                         />
                       ) : (
-                        <div className="flex h-32 w-32 items-center justify-center bg-gray-300">
-                          <Icon
-                            icon="bxs:image-alt"
-                            className="text-6xl text-gray-600"
-                          />
-                        </div>
+                        <span className="text-center text-lg text-gray-600">
+                          無提供圖片
+                        </span>
                       )}
                     </div>
-                    <div className="flex w-full flex-col gap-5 text-left">
-                      <h5 className="text-lg font-bold">
-                        {task.categorys
-                          .map((category) => `#${category}`)
-                          .join(" ")}
-                      </h5>
-                      <p className="text-sm">{task.title}</p>
-                      <div className="mt-1 flex items-center">
+
+                    <div className="flex w-full grow flex-col gap-4 pl-2">
+                      <p className="text-center text-2xl">{task.title}</p>
+                      <div className="mt-1 flex grow items-center font-semibold">
                         <a
                           href={`https://www.google.com/maps/search/${task.city}${task.district}${task.address}`}
                           target="_blank"
                           rel="noopener noreferrer"
-                          className="flex items-center"
+                          className="flex grow items-center"
                         >
-                          <Icon icon="mdi:location" />
+                          <Icon
+                            icon="mdi:location"
+                            className="mr-1 flex-shrink-0"
+                            width="20"
+                            height="20"
+                          />
                           {task.city}
                           {task.district}
                           {task.address}
                         </a>
                       </div>
-                      {/* <div>
-                      <p>任務截止日期 : {task.dueDate}</p>
-                    </div> */}
-                      {/* <div className="mt-1">
-                      <span className="text-lg font-bold">任務狀態 :</span>
-                      <span className="ml-2 text-lg font-bold">
-                        {task.status || "未知"}
-                      </span>
-                    </div> */}
-                      <div className="flex flex-col">
+                      <h5 className="inline-flex grow font-semibold">
+                        <Icon
+                          icon="mdi:tag"
+                          width="20"
+                          height="20"
+                          className="mr-1 flex-shrink-0"
+                        />
+                        {task.categorys.map((category, index) => (
+                          <>{index > 0 ? `、${category}` : category}</>
+                        ))}
+                      </h5>
+
+                      <div className="flex grow flex-col">
                         <div className="flex items-center">
                           {task.isUrgent ? (
-                            <>
+                            <div className="absolute right-0 top-0 h-10 w-10 p-2">
                               <Icon
-                                className="absolute right-0 top-[-15px] animate-scale-pulse"
-                                icon="bi:fire"
+                                className="absolute inset-0"
+                                icon="bxs:label"
                                 color="red"
                                 width="40"
                                 height="40"
+                                rotate={3}
+                                hFlip={true}
+                                vFlip={true}
                               />
-                            </>
+                              <span className="absolute inset-0 flex items-center justify-center text-lg font-semibold text-white">
+                                急
+                              </span>
+                            </div>
                           ) : (
                             <>
                               <div className="absolute right-0 top-0 h-10 w-10 p-2">
                                 <Icon
                                   className="absolute inset-0"
                                   icon="bxs:label"
-                                  color="red"
+                                  color="#3178C6"
                                   width="40"
                                   height="40"
                                   rotate={3}
                                   hFlip={true}
                                   vFlip={true}
                                 />
-                                <span className="absolute inset-0 flex items-center justify-center text-lg text-white">
-                                  T
+                                <span className="absolute inset-0 flex items-center justify-center font-semibold text-white">
+                                  推
                                 </span>
                               </div>
 
@@ -432,47 +306,38 @@ const AcceptTask = () => {
                             </>
                           )}
                         </div>
-                        {/* <div className="flex items-center">
-                        {task.isUrgent ? (
-                          <>
-                            <Icon icon="bi:fire" color="#dc2026" />
-                            <span className="text-lg font-bold">
-                              是否急件&emsp;:
-                            </span>
-                            <span className="text-lg font-bold">
-                              &emsp;十萬火急
-                            </span>
-                          </>
-                        ) : (
-                          <>
-                            <Icon icon="lets-icons:flag-finish-fill" />
-                            <span className="text-lg font-bold">
-                              是否急件&emsp;:
-                            </span>
-                            <span className="text-lg font-bold">&emsp;否</span>
-                          </>
-                        )}
-                      </div> */}
-                        {/* <p>支付 Super Coins : {task.cost}</p> */}
+                        <p className="flex items-center font-semibold">
+                          <Icon
+                            className="mr-1 flex-shrink-0"
+                            icon="tabler:coin-filled"
+                            width="20"
+                            height="20"
+                          />
+                          Super Coins : {task.cost}
+                        </p>
                       </div>
-                      <p className="">
-                        任務創建日期 :{" "}
-                        {new Date(task.createdAt).toLocaleDateString()}
-                      </p>{" "}
+                      <p className="flex items-center font-semibold">
+                        <Icon
+                          className="mr-1  flex-shrink-0"
+                          icon="fluent-mdl2:date-time"
+                          width="20"
+                          height="20"
+                        />
+                        截止日期 : {task.dueDate}
+                      </p>
+                      <button
+                        onClick={() => handleAcceptTask(task.id)}
+                        type="button"
+                        className="transition-border-b duration-all-100 rounded-lg border-b-4 border-b-gray-400 px-6 py-3 font-semibold text-black transition ease-in-out hover:border-b-transparent hover:bg-[#368DCF] hover:text-white"
+                      >
+                        <Icon
+                          icon="icon-park:click-tap"
+                          className="mr-2 inline-block h-6 w-6 text-black hover:text-white"
+                        />
+                        查看任務詳情
+                      </button>
                     </div>
                   </div>
-                  <button
-                    onClick={() => handleAcceptTask(task.id)}
-                    className="border-blue-sky-300 group relative cursor-pointer overflow-hidden rounded-md border bg-gray-200 from-blue-400 via-blue-300 to-purple-200 bg-clip-text px-6 py-3 text-2xl font-black text-transparent transition duration-500 ease-in-out before:absolute before:bottom-0 before:left-0 before:h-full before:w-full before:origin-[100%_100%] before:scale-x-0 before:bg-gradient-to-r before:transition before:duration-500 before:ease-in-out hover:border-0 hover:before:origin-[0_0] hover:before:scale-x-100"
-                  >
-                    <Icon
-                      icon="icon-park:click-tap"
-                      className="mr-2 inline-block h-6 w-6"
-                    />
-                    <span className="z-5 relative text-black">
-                      查看任務詳情 {">>"}
-                    </span>
-                  </button>
                 </div>
               </>
             ))}

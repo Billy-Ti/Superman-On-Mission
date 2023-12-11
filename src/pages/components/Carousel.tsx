@@ -24,7 +24,9 @@ const Carousel = () => {
     fetchTasks();
   }, []);
 
-  const showDots = tasks.length <= 10;
+  // 只顯示前 6 個任務的 dots
+  const showDots = true;
+  const visibleTasks = tasks.slice(0, 6);
   // Slider 的設定
   const CarouselSetting = {
     dots: showDots,
@@ -67,11 +69,12 @@ const Carousel = () => {
         },
       },
     ],
+
     customPaging: (i: number) => {
-      // 檢查 tasks 數組是否足夠長，並且特定索引的元素存在
-      if (tasks && tasks.length > i && tasks[i]) {
-        const task = tasks[i];
-        // 確保 task.photos 存在並且有元素
+      // 只為前 10 個任務創建 dots
+      if (visibleTasks.length > i) {
+        const task = visibleTasks[i];
+        // 檢查 task.photos 是否存在且有元素
         if (task.photos && task.photos.length > 0) {
           return (
             <a href="#">
@@ -80,54 +83,55 @@ const Carousel = () => {
           );
         }
       }
-      // 在此必須得返回一個元素，即使是空元素都好
-      // 當條件不滿足時，返回一個空的圖片佔位符
+      // 當沒有圖片時顯示預設 icon
       return <Icon icon="bxs:image-alt" className="text-6xl text-gray-600" />;
     },
   };
   return (
-    <div className="mb-10 items-center lg:mb-20 lg:flex">
-      <div className="flex flex-col border-l-[10px] border-[#00f5a2]">
-        <div className="mr-4 flex items-center pl-2">
-          <h2 className="text-4xl font-bold leading-normal">找任務</h2>
+    <div className="container mx-auto max-w-[1280px] px-4 py-10 md:py-20 md:max-w-7xl lg:px-20">
+      <div className="mb-10 items-center lg:mb-20 lg:flex">
+        <div className="flex flex-col border-l-[10px] border-l-[#368DCF]">
+          <div className="mr-4 flex items-center pl-2">
+            <h2 className="text-4xl font-bold leading-normal">找任務</h2>
+          </div>
+          <div className="flex flex-col pl-2">
+            <p className="mb-1 text-xl font-medium leading-normal text-gray-600">
+              大顯身手的時候到了！
+            </p>
+            <p className="text-xl font-medium leading-normal text-gray-600">
+              限時推薦
+            </p>
+          </div>
         </div>
-        <div className="flex flex-col pl-2">
-          <p className="mb-1 text-xl font-medium leading-normal text-gray-600">
-            大顯身手的時候到了！
-          </p>
-          <p className="text-xl font-medium leading-normal text-gray-600">
-            限時推薦
-            <Icon
-              width="30"
-              className="inline"
-              icon="bxs:hand-right"
-              color="yellow"
-            />
-          </p>
+        <div className="mx-auto w-2/3 px-4 md:w-3/4">
+          <Slider {...CarouselSetting}>
+            {visibleTasks.map((task, index) => (
+              <>
+                <h3 className="text-center">{task.title}</h3>
+                <div
+                  key={index}
+                  className="flex min-h-[225px] items-center justify-center p-2"
+                >
+                  {task.photos && task.photos.length > 0 ? (
+                    task.photos.map((photoUrl, photoIndex) => (
+                      <div key={photoIndex} className="mb-4 text-center">
+                        <img
+                          src={photoUrl}
+                          alt={task.title}
+                          className="mx-auto h-52 w-52 rounded-md border-[4px] border-[transparent] object-cover duration-300 [box-shadow:rgb(0_0_0_/_69%)_0px_26px_30px_-10px,rgb(0_0_0_/_20%)_0px_16px_10px_-10px] hover:border-[4px]  hover:border-[rgba(249,249,249,0.8)]"
+                        />
+                      </div>
+                    ))
+                  ) : (
+                    <div className="text-center text-xl font-medium">
+                      未提供圖片
+                    </div>
+                  )}
+                </div>
+              </>
+            ))}
+          </Slider>
         </div>
-      </div>
-      <div className="mx-auto w-2/3 md:w-3/4">
-        <Slider {...CarouselSetting}>
-          {tasks.map((task, index) => (
-            <div
-              key={index}
-              className="min-h-[225px] p-2"
-              style={{ marginRight: "10px" }}
-            >
-              {task.photos &&
-                task.photos.map((photoUrl, photoIndex) => (
-                  <div key={photoIndex} className="mb-4 text-center">
-                    <img
-                      src={photoUrl}
-                      alt={task.title}
-                      className=" mx-auto h-52 w-52 rounded-md border-[4px] border-[transparent] object-cover duration-300 [box-shadow:rgb(0_0_0_/_69%)_0px_26px_30px_-10px,rgb(0_0_0_/_20%)_0px_16px_10px_-10px] hover:border-[4px]  hover:border-[rgba(249,249,249,0.8)]"
-                    />
-                  </div>
-                ))}
-              <h3 className="text-center">{task.title}</h3>
-            </div>
-          ))}
-        </Slider>
       </div>
     </div>
   );

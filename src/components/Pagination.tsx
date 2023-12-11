@@ -54,18 +54,18 @@ const Pagination: React.FC<PaginationProps> = ({
       <nav className="flex space-x-2" aria-label="Pagination">
         <a
           onClick={handlePreviousPageButton}
-          className="cursor-pointer rounded-md bg-gradient-to-r from-violet-300 to-indigo-300 px-4 py-2 text-white"
+          className="cursor-pointer rounded-md bg-[#368DCF] px-4 py-2 font-medium text-white transition duration-500 ease-in-out hover:bg-[#3178C6]"
         >
-          Previous
+          上一頁
         </a>
         {pageNumbers.map((number) => (
           <a
             key={number}
             onClick={() => paginate(number)}
-            className={`cursor-pointer rounded-md px-4 py-2 ${
+            className={`cursor-pointer rounded-md px-4 py-2 font-medium ${
               currentPage === number
-                ? "bg-fuchsia-200"
-                : "bg-white text-gray-700"
+                ? "bg-[#368DCF] text-white transition duration-500 ease-in-out hover:bg-[#368DCF]"
+                : "bg-white text-gray-700 hover:bg-[#368DCF] hover:text-white"
             }`}
           >
             {number}
@@ -73,9 +73,9 @@ const Pagination: React.FC<PaginationProps> = ({
         ))}
         <a
           onClick={handleNextPageButton}
-          className="cursor-pointer rounded-md bg-gradient-to-r from-violet-300 to-indigo-300 px-4 py-2 text-white"
+          className="cursor-pointer rounded-md bg-[#368DCF] px-4 py-2 font-medium text-white transition duration-500 ease-in-out hover:bg-[#3178C6]"
         >
-          Next
+          下一頁
         </a>
       </nav>
     </div>
