@@ -1,5 +1,13 @@
 import { Icon } from "@iconify/react";
 import { getAuth, onAuthStateChanged } from "firebase/auth";
+import {
+  // QueryDocumentSnapshot,
+  collection,
+  getFirestore,
+  onSnapshot,
+  query,
+  where,
+} from "firebase/firestore";
 import { useEffect, useRef, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import Swal from "sweetalert2";
@@ -12,6 +20,8 @@ const Header = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement | null>(null);
+  const [profilePicUrl, setProfilePicUrl] = useState<string>("");
+
   const navigate = useNavigate();
   const handleSignIn = () => {
     navigate("/signIn");
@@ -108,6 +118,41 @@ const Header = () => {
       document.removeEventListener("mousedown", handleClickOutside);
     };
   }, [isDropdownOpen]);
+
+  useEffect(() => {
+    if (currentUser && currentUser.uid) {
+      const db = getFirestore();
+      const q = query(
+        collection(db, "users"),
+        where("userId", "==", currentUser.uid),
+      );
+
+      const unsubscribe = onSnapshot(
+        q,
+        (querySnapshot) => {
+          if (querySnapshot.empty) {
+            // console.log("未找到匹配的用戶數據");
+            return;
+          }
+
+          querySnapshot.forEach((doc) => {
+            const userData = doc.data();
+            // console.log("用戶數據:", userData);
+            if (userData.profilePicUrl) {
+              // console.log("設置 profilePicUrl:", userData.profilePicUrl);
+              setProfilePicUrl(userData.profilePicUrl);
+            }
+          });
+        },
+        (error) => {
+          console.error("查詢錯誤:", error);
+        },
+      );
+
+      return () => unsubscribe();
+    }
+  }, [currentUser]);
+
   const toggleMenu = () => {
     setIsMenuOpen(!isMenuOpen);
   };
@@ -146,14 +191,25 @@ const Header = () => {
           </div>
           {currentUser ? (
             <div className="group relative flex items-center">
-              <Icon
-                className="cursor-pointer"
-                icon="mingcute:user-4-fill"
-                color="#3178C6"
-                width="40"
-                height="40"
-                onClick={toggleDropdown}
-              />
+              {profilePicUrl ? (
+                <img
+                  src={profilePicUrl}
+                  alt="User Profile"
+                  className="cursor-pointer rounded-full border-2 border-blue-200"
+                  width="40"
+                  height="40"
+                  onClick={toggleDropdown}
+                />
+              ) : (
+                <Icon
+                  className="cursor-pointer"
+                  icon="mingcute:user-4-fill"
+                  color="#3178C6"
+                  width="40"
+                  height="40"
+                  onClick={toggleDropdown}
+                />
+              )}
               {/* Header 點擊頭像之後的選單 */}
               <div
                 ref={dropdownRef}
