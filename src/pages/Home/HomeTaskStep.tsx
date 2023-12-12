@@ -87,11 +87,11 @@ const HomeTaskStep = () => {
               >
                 <img
                   src="/superman_3.png"
-                  className="w-20"
+                  className="w-28"
                   alt="Telenor Logo"
                 />
                 <div className="my-2 text-xl font-bold">{task.title}</div>
-                <div className="flex items-center gap-1 text-sm mb-1 font-semibold">
+                <div className="mb-1 flex items-center gap-1 text-sm font-semibold">
                   <Icon icon="mdi:location" className="text-gray-400" />
                   <span>
                     {task.city}

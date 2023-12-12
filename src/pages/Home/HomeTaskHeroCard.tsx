@@ -139,9 +139,9 @@ const HomeTaskHeroCard: React.FC = () => {
         >
           <Icon
             icon="icon-park-outline:right-c"
-            color="#9193f4"
-            width="50"
-            height="50"
+            color="#2B79B4"
+            width="30"
+            height="30"
           />
         </button>
         <button
@@ -151,9 +151,9 @@ const HomeTaskHeroCard: React.FC = () => {
         >
           <Icon
             icon="icon-park-outline:left-c"
-            color="#9193f4"
-            width="50"
-            height="50"
+            color="#2B79B4"
+            width="30"
+            height="30"
           />
         </button>
       </div>

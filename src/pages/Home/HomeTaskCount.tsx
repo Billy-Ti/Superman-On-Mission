@@ -2,7 +2,6 @@ import { Icon } from "@iconify/react";
 
 const HomeTaskCount = () => {
   return (
-    <div className="bg-[url('/bg1.png')] bg-cover bg-fixed  bg-center object-cover">
       <div className="container mx-auto max-w-[1280px] px-4 py-10 md:px-20 md:py-20">
         <div className="mb-10 flex items-center justify-center gap-10 lg:gap-36">
           <div className="flex flex-col items-center gap-3">
@@ -31,7 +30,6 @@ const HomeTaskCount = () => {
           </div>
         </div>
       </div>
-    </div>
   );
 };
 

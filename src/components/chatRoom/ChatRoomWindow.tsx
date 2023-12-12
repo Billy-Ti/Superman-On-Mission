@@ -43,7 +43,6 @@ interface User {
   email: string;
   profilePicUrl: string;
 }
-
 interface EmojiObject {
   emoji: string;
   // 在這裡可以添加更多的屬性，如果需要的話
@@ -80,7 +79,7 @@ const ChatRoomWindow = ({ onCloseRoom }: ChatRoomWindowProps) => {
         if (messagesEndRef.current) {
           messagesEndRef.current.scrollIntoView({ behavior: "auto" });
         }
-      }, 50); // 延遲 100 毫秒
+      }, 100);
 
       return () => clearTimeout(timer);
     }
@@ -451,7 +450,7 @@ const ChatRoomWindow = ({ onCloseRoom }: ChatRoomWindowProps) => {
 
   return (
     <div className="fixed inset-0 z-50 my-auto flex h-full items-center justify-center bg-black bg-opacity-50 py-10 text-gray-800 antialiased">
-      <div className="relative flex h-[95vh] w-3/4 flex-col overflow-y-auto rounded-md bg-white p-4 shadow-lg lg:h-[70vh] lg:flex-row">
+      <div className="relative flex h-[95vh] w-[90%] flex-col overflow-y-auto rounded-md bg-white p-4 shadow-lg lg:h-[70vh] lg:w-3/4 lg:flex-row">
         <span className="absolute right-5 top-6 h-6 w-6 animate-ping rounded-full bg-gray-200 opacity-75" />
         <button
           onClick={onCloseRoom}
@@ -643,8 +642,12 @@ const ChatRoomWindow = ({ onCloseRoom }: ChatRoomWindowProps) => {
                       className="flex h-10 w-full rounded-md border pl-2 focus:border-indigo-300 focus:outline-none"
                     />
                     {showPicker && (
-                      <div className="absolute -bottom-[400px] right-0 z-10 mb-2 translate-y-[-100%] transform">
-                        <EmojiPicker onEmojiClick={onEmojiClick} />
+                      <div className="absolute -bottom-[370px] left-0 z-10 mb-2 translate-y-[-100%] transform md:left-auto md:right-0">
+                        <EmojiPicker
+                          width={300}
+                          height={400}
+                          onEmojiClick={onEmojiClick}
+                        />
                       </div>
                     )}
                     {/* emoji icon button */}
@@ -673,7 +676,7 @@ const ChatRoomWindow = ({ onCloseRoom }: ChatRoomWindowProps) => {
                 <div className="ml-4">
                   <button
                     onClick={handleSendMessage}
-                    className="flex flex-shrink-0 items-center justify-center rounded-md bg-[#368DCF] p-3 px-4 py-1 text-xl font-medium tracking-wider text-white transition duration-500 ease-in-out hover:bg-[#3178C6]"
+                    className="flex flex-shrink-0 items-center justify-center rounded-md bg-[#368DCF] py-1 pl-4 pr-3 text-xl font-medium tracking-wider text-white transition duration-500 ease-in-out hover:bg-[#3178C6]"
                   >
                     <span>Send</span>
                     <span className="ml-2">
