@@ -261,7 +261,7 @@ const Header = () => {
                 <Icon
                   className="mr-1 cursor-pointer"
                   icon="mingcute:user-4-fill"
-                  color="rgba(0, 0, 255, 0.3333333333333333)"
+                  color="#3178C6"
                   width="40"
                   height="40"
                   onClick={handleSignIn}
