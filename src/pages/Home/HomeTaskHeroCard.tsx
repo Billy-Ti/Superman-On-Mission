@@ -40,6 +40,7 @@ const HomeTaskHeroCard: React.FC = () => {
       "https://cdn-icons-png.flaticon.com/512/149/149071.png"; // 預設用戶圖片 URL
     for (let i = 0; i < 6; i++) {
       const bgColor = i % 2 === 0 ? "bg-[#bfdbfe]" : "bg-[#f7f4f0]"; // 奇偶數分別不同背景色
+      const transformClass = `rotate-${i * 60}`;
       if (i < users.length) {
         const user = users[i];
         const profilePicUrl = user.profilePicUrl || defaultProfilePic;
@@ -47,7 +48,7 @@ const HomeTaskHeroCard: React.FC = () => {
           <InteractiveBlock
             key={i}
             bgColor={bgColor}
-            transform={`[transform:rotateY(${i * 60}deg)_translateZ(250px)]`}
+            transformClass={transformClass}
             content={
               <>
                 <img
@@ -70,13 +71,13 @@ const HomeTaskHeroCard: React.FC = () => {
           <InteractiveBlock
             key={i}
             bgColor={bgColor}
-            transform={`[transform:rotateY(${i * 60}deg)_translateZ(250px)]`}
+            transformClass={transformClass}
             content={
               <div className="flex h-full w-full flex-col items-center justify-center gap-4 font-semibold text-gray-600">
                 <p className="text-lg">等您來上榜</p>
                 <Link
                   to="/acceptTask"
-                  className="rounded-md bg-[#368DCF] px-2 py-1 text-medium font-medium tracking-wider text-white transition duration-500 ease-in-out hover:bg-[#3178C6]"
+                  className="text-medium rounded-md bg-[#368DCF] px-2 py-1 font-medium tracking-wider text-white transition duration-500 ease-in-out hover:bg-[#3178C6]"
                 >
                   開始
                 </Link>
