@@ -7,14 +7,23 @@ export default {
   theme: {
     extend: {
       animation: {
-        fadeIn: 'fadeIn 0.5s ease-in-out',
-        'scale-pulse': 'scalePulse 1s infinite ease-in-out',
-      },
+      'slide-in-3d': 'slideIn3D 2s ease-out',
+    },
     },
     keyframes: {
       scalePulse: {
         '0%, 100%': { transform: 'scale(1)' },
         '50%': { transform: 'scale(1.5)' },
+      },
+      slideIn3D: {
+        '0%': {
+          transform: 'translateX(100%) rotateY(-90deg) scale(1)',
+          opacity: 0,
+        },
+        '100%': {
+          transform: 'translateX(0) rotateY(0deg) scale(1.5)',
+          opacity: 1,
+        },
       },
     },
   },

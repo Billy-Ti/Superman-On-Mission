@@ -298,7 +298,7 @@ const Task = () => {
               {selectedCounty && (
                 <div className="mr-3 flex items-center">
                   <select
-                    className="mb-4 flex flex-wrap items-center  rounded-md border bg-gray-300 p-2 focus:outline-none"
+                    className="flex flex-wrap items-center  rounded-md border bg-gray-300 p-2 focus:outline-none"
                     name="region"
                     id="region"
                     onChange={handleRegionChange}

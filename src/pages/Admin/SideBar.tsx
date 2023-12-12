@@ -19,7 +19,7 @@ const SideBar = () => {
         {/* Inicio */}
         <Link
           to="/profile"
-          className={`relative flex items-center rounded-md px-4 py-3 text-lg transition duration-300 ease-in-out md:space-x-4 ${
+          className={`relative flex items-center rounded-md px-4 py-3 text-lg transition duration-300 ease-in-out md:space-x-1 ${
             activeLink === "/profile"
               ? "bg-[#3178C6] text-white"
               : "text-[#3178C6] hover:bg-[#3178C6] hover:text-white"
@@ -43,7 +43,7 @@ const SideBar = () => {
         </Link>
         <Link
           to="/taskManagement"
-          className={`relative flex items-center rounded-md px-4 py-3 text-lg text-[#3178C6] transition duration-300 ease-in-out hover:bg-[#3178C6] hover:text-white md:space-x-4 ${
+          className={`relative flex items-center rounded-md px-4 py-3 text-lg text-[#3178C6] transition duration-300 ease-in-out hover:bg-[#3178C6] hover:text-white md:space-x-1 ${
             activeLink === "/taskManagement" ? "bg-[#3178C6] text-white" : ""
           }`}
           onClick={() => handleSetActiveLink("/taskManagement")}
@@ -65,7 +65,7 @@ const SideBar = () => {
         </Link>
         <Link
           to="/reviewLists"
-          className="relative flex items-center rounded-md px-4 py-3 text-lg text-[#3178C6] transition duration-300 ease-in-out hover:bg-[#3178C6] hover:text-white md:space-x-4"
+          className="relative flex items-center rounded-md px-4 py-3 text-lg text-[#3178C6] transition duration-300 ease-in-out hover:bg-[#3178C6] hover:text-white md:space-x-1"
         >
           <svg
             xmlns="http://www.w3.org/2000/svg"
@@ -88,7 +88,7 @@ const SideBar = () => {
         </Link>
         <Link
           to="/"
-          className="relative flex items-center rounded-md px-4 py-3 text-lg text-[#3178C6] transition duration-300 ease-in-out hover:bg-[#3178C6] hover:text-white md:space-x-4"
+          className="relative flex items-center rounded-md px-4 py-3 text-lg text-[#3178C6] transition duration-300 ease-in-out hover:bg-[#3178C6] hover:text-white md:space-x-1"
         >
           <svg
             xmlns="http://www.w3.org/2000/svg"

@@ -2,23 +2,18 @@ import { ReactNode, useState } from "react";
 
 interface InteractiveBlockProps {
   bgColor: string;
-  transform: string;
+  transformClass: string;
   content: ReactNode;
   userId?: string;
-  // link1: string;
   onSendMessageClick?: (userId: string) => void;
-  // link2: string;
-  // link3: string;
 }
 
 const InteractiveBlock: React.FC<InteractiveBlockProps> = ({
   bgColor,
-  transform,
+  transformClass, // 接收 transformStyle prop
   content,
   userId,
   onSendMessageClick,
-  // link2,
-  // link3,
 }) => {
   const [showLinks, setShowLinks] = useState(false);
 
@@ -30,7 +25,7 @@ const InteractiveBlock: React.FC<InteractiveBlockProps> = ({
 
   return (
     <div
-      className={`absolute inset-0 flex h-52 w-60 flex-col items-center justify-center rounded-[10px] ${bgColor} text-center text-sm text-white opacity-95 ${transform} sm:w-64`}
+      className={`absolute inset-0 flex h-52 w-60 flex-col items-center justify-center rounded-[10px] ${bgColor} text-center text-sm ${transformClass} text-white opacity-95 sm:w-64`}
       onClick={() => setShowLinks(!showLinks)}
     >
       {!showLinks && content}
@@ -41,7 +36,7 @@ const InteractiveBlock: React.FC<InteractiveBlockProps> = ({
             onClick={handleSendMessageClick}
             className="bg-gradient-to-r from-blue-700 via-blue-500 to-purple-400 bg-clip-text text-2xl font-black italic text-transparent hover:text-blue-700"
           >
-            Send messages
+            Coming soon...
           </button>
         </div>
       )}

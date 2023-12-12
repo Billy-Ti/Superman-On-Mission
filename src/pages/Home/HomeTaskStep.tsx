@@ -38,9 +38,10 @@ const HomeTaskStep = () => {
   }, []);
   return (
     <div className="container mx-auto max-w-[1280px] px-4 md:px-20">
-      {/* shadow-xl shadow-neutral-100 */}
       <div className="py-10 md:py-20">
-        <p className="mb-3 text-center text-4xl font-bold">發案 3 步驟，跟著一起 go</p>
+        <p className="mb-3 text-center text-4xl font-bold">
+          發案 3 步驟，跟著一起 go
+        </p>
         <div className="mx-auto mb-10 h-[10px] w-1/5 bg-[#2B79B4]"></div>
         <div className="flex justify-between ">
           <p className="mb-1 font-bold sm:text-2xl">Step 1</p>
@@ -85,31 +86,29 @@ const HomeTaskStep = () => {
                 key={index}
               >
                 <img
-                  src="https://upload.wikimedia.org/wikipedia/commons/thumb/9/9e/Telenor_Logo.svg/1600px-Telenor_Logo.svg.png"
-                  className="w-12"
+                  src="/superman_3.png"
+                  className="w-20"
                   alt="Telenor Logo"
                 />
-                <div className="mt-2 text-lg font-semibold">
-                  {task.title}...
-                </div>
-                <div className="flex items-center gap-1 text-sm font-semibold">
-                  <Icon icon="uim:clock" className="text-gray-400" />
-                  <span>{task.dueDate}</span>
-                </div>
-                <div className="flex items-center gap-1 text-sm font-semibold">
+                <div className="my-2 text-xl font-bold">{task.title}</div>
+                <div className="flex items-center gap-1 text-sm mb-1 font-semibold">
                   <Icon icon="mdi:location" className="text-gray-400" />
                   <span>
                     {task.city}
                     {task.address}
                   </span>
                 </div>
-                <div className="my-4 bg-gradient-to-r from-blue-700 via-blue-500 to-purple-400 bg-clip-text font-black text-transparent">
-                  <span className="text-base font-bold">{task.cost}</span>
-                  <span className="text-sm font-semibold">/ Super Coin</span>
+                <div className="flex items-center gap-1 text-sm font-semibold">
+                  <Icon icon="uim:clock" className="text-gray-400" />
+                  <span>{task.dueDate}</span>
+                </div>
+                <div className="font-semibold">
+                  <span className="text-base">{task.cost}</span>
+                  <span className="text-sm">/ Super Coin</span>
                 </div>
                 <button
                   onClick={() => navigate(`/acceptDetail/${task.id}`)}
-                  className="mt-2 w-full rounded-full border border-[#F0F0F6] bg-[#F4F5FA] px-4 py-3 tracking-widest shadow-lg transition duration-300 ease-in-out hover:bg-slate-300"
+                  className="mt-2 w-full rounded-full border border-[#F0F0F6] bg-[#F4F5FA] px-4 py-3 tracking-widest shadow-lg transition duration-300 ease-in-out hover:bg-blue-200 "
                 >
                   看更多
                 </button>
