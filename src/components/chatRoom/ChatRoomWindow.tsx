@@ -1,4 +1,5 @@
 import { Icon } from "@iconify/react";
+import EmojiPicker from "emoji-picker-react";
 import { getAuth, onAuthStateChanged } from "firebase/auth";
 import {
   Firestore,
@@ -40,7 +41,14 @@ interface User {
   id: string; // 使用 Firebase User ID 作為 id
   name: string;
   email: string;
+  profilePicUrl: string;
 }
+
+interface EmojiObject {
+  emoji: string;
+  // 在這裡可以添加更多的屬性，如果需要的話
+}
+
 const ChatRoomWindow = ({ onCloseRoom }: ChatRoomWindowProps) => {
   const [message, setMessage] = useState("");
   const [messages, setMessages] = useState<Message[]>([]);
@@ -52,8 +60,16 @@ const ChatRoomWindow = ({ onCloseRoom }: ChatRoomWindowProps) => {
   const [searchResults, setSearchResults] = useState<UserList[]>([]); // 新增一個狀態來單獨管理搜索結果
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const [selectedUserName, setSelectedUserName] = useState("");
+  const [showPicker, setShowPicker] = useState(false);
+
+  const defaultProfilePic =
+    "https://cdn-icons-png.flaticon.com/512/149/149071.png";
 
   const isInitialMount = useRef(true);
+
+  const onEmojiClick = (emojiObject: EmojiObject) => {
+    setMessage((prevMessage) => prevMessage + emojiObject.emoji);
+  };
 
   useLayoutEffect(() => {
     if (isInitialMount.current) {
@@ -87,6 +103,7 @@ const ChatRoomWindow = ({ onCloseRoom }: ChatRoomWindowProps) => {
             id: firebaseUser.uid,
             name: userData.name, // 使用從 Firestore 獲得的名稱
             email: userData.email || firebaseUser.email || "未提供電子郵件",
+            profilePicUrl: userData.profilePicUrl,
           });
         } else {
           // 處理找不到用戶的情況
@@ -94,6 +111,8 @@ const ChatRoomWindow = ({ onCloseRoom }: ChatRoomWindowProps) => {
             id: firebaseUser.uid,
             name: "未知用戶",
             email: firebaseUser.email || "未提供電子郵件",
+            profilePicUrl:
+              "https://cdn-icons-png.flaticon.com/512/149/149071.png",
           });
         }
       } else {
@@ -105,38 +124,6 @@ const ChatRoomWindow = ({ onCloseRoom }: ChatRoomWindowProps) => {
     return () => unsubscribe();
   }, []);
 
-  // useEffect(() => {
-  //   if (!currentUser) return;
-
-  //   const firestore = getFirestore();
-  //   const messagesRef = collection(firestore, "messages");
-  //   const q = query(
-  //     messagesRef,
-  //     where("sentTo", "==", currentUser.id), // 使用正確的用戶ID屬性
-  //     where("isRead", "==", false),
-  //   );
-  //   const unsubscribe = onSnapshot(q, (snapshot) => {
-  //     setNewMessageCount(snapshot.docs.length); // 更新未讀消息計數
-  //   });
-
-  //   return () => unsubscribe();
-  // }, [currentUser]);
-
-  // useEffect(() => {
-  //   const scrollToBottom = () => {
-  //     if (messagesEndRef.current) {
-  //       messagesEndRef.current.scrollIntoView({ behavior: "auto" });
-  //     }
-  //   };
-  //   scrollToBottom();
-  //   // 設置一個短暫的延遲來再次確認滾動位置
-  //   const timer = setTimeout(() => {
-  //     scrollToBottom();
-  //   }, 100); // 100 毫秒後再次滾動
-
-  //   return () => clearTimeout(timer);
-  // }, [messages]);
-  // 根據 messages 變化來觸發 ref
   useEffect(() => {
     const firestore = getFirestore();
     // 根據 chatSession 的 ID 來查詢聊天消息
@@ -464,7 +451,7 @@ const ChatRoomWindow = ({ onCloseRoom }: ChatRoomWindowProps) => {
 
   return (
     <div className="fixed inset-0 z-50 my-auto flex h-full items-center justify-center bg-black bg-opacity-50 py-10 text-gray-800 antialiased">
-      <div className="relative flex h-[70vh] w-3/4 flex-row overflow-y-auto rounded-md bg-white p-4 shadow-lg">
+      <div className="relative flex h-[95vh] w-3/4 flex-col overflow-y-auto rounded-md bg-white p-4 shadow-lg lg:h-[70vh] lg:flex-row">
         <span className="absolute right-5 top-6 h-6 w-6 animate-ping rounded-full bg-gray-200 opacity-75" />
         <button
           onClick={onCloseRoom}
@@ -486,13 +473,13 @@ const ChatRoomWindow = ({ onCloseRoom }: ChatRoomWindowProps) => {
             />
           </svg>
         </button>
-        <div className="flex w-64 flex-shrink-0 flex-grow-0 flex-col bg-white py-1 pl-6 pr-2">
+        <div className="flex w-full flex-shrink-0 flex-grow-0 flex-col bg-white py-1 pl-6 pr-2 lg:w-64">
           {/* 聊天室窗標題 */}
           <ChatRoomTitle />
           <div className="mb-2 mt-1 flex w-full flex-col items-center rounded-md border border-gray-200 bg-indigo-100 px-4 py-1">
             <div className="h-20 w-20 overflow-hidden rounded-full border">
               <img
-                src="https://i.postimg.cc/vBxKKcnj/025395d6-6d20-4aca-864f-b6b601335cf9.png"
+                src={currentUser?.profilePicUrl || defaultProfilePic}
                 alt="superman-pic"
                 className="h-full w-full object-cover"
               />
@@ -502,9 +489,7 @@ const ChatRoomWindow = ({ onCloseRoom }: ChatRoomWindowProps) => {
             </div>
             <div className="text-xs text-gray-500">{currentUser?.email}</div>
           </div>
-          <div className="mb-2 flex flex-row items-center justify-between px-2 text-xs">
-            
-          </div>
+          <div className="mb-2 flex flex-row items-center justify-between px-2 text-xs"></div>
           <div className="relative ">
             <input
               className="w-full rounded-md border p-2 focus:outline-none"
@@ -528,7 +513,7 @@ const ChatRoomWindow = ({ onCloseRoom }: ChatRoomWindowProps) => {
             ) : (
               searchResults.map((user) => (
                 <div
-                  className="flex cursor-pointer items-center h-[50px] justify-between rounded-md p-2 hover:bg-gray-300"
+                  className="flex h-[50px] cursor-pointer items-center justify-between rounded-md p-2 hover:bg-gray-300"
                   key={user.id}
                   onClick={() => handleSelectUser(user.id)}
                 >
@@ -556,7 +541,7 @@ const ChatRoomWindow = ({ onCloseRoom }: ChatRoomWindowProps) => {
               ))
             )}
           </div>
-          <div className="-mx-2 flex h-1/2 flex-col space-y-1 overflow-y-auto">
+          <div className="-mx-2 flex h-[150px] flex-col space-y-1 overflow-y-auto lg:h-1/2">
             {userList.map((user) => (
               <button
                 className="relative flex flex-row items-center rounded-md p-2 hover:rounded-md hover:bg-gray-100"
@@ -596,44 +581,46 @@ const ChatRoomWindow = ({ onCloseRoom }: ChatRoomWindowProps) => {
                       const isCurrentUserMessage =
                         message.sentBy === currentUser?.id;
                       const messageTime =
-                        message.sentAt?.toDate().toLocaleString() || "时间未知";
+                        message.sentAt?.toDate().toLocaleString() || "時間未知";
+
                       return (
                         <>
-                          {/* <time
-                            className={`mb-8 text-right text-xs text-gray-500 ${
-                              isCurrentUserMessage ? "mr-2" : ""
-                            }`}
-                          >
-                            {messageTime}
-                          </time> */}
                           <div
-                            className={`relative max-w-[50%] rounded-md border p-2 text-lg ${
+                            className={`relative mb-1 max-w-[50%] rounded-md border p-2 text-lg ${
                               isCurrentUserMessage
                                 ? "ml-auto bg-blue-100"
                                 : "mr-auto bg-gray-200"
-                            }break-all text-gray-400`} // 如果是當前使用者，自己的訊息靠右，對方的靠左
+                            } text-gray-400`}
                             key={index}
                           >
                             <p
-                              className={`absolute top-[-20px] text-xl ${
+                              className={`absolute top-[-24px] text-xl ${
                                 isCurrentUserMessage
                                   ? "right-1 bg-gradient-to-r from-blue-800 via-blue-700 to-purple-600 bg-clip-text text-transparent"
                                   : "left-0 text-gray-700"
                               }`}
-                              
                             >
-                              
-                              {isCurrentUserMessage
-                                ? "You"
-                                : userList.find(
+                              {isCurrentUserMessage ? (
+                                <p className="whitespace-nowrap text-[16px] font-bold">
+                                  You
+                                </p>
+                              ) : (
+                                <p className="whitespace-nowrap text-[14px] font-bold">
+                                  {userList.find(
                                     (user) => user.id === message.sentBy,
-                                  )?.name || "未知用户"}
+                                  )?.name || "未知用戶"}
+                                </p>
+                              )}
                             </p>
-                            {message.content}
+                            <p className="font-medium text-black">
+                              {message.content}
+                            </p>
                           </div>
-                            <time
-                            className={`mb-8 ml-auto text-right text-xs text-gray-500 ${
-                              isCurrentUserMessage ? "mr-2" : ""
+                          <time
+                            className={`mb-10 text-xs text-gray-400 ${
+                              isCurrentUserMessage
+                                ? "ml-auto text-right"
+                                : "mr-auto text-left"
                             }`}
                           >
                             {messageTime}
@@ -641,21 +628,31 @@ const ChatRoomWindow = ({ onCloseRoom }: ChatRoomWindowProps) => {
                         </>
                       );
                     })}
+
                   <div ref={messagesEndRef} />
                 </div>
               </div>
-              <div className="flex h-16 w-full flex-row items-center rounded-md bg-white px-4">
-                <div className="ml-4 flex-grow">
+              <div className="flex h-16 w-full flex-row items-center rounded-md bg-white pl-1">
+                <div className="flex-grow">
                   <div className="relative w-full">
                     <input
                       type="text"
                       value={message}
                       onChange={(e) => setMessage(e.target.value)}
                       onKeyDown={handleKeyDownSendMessage}
-                      className="flex h-10 w-full rounded-md border pl-4 focus:border-indigo-300 focus:outline-none"
+                      className="flex h-10 w-full rounded-md border pl-2 focus:border-indigo-300 focus:outline-none"
                     />
+                    {showPicker && (
+                      <div className="absolute -bottom-[400px] right-0 z-10 mb-2 translate-y-[-100%] transform">
+                        <EmojiPicker onEmojiClick={onEmojiClick} />
+                      </div>
+                    )}
                     {/* emoji icon button */}
-                    <button className="absolute right-0 top-0 flex h-full w-12 items-center justify-center text-gray-400 hover:text-gray-600">
+                    <button
+                      title="來點表情符號吧~"
+                      onClick={() => setShowPicker(!showPicker)}
+                      className="absolute right-0 top-0 flex h-full w-12 items-center justify-center text-gray-400 hover:text-gray-600"
+                    >
                       <svg
                         className="h-6 w-6"
                         fill="none"
@@ -676,7 +673,7 @@ const ChatRoomWindow = ({ onCloseRoom }: ChatRoomWindowProps) => {
                 <div className="ml-4">
                   <button
                     onClick={handleSendMessage}
-                    className="flex flex-shrink-0 items-center justify-center rounded-md bg-indigo-500 px-4 py-1 text-white hover:bg-indigo-600"
+                    className="flex flex-shrink-0 items-center justify-center rounded-md bg-[#368DCF] p-3 px-4 py-1 text-xl font-medium tracking-wider text-white transition duration-500 ease-in-out hover:bg-[#3178C6]"
                   >
                     <span>Send</span>
                     <span className="ml-2">
