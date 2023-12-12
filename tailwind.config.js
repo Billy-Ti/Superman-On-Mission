@@ -17,11 +17,11 @@ export default {
       },
       slideIn3D: {
         '0%': {
-          transform: 'translateX(100%) rotateY(-90deg)',
+          transform: 'translateX(100%) rotateY(-90deg) scale(1)',
           opacity: 0,
         },
         '100%': {
-          transform: 'translateX(0) rotateY(0deg)',
+          transform: 'translateX(0) rotateY(0deg) scale(1.5)',
           opacity: 1,
         },
       },

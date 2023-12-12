@@ -41,7 +41,8 @@ const InteractiveBlock: React.FC<InteractiveBlockProps> = ({
             onClick={handleSendMessageClick}
             className="bg-gradient-to-r from-blue-700 via-blue-500 to-purple-400 bg-clip-text text-2xl font-black italic text-transparent hover:text-blue-700"
           >
-            Send messages
+            {/* Send messages */}
+            Coming soon...
           </button>
         </div>
       )}
