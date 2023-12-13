@@ -213,7 +213,7 @@ const Header = () => {
               {/* Header 點擊頭像之後的選單 */}
               <div
                 ref={dropdownRef}
-                className={`absolute -right-[-40px] top-[50px] z-10 flex-col space-y-2 rounded-md border border-[#B3D7FF] transition-opacity duration-300 ease-in-out ${
+                className={`absolute -right-[0px] top-[50px] z-10 flex-col space-y-2 rounded-md border border-[#B3D7FF] bg-blue-100 transition-opacity duration-300 ease-in-out ${
                   isDropdownOpen ? "flex opacity-100" : "hidden opacity-0"
                 }`}
               >
@@ -261,7 +261,7 @@ const Header = () => {
                 <Icon
                   className="mr-1 cursor-pointer"
                   icon="mingcute:user-4-fill"
-                  color="rgba(0, 0, 255, 0.3333333333333333)"
+                  color="#3178C6"
                   width="40"
                   height="40"
                   onClick={handleSignIn}

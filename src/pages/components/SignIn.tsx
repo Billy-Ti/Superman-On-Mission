@@ -14,9 +14,9 @@ import { showAlert } from "../../utils/showAlert";
 
 const SignIn = () => {
   const [isRightPanelActive, setIsRightPanelActive] = useState(false);
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [name, setName] = useState("");
+  const [email, setEmail] = useState("billy@gmail.com");
+  const [password, setPassword] = useState("aqqqqq");
+  const [name, setName] = useState("billy");
 
   const navigate = useNavigate();
   const auth = getAuth();

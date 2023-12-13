@@ -25,7 +25,7 @@ const ChatRoomButton = () => {
         const messagesRef = collection(firestore, "messages");
         const q = query(
           messagesRef,
-          where("sentTo", "==", user.uid), // 根據您的數據模型調整此條件
+          where("sentTo", "==", user.uid),
           where("isRead", "==", false),
         );
         const unsubscribeMessages = onSnapshot(q, (snapshot) => {

@@ -12,7 +12,6 @@ import Footer from "../../components/layout/Footer";
 import Header from "../../components/layout/Header";
 import { db } from "../../config/firebase";
 import SideBar from "./SideBar";
-
 const Profile = () => {
   const [profilePic, setProfilePic] = useState(
     "https://cdn-icons-png.flaticon.com/512/149/149071.png",
@@ -23,10 +22,8 @@ const Profile = () => {
   const [joinedAt, setJoinedAt] = useState("");
   const [superCoins, setSuperCoins] = useState(0);
   const [averageRating, setAverageRating] = useState(0);
-
   const auth = getAuth();
   const storage = getStorage();
-
   const accordionItems = [
     {
       title: "個人資訊",
@@ -57,7 +54,6 @@ const Profile = () => {
       ],
     },
   ];
-
   const toggleAccordion = (index: number) => {
     setOpenAccordions((currentOpenAccordions) => {
       // 檢查是否已經打開了這個項目
@@ -70,14 +66,12 @@ const Profile = () => {
       }
     });
   };
-
   useEffect(() => {
     // 獲取用戶資料
     const fetchUserData = async () => {
       if (auth.currentUser) {
         const docRef = doc(db, "users", auth.currentUser.uid);
         const docSnap = await getDoc(docRef);
-
         if (docSnap.exists()) {
           const userData = docSnap.data();
           setProfilePic(
@@ -92,16 +86,13 @@ const Profile = () => {
         }
       }
     };
-
     fetchUserData();
   }, [auth]);
-
   const handleImageUpload = async (
     event: React.ChangeEvent<HTMLInputElement>,
   ) => {
     const file = event.target.files?.[0];
     if (!file || !auth.currentUser) return;
-
     // 創建 storage 參考
     const fileRef = storageRef(
       storage,
@@ -109,16 +100,13 @@ const Profile = () => {
     );
     await uploadBytes(fileRef, file);
     const newProfilePicUrl = await getDownloadURL(fileRef);
-
     // 更新 Firestore 中的用戶資料
     const userDocRef = doc(db, "users", auth.currentUser.uid);
     await updateDoc(userDocRef, {
       profilePicUrl: newProfilePicUrl,
     });
-
     setProfilePic(newProfilePicUrl); // 更新本地狀態
   };
-
   return (
     <>
       <div className="md:hidden">
@@ -132,14 +120,13 @@ const Profile = () => {
               <img
                 src={profilePic}
                 alt="Profile"
-                className="absolute -top-20 mx-auto h-32 w-32 transform rounded-full border-4 border-white shadow-md transition duration-200 hover:scale-125"
+                className="absolute -top-20 mx-auto h-32 w-32 transform rounded-full border-4 border-white object-cover shadow-md transition duration-200 hover:scale-125"
               />
             </div>
             <div className="mt-16">
               <h2 className="text-center text-3xl font-bold text-gray-900">
                 {userName}
               </h2>
-
               <div className="my-5 px-6">
                 <input
                   type="file"
@@ -239,5 +226,4 @@ const Profile = () => {
     </>
   );
 };
-
 export default Profile;
