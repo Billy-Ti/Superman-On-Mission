@@ -85,11 +85,9 @@ const HomeTaskStep = () => {
                 className="flex h-full w-full flex-col items-center justify-between rounded-xl bg-white p-4 shadow-xl transition-all duration-300 ease-in-out hover:shadow-2xl"
                 key={index}
               >
-                <img
-                  src="/superman_3.png"
-                  className="w-28"
-                  alt="Telenor Logo"
-                />
+                <div className="flex items-center bg-gradient-to-r from-blue-700 via-blue-500 to-purple-400 bg-clip-text text-xl font-black text-transparent">
+                  <p className="mr-1 italic">SuperTask co.</p>
+                </div>
                 <div className="my-2 text-xl font-bold">{task.title}</div>
                 <div className="mb-1 flex items-center gap-1 text-sm font-semibold">
                   <Icon icon="mdi:location" className="text-gray-400" />

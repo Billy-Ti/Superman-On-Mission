@@ -11,15 +11,16 @@ const SideBar = () => {
     <div className="fixed h-screen border-none bg-[#B3D7FF] md:block">
       {/* Items */}
       <div className="fixed bottom-0 left-0 flex h-16 w-full items-center justify-around border-none bg-[#B3D7FF] md:relative md:h-screen md:flex-col md:justify-start  md:gap-10 lg:space-y-0">
-        <img
-          className="hidden w-36 object-cover md:block"
-          src="/superman_1.png"
-          alt="superman_1.png"
-        />
+        <Link
+          to="/"
+          className="flex items-center justify-center bg-gradient-to-r from-blue-700 via-blue-500 to-purple-400 bg-clip-text  text-2xl font-black text-transparent"
+        >
+          <p className="pl-4 pr-1 pt-3 italic">SuperTask co.</p>
+        </Link>
         {/* Inicio */}
         <Link
           to="/profile"
-          className={`relative flex items-center rounded-md px-4 py-3 text-lg transition duration-300 ease-in-out md:space-x-1 ${
+          className={`relative flex w-full items-center justify-center rounded-md px-4 py-3 text-lg transition duration-300 ease-in-out md:space-x-1 ${
             activeLink === "/profile"
               ? "bg-[#3178C6] text-white"
               : "text-[#3178C6] hover:bg-[#3178C6] hover:text-white"
@@ -43,7 +44,7 @@ const SideBar = () => {
         </Link>
         <Link
           to="/taskManagement"
-          className={`relative flex items-center rounded-md px-4 py-3 text-lg text-[#3178C6] transition duration-300 ease-in-out hover:bg-[#3178C6] hover:text-white md:space-x-1 ${
+          className={`relative flex w-full items-center justify-center rounded-md px-4 py-3 text-lg text-[#3178C6] transition duration-300 ease-in-out hover:bg-[#3178C6] hover:text-white md:space-x-1 ${
             activeLink === "/taskManagement" ? "bg-[#3178C6] text-white" : ""
           }`}
           onClick={() => handleSetActiveLink("/taskManagement")}
@@ -65,7 +66,7 @@ const SideBar = () => {
         </Link>
         <Link
           to="/reviewLists"
-          className="relative flex items-center rounded-md px-4 py-3 text-lg text-[#3178C6] transition duration-300 ease-in-out hover:bg-[#3178C6] hover:text-white md:space-x-1"
+          className="relative flex w-full items-center justify-center rounded-md px-4 py-3 text-lg text-[#3178C6] transition duration-300 ease-in-out hover:bg-[#3178C6] hover:text-white md:space-x-1"
         >
           <svg
             xmlns="http://www.w3.org/2000/svg"
@@ -88,7 +89,7 @@ const SideBar = () => {
         </Link>
         <Link
           to="/"
-          className="relative flex items-center rounded-md px-4 py-3 text-lg text-[#3178C6] transition duration-300 ease-in-out hover:bg-[#3178C6] hover:text-white md:space-x-1"
+          className="relative flex w-full items-center justify-center rounded-md px-4 py-3 text-lg text-[#3178C6] transition duration-300 ease-in-out hover:bg-[#3178C6] hover:text-white md:space-x-1"
         >
           <svg
             xmlns="http://www.w3.org/2000/svg"

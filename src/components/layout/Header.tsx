@@ -195,9 +195,7 @@ const Header = () => {
                 <img
                   src={profilePicUrl}
                   alt="User Profile"
-                  className="cursor-pointer rounded-full border-2 border-blue-200"
-                  width="40"
-                  height="40"
+                  className="h-[40px] w-[40px] cursor-pointer rounded-full border-2 border-blue-200 object-cover"
                   onClick={toggleDropdown}
                 />
               ) : (
@@ -276,7 +274,8 @@ const Header = () => {
           }`}
         >
           <ul className="flex flex-col items-center">
-            <li>
+            {/* 注意要不要改回，這段沒有用 */}
+            {/* <li>
               <img className="w-24" src="/superman_3.png" alt="" />
             </li>
             <li className="w-full ">
@@ -305,7 +304,7 @@ const Header = () => {
               >
                 我的評價
               </button>
-            </li>
+            </li> */}
             <li className="w-full text-center">
               <Link
                 to="/acceptTask"
@@ -324,7 +323,6 @@ const Header = () => {
                 發任務
               </Link>
             </li>
-            {/* ... 其他移动端导航项目 */}
           </ul>
         </div>
       </header>

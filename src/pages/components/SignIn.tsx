@@ -23,12 +23,14 @@ const SignIn = () => {
 
   // 註冊切換，不做功能
   const handleSignUpClick = () => {
-    setIsRightPanelActive(true);
+    // Demo 結束後要改回 true
+    setIsRightPanelActive(false);
   };
 
   // 登入切換，不做功能
   const handleSignInClick = () => {
-    setIsRightPanelActive(false);
+    // Demo 結束後要改回 false
+    setIsRightPanelActive(true);
   };
 
   // 註冊功能
@@ -153,12 +155,16 @@ const SignIn = () => {
                 className="mx-0 my-2 w-full rounded-md border-[none] bg-[#eee] px-[15px] py-3 focus:outline-none"
                 type="email"
                 placeholder="Email"
+                // Demo 結束後要將 value 行刪除，讓預設值恢復為註冊頁
+                value={email}
                 onChange={(e) => setEmail(e.target.value)}
               />
               <input
                 className="mx-0 my-2 w-full rounded-md border-[none] bg-[#eee] px-[15px] py-3 focus:outline-none"
                 type="password"
                 placeholder="Password"
+                // Demo 結束後要將 value 行刪除，讓預設值恢復為註冊頁
+                value={password}
                 onChange={(e) => setPassword(e.target.value)}
               />
               <button className="mt-[15px] rounded-md border-[1px] border-[#A7B4FC] border-[solid] bg-[#A7B4FC] px-[45px] py-3 text-[12px] font-bold uppercase tracking-[1px] text-[#FFFFFF] [transition:transform_80ms_ease-in] focus:outline-[none] active:scale-[0.95]">
