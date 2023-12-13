@@ -491,8 +491,8 @@ const ChatRoomWindow = ({ onCloseRoom }: ChatRoomWindowProps) => {
           <div className="mb-2 flex flex-row items-center justify-between px-2 text-xs"></div>
           <div className="relative ">
             <input
-              className="w-full rounded-md border p-2 focus:outline-none"
-              placeholder="Search user"
+              className="w-full rounded-md border p-2 font-semibold focus:outline-none"
+              placeholder="搜尋使用者名稱"
               type="text"
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}

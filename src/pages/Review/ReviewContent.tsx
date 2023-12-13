@@ -1,3 +1,4 @@
+import { Icon } from "@iconify/react/dist/iconify.js";
 import { getAuth, onAuthStateChanged } from "firebase/auth";
 import {
   collection,
@@ -81,6 +82,19 @@ const ReviewContent = () => {
     setShowReviews(event.target.checked);
   };
 
+  const renderRatingStars = (rating: number) => {
+    return [...Array(rating)].map((_, index) => (
+      <Icon
+        key={index}
+        icon="mingcute:star-fill"
+        color="#ffc107"
+        width="20"
+        height="20"
+        className="mr-2 flex cursor-pointer"
+      />
+    ));
+  };
+
   return (
     <div className="container mx-auto">
       <DisplaySwitchButton
@@ -94,41 +108,37 @@ const ReviewContent = () => {
         paginate={paginate}
         currentPage={currentPage}
       />
-      {/* Render Reviews */}
       <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3">
         {currentReviews.length > 0 ? (
           currentReviews.map((review, index) => (
             <div key={index} className="rounded-md p-4 shadow-lg">
               <Link
                 to={`/acceptTaskDetail/${review.reviewTaskId}`}
-                className="hover:smooth-hover hover:bg-white-700/80 group relative flex h-full w-full cursor-pointer flex-col items-center space-y-2 rounded-md bg-[#92afd6] px-4 py-10 sm:py-20"
+                className="hover:bg-white-700/80 group relative flex h-full w-full cursor-pointer flex-col items-center mt-2 rounded-md bg-[#92afd6] px-4 py-10 sm:py-20"
               >
                 <img
                   src={review.photo}
                   alt={review.title}
                   className="mobject-covetext-lgr h-40 w-40 rounded-full object-cover"
                 />
-                <div className="flex w-[250px] items-center font-extrabold">
-                  <span className="block w-full truncate text-center text-xl font-semibold">
+                <div className="flex w-full items-center justify-center font-extrabold">
+                  <span className="block truncate text-center text-xl font-semibold">
                     {review.title}
                   </span>
                 </div>
-                <div className="flex items-center font-extrabold">
-                  <h4 className="text-medium text-center font-bold capitalize">
-                    任務者 :
-                  </h4>
-                  <span className="text-medium pl-1">{review.userName}</span>
-                </div>
-                <div className="flex items-center font-extrabold">
-                  <h4 className="text-medium text-center font-bold capitalize">
-                    星星 :
-                  </h4>
-                  <span className="text-medium">{review.rating}</span>
+                <div className="flex items-center justify-center font-extrabold">
+                  <div className="flex">{renderRatingStars(review.rating)}</div>
                 </div>
                 <p className="text-black-700 absolute top-0 inline-flex items-center text-lg font-bold">
                   <span className="mr-2 block h-6 w-6 rounded-full bg-green-500 text-2xl group-hover:animate-pulse"></span>
                   {review.status}
                 </p>
+                {/* 遮罩層 */}
+                <div className="absolute inset-0 flex items-center justify-center bg-black bg-opacity-50 opacity-0 transition-opacity duration-300 group-hover:opacity-100">
+                  <span className="text-xl font-bold text-white">
+                    查看評價資訊
+                  </span>
+                </div>
               </Link>
             </div>
           ))

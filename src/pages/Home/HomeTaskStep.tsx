@@ -43,7 +43,7 @@ const HomeTaskStep = () => {
           發案 3 步驟，跟著一起 go
         </p>
         <div className="mx-auto mb-10 h-[10px] w-1/5 bg-[#2B79B4]"></div>
-        <div className="flex justify-between ">
+        <div className="flex justify-between">
           <p className="mb-1 font-bold sm:text-2xl">Step 1</p>
           <p className="font-bold sm:text-2xl">Step 2</p>
           <p className="font-bold sm:text-2xl">Step 3</p>
@@ -64,7 +64,6 @@ const HomeTaskStep = () => {
             hFlip={true}
             vFlip={true}
           />
-
           <div className="flex-auto border-t-2 border-gray-300"></div>
           <Icon
             color="4B5563"
@@ -78,11 +77,10 @@ const HomeTaskStep = () => {
           <p className="font-bold sm:text-2xl">完成評價</p>
         </div>
         <div className="mb-10 flex flex-col">
-          {/* main card */}
           <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-4">
             {tasks.map((task, index) => (
               <div
-                className="flex h-full w-full flex-col items-center justify-between rounded-xl bg-white p-4 shadow-xl transition-all duration-300 ease-in-out hover:shadow-2xl"
+                className="group relative flex h-full w-full flex-col items-center justify-between rounded-xl bg-white p-4 shadow-xl transition-all duration-300 ease-in-out hover:shadow-2xl"
                 key={index}
               >
                 <div className="flex items-center bg-gradient-to-r from-blue-700 via-blue-500 to-purple-400 bg-clip-text text-xl font-black text-transparent">
@@ -104,9 +102,15 @@ const HomeTaskStep = () => {
                   <span className="text-base">{task.cost}</span>
                   <span className="text-sm">/ Super Coin</span>
                 </div>
+                {/* 遮罩層 */}
+                {/* <div className="absolute bottom-[64px] left-0 right-0 top-0 flex items-center justify-start overflow-hidden rounded-md bg-blue-400 bg-opacity-50 opacity-0 transition-opacity duration-300 ease-linear group-hover:opacity-100">
+                  <span className="ml-4 translate-x-[-100%] text-lg font-semibold text-white transition-transform duration-300 ease-out group-hover:translate-x-0">
+                    推薦任務
+                  </span>
+                </div> */}
                 <button
                   onClick={() => navigate(`/acceptDetail/${task.id}`)}
-                  className="mt-2 w-full rounded-full border border-[#F0F0F6] bg-[#F4F5FA] px-4 py-3 tracking-widest shadow-lg transition duration-300 ease-in-out hover:bg-blue-200 "
+                  className="mt-2 w-full rounded-full border border-[#F0F0F6] bg-[#F4F5FA] px-4 py-3 tracking-widest shadow-lg transition duration-300 ease-in-out hover:bg-blue-200"
                 >
                   看更多
                 </button>

@@ -595,7 +595,7 @@ const AcceptTaskDetail = () => {
           )}
         </div>
         {/* 驗收內容 */}
-        <form className="relative mb-10 bg-[#B3D7FF] p-4">
+        <form className="relative mb-10  p-4">
           <div className="flex items-center">
             <div className="mb-2 flex items-center text-3xl font-semibold text-gray-700">
               驗收內容
@@ -694,7 +694,7 @@ const AcceptTaskDetail = () => {
               id="comment"
               name="comment"
               rows={3}
-              className={`mb-3 mt-1 block w-full cursor-not-allowed resize-none rounded-md border border-gray-300 bg-blue-200 p-2.5 tracking-wider shadow-sm focus:border-blue-500 focus:outline-none focus:ring-blue-500`}
+              className={`bg-[#f7f4f0]] mb-3 mt-1 block w-full cursor-not-allowed resize-none rounded-md border border-gray-300 p-2.5 tracking-wider shadow-sm focus:border-blue-500 focus:outline-none focus:ring-blue-300`}
               readOnly
               value={ratedComment} // ratedComment 是從 reviews 集合獲取
             />
@@ -715,7 +715,7 @@ const AcceptTaskDetail = () => {
               id="input3"
               name="input3"
               rows={3}
-              className="mb-10 mt-1 block w-full cursor-not-allowed resize-none rounded-md border border-gray-300 bg-blue-200 p-2.5 tracking-wider shadow-sm focus:border-blue-500 focus:outline-none focus:ring-blue-500"
+              className="bg-[#f7f4f0]] mb-10 mt-1 block w-full cursor-not-allowed resize-none rounded-md border border-gray-300 p-2.5 tracking-wider shadow-sm focus:border-blue-500 focus:outline-none focus:ring-blue-500"
               readOnly
               value={taskDetails.feedbackMessage} // feedbackMessage 是從 taskDetails 獲取
             />
