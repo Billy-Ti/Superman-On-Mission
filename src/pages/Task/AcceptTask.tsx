@@ -297,12 +297,12 @@ const AcceptTask = () => {
                                 </span>
                               </div>
 
-                              <span className="text-lg font-bold">
+                              {/* <span className="text-lg font-bold">
                                 是否急件&emsp;:
                               </span>
                               <span className="text-lg font-bold">
                                 &emsp;否
-                              </span>
+                              </span> */}
                             </>
                           )}
                         </div>

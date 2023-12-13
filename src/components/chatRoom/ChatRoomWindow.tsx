@@ -49,7 +49,7 @@ interface EmojiObject {
 }
 
 const ChatRoomWindow = ({ onCloseRoom }: ChatRoomWindowProps) => {
-  const [message, setMessage] = useState("");
+  const [message, setMessage] = useState("請問有提供便當嗎??");
   const [messages, setMessages] = useState<Message[]>([]);
   const [currentUser, setCurrentUser] = useState<User | null>(null);
   const [searchQuery, setSearchQuery] = useState("");

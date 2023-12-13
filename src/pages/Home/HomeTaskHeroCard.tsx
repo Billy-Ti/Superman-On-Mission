@@ -54,7 +54,7 @@ const HomeTaskHeroCard: React.FC = () => {
                 <img
                   src={profilePicUrl}
                   alt="user-picture"
-                  className="mb-4 h-32 w-32 rounded-full"
+                  className="mb-4 h-32 w-32 rounded-full object-cover"
                 />
                 <div className="flex items-center font-semibold text-gray-600">
                   <p className="text-xl">{user.name}</p>

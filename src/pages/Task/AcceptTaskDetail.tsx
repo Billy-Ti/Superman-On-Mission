@@ -17,7 +17,6 @@ import ChatRoomWindow from "../../components/chatRoom/ChatRoomWindow";
 import Footer from "../../components/layout/Footer";
 import Header from "../../components/layout/Header";
 import { db, storage } from "../../config/firebase";
-import { showAlert } from "../../utils/showAlert";
 
 // 使用 Task interface 替代原來的 TaskData
 interface Task {
@@ -231,25 +230,26 @@ const AcceptTaskDetail = () => {
       // 處理這個錯誤，比如通過顯示錯誤消息給用戶
       return;
     }
-
+    // 改回
     // 檢查所有選擇的文件是否為圖片
-    const isValidFiles = selectedImages.every((file) => {
-      if (file) {
-        // 如果選擇了檔案，則檢查格式
-        return (
-          file.type === "image/png" ||
-          file.type === "image/jpeg" ||
-          file.type === "image/gif"
-        );
-      }
-      // 如果沒有選擇檔案，則認為是有效的
-      return true;
-    });
+    // const isValidFiles = selectedImages.every((file) => {
+    //   if (file) {
+    //     // 如果選擇了檔案，則檢查格式
+    //     return (
+    //       file.type === "image/png" ||
+    //       file.type === "image/jpeg" ||
+    //       file.type === "image/jpg" ||
+    //       file.type === "image/gif"
+    //     );
+    //   }
+    //   // 如果沒有選擇檔案，則認為是有效的
+    //   return true;
+    // });
 
-    if (!isValidFiles) {
-      showAlert("🚨系統提醒", "請上傳圖片格式...", "error");
-      return;
-    }
+    // if (!isValidFiles) {
+    //   showAlert("🚨系統提醒", "請確認圖片格式...", "error");
+    //   return;
+    // }
 
     Swal.fire({
       title: "確定提交驗收？",
@@ -762,7 +762,7 @@ const AcceptTaskDetail = () => {
                       </p>
                       <button
                         type="button"
-                        className="absolute bottom-5 left-1/2 -translate-x-1/2 transform   rounded-md bg-[#368DCF]  p-3 px-4 py-2 text-xl font-medium tracking-wider text-white transition duration-500 ease-in-out hover:bg-[#3178C6]"
+                        className="absolute bottom-5 left-1/2 -translate-x-1/2 transform rounded-md bg-[#368DCF]  p-3 px-4 py-2 text-xl font-medium tracking-wider text-white transition duration-500 ease-in-out hover:bg-[#3178C6]"
                         onClick={handleOverlay}
                       >
                         確定

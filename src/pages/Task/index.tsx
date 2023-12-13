@@ -29,13 +29,18 @@ const db = getFirestore(app);
 const storage = getStorage(app);
 const Task = () => {
   const [selectedCounty, setSelectedCounty] = useState<string>("");
-  const [taskTitle, setTaskTitle] = useState("");
+  const [taskTitle, setTaskTitle] =
+    useState("急徵，請人幫我打掃家裡，有事即將出國");
   // const [taskDetails, setTaskDetails] = useState("");
-  const [taskDescription, setTaskDescription] = useState("");
+  const [taskDescription, setTaskDescription] = useState(
+    "我需要緊急請人來我家幫我打掃，因為重要長輩來訪，正好我有急事要出國，所以急徵",
+  );
   // 保留 selectedRegion 儲存地區的 state
   const [selectedRegion, setSelectedRegion] = useState<string>("");
-  const [detailedAddress, setDetailedAddress] = useState("");
-  const [additionalNotes, setAdditionalNotes] = useState("");
+  const [detailedAddress, setDetailedAddress] = useState("仁愛路二段99號9樓");
+  const [additionalNotes, setAdditionalNotes] = useState(
+    "不用準備任何打掃用具，我家什麼都有，帶人就好",
+  );
   const [taskReward, setTaskReward] = useState("");
   const [superCoins, setSuperCoins] = useState(5000); // 初始 Super Coin 數量
   const [originalSuperCoins] = useState(5000); // 保存原始 Super Coin 數量
@@ -43,6 +48,8 @@ const Task = () => {
   const serviceTypeRef = useRef<ServiceTypeRef>(null);
   const [userName, setUserName] = useState("");
   const [uploadedImages, setUploadedImages] = useState(["", "", "", ""]);
+  const [isLoading, setIsLoading] = useState(false);
+
   const navigate = useNavigate();
   const handleCountyChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
     const county = event.target.value;
@@ -142,6 +149,7 @@ const Task = () => {
     event: React.MouseEvent<HTMLButtonElement>,
   ) => {
     event.preventDefault();
+
     // 取得所有選擇的文件
     const fileInputs = document.querySelectorAll('input[type="file"]');
     const files = Array.from(fileInputs).flatMap((input) => {
@@ -173,6 +181,7 @@ const Task = () => {
     });
     if (result.isConfirmed) {
       try {
+        setIsLoading(true); // 開始載入時設置為 true
         // 上傳文件並取得 URL
         const uploadPromises = files.map((file) => uploadFile(file));
         const photoUrls = await Promise.all(uploadPromises);
@@ -213,6 +222,7 @@ const Task = () => {
         await Swal.fire("錯誤", "任務提交失敗或無可用 Super Coin");
       }
     }
+    setIsLoading(false);
   };
   const resetFormFields = () => {
     setSelectedCounty("");
@@ -391,7 +401,7 @@ const Task = () => {
               {uploadedImages.map((image, index) => (
                 <li
                   key={index}
-                  className="relative m-2 h-64 w-64 border-2 border-dashed border-[#368dcf]"
+                  className="relative m-2 flex h-64 w-64 border-2 border-dashed border-[#368dcf]"
                 >
                   <input
                     type="file"
@@ -407,7 +417,7 @@ const Task = () => {
                     <img
                       src={image}
                       alt={`Uploaded ${index}`}
-                      className="max-h-full max-w-full object-cover"
+                      className="h-full w-full object-cover object-center"
                     />
                   )}
                 </li>
@@ -418,7 +428,30 @@ const Task = () => {
                 onClick={confirmSubmitTask}
                 className="rounded-md bg-[#368DCF] p-4 text-2xl font-medium tracking-wider text-white transition duration-500 ease-in-out hover:bg-[#3178C6]"
               >
-                刊登任務
+                {isLoading ? (
+                  <svg
+                    className="h-8 w-8 animate-spin text-white"
+                    xmlns="http://www.w3.org/2000/svg"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                  >
+                    <circle
+                      className="opacity-25"
+                      cx="12"
+                      cy="12"
+                      r="10"
+                      stroke="currentColor"
+                      stroke-width="4"
+                    ></circle>
+                    <path
+                      className="opacity-75"
+                      fill="currentColor"
+                      d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+                    ></path>
+                  </svg>
+                ) : (
+                  "刊登任務"
+                )}
               </button>
             </div>
           </div>
