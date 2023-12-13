@@ -23,8 +23,8 @@ const HomeSolutionList: React.FC = () => {
           <div>
             <img
               className="h-full w-[250px] object-cover lg:w-[350px]"
-              src="/5.png"
-              alt=""
+              src="/home_solution.png"
+              alt="home-solution.png"
             />
           </div>
           <ul className="flex flex-col justify-center gap-20">

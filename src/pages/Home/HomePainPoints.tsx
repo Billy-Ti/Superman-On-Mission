@@ -22,7 +22,7 @@ const HomePainPoints = () => {
   }, []);
 
   return (
-    <div className="bg-[url('/bg1.png')] bg-cover bg-fixed  bg-center object-cover">
+    <div className="bg-[url('/home_pain_point.png')] bg-cover bg-fixed  bg-center object-cover">
       <div className="container mx-auto max-w-[1280px] px-4 py-10 md:px-20 md:py-20">
         <div className="flex flex-col items-center">
           <p className="text-center text-4xl font-bold">
@@ -38,7 +38,7 @@ const HomePainPoints = () => {
             <div className="w-full md:w-10/12">
               <div className="mb-5 flex flex-wrap items-center justify-center md:mb-6 md:flex-row-reverse">
                 <div className="mb-10 flex justify-center md:w-1/2">
-                  <img src="/testpic1.png" alt="testpic1.png" />
+                  <img src="/pain_point_1.png" alt="pain-point-1" />
                 </div>
                 <div className="font-medium md:w-1/2">
                   <h4 className="mb-2 text-2xl font-bold">
@@ -51,7 +51,7 @@ const HomePainPoints = () => {
               </div>
               <div className="mb-5 flex flex-wrap items-center justify-center md:mb-6">
                 <div className="mb-10 flex justify-center md:w-1/2">
-                  <img src="/testpic3.png" alt="testpic3.png" />
+                  <img src="/pain_point_2.png" alt="pain_point_2.png" />
                 </div>
                 <div className="font-medium md:w-1/2">
                   <h4 className="mb-2 text-2xl font-bold">
@@ -65,7 +65,7 @@ const HomePainPoints = () => {
 
               <div className="mb-5 flex flex-wrap items-center justify-center md:mb-6 md:flex-row-reverse">
                 <div className="mb-10 flex justify-center md:w-1/2">
-                  <img src="/testpic4.png" alt="testpic4.png" />
+                  <img src="/pain_point_3.png" alt="pain-point-3" />
                 </div>
                 <div className="font-medium md:w-1/2">
                   <h4 className="mb-2 text-2xl font-bold">

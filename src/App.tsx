@@ -33,7 +33,7 @@ const App = () => {
         <BrowserRouter>
           <ScrollToTop />
           {showAnimation && (
-            <LandingPageAnimation gif="/landing-unscreen.gif" duration={3000} />
+            <LandingPageAnimation gif="/landing_screen.gif" duration={3000} />
           )}
           <Routes>
             <Route path="/" element={<Home />} />

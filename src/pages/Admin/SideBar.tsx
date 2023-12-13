@@ -13,7 +13,7 @@ const SideBar = () => {
       <div className="fixed bottom-0 left-0 flex h-16 w-full items-center justify-around border-none bg-[#B3D7FF] md:relative md:h-screen md:flex-col md:justify-start  md:gap-10 lg:space-y-0">
         <Link
           to="/"
-          className="flex items-center justify-center bg-gradient-to-r from-blue-700 via-blue-500 to-purple-400 bg-clip-text  text-2xl font-black text-transparent"
+          className="hidden items-center justify-center bg-gradient-to-r from-blue-700 via-blue-500 to-purple-400 bg-clip-text text-2xl  font-black text-transparent md:flex"
         >
           <p className="pl-4 pr-1 pt-3 italic">SuperTask co.</p>
         </Link>
