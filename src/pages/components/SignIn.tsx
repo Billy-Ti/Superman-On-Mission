@@ -11,26 +11,23 @@ import Footer from "../../components/layout/Footer";
 import Header from "../../components/layout/Header";
 import { db } from "../../config/firebase";
 import { showAlert } from "../../utils/showAlert";
-
 const SignIn = () => {
   const [isRightPanelActive, setIsRightPanelActive] = useState(false);
   const [email, setEmail] = useState("billy@gmail.com");
   const [password, setPassword] = useState("aqqqqq");
   const [name, setName] = useState("billy");
-
   const navigate = useNavigate();
   const auth = getAuth();
-
   // 註冊切換，不做功能
   const handleSignUpClick = () => {
-    setIsRightPanelActive(true);
-  };
-
-  // 登入切換，不做功能
-  const handleSignInClick = () => {
+    // Demo 結束後要改回 true
     setIsRightPanelActive(false);
   };
-
+  // 登入切換，不做功能
+  const handleSignInClick = () => {
+    // Demo 結束後要改回 false
+    setIsRightPanelActive(true);
+  };
   // 註冊功能
   const handleSignUp = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
@@ -55,7 +52,6 @@ const SignIn = () => {
         averageRating: 0,
         profilePicUrl: "https://cdn-icons-png.flaticon.com/512/149/149071.png",
       });
-
       // 清除輸入狀態
       setName("");
       setEmail("");
@@ -70,7 +66,6 @@ const SignIn = () => {
       }
     }
   };
-
   const handleSignIn = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     try {
@@ -81,14 +76,12 @@ const SignIn = () => {
       );
       showAlert("登入成功", "下一個超人就是你~", "success");
       console.log("登入成功：", userCredential.user);
-
       navigate("/");
     } catch (error) {
       showAlert("🚨系統提醒", "登入錯誤", "error");
       console.error("登入錯誤：", error);
     }
   };
-
   // 阻擋來自輸入網址強行進入 endpoint "/signIn" 的使用者
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (user) => {
@@ -99,7 +92,6 @@ const SignIn = () => {
     });
     return () => unsubscribe();
   }, [navigate, auth]);
-
   return (
     <>
       <Header />
@@ -153,12 +145,16 @@ const SignIn = () => {
                 className="mx-0 my-2 w-full rounded-md border-[none] bg-[#eee] px-[15px] py-3 focus:outline-none"
                 type="email"
                 placeholder="Email"
+                // Demo 結束後要將 value 行刪除，讓預設值恢復改回為註冊頁
+                value={email}
                 onChange={(e) => setEmail(e.target.value)}
               />
               <input
                 className="mx-0 my-2 w-full rounded-md border-[none] bg-[#eee] px-[15px] py-3 focus:outline-none"
                 type="password"
                 placeholder="Password"
+                // Demo 結束後要將 value 行刪除，讓預設值恢復改回為註冊頁
+                value={password}
                 onChange={(e) => setPassword(e.target.value)}
               />
               <button className="mt-[15px] rounded-md border-[1px] border-[#A7B4FC] border-[solid] bg-[#A7B4FC] px-[45px] py-3 text-[12px] font-bold uppercase tracking-[1px] text-[#FFFFFF] [transition:transform_80ms_ease-in] focus:outline-[none] active:scale-[0.95]">
@@ -202,5 +198,4 @@ const SignIn = () => {
     </>
   );
 };
-
 export default SignIn;

@@ -18,9 +18,10 @@ interface Task {
   categorys: string[];
   photos?: string[];
   createdBy: string;
+  acceptedBy?: string;
 }
 
-const StartTaskRecord = () => {
+const FinishTaskRecord = () => {
   const [hoverText, setHoverText] = useState("查看任務詳情 >>");
   const [tasks, setTasks] = useState<Task[]>([]);
   const navigate = useNavigate();
@@ -38,19 +39,19 @@ const StartTaskRecord = () => {
         return;
       }
 
-      // 只獲取由當前用戶創建的任務
-      const q = query(
-        collection(db, "tasks"),
-        where("createdBy", "==", currentUser.uid),
-      );
+      const q = query(collection(db, "tasks"), where("status", "==", "已完成"));
 
       const querySnapshot = await getDocs(q);
-      const fetchedTasks: Task[] = querySnapshot.docs
-        .map((doc) => {
-          const task = doc.data() as Task;
-          return { ...task, id: doc.id };
-        })
-        .filter((task) => task.status !== "已完成"); // 過濾掉已完成的任務
+      const fetchedTasks: Task[] = [];
+      querySnapshot.forEach((doc) => {
+        const task = doc.data() as Task;
+        if (
+          task.createdBy === currentUser.uid ||
+          task.acceptedBy === currentUser.uid
+        ) {
+          fetchedTasks.push({ ...task, id: doc.id });
+        }
+      });
 
       setTasks(fetchedTasks);
     };
@@ -148,7 +149,7 @@ const StartTaskRecord = () => {
               <div className="flex flex-col items-center justify-center">
                 <div
                   className="group relative cursor-pointer overflow-hidden rounded-md bg-gray-200 px-6 py-3 [transform:translateZ(0)] before:absolute before:bottom-0 before:left-0 before:h-full before:w-full before:origin-[100%_100%] before:scale-x-0 before:bg-sky-600 before:transition before:duration-500 before:ease-in-out hover:before:origin-[0_0] hover:before:scale-x-100"
-                  onMouseMove={() => setHoverText("發案紀錄查詢 >>")}
+                  onMouseMove={() => setHoverText("已完成紀錄查詢 >>")}
                   onMouseOut={() => setHoverText("查看任務詳情 >>")}
                   onClick={() => handleStartTask(task.id)}
                 >
@@ -165,4 +166,4 @@ const StartTaskRecord = () => {
     </>
   );
 };
-export default StartTaskRecord;
+export default FinishTaskRecord;

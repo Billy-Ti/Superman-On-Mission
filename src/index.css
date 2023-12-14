@@ -486,7 +486,7 @@ body {
   color: #368dcf;
 }
 
-/* global.css */
+/* 首頁輪播圖因應 Tailwind 列出所有角度 */
 .rotate-0 {
   transform: rotateY(0deg) translateZ(250px);
 }
@@ -505,3 +505,23 @@ body {
 .rotate-300 {
   transform: rotateY(300deg) translateZ(250px);
 }
+
+/* 修改瀏覽器滾動條 */
+::-webkit-scrollbar {
+  width: 16px; /* 滾動條的寬度 */
+}
+
+::-webkit-scrollbar-track {
+  background: #bfdbfe; /* 整條軌道的顏色 */
+}
+
+::-webkit-scrollbar-thumb {
+  background: #2b79b4; /* 單獨滑塊的顏色 */
+  border-radius: 10px;
+}
+
+/* 當滑鼠 hover 在滾動條滑塊上時的樣式 */
+::-webkit-scrollbar-thumb:hover {
+  background: #4489be; /* 單獨滑塊的顏色 */
+}
+

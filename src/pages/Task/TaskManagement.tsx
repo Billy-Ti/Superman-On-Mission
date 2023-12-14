@@ -3,6 +3,7 @@ import { Link } from "react-router-dom";
 import Footer from "../../components/layout/Footer";
 import Header from "../../components/layout/Header";
 import AcceptTaskRecord from "./AcceptTaskRecord";
+import FinishTaskRecord from "./FinishTaskRecord";
 import StartTaskRecord from "./StartTaskRecord";
 
 const TaskManagement = () => {
@@ -55,10 +56,20 @@ const TaskManagement = () => {
             >
               接案紀錄
             </button>
+            <button
+              className={`w-36 rounded-md text-center text-2xl font-medium text-[#3178C6] transition-all hover:bg-[#3178C6] hover:text-white ${
+                activeButton === "completed" ? "bg-[#3178C6] text-white" : ""
+              }`}
+              type="button"
+              onClick={() => handleButtonClick("completed")}
+            >
+              已完成
+            </button>
           </div>
         </div>
         {activeButton === "post" && <StartTaskRecord />}
         {activeButton === "accept" && <AcceptTaskRecord />}
+        {activeButton === "completed" && <FinishTaskRecord />}
       </div>
       <Footer />
     </>

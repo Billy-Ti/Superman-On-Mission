@@ -107,7 +107,7 @@ const Carousel = () => {
           <Slider {...CarouselSetting}>
             {visibleTasks.map((task, index) => (
               <>
-                <h3 className="text-center">{task.title}</h3>
+                <h3 className="text-lg font-semibold text-center">{task.title}</h3>
                 <div
                   key={index}
                   className="flex min-h-[225px] items-center justify-center p-2"

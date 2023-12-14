@@ -72,6 +72,45 @@ const StartTaskDetail = () => {
     navigate("/reviewLists");
   };
 
+  const renderPhotoList = () => {
+    // 定义总共需要显示的格子数量
+    const totalSlots = 5;
+
+    // 如果 taskDetails 不是 null，则获取已上传的图片列表，否则为空数组
+    const photos = taskDetails ? taskDetails.photos || [] : [];
+
+    // 计算空白格子的数量
+    const emptySlots = totalSlots - photos.length;
+    return (
+      <>
+        {photos.map((photo, index) => (
+          <li
+            key={photo}
+            className="h-52 w-52 border-2 border-dashed border-[#368dcf]"
+          >
+            <img
+              className="h-full w-full cursor-pointer object-cover p-2"
+              src={photo}
+              alt={`Task photo ${index + 1}`}
+              onClick={() => {
+                setSelectedPhoto(photo);
+                setIsModalOpen(true);
+              }}
+            />
+          </li>
+        ))}
+        {[...Array(emptySlots)].map((_, index) => (
+          <li
+            key={`empty-${index}`}
+            className="flex h-52 w-52 items-center justify-center border-2 border-dashed border-[#368dcf] font-extrabold"
+          >
+            <span>未提供圖片</span>
+          </li>
+        ))}
+      </>
+    );
+  };
+
   const fetchTaskDetails = async () => {
     if (!taskId) return;
     setLoading(true);
@@ -506,7 +545,7 @@ const StartTaskDetail = () => {
               </div>
             </div>
             <ul className="flex justify-between gap-4">
-              {taskDetails.reportFiles?.map((fileUrl, index) => (
+              {/* {taskDetails.reportFiles?.map((fileUrl, index) => (
                 <li key={index} className="mb-2 h-52 w-52 bg-gray-700">
                   <img
                     className="h-full w-full cursor-pointer object-cover p-2"
@@ -520,7 +559,7 @@ const StartTaskDetail = () => {
                 </li>
               ))}
 
-              {[...Array(6 - (taskDetails.photos?.length || 0))].map(
+              {[...Array(5 - (taskDetails.photos?.length || 0))].map(
                 (_, index) => (
                   <li
                     key={index}
@@ -530,7 +569,8 @@ const StartTaskDetail = () => {
                     <Icon icon="openmoji:picture" className="text-8xl" />
                   </li>
                 ),
-              )}
+              )} */}
+              {renderPhotoList()}
             </ul>
             <div>
               <label
@@ -643,7 +683,7 @@ const StartTaskDetail = () => {
               </div>
             </div>
             <ul className="flex justify-between gap-4">
-              {taskDetails.reportFiles?.map((fileUrl, index) => (
+              {/* {taskDetails.reportFiles?.map((fileUrl, index) => (
                 <li key={index} className="mb-2 h-52 w-52 bg-gray-700">
                   <img
                     className="h-full w-full cursor-pointer object-cover p-2"
@@ -667,7 +707,8 @@ const StartTaskDetail = () => {
                     <Icon icon="openmoji:picture" className="text-8xl" />
                   </li>
                 ),
-              )}
+              )} */}
+              {renderPhotoList()}
             </ul>
             <div>
               <label

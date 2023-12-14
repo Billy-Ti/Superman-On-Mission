@@ -230,7 +230,7 @@ const AcceptTask = () => {
                     </div>
 
                     <div className="flex w-full grow flex-col gap-4 pl-2">
-                      <p className="text-center text-2xl">{task.title}</p>
+                      <p className="text-center font-semibold text-2xl">{task.title}</p>
                       <div className="mt-1 flex grow items-center font-semibold">
                         <a
                           href={`https://www.google.com/maps/search/${task.city}${task.district}${task.address}`}

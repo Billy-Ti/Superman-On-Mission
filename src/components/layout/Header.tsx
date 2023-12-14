@@ -170,7 +170,7 @@ const Header = () => {
             to="/"
             className="flex items-center bg-gradient-to-r from-blue-700 via-blue-500 to-purple-400 bg-clip-text text-3xl font-black text-transparent"
           >
-            <img width="70" src="/superman_2.png" alt="superman-pic" />
+            <img width="70" src="/superman_logo.png" alt="superman-logo" />
             <p className="mr-1 italic">SuperTask co.</p>
             <span className="hidden lg:block">|</span>
           </Link>
@@ -195,9 +195,7 @@ const Header = () => {
                 <img
                   src={profilePicUrl}
                   alt="User Profile"
-                  className="cursor-pointer rounded-full border-2 border-blue-200"
-                  width="40"
-                  height="40"
+                  className="h-[40px] w-[40px] cursor-pointer rounded-full border-2 border-blue-200 object-cover"
                   onClick={toggleDropdown}
                 />
               ) : (
@@ -275,9 +273,14 @@ const Header = () => {
             isMenuOpen ? "translate-y-[70px]" : "-translate-y-full"
           }`}
         >
+          {/* 漢堡選單內容 */}
           <ul className="flex flex-col items-center">
             <li>
-              <img className="w-24" src="/superman_3.png" alt="" />
+              <img
+                className="w-24"
+                src="/superman_logo.png"
+                alt="superman-logo"
+              />
             </li>
             <li className="w-full ">
               <button
@@ -324,7 +327,6 @@ const Header = () => {
                 發任務
               </Link>
             </li>
-            {/* ... 其他移动端导航项目 */}
           </ul>
         </div>
       </header>

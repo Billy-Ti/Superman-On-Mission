@@ -22,6 +22,8 @@ const Profile = () => {
   const [joinedAt, setJoinedAt] = useState("");
   const [superCoins, setSuperCoins] = useState(0);
   const [averageRating, setAverageRating] = useState(0);
+  const [isLoading, setIsLoading] = useState(false);
+
   const auth = getAuth();
   const storage = getStorage();
   const accordionItems = [
@@ -93,20 +95,28 @@ const Profile = () => {
   ) => {
     const file = event.target.files?.[0];
     if (!file || !auth.currentUser) return;
-    // 創建 storage 參考
+
+    // 顯示本地圖片預覽
+    const localImageUrl = URL.createObjectURL(file);
+    setProfilePic(localImageUrl);
+
+    setIsLoading(true); // 開始上傳，設置為載入中
+
     const fileRef = storageRef(
       storage,
       `profilePics/${auth.currentUser.uid}/${file.name}`,
     );
     await uploadBytes(fileRef, file);
     const newProfilePicUrl = await getDownloadURL(fileRef);
-    // 更新 Firestore 中的用戶資料
-    const userDocRef = doc(db, "users", auth.currentUser.uid);
-    await updateDoc(userDocRef, {
+
+    await updateDoc(doc(db, "users", auth.currentUser.uid), {
       profilePicUrl: newProfilePicUrl,
     });
+
     setProfilePic(newProfilePicUrl); // 更新本地狀態
+    setIsLoading(false); // 上傳結束，取消載入狀態
   };
+
   return (
     <>
       <div className="md:hidden">
@@ -117,6 +127,15 @@ const Profile = () => {
         <div className="container mx-auto max-w-[1280px] px-4 pt-40 md:py-0  lg:px-20">
           <div className="relative rounded-lg bg-white shadow sm:mx-auto md:ml-56 md:mt-40 md:max-w-full">
             <div className="flex justify-center">
+              {isLoading && (
+                <div className="absolute inset-0 flex items-center justify-center bg-gray-200 bg-opacity-50">
+                  {/* 載入指示器，例如旋轉的圖標 */}
+                  <Icon
+                    icon="eos-icons:loading"
+                    className="animate-spin text-4xl text-blue-200"
+                  />
+                </div>
+              )}
               <img
                 src={profilePic}
                 alt="Profile"
@@ -136,11 +155,12 @@ const Profile = () => {
                 />
                 <label
                   htmlFor="fileInput"
-                  className="block w-full cursor-pointer rounded-md bg-[#368DCF] p-3 text-center text-xl font-medium tracking-wider text-white transition duration-1000 ease-in-out hover:bg-[#3178C6]"
+                  className="block w-full cursor-pointer rounded-md bg-gray-600 p-3 text-center text-lg font-medium tracking-wider text-white transition duration-500 ease-in-out hover:bg-gray-800"
                 >
                   修改會員照
                 </label>
               </div>
+              {/* 導航社群 */}
               {/* <div className="my-5 flex items-center justify-between px-6">
                   <a
                     href=""

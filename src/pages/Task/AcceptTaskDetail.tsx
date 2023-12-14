@@ -64,7 +64,7 @@ const AcceptTaskDetail = () => {
   const [ratedComment, setRatedComment] = useState<string>("");
 
   const [taskStatus, setTaskStatus] = useState("");
-
+  const [imageFiles, setImageFiles] = useState<File[]>(Array(5).fill(null));
   const [isChatOpen, setIsChatOpen] = useState(false);
 
   const navigate = useNavigate();
@@ -84,18 +84,6 @@ const AcceptTaskDetail = () => {
   const handleToReviews = () => {
     navigate("/reviewLists");
   };
-
-  // // 處理檔案選擇
-  // const handleFileSelect = (
-  //   event: React.ChangeEvent<HTMLInputElement>,
-  //   index: number,
-  // ) => {
-  //   const newSelectedFiles = [...selectedFiles];
-  //   const file = event.target.files ? event.target.files[0] : null;
-  //   newSelectedFiles[index] = file;
-  //   setSelectedFiles(newSelectedFiles);
-  // };
-
   const handleReportDescriptionChange = (
     event: React.ChangeEvent<HTMLTextAreaElement>,
   ) => {
@@ -131,9 +119,14 @@ const AcceptTaskDetail = () => {
   ) => {
     const file = event.target.files && event.target.files[0];
     if (file && file.type.match("image.*")) {
+      // 更新圖片文件
+      const updatedImageFiles = [...imageFiles];
+      updatedImageFiles[index] = file;
+      setImageFiles(updatedImageFiles);
+
+      // 生成 Base64 預覽
       const reader = new FileReader();
       reader.onload = (e: ProgressEvent<FileReader>) => {
-        // 確保 e.target.result 不是 null 或 undefined
         const result = e.target?.result;
         if (result) {
           const updatedImages = [...selectedImages];
@@ -147,20 +140,59 @@ const AcceptTaskDetail = () => {
 
   const uploadImages = async () => {
     const urls = await Promise.all(
-      selectedImages.map(async (file) => {
+      imageFiles.map(async (file) => {
         if (file) {
           const fileRef = ref(storage, `tasks/${taskId}/${file.name}`);
           await uploadBytes(fileRef, file);
           return getDownloadURL(fileRef);
-        } else {
-          console.log("沒有選擇檔案");
         }
         return null;
       }),
     );
 
-    return urls.filter((url) => url !== null); // 過濾掉 null 值
+    // 過濾掉所有 null 值
+    return urls.filter((url) => url != null);
   };
+
+  // const renderPhotoList = () => {
+  //   // 定义总共需要显示的格子数量
+  //   const totalSlots = 5;
+
+  //   // 获取已上传的图片列表，如果没有则为空数组
+  //   const photos = taskDetails.photos || [];
+
+  //   // 计算空白格子的数量
+  //   const emptySlots = totalSlots - photos.length;
+
+  //   return (
+  //     <>
+  //       {photos.map((photo, index) => (
+  //         <li
+  //           key={photo}
+  //           className="h-52 w-52 border-2 border-dashed border-[#368dcf]"
+  //         >
+  //           <img
+  //             className="h-full w-full cursor-pointer object-cover p-2"
+  //             src={photo}
+  //             alt={`Task photo ${index + 1}`}
+  //             onClick={() => {
+  //               setSelectedPhoto(photo);
+  //               setIsModalOpen(true);
+  //             }}
+  //           />
+  //         </li>
+  //       ))}
+  //       {[...Array(emptySlots)].map((_, index) => (
+  //         <li
+  //           key={`empty-${index}`}
+  //           className="flex h-52 w-52 items-center justify-center border-2 border-dashed border-[#368dcf] font-extrabold"
+  //         >
+  //           <span>未提供圖片</span>
+  //         </li>
+  //       ))}
+  //     </>
+  //   );
+  // };
 
   const fetchTask = async () => {
     if (!taskId) {
@@ -217,9 +249,6 @@ const AcceptTaskDetail = () => {
   }, [taskStatus]);
 
   const handleReportSubmit = async () => {
-    console.log("Report Description:", reportDescription);
-    console.log("Report Supplementary Notes:", reportSupplementaryNotes);
-
     if (!taskId) {
       console.error("Task ID is undefined");
       return;
@@ -230,26 +259,6 @@ const AcceptTaskDetail = () => {
       // 處理這個錯誤，比如通過顯示錯誤消息給用戶
       return;
     }
-    // 改回
-    // 檢查所有選擇的文件是否為圖片
-    // const isValidFiles = selectedImages.every((file) => {
-    //   if (file) {
-    //     // 如果選擇了檔案，則檢查格式
-    //     return (
-    //       file.type === "image/png" ||
-    //       file.type === "image/jpeg" ||
-    //       file.type === "image/jpg" ||
-    //       file.type === "image/gif"
-    //     );
-    //   }
-    //   // 如果沒有選擇檔案，則認為是有效的
-    //   return true;
-    // });
-
-    // if (!isValidFiles) {
-    //   showAlert("🚨系統提醒", "請確認圖片格式...", "error");
-    //   return;
-    // }
 
     Swal.fire({
       title: "確定提交驗收？",
@@ -263,13 +272,25 @@ const AcceptTaskDetail = () => {
       if (result.isConfirmed) {
         try {
           const imageUrls = await uploadImages();
-          const taskRef = doc(db, "tasks", taskId);
-          await updateDoc(taskRef, {
-            reportFiles: imageUrls,
+
+          // 确保 imageUrls 不包含 null 值
+          const filteredImageUrls = imageUrls.filter(
+            (url) => url !== null,
+          ) as string[];
+
+          const updates = {
+            reportFiles: filteredImageUrls,
             reportDescription: reportDescription ?? "",
             reportSupplementaryNotes: reportSupplementaryNotes ?? "",
             status: "任務回報完成",
-          });
+          };
+
+          const taskRef = doc(db, "tasks", taskId);
+          await updateDoc(taskRef, updates);
+
+          setTaskDetails((prev) =>
+            prev ? { ...prev, ...updates, photos: filteredImageUrls } : null,
+          );
 
           // 更新狀態並顯示成功消息
           setShowOverlay(true);
@@ -285,9 +306,13 @@ const AcceptTaskDetail = () => {
           });
         } catch (error) {
           console.error("Error updating task:", error);
+          Swal.fire({
+            title: "發生錯誤",
+            text: "無法送出驗收結果",
+            icon: "error",
+          });
         }
       }
-      // 如果按下"取消"，則不執行任何操作
     });
   };
 
@@ -570,6 +595,7 @@ const AcceptTaskDetail = () => {
                 </li>
               ),
             )}
+            {/* {renderPhotoList()} */}
           </ul>
 
           {isModalOpen && (
@@ -595,7 +621,7 @@ const AcceptTaskDetail = () => {
           )}
         </div>
         {/* 驗收內容 */}
-        <form className="relative mb-10 bg-[#B3D7FF] p-4">
+        <form className="relative mb-10  p-4">
           <div className="flex items-center">
             <div className="mb-2 flex items-center text-3xl font-semibold text-gray-700">
               驗收內容
@@ -694,7 +720,7 @@ const AcceptTaskDetail = () => {
               id="comment"
               name="comment"
               rows={3}
-              className={`mb-3 mt-1 block w-full cursor-not-allowed resize-none rounded-md border border-gray-300 bg-blue-200 p-2.5 tracking-wider shadow-sm focus:border-blue-500 focus:outline-none focus:ring-blue-500`}
+              className={`bg-[#f7f4f0]] mb-3 mt-1 block w-full cursor-not-allowed resize-none rounded-md border border-gray-300 p-2.5 tracking-wider shadow-sm focus:border-blue-500 focus:outline-none focus:ring-blue-300`}
               readOnly
               value={ratedComment} // ratedComment 是從 reviews 集合獲取
             />
@@ -715,7 +741,7 @@ const AcceptTaskDetail = () => {
               id="input3"
               name="input3"
               rows={3}
-              className="mb-10 mt-1 block w-full cursor-not-allowed resize-none rounded-md border border-gray-300 bg-blue-200 p-2.5 tracking-wider shadow-sm focus:border-blue-500 focus:outline-none focus:ring-blue-500"
+              className="bg-[#f7f4f0]] mb-10 mt-1 block w-full cursor-not-allowed resize-none rounded-md border border-gray-300 p-2.5 tracking-wider shadow-sm focus:border-blue-500 focus:outline-none focus:ring-blue-500"
               readOnly
               value={taskDetails.feedbackMessage} // feedbackMessage 是從 taskDetails 獲取
             />

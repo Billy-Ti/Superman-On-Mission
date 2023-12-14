@@ -2,11 +2,11 @@ import ActionButton from "./HomeActionButton";
 
 const HomeSlogan = () => {
   return (
-    <div className="relative bg-[url('/test.png')] bg-cover bg-fixed bg-center object-cover md:min-h-[600px]">
+    <div className="relative bg-[url('/home_banner.png')] bg-cover bg-fixed bg-center object-cover md:min-h-[600px]">
       <img
         className="absolute bottom-0 left-0 hidden w-[250px] sm:block md:w-[500px]"
-        src="/testpic2.png"
-        alt="testpic2"
+        src="/home_slogan.png"
+        alt="home-slogan"
       />
       <div className="container mx-auto  max-w-[1280px] px-4 pt-4 lg:px-20">
         <div className="py-24">
