@@ -92,11 +92,11 @@ const ServiceType = forwardRef((_props, ref) => {
               <div className="flex items-center">
                 <span className="mr-2 h-8 w-2 bg-[#368dcf]"></span>
                 <p className="flex-1 rounded-md py-2 pr-4 text-center text-3xl font-semibold">
-                  是否十萬火急
+                  急件
                 </p>
               </div>
               <div
-                className={`flex cursor-pointer items-center rounded-md px-4 py-2 font-semibold shadow ${
+                className={`flex mr-3 cursor-pointer items-center rounded-md px-4 py-2 font-semibold shadow ${
                   urgent ? "bg-gray-200" : "bg-white"
                 }`}
                 onClick={() => handleUrgentClick(true)}
@@ -115,7 +115,7 @@ const ServiceType = forwardRef((_props, ref) => {
             <div className="flex items-center">
               <div className="flex items-center font-semibold">
                 <span className="mr-2 h-8 w-2 bg-[#368dcf]"></span>
-                <p className="pr-4 text-3xl font-semibold">完成日期</p>
+                <p className="pr-4 text-3xl font-semibold">任務截止日</p>
               </div>
               <input
                 className="border"

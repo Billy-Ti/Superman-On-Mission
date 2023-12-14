@@ -12,7 +12,7 @@ import { useEffect, useRef, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import Swal from "sweetalert2";
 import { useAuth } from "../../hooks/AuthProvider";
-import SearchBar from "./SearchBar";
+// import SearchBar from "./SearchBar";
 
 const Header = () => {
   const { currentUser, logout } = useAuth();
@@ -69,10 +69,10 @@ const Header = () => {
   const handleTaskManagement = () => {
     navigate("/taskManagement");
   };
-  const handleSearch = (searchQuery: string) => {
-    console.log(`搜尋: ${searchQuery}`);
-    // 這裡你可以添加更多的邏輯來處理搜索查詢，比如將其發送到API或更新應用狀態
-  };
+  // const handleSearch = (searchQuery: string) => {
+  //   console.log(`搜尋: ${searchQuery}`);
+  //   // 這裡你可以添加更多的邏輯來處理搜索查詢，比如將其發送到API或更新應用狀態
+  // };
   useEffect(() => {
     const auth = getAuth();
     const unsubscribe = onAuthStateChanged(auth, (user) => {
@@ -177,7 +177,7 @@ const Header = () => {
           <p className="text-gray hidden pl-2 pt-2 text-lg font-medium xl:block">
             只有不想發的案，沒有做不到的事
           </p>
-          <SearchBar onSearch={handleSearch} placeholder="快速搜尋任務" />
+          {/* <SearchBar onSearch={handleSearch} placeholder="快速搜尋任務" /> */}
           <div className={`${isMenuOpen ? "hidden" : "block"} hidden lg:block`}>
             <ul className="ml-auto flex items-center text-xl md:mr-4 md:gap-4">
               <li className="relative font-semibold tracking-widest after:absolute after:bottom-0 after:left-0 after:h-[5px] after:w-full after:translate-y-1 after:bg-[#368dcf] after:opacity-0 after:transition after:duration-200 after:ease-in-out hover:after:translate-y-0 hover:after:opacity-100">

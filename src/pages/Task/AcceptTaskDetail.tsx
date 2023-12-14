@@ -17,6 +17,7 @@ import ChatRoomWindow from "../../components/chatRoom/ChatRoomWindow";
 import Footer from "../../components/layout/Footer";
 import Header from "../../components/layout/Header";
 import { db, storage } from "../../config/firebase";
+import { showAlert } from "../../utils/showAlert";
 
 // 使用 Task interface 替代原來的 TaskData
 interface Task {
@@ -39,6 +40,7 @@ interface Task {
   status: string;
   ratedComment: string;
   taskId: string;
+  taskStatus: string;
   categorys: string[];
   photos?: string[]; // photos 是可選的
 }
@@ -87,14 +89,28 @@ const AcceptTaskDetail = () => {
   const handleReportDescriptionChange = (
     event: React.ChangeEvent<HTMLTextAreaElement>,
   ) => {
-    setReportDescription(event.target.value);
+    // 確保 prevDetails 不是 null
+    if (taskDetails === null) return;
+
+    // 檢查 taskStatus 是否為 "任務回報完成" 或 "已完成"
+    if (
+      taskDetails.taskStatus === "任務回報完成" ||
+      taskDetails.taskStatus === "已完成"
+    ) {
+      // 如果是，則不更新 reportDescription
+      return;
+    }
+
+    // 更新 reportDescription 並同時更新 taskDetails 的 reportDescription 屬性
+    const newReportDescription = event.target.value;
+    setReportDescription(newReportDescription);
+
     setTaskDetails((prevDetails) => {
-      // 確保 prevDetails 不是 null
       if (prevDetails === null) return null;
 
       return {
-        ...prevDetails, // 保留所有現有的屬性
-        reportDescription: event.target.value, // 更新 reportDescription 屬性
+        ...prevDetails,
+        reportDescription: newReportDescription, // 更新 reportDescription 屬性
       };
     });
   };
@@ -113,28 +129,62 @@ const AcceptTaskDetail = () => {
     });
   };
 
+  // const handleImgSelect = (
+  //   event: React.ChangeEvent<HTMLInputElement>,
+  //   index: number,
+  // ) => {
+  //   const file = event.target.files && event.target.files[0];
+  //   if (file && file.type.match("image.*")) {
+  //     // 更新圖片文件
+  //     const updatedImageFiles = [...imageFiles];
+  //     updatedImageFiles[index] = file;
+  //     setImageFiles(updatedImageFiles);
+
+  //     // 生成 Base64 預覽
+  //     const reader = new FileReader();
+  //     reader.onload = (e: ProgressEvent<FileReader>) => {
+  //       const result = e.target?.result;
+  //       if (result) {
+  //         const updatedImages = [...selectedImages];
+  //         updatedImages[index] = result.toString();
+  //         setSelectedImages(updatedImages);
+  //       }
+  //     };
+  //     reader.readAsDataURL(file);
+  //   }
+  // };
   const handleImgSelect = (
     event: React.ChangeEvent<HTMLInputElement>,
     index: number,
   ) => {
     const file = event.target.files && event.target.files[0];
-    if (file && file.type.match("image.*")) {
-      // 更新圖片文件
-      const updatedImageFiles = [...imageFiles];
-      updatedImageFiles[index] = file;
-      setImageFiles(updatedImageFiles);
+    if (file) {
+      // 判断是否为图片格式（.png / .jpg / .jpeg）
+      if (file.type.match(/image\/(png|jpg|jpeg)/)) {
+        // 判断文件大小是否小于等于5MB
+        if (file.size <= 5 * 1024 * 1024) {
+          // 更新图片文件
+          const updatedImageFiles = [...imageFiles];
+          updatedImageFiles[index] = file;
+          setImageFiles(updatedImageFiles);
 
-      // 生成 Base64 預覽
-      const reader = new FileReader();
-      reader.onload = (e: ProgressEvent<FileReader>) => {
-        const result = e.target?.result;
-        if (result) {
-          const updatedImages = [...selectedImages];
-          updatedImages[index] = result.toString();
-          setSelectedImages(updatedImages);
+          // 生成 Base64 预览
+          const reader = new FileReader();
+          reader.onload = (e: ProgressEvent<FileReader>) => {
+            const result = e.target?.result;
+            if (result) {
+              const updatedImages = [...selectedImages];
+              updatedImages[index] = result.toString();
+              setSelectedImages(updatedImages);
+            }
+          };
+          reader.readAsDataURL(file);
+        } else {
+          showAlert("錯誤", "圖片大小不能超過 5 MB", "error");
         }
-      };
-      reader.readAsDataURL(file);
+      } else {
+        showAlert("錯誤", "只能上傳圖片格式（.png / .jpg / .jpeg）", "error");
+      }
     }
   };
 
@@ -153,46 +203,6 @@ const AcceptTaskDetail = () => {
     // 過濾掉所有 null 值
     return urls.filter((url) => url != null);
   };
-
-  // const renderPhotoList = () => {
-  //   // 定义总共需要显示的格子数量
-  //   const totalSlots = 5;
-
-  //   // 获取已上传的图片列表，如果没有则为空数组
-  //   const photos = taskDetails.photos || [];
-
-  //   // 计算空白格子的数量
-  //   const emptySlots = totalSlots - photos.length;
-
-  //   return (
-  //     <>
-  //       {photos.map((photo, index) => (
-  //         <li
-  //           key={photo}
-  //           className="h-52 w-52 border-2 border-dashed border-[#368dcf]"
-  //         >
-  //           <img
-  //             className="h-full w-full cursor-pointer object-cover p-2"
-  //             src={photo}
-  //             alt={`Task photo ${index + 1}`}
-  //             onClick={() => {
-  //               setSelectedPhoto(photo);
-  //               setIsModalOpen(true);
-  //             }}
-  //           />
-  //         </li>
-  //       ))}
-  //       {[...Array(emptySlots)].map((_, index) => (
-  //         <li
-  //           key={`empty-${index}`}
-  //           className="flex h-52 w-52 items-center justify-center border-2 border-dashed border-[#368dcf] font-extrabold"
-  //         >
-  //           <span>未提供圖片</span>
-  //         </li>
-  //       ))}
-  //     </>
-  //   );
-  // };
 
   const fetchTask = async () => {
     if (!taskId) {
@@ -329,7 +339,6 @@ const AcceptTaskDetail = () => {
           querySnapshot.forEach((doc) => {
             // 假設每個任務只有一條評價
             const reviewData = doc.data();
-            console.log("Review data:", reviewData); // 檢查獲取到的數據
             setRatedComment(reviewData.ratedComment);
           });
         } catch (error) {
@@ -499,7 +508,6 @@ const AcceptTaskDetail = () => {
 
           {/* 右邊區塊開始 */}
           <div className="grid grid-cols-1 gap-4 rounded-md bg-[#B3D7FF] p-4 md:grid-cols-2 lg:w-2/3">
-            {/* 以下是六個欄位，根據屏幕大小分為一列或兩列 */}
             <div className="rounded-md bg-white p-4">
               {/* 任務名稱 */}
               <div className="mb-3 border-b-4 border-b-[#B3D7FF] text-center text-xl font-black text-gray-500">
@@ -595,7 +603,6 @@ const AcceptTaskDetail = () => {
                 </li>
               ),
             )}
-            {/* {renderPhotoList()} */}
           </ul>
 
           {isModalOpen && (
@@ -623,14 +630,12 @@ const AcceptTaskDetail = () => {
         {/* 驗收內容 */}
         <form className="relative mb-10  p-4">
           <div className="flex items-center">
-            <div className="mb-2 flex items-center text-3xl font-semibold text-gray-700">
-              驗收內容
+            <div className="mb-2 flex items-center text-gray-700">
+              <p className=" mr-2 text-3xl font-semibold">驗收內容</p>
               {/* 條件渲染：僅在非"已完成"狀態時顯示 */}
-              {taskStatus !== "已完成" && (
-                <p className="ml-3 text-xl font-medium text-[#2B79B4]">
-                  僅限上傳圖片格式為 {"("}png / jpg / gif{")"}
+                <p className="text-medium flex flex-col justify-end font-semibold text-red-600">
+                  圖片大小不超過 5MB
                 </p>
-              )}
             </div>
           </div>
           <ul className="flex gap-4">
@@ -674,6 +679,7 @@ const AcceptTaskDetail = () => {
               id="input1"
               name="input1"
               rows={3}
+              readOnly={taskStatus === "已完成"}
               className={`mb-3 mt-1 block w-full resize-none rounded-md border border-gray-300 p-2.5 tracking-wider shadow-sm focus:border-blue-500 focus:outline-none focus:ring-blue-500 ${
                 taskStatus === "任務回報完成" || taskStatus === "已完成"
                   ? "cursor-not-allowed "
@@ -695,6 +701,7 @@ const AcceptTaskDetail = () => {
               id="input2"
               name="input2"
               rows={3}
+              readOnly={taskStatus === "已完成"}
               onChange={handleReportSupplementaryNotesChange}
               className={`mb-3 mt-1 block w-full resize-none rounded-md border border-gray-300 p-2.5 tracking-wider ${
                 taskStatus === "任務回報完成" || taskStatus === "已完成"

@@ -1,3 +1,4 @@
+import { Icon } from "@iconify/react";
 import { getAuth, onAuthStateChanged } from "firebase/auth";
 import {
   addDoc,
@@ -24,7 +25,6 @@ import { app, auth } from "../../config/firebase"; // 導入初始化的 Firebas
 import { showAlert } from "../../utils/showAlert";
 import ServiceType, { ServiceTypeRef } from "../components/ServiceType";
 import countyToRegion from "../components/TaiwanRegion";
-import { Icon } from "@iconify/react";
 const db = getFirestore(app);
 // 使用Firebase App實例獲取Storage的參考
 const storage = getStorage(app);
@@ -81,16 +81,25 @@ const Task = () => {
   ) => {
     const file = event.target.files ? event.target.files[0] : null;
     if (file) {
-      const reader = new FileReader();
-      reader.onloadend = () => {
-        // 更新對應 index 的圖片 URL
-        setUploadedImages((prevImages) => {
-          const newImages = [...prevImages];
-          newImages[index] = reader.result as string;
-          return newImages;
-        });
-      };
-      reader.readAsDataURL(file);
+      // 判斷是否為圖片
+      if (file.type.startsWith("image/")) {
+        // 檢查文件大小是否小于等于5MB
+        if (file.size <= 5 * 1024 * 1024) {
+          const reader = new FileReader();
+          reader.onloadend = () => {
+            setUploadedImages((prevImages) => {
+              const newImages = [...prevImages];
+              newImages[index] = reader.result as string;
+              return newImages;
+            });
+          };
+          reader.readAsDataURL(file);
+        } else {
+          showAlert("錯誤", "圖片大小不能超過 5 MB", "error");
+        }
+      } else {
+        showAlert("錯誤", "只能上傳圖片格式（.png / .jpg / .jpeg）", "error");
+      }
     }
   };
 
@@ -336,10 +345,10 @@ const Task = () => {
           <div className="flex flex-col items-center justify-between gap-4 lg:flex-row">
             <div className="flex w-full flex-col lg:w-1/2">
               <div className="mb-4 flex items-center">
-                <div className="flex items-center">
+                <div className="flex">
                   <span className="mr-2 h-8 w-2 bg-[#368dcf]"></span>
                   <p className="mr-3 text-3xl font-semibold">任務說明</p>
-                  <p className="flex flex-col justify-end text-lg font-semibold text-red-600">
+                  <p className="text-medium flex flex-col justify-end font-semibold text-red-600">
                     請輸入20字以上，以明白要做什麼事情
                   </p>
                 </div>
@@ -349,8 +358,7 @@ const Task = () => {
                 name="startTaskContent"
                 id="startTaskContent"
                 placeholder="例：我需要為我的網站設計 LOGO，未來我想用在作品集"
-                value={taskDescription} // 綁定 taskDescription 狀態
-                onChange={(e) => setTaskDescription(e.target.value)} // 更新狀態
+                onChange={(e) => setTaskDescription(e.target.value)}
               ></textarea>
             </div>
             <div className="flex w-full flex-col items-start lg:w-1/2">
@@ -382,7 +390,6 @@ const Task = () => {
                 value={taskReward}
                 onChange={handleTaskRewardChange}
               />
-              <span className="text-xl font-semibold">Super Coins</span>
             </div>
             <div className="flex items-center text-xl font-medium">
               <p>剩餘 :</p>
@@ -394,8 +401,8 @@ const Task = () => {
             <div className="mb-4 flex">
               <span className="mr-2 h-8 w-2 bg-[#368dcf]"></span>
               <p className="mr-3 text-3xl font-semibold">上傳照片</p>
-              <p className="flex flex-col justify-end text-lg font-semibold text-red-600">
-                建議上傳
+              <p className="text-medium flex flex-col justify-end font-semibold text-red-600">
+                圖片大小不超過 5MB
               </p>
             </div>
             <ul className="mb-8 flex items-center justify-between">
@@ -406,6 +413,7 @@ const Task = () => {
                 >
                   <input
                     type="file"
+                    accept="image/*"
                     onChange={(e) => handleImageChange(e, index)}
                     className="absolute left-0 top-0 z-10 h-full w-full cursor-pointer opacity-0"
                   />

@@ -307,12 +307,12 @@ const TaskDetail = () => {
                   alt="Enlarged task photo"
                 />
                 <button
-                  className="absolute bottom-10 left-1/2 mt-4 flex h-10 w-10 -translate-x-1/2 transform items-center justify-center rounded-full  p-2 text-black"
+                  className="absolute bottom-3 left-1/2 mt-4 flex h-10 w-10 -translate-x-1/2 transform items-center justify-center rounded-full  p-2 text-black"
                   onClick={() => setIsModalOpen(false)}
                 >
                   <span className="absolute -left-4 -top-4 h-16 w-16 animate-ping rounded-full  opacity-75" />
-                  <span className="absolute -left-4 -top-4 h-16 w-16 rounded-full bg-red-200" />
-                  <span className="relative z-10 text-center text-sm">
+                  <span className="absolute -left-3 -top-3 h-16 w-16 rounded-full bg-[#2B79B4]" />
+                  <span className="relative z-10 text-center text-sm text-white">
                     Close
                   </span>
                 </button>

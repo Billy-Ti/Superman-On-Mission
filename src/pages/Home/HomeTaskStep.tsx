@@ -121,7 +121,7 @@ const HomeTaskStep = () => {
         <div className="flex justify-center">
           <button
             onClick={() => navigate("/taskPage")}
-            className="rounded-md bg-[#368DCF] p-3 text-xl font-medium tracking-widest text-white transition duration-500 ease-in-out hover:bg-[#3178C6]"
+            className="rounded-full bg-[#368DCF] p-3 text-xl font-medium tracking-widest text-white transition duration-500 ease-in-out hover:bg-[#3178C6]"
           >
             立即刊登任務
           </button>

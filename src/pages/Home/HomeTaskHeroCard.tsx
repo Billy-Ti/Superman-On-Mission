@@ -57,7 +57,7 @@ const HomeTaskHeroCard: React.FC = () => {
                   className="mb-4 h-32 w-32 rounded-full object-cover"
                 />
                 <div className="flex items-center font-semibold text-gray-600">
-                  <p className="text-xl">{user.name}</p>
+                  <p className="text-xl mb-2">{user.name}</p>
                 </div>
                 <div className="flex items-center font-semibold text-gray-600">
                   <div className="flex text-center">{renderStars(user.averageRating)}</div>
