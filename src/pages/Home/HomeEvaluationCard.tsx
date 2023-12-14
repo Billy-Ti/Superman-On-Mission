@@ -26,7 +26,7 @@ const HomeEvaluationCard: React.FC<HomeEvaluationCardProps> = ({
         {Array.from({ length: evaluation.rating }).map((_, index) => (
           <span
             key={index}
-            className="mb-2  inline-block  rounded-full py-1 text-sm font-semibold text-gray-700"
+            className="mb-2 inline-block rounded-full py-1 text-sm font-semibold text-gray-700"
           >
             ⭐
           </span>

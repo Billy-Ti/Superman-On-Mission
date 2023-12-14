@@ -36,11 +36,13 @@ const AcceptTaskRecord = () => {
         where("acceptedBy", "==", currentUser.uid), // 只獲取由當前用戶接受的任務
       );
       const querySnapshot = await getDocs(q);
-      const tasksData = querySnapshot.docs.map((doc) => ({
-        ...doc.data(),
-        id: doc.id,
-      })) as Task[];
-      setTasks(tasksData);
+      const fetchedTasks: Task[] = querySnapshot.docs
+        .map((doc) => {
+          const task = doc.data() as Task;
+          return { ...task, id: doc.id };
+        })
+        .filter((task) => task.status !== "已完成");
+      setTasks(fetchedTasks);
     };
     fetchTasks();
   }, []);

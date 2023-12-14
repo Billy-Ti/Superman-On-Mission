@@ -60,7 +60,7 @@ const HomeTaskHeroCard: React.FC = () => {
                   <p className="text-xl">{user.name}</p>
                 </div>
                 <div className="flex items-center font-semibold text-gray-600">
-                  <div className="flex">{renderStars(user.averageRating)}</div>
+                  <div className="flex text-center">{renderStars(user.averageRating)}</div>
                 </div>
               </>
             }
