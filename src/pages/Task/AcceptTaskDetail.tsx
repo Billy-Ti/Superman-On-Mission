@@ -71,6 +71,26 @@ const AcceptTaskDetail = () => {
 
   const navigate = useNavigate();
 
+  // const renderPhotoList = () => {
+  //   if (taskDetails?.status === "已完成") {
+  //     const photos = taskDetails.reportFiles || [];
+  //     return photos.map((photo, index) => (
+  //       <li
+  //         key={index}
+  //         className="h-52 w-52 border-2 border-dashed border-[#368dcf]"
+  //       >
+  //         <img
+  //           className="h-full w-full object-cover p-2"
+  //           src={photo}
+  //           alt={`Uploaded photo ${index}`}
+  //         />
+  //       </li>
+  //     ));
+  //   } else {
+  //     return null; // 當任務狀態不是 "已完成" 時不顯示圖片
+  //   }
+  // };
+
   const handleOverlay = () => {
     setShowOverlay(false);
   };
@@ -89,7 +109,6 @@ const AcceptTaskDetail = () => {
   const handleReportDescriptionChange = (
     event: React.ChangeEvent<HTMLTextAreaElement>,
   ) => {
-    // 確保 prevDetails 不是 null
     if (taskDetails === null) return;
 
     // 檢查 taskStatus 是否為 "任務回報完成" 或 "已完成"
@@ -97,7 +116,6 @@ const AcceptTaskDetail = () => {
       taskDetails.taskStatus === "任務回報完成" ||
       taskDetails.taskStatus === "已完成"
     ) {
-      // 如果是，則不更新 reportDescription
       return;
     }
 
@@ -110,7 +128,7 @@ const AcceptTaskDetail = () => {
 
       return {
         ...prevDetails,
-        reportDescription: newReportDescription, // 更新 reportDescription 屬性
+        reportDescription: newReportDescription,
       };
     });
   };
@@ -123,36 +141,11 @@ const AcceptTaskDetail = () => {
       if (prevDetails === null) return null;
 
       return {
-        ...prevDetails, // 保留所有現有的屬性
-        reportSupplementaryNotes: event.target.value, // 更新 reportSupplementaryNotes 屬性
+        ...prevDetails,
+        reportSupplementaryNotes: event.target.value,
       };
     });
   };
-
-  // const handleImgSelect = (
-  //   event: React.ChangeEvent<HTMLInputElement>,
-  //   index: number,
-  // ) => {
-  //   const file = event.target.files && event.target.files[0];
-  //   if (file && file.type.match("image.*")) {
-  //     // 更新圖片文件
-  //     const updatedImageFiles = [...imageFiles];
-  //     updatedImageFiles[index] = file;
-  //     setImageFiles(updatedImageFiles);
-
-  //     // 生成 Base64 預覽
-  //     const reader = new FileReader();
-  //     reader.onload = (e: ProgressEvent<FileReader>) => {
-  //       const result = e.target?.result;
-  //       if (result) {
-  //         const updatedImages = [...selectedImages];
-  //         updatedImages[index] = result.toString();
-  //         setSelectedImages(updatedImages);
-  //       }
-  //     };
-  //     reader.readAsDataURL(file);
-  //   }
-  // };
   const handleImgSelect = (
     event: React.ChangeEvent<HTMLInputElement>,
     index: number,
@@ -633,9 +626,9 @@ const AcceptTaskDetail = () => {
             <div className="mb-2 flex items-center text-gray-700">
               <p className=" mr-2 text-3xl font-semibold">驗收內容</p>
               {/* 條件渲染：僅在非"已完成"狀態時顯示 */}
-                <p className="text-medium flex flex-col justify-end font-semibold text-red-600">
-                  圖片大小不超過 5MB
-                </p>
+              <p className="text-medium flex flex-col justify-end font-semibold text-red-600">
+                圖片大小不超過 5MB
+              </p>
             </div>
           </div>
           <ul className="flex gap-4">

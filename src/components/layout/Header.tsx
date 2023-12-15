@@ -1,7 +1,6 @@
 import { Icon } from "@iconify/react";
 import { getAuth, onAuthStateChanged } from "firebase/auth";
 import {
-  // QueryDocumentSnapshot,
   collection,
   getFirestore,
   onSnapshot,
@@ -50,8 +49,7 @@ const Header = () => {
         try {
           await logout();
           Swal.fire({
-            title: "🚨系統提醒",
-            text: "已登出成功",
+            title: "已登出",
             icon: "success",
             timer: 1500,
             timerProgressBar: true,
@@ -69,16 +67,12 @@ const Header = () => {
   const handleTaskManagement = () => {
     navigate("/taskManagement");
   };
-  // const handleSearch = (searchQuery: string) => {
-  //   console.log(`搜尋: ${searchQuery}`);
-  //   // 這裡你可以添加更多的邏輯來處理搜索查詢，比如將其發送到API或更新應用狀態
-  // };
   useEffect(() => {
     const auth = getAuth();
     const unsubscribe = onAuthStateChanged(auth, (user) => {
       if (user) {
-        // 用戶已登錄，打印用戶郵件和 ID
-        console.log("當前用戶郵件:", user.email);
+        // 用戶已登錄，輸出用戶郵件和 ID
+        console.log("當前用戶 email:", user.email);
         console.log("當前用戶 ID:", user.uid);
       } else {
         // 用戶未登錄
@@ -237,14 +231,13 @@ const Header = () => {
                   我的評價
                 </button>
               </div>
-              <div className="ml-3" title="登出">
-                <Icon
-                  onClick={handleLogout}
+              <div className="ml-3 mr-3 lg:mr-0" title="登出">
+                <img
                   color="#3178C6"
-                  className="cursor-pointer"
-                  icon="solar:logout-bold-duotone"
-                  width="40"
-                  height="40"
+                  onClick={handleLogout}
+                  className="w-[16px] cursor-pointer"
+                  src="/logout.svg"
+                  alt="logout"
                 />
               </div>
               <div className="lg:hidden">

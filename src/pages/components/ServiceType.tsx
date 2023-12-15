@@ -91,7 +91,7 @@ const ServiceType = forwardRef((_props, ref) => {
             <div className="mb-8 flex">
               <div className="flex items-center">
                 <span className="mr-2 h-8 w-2 bg-[#368dcf]"></span>
-                <p className="flex-1 rounded-md py-2 pr-4 text-center text-3xl font-semibold">
+                <p className="flex-1 rounded-md py-2 pr-4 text-center text-2xl font-semibold">
                   急件
                 </p>
               </div>
@@ -115,7 +115,7 @@ const ServiceType = forwardRef((_props, ref) => {
             <div className="flex items-center">
               <div className="flex items-center font-semibold">
                 <span className="mr-2 h-8 w-2 bg-[#368dcf]"></span>
-                <p className="pr-4 text-3xl font-semibold">任務截止日</p>
+                <p className="pr-4 text-2xl font-semibold">任務截止日</p>
               </div>
               <input
                 className="border"

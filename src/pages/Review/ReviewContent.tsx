@@ -99,7 +99,7 @@ const ReviewContent = () => {
     <div className="container mx-auto">
       <DisplaySwitchButton
         onToggleUrgent={handleToggleDisplay}
-        buttonText="顯示已給予的評價"
+        buttonText="顯示已給他人的評價"
         className="mb-4"
       />
       <Pagination
@@ -110,11 +110,11 @@ const ReviewContent = () => {
       />
       <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3">
         {currentReviews.length > 0 ? (
-          currentReviews.map((review, index) => (
-            <div key={index} className="rounded-md p-4 shadow-lg">
+          currentReviews.map((review) => (
+            <div key={review.reviewTaskId} className="rounded-md p-4 shadow-lg">
               <Link
-                to={`/acceptTaskDetail/${review.reviewTaskId}`}
-                className="hover:bg-white-700/80 group relative flex h-full w-full cursor-pointer flex-col items-center mt-2 rounded-md bg-[#92afd6] px-4 py-10 sm:py-20"
+                to={`/detail/${review.reviewTaskId}`}
+                className="hover:bg-white-700/80 group relative mt-2 flex h-full w-full cursor-pointer flex-col items-center rounded-md bg-[#92afd6] px-4 py-10 sm:py-20"
               >
                 <img
                   src={review.photo}

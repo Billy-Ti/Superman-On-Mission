@@ -158,7 +158,7 @@ const TaskDetail = () => {
             timerProgressBar: true,
             showConfirmButton: false,
           });
-          navigate("/");
+          navigate("/taskManagement");
         } catch (error) {
           console.error("Error updating task:", error);
         }
