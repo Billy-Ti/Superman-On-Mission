@@ -664,8 +664,8 @@ const ChatRoomWindow = ({ onCloseRoom }: ChatRoomWindowProps) => {
                         xmlns="http://www.w3.org/2000/svg"
                       >
                         <path
-                          stroke-linecap="round"
-                          stroke-linejoin="round"
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
                           strokeWidth="2"
                           d="M14.828 14.828a4 4 0 01-5.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
                         ></path>
@@ -688,8 +688,8 @@ const ChatRoomWindow = ({ onCloseRoom }: ChatRoomWindowProps) => {
                         xmlns="http://www.w3.org/2000/svg"
                       >
                         <path
-                          stroke-linecap="round"
-                          stroke-linejoin="round"
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
                           stroke-width="2"
                           d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8"
                         ></path>

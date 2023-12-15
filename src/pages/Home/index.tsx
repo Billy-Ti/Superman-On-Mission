@@ -1,6 +1,5 @@
 import Footer from "../../components/layout/Footer";
 import Header from "../../components/layout/Header";
-import HomeEndingButton from "./HomeEndingButton";
 import EvaluationsGrid from "./HomeEvaluationsGrid";
 import HomePainPoints from "./HomePainPoints";
 import HomeSlogan from "./HomeSlogan";
@@ -20,7 +19,6 @@ const Home = () => {
       <HomeTaskStep />
       <HomeTaskHeroCard />
       <EvaluationsGrid />
-      <HomeEndingButton />
       <Footer />
     </>
   );

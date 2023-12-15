@@ -162,7 +162,7 @@ const Header = () => {
         <div className="container relative mx-auto flex max-w-[1280px] items-center justify-between px-4 lg:px-20">
           <Link
             to="/"
-            className="flex items-center bg-gradient-to-r from-blue-700 via-blue-500 to-purple-400 bg-clip-text text-3xl font-black text-transparent"
+            className="flex items-center text-3xl font-black text-[#2b79b4]"
           >
             <img width="70" src="/superman_logo.png" alt="superman-logo" />
             <p className="mr-1 italic">SuperTask co.</p>

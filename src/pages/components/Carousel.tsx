@@ -32,7 +32,7 @@ const Carousel = () => {
     dots: showDots,
     infinite: true,
     speed: 500,
-    slidesToShow: 3, // 一次要顯示幾張圖片
+    slidesToShow: 5, // 一次要顯示幾張圖片
     slidesToScroll: 1, // 一次滑動要滑動幾張圖片
     autoplay: true, // 自動播放
     autoplaySpeed: 2000, // 自動播放的速率 (毫秒)
@@ -88,13 +88,13 @@ const Carousel = () => {
     },
   };
   return (
-    <div className="container mx-auto max-w-[1280px] px-4 py-10 md:py-20 md:max-w-7xl lg:px-20">
-      <div className="mb-10 items-center lg:mb-20 lg:flex">
-        <div className="flex flex-col border-l-[10px] border-l-[#368DCF]">
-          <div className="mr-4 flex items-center pl-2">
+    <div className="container mx-auto max-w-[1280px] px-4 py-10 md:max-w-7xl md:py-20 lg:px-20">
+      <div className="mb-10 items-center lg:mb-20">
+        <div className="flex flex-col ">
+          <div className="mb-4 mr-4 flex items-center border-l-[10px] border-l-[#368DCF] pl-2">
             <h2 className="text-4xl font-bold leading-normal">找任務</h2>
           </div>
-          <div className="flex flex-col pl-2">
+          <div className="mb-20 flex flex-col pl-2">
             <p className="mb-1 text-xl font-medium leading-normal text-gray-600">
               大顯身手的時候到了！
             </p>
@@ -103,15 +103,20 @@ const Carousel = () => {
             </p>
           </div>
         </div>
-        <div className="mx-auto w-2/3 px-4 md:w-3/4">
+        <div className="mx-auto px-4 md:w-full">
           <Slider {...CarouselSetting}>
             {visibleTasks.map((task, index) => (
-              <>
-                <h3 className="text-lg font-semibold text-center">{task.title}</h3>
-                <div
-                  key={index}
-                  className="flex min-h-[225px] items-center justify-center p-2"
-                >
+              <div
+                key={index}
+                className="flex flex-col items-center justify-center p-2"
+              >
+                {/* 標題容器 */}
+                <div className="mb-2 h-14 text-center">
+                  <h3 className="text-lg font-semibold">{task.title}</h3>
+                </div>
+
+                {/* 圖片容器 */}
+                <div className="min-h-[225px]">
                   {task.photos && task.photos.length > 0 ? (
                     task.photos.map((photoUrl, photoIndex) => (
                       <div key={photoIndex} className="mb-4 text-center">
@@ -128,7 +133,7 @@ const Carousel = () => {
                     </div>
                   )}
                 </div>
-              </>
+              </div>
             ))}
           </Slider>
         </div>

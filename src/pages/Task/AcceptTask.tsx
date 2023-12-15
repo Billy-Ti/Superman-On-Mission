@@ -166,192 +166,196 @@ const AcceptTask = () => {
   };
   return (
     <>
-      <Header />
-      <Carousel />
-      <div className="container mx-auto max-w-[1280px] px-4 pb-10 md:max-w-7xl lg:px-20">
-        <div className="mb-4">
-          <div className="mb-4 flex items-center font-semibold">
-            <span className="mr-2 h-8 w-2 bg-[#368DCF]"></span>
-            <p className="text-2xl">依照分類搜尋</p>
-          </div>
-          <ServiceTypeSelector
-            serviceType={serviceType}
-            selectedIndexes={selectedIndexes}
-            handleServiceTypeClick={handleServiceTypeClick}
-          />
-          <RegionFilter
-            onCountyChange={handleCityChange}
-            onRegionChange={handleDistrictChange}
-          />
-          <div className="flex items-center">
-            <span className="mr-2 h-8 w-2 bg-[#368DCF]"></span>
-            <DisplaySwitchButton
-              buttonText="顯示所有急件"
-              className="mb-0"
-              onToggleUrgent={handleToggleUrgent}
+      <div className="bg-[url('/home_pain_point.png')] bg-cover bg-fixed bg-center object-cover">
+        <Header />
+        <Carousel />
+        <div className="container mx-auto max-w-[1280px] px-4 pb-10 md:max-w-7xl lg:px-20">
+          <div className="mb-4">
+            <div className="mb-4 flex items-center font-semibold">
+              <span className="mr-2 h-8 w-2 bg-[#368DCF]"></span>
+              <p className="text-2xl">依照分類搜尋</p>
+            </div>
+            <ServiceTypeSelector
+              serviceType={serviceType}
+              selectedIndexes={selectedIndexes}
+              handleServiceTypeClick={handleServiceTypeClick}
             />
+            <RegionFilter
+              onCountyChange={handleCityChange}
+              onRegionChange={handleDistrictChange}
+            />
+            <div className="flex items-center">
+              <span className="mr-2 h-8 w-2 bg-[#368DCF]"></span>
+              <DisplaySwitchButton
+                buttonText="顯示所有急件"
+                className="mb-0"
+                onToggleUrgent={handleToggleUrgent}
+              />
+            </div>
           </div>
         </div>
-      </div>
-      <div className="container mx-auto max-w-[1280px] px-4 md:max-w-7xl lg:px-20">
-        <Pagination
-          tasksPerPage={tasksPerPage}
-          totalTasks={tasks.length}
-          paginate={paginate}
-          currentPage={currentPage}
-          className="mb-4 justify-end"
-        />
-        {currentTasks.length === 0 ? (
-          <div className="mb-10 text-center">
-            <p className="text-xl">目前還沒有可接的任務...</p>
-          </div>
-        ) : (
-          <div className="mb-4 grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3">
-            {currentTasks.map((task) => (
-              <>
-                <div
-                  key={task.id}
-                  className="border-gradient relative flex grow flex-col rounded-md border-2 border-gray-200 p-4 bg-gray-100"
-                >
-                  <div className="flex grow flex-col items-start gap-2">
-                    <div className="flex h-64 w-full items-center justify-center overflow-hidden rounded-md border-2 border-gray-300">
-                      {" "}   
-                      {task.photos?.[0] ? (
-                        <img
-                          src={task.photos[0]}
-                          alt="任務"
-                          className="h-full w-full object-cover transition-transform duration-300 ease-in-out hover:scale-110"
-                        />
-                      ) : (
-                        <span className="text-center text-lg text-gray-600">
-                          無提供圖片
-                        </span>
-                      )}
-                    </div>
+        <div className="container mx-auto max-w-[1280px] px-4 md:max-w-7xl lg:px-20">
+          <Pagination
+            tasksPerPage={tasksPerPage}
+            totalTasks={tasks.length}
+            paginate={paginate}
+            currentPage={currentPage}
+            className="mb-4 justify-end"
+          />
+          {currentTasks.length === 0 ? (
+            <div className="mb-10 text-center">
+              <p className="text-xl">目前還沒有可接的任務...</p>
+            </div>
+          ) : (
+            <div className="mb-4 grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3">
+              {currentTasks.map((task) => (
+                <>
+                  <div
+                    key={task.id}
+                    className="border-gradient relative flex grow flex-col rounded-md border-2 border-gray-200 bg-gray-100 p-4"
+                  >
+                    <div className="flex grow flex-col items-start gap-2">
+                      <div className="flex h-64 w-full items-center justify-center overflow-hidden rounded-md border-2 border-gray-300">
+                        {" "}
+                        {task.photos?.[0] ? (
+                          <img
+                            src={task.photos[0]}
+                            alt="任務"
+                            className="h-full w-full object-cover transition-transform duration-300 ease-in-out hover:scale-110"
+                          />
+                        ) : (
+                          <span className="text-center text-lg text-gray-600">
+                            無提供圖片
+                          </span>
+                        )}
+                      </div>
 
-                    <div className="flex w-full grow flex-col gap-4 pl-2">
-                      <p className="text-center font-semibold text-2xl">{task.title}</p>
-                      <div className="mt-1 flex grow items-center font-semibold">
-                        <a
-                          href={`https://www.google.com/maps/search/${task.city}${task.district}${task.address}`}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="flex grow items-center"
-                        >
+                      <div className="flex w-full grow flex-col gap-4 pl-2">
+                        <p className="text-center text-2xl font-semibold">
+                          {task.title}
+                        </p>
+                        <div className="mt-1 flex grow items-center font-semibold">
+                          <a
+                            href={`https://www.google.com/maps/search/${task.city}${task.district}${task.address}`}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="flex grow items-center"
+                          >
+                            <Icon
+                              icon="mdi:location"
+                              className="mr-1 flex-shrink-0"
+                              width="20"
+                              height="20"
+                            />
+                            {task.city}
+                            {task.district}
+                            {task.address}
+                          </a>
+                        </div>
+                        <h5 className="inline-flex grow font-semibold">
                           <Icon
-                            icon="mdi:location"
-                            className="mr-1 flex-shrink-0"
+                            icon="mdi:tag"
                             width="20"
                             height="20"
+                            className="mr-1 flex-shrink-0"
                           />
-                          {task.city}
-                          {task.district}
-                          {task.address}
-                        </a>
-                      </div>
-                      <h5 className="inline-flex grow font-semibold">
-                        <Icon
-                          icon="mdi:tag"
-                          width="20"
-                          height="20"
-                          className="mr-1 flex-shrink-0"
-                        />
-                        {task.categorys.map((category, index) => (
-                          <>{index > 0 ? `、${category}` : category}</>
-                        ))}
-                      </h5>
+                          {task.categorys.map((category, index) => (
+                            <>{index > 0 ? `、${category}` : category}</>
+                          ))}
+                        </h5>
 
-                      <div className="flex grow flex-col">
-                        <div className="flex items-center">
-                          {task.isUrgent ? (
-                            <div className="absolute right-0 top-0 h-10 w-10 p-2">
-                              <Icon
-                                className="absolute inset-0"
-                                icon="bxs:label"
-                                color="red"
-                                width="40"
-                                height="40"
-                                rotate={3}
-                                hFlip={true}
-                                vFlip={true}
-                              />
-                              <span className="absolute inset-0 flex items-center justify-center text-lg font-semibold text-white">
-                                急
-                              </span>
-                            </div>
-                          ) : (
-                            <>
+                        <div className="flex grow flex-col">
+                          <div className="flex items-center">
+                            {task.isUrgent ? (
                               <div className="absolute right-0 top-0 h-10 w-10 p-2">
                                 <Icon
                                   className="absolute inset-0"
                                   icon="bxs:label"
-                                  color="#3178C6"
+                                  color="red"
                                   width="40"
                                   height="40"
                                   rotate={3}
                                   hFlip={true}
                                   vFlip={true}
                                 />
-                                <span className="absolute inset-0 flex items-center justify-center font-semibold text-white">
-                                  推
+                                <span className="absolute inset-0 flex items-center justify-center text-lg font-semibold text-white">
+                                  急
                                 </span>
                               </div>
+                            ) : (
+                              <>
+                                <div className="absolute right-0 top-0 h-10 w-10 p-2">
+                                  <Icon
+                                    className="absolute inset-0"
+                                    icon="bxs:label"
+                                    color="#3178C6"
+                                    width="40"
+                                    height="40"
+                                    rotate={3}
+                                    hFlip={true}
+                                    vFlip={true}
+                                  />
+                                  <span className="absolute inset-0 flex items-center justify-center font-semibold text-white">
+                                    推
+                                  </span>
+                                </div>
 
-                              {/* <span className="text-lg font-bold">
+                                {/* <span className="text-lg font-bold">
                                 是否急件&emsp;:
                               </span>
                               <span className="text-lg font-bold">
                                 &emsp;否
                               </span> */}
-                            </>
-                          )}
+                              </>
+                            )}
+                          </div>
+                          <p className="flex items-center font-semibold">
+                            <Icon
+                              className="mr-1 flex-shrink-0"
+                              icon="tabler:coin-filled"
+                              width="20"
+                              height="20"
+                            />
+                            Super Coins : {task.cost}
+                          </p>
                         </div>
                         <p className="flex items-center font-semibold">
                           <Icon
-                            className="mr-1 flex-shrink-0"
-                            icon="tabler:coin-filled"
+                            className="mr-1  flex-shrink-0"
+                            icon="fluent-mdl2:date-time"
                             width="20"
                             height="20"
                           />
-                          Super Coins : {task.cost}
+                          截止日期 : {task.dueDate}
                         </p>
+                        <button
+                          onClick={() => handleAcceptTask(task.id)}
+                          type="button"
+                          className="transition-border-b duration-all-100 rounded-lg border-b-4 border-b-gray-400 px-6 py-3 font-semibold text-black transition ease-in-out hover:border-b-transparent hover:bg-[#368DCF] hover:text-white"
+                        >
+                          <Icon
+                            icon="icon-park:click-tap"
+                            className="mr-2 inline-block h-6 w-6 text-black hover:text-white"
+                          />
+                          查看任務詳情
+                        </button>
                       </div>
-                      <p className="flex items-center font-semibold">
-                        <Icon
-                          className="mr-1  flex-shrink-0"
-                          icon="fluent-mdl2:date-time"
-                          width="20"
-                          height="20"
-                        />
-                        截止日期 : {task.dueDate}
-                      </p>
-                      <button
-                        onClick={() => handleAcceptTask(task.id)}
-                        type="button"
-                        className="transition-border-b duration-all-100 rounded-lg border-b-4 border-b-gray-400 px-6 py-3 font-semibold text-black transition ease-in-out hover:border-b-transparent hover:bg-[#368DCF] hover:text-white"
-                      >
-                        <Icon
-                          icon="icon-park:click-tap"
-                          className="mr-2 inline-block h-6 w-6 text-black hover:text-white"
-                        />
-                        查看任務詳情
-                      </button>
                     </div>
                   </div>
-                </div>
-              </>
-            ))}
-          </div>
-        )}
-        <Pagination
-          tasksPerPage={tasksPerPage}
-          totalTasks={tasks.length}
-          paginate={paginate}
-          currentPage={currentPage}
-          className="justify-center"
-        />
+                </>
+              ))}
+            </div>
+          )}
+          <Pagination
+            tasksPerPage={tasksPerPage}
+            totalTasks={tasks.length}
+            paginate={paginate}
+            currentPage={currentPage}
+            className="justify-center"
+          />
+        </div>
+        <Footer />
       </div>
-      <Footer />
     </>
   );
 };

@@ -10,10 +10,10 @@ const HomeSolutionList: React.FC = () => {
             我們找到了一片藍海，獻給正在苦惱的你...
           </span>
           <div className="mb-10 h-[10px] w-1/3 bg-[#2B79B4]"></div>
-          <div className="mb-20 hidden items-center justify-end lg:flex">
+          <div className="mb-20 hidden items-center justify-end md:flex">
             <button
               onClick={() => navigate("/acceptTask")}
-              className="rounded-md bg-[#368DCF] p-3 text-xl font-medium tracking-wider text-white transition duration-500 ease-in-out hover:bg-[#3178C6]"
+              className="items-center justify-center rounded-md  bg-[#368DCF] p-3 text-xl font-medium text-white transition duration-500 ease-in-out hover:bg-[#2b79b4]"
             >
               立即開始
             </button>
@@ -54,10 +54,10 @@ const HomeSolutionList: React.FC = () => {
               </p>
             </li>
           </ul>
-          <div className="flex justify-center md:hidden">
+          <div className="block justify-center md:hidden">
             <button
               onClick={() => navigate("/acceptTask")}
-              className="mt-5 rounded-md bg-[#368DCF] p-3 text-xl font-medium tracking-wider text-white transition duration-500 ease-in-out hover:bg-[#3178C6]"
+              className="mt-5 items-center justify-center rounded-md bg-[#368DCF] p-3 text-xl font-medium text-white transition duration-500 ease-in-out hover:bg-[#2b79b4]"
             >
               立即開始
             </button>
