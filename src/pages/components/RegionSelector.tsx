@@ -1,3 +1,4 @@
+import { useEffect, useRef, useState } from "react";
 import countyToRegion from "../components/TaiwanRegion";
 
 interface RegionSelectorProps {
@@ -7,61 +8,115 @@ interface RegionSelectorProps {
   onRegionChange: (region: string) => void;
 }
 
+// 接任務頁地區
 const RegionSelector: React.FC<RegionSelectorProps> = ({
   selectedCounty,
   selectedRegion,
   onCountyChange,
   onRegionChange,
 }) => {
+  const [isCountyOpen, setIsCountyOpen] = useState(false);
+  const [isRegionOpen, setIsRegionOpen] = useState(false);
+
+  const wrapperRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    function handleClickOutside(event: MouseEvent) {
+      // 確保 event.target 是一個 Node
+      const target = event.target as Node;
+      if (wrapperRef.current && !wrapperRef.current.contains(target)) {
+        setIsCountyOpen(false);
+        setIsRegionOpen(false);
+      }
+    }
+
+    document.addEventListener("mousedown", handleClickOutside);
+
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, []);
   return (
-    <>
-      <select
-        className="mr-3 flex items-center rounded-md border bg-gray-200 p-2"
-        name="county"
-        id="county"
-        value={selectedCounty}
-        onChange={(e) => onCountyChange(e.target.value)}
-      >
-        <option value="">請選擇任務縣市</option>
-        <option value="台北市">台北市</option>
-        <option value="新北市">新北市</option>
-        <option value="桃園市">桃園市</option>
-        <option value="台中市">台中市</option>
-        <option value="台南市">台南市</option>
-        <option value="高雄市">高雄市</option>
-        <option value="基隆市">基隆市</option>
-        <option value="新竹市">新竹市</option>
-        <option value="新竹縣">新竹縣</option>
-        <option value="苗栗縣">苗栗縣</option>
-        <option value="彰化縣">彰化縣</option>
-        <option value="南投縣">南投縣</option>
-        <option value="雲林縣">雲林縣</option>
-        <option value="嘉義市">嘉義市</option>
-        <option value="嘉義縣">嘉義縣</option>
-        <option value="屏東縣">屏東縣</option>
-        <option value="宜蘭縣">宜蘭縣</option>
-        <option value="花蓮縣">花蓮縣</option>
-        <option value="台東縣">台東縣</option>
-      </select>
-      {selectedCounty && (
-        <div className="mr-3 flex items-center">
-          <select
-            value={selectedRegion}
-            className="flex items-center rounded-md border bg-gray-200 p-2"
-            name="region"
-            id="region"
-            onChange={(e) => onRegionChange(e.target.value)}
-          >
-            <option value="">請選擇任務地區</option>
-            {countyToRegion[selectedCounty]?.map((region) => (
-              <option key={region} value={region}>
-                {region}
-              </option>
+    <div ref={wrapperRef} className="flex space-x-2">
+      {/* County Selector */}
+      <div className="relative">
+        <div
+          className="cursor-pointer rounded border bg-blue-200 px-4 py-2 font-bold"
+          onClick={() => setIsCountyOpen(!isCountyOpen)}
+        >
+          {selectedCounty || "選擇縣市"}
+          {""}
+          <span className="ml-2">▼</span>
+        </div>
+        {isCountyOpen && (
+          <div className="absolute left-0 z-10 mt-1 max-h-80 w-40 overflow-auto rounded border bg-blue-200 font-bold shadow-lg">
+            {[
+              "台北市",
+              "新北市",
+              "桃園市",
+              "台中市",
+              "台南市",
+              "高雄市",
+              "基隆市",
+              "新竹市",
+              "新竹縣",
+              "苗栗縣",
+              "彰化縣",
+              "南投縣",
+              "雲林縣",
+              "嘉義市",
+              "嘉義縣",
+              "屏東縣",
+              "宜蘭縣",
+              "花蓮縣",
+              "台東縣",
+            ].map((county) => (
+              <div
+                key={county}
+                className="cursor-pointer px-4 py-1 hover:bg-blue-300 hover:text-white"
+                onClick={() => {
+                  onCountyChange(county);
+                  setIsCountyOpen(false);
+                  setIsRegionOpen(true);
+                }}
+              >
+                {county}
+              </div>
             ))}
-          </select>
+          </div>
+        )}
+      </div>
+
+      {/* Region Selector */}
+      {selectedCounty && (
+        <div className="relative">
+          <div
+            className="mr-2 cursor-pointer rounded border bg-blue-200 px-4 py-2 font-bold"
+            onClick={() => setIsRegionOpen(!isRegionOpen)}
+          >
+            {selectedRegion || "選擇地區"}
+            {""}
+            <span className="ml-2">▼</span>
+          </div>
+          {isRegionOpen && (
+            <div className="absolute left-0 z-10 mt-1 max-h-80 w-40 overflow-auto rounded border bg-blue-200 font-bold shadow-lg">
+              {countyToRegion[selectedCounty]?.map((region) => (
+                <div
+                  key={region}
+                  className="cursor-pointer px-4 py-1 hover:bg-blue-300 hover:text-white"
+                  onClick={() => {
+                    onRegionChange(region);
+                    setIsRegionOpen(false);
+                  }}
+                >
+                  {region}
+                </div>
+              ))}
+            </div>
+          )}
         </div>
       )}
-    </>
+    </div>
   );
 };
 
