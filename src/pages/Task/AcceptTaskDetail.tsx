@@ -533,9 +533,9 @@ const AcceptTaskDetail = () => {
               </div>
             </div>
             <div className="rounded-md bg-white p-4">
-              {/* 任務報酬 Super Coin */}
+              {/* 任務報酬 Super Coins */}
               <div className="mb-3  border-b-4 border-b-[#B3D7FF] text-center text-xl font-black text-gray-500">
-                任務報酬 Super Coin
+                任務報酬 Super Coins
               </div>
               <div className="flex items-center font-medium text-[#3178C6]">
                 <span>{taskDetails.cost}</span>

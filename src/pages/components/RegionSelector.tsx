@@ -41,7 +41,7 @@ const RegionSelector: React.FC<RegionSelectorProps> = ({
       {/* County Selector */}
       <div className="relative">
         <div
-          className="cursor-pointer rounded border bg-blue-200 px-4 py-2 font-bold"
+          className="cursor-pointer rounded border px-4 py-2 font-semibold"
           onClick={() => setIsCountyOpen(!isCountyOpen)}
         >
           {selectedCounty || "選擇縣市"}
@@ -49,7 +49,7 @@ const RegionSelector: React.FC<RegionSelectorProps> = ({
           <span className="ml-2">▼</span>
         </div>
         {isCountyOpen && (
-          <div className="absolute left-0 z-10 mt-1 max-h-80 w-40 overflow-auto rounded border bg-blue-200 font-bold shadow-lg">
+          <div className="absolute left-0 z-10 mt-1 max-h-80 w-40 overflow-auto rounded border bg-white font-semibold shadow-lg">
             {[
               "台北市",
               "新北市",
@@ -73,7 +73,7 @@ const RegionSelector: React.FC<RegionSelectorProps> = ({
             ].map((county) => (
               <div
                 key={county}
-                className="cursor-pointer px-4 py-1 hover:bg-blue-300 hover:text-white"
+                className="cursor-pointer px-4 py-1 hover:bg-blue-100"
                 onClick={() => {
                   onCountyChange(county);
                   setIsCountyOpen(false);
@@ -91,7 +91,7 @@ const RegionSelector: React.FC<RegionSelectorProps> = ({
       {selectedCounty && (
         <div className="relative">
           <div
-            className="mr-2 cursor-pointer rounded border bg-blue-200 px-4 py-2 font-bold"
+            className="mr-2 cursor-pointer rounded border px-4 py-2 font-semibold"
             onClick={() => setIsRegionOpen(!isRegionOpen)}
           >
             {selectedRegion || "選擇地區"}
@@ -99,11 +99,11 @@ const RegionSelector: React.FC<RegionSelectorProps> = ({
             <span className="ml-2">▼</span>
           </div>
           {isRegionOpen && (
-            <div className="absolute left-0 z-10 mt-1 max-h-80 w-40 overflow-auto rounded border bg-blue-200 font-bold shadow-lg">
+            <div className="absolute left-0 z-10 mt-1 max-h-80 w-40 overflow-auto rounded border bg-white font-semibold shadow-lg">
               {countyToRegion[selectedCounty]?.map((region) => (
                 <div
                   key={region}
-                  className="cursor-pointer px-4 py-1 hover:bg-blue-300 hover:text-white"
+                  className="cursor-pointer px-4 py-1 font-semibold hover:bg-blue-100"
                   onClick={() => {
                     onRegionChange(region);
                     setIsRegionOpen(false);

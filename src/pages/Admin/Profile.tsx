@@ -209,7 +209,7 @@ const Profile = () => {
                       <li key={index} className="my-10 cursor-pointer">
                         <span
                           onClick={() => toggleAccordion(index)}
-                          className="flex flex-row items-center justify-between bg-[#2B79B4] text-xl font-medium tracking-tight text-gray-500 hover:bg-[#368DCF]"
+                          className="flex flex-row items-center justify-between bg-[#368DCF] text-xl font-medium tracking-tight text-gray-500 transition duration-500 ease-in-out hover:bg-[#2b79b4]"
                         >
                           <p className="p-2 text-white">{item.title}</p>
                           <Icon
@@ -231,7 +231,7 @@ const Profile = () => {
                             <ul className="text-md p-2 text-gray-500">
                               {item.content.map((contentItem, contentIndex) => (
                                 <li
-                                  className="text-lg font-medium"
+                                  className="text-lg font-medium hover:bg-[#2b79b4]"
                                   key={contentIndex}
                                 >
                                   {Object.entries(contentItem).map(

@@ -26,7 +26,7 @@ const HomeEndingButton = () => {
   };
 
   return (
-    <div className="text-center">
+    <div className="mb-4 text-center lg:mb-0">
       <p className=" w-full text-center text-lg font-medium leading-normal ">
         <span className="text-[#368DCF]">加入我們的行列</span>
         ，攜手共創無限可能！

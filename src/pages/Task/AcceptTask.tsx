@@ -212,7 +212,7 @@ const AcceptTask = () => {
                 <>
                   <div
                     key={task.id}
-                    className="border-gradient relative flex grow flex-col rounded-md border-2 border-gray-200 bg-gray-100 p-4"
+                    className="border-gradient relative flex grow flex-col rounded-md border-2 border-gray-200 bg-white p-4 shadow-xl transition-all duration-300 ease-in-out hover:shadow-2xl"
                   >
                     <div className="flex grow flex-col items-start gap-2">
                       <div className="flex h-64 w-full items-center justify-center overflow-hidden rounded-md border-2 border-gray-300">
@@ -231,7 +231,7 @@ const AcceptTask = () => {
                       </div>
 
                       <div className="flex w-full grow flex-col gap-4 pl-2">
-                        <p className="text-center text-2xl font-semibold">
+                        <p className="grow text-center text-2xl font-semibold">
                           {task.title}
                         </p>
                         <div className="mt-1 flex grow items-center font-semibold">
@@ -299,13 +299,6 @@ const AcceptTask = () => {
                                     推
                                   </span>
                                 </div>
-
-                                {/* <span className="text-lg font-bold">
-                                是否急件&emsp;:
-                              </span>
-                              <span className="text-lg font-bold">
-                                &emsp;否
-                              </span> */}
                               </>
                             )}
                           </div>
@@ -321,7 +314,7 @@ const AcceptTask = () => {
                         </div>
                         <p className="flex items-center font-semibold">
                           <Icon
-                            className="mr-1  flex-shrink-0"
+                            className="mr-1 flex-shrink-0"
                             icon="fluent-mdl2:date-time"
                             width="20"
                             height="20"
@@ -331,7 +324,7 @@ const AcceptTask = () => {
                         <button
                           onClick={() => handleAcceptTask(task.id)}
                           type="button"
-                          className="transition-border-b duration-all-100 rounded-lg border-b-4 border-b-gray-400 px-6 py-3 font-semibold text-black transition ease-in-out hover:border-b-transparent hover:bg-[#368DCF] hover:text-white"
+                          className="items-center justify-center rounded-md bg-[#368DCF] p-3 text-xl font-medium text-white transition duration-500 ease-in-out hover:bg-[#2b79b4]"
                         >
                           <Icon
                             icon="icon-park:click-tap"

@@ -169,7 +169,7 @@ const TaskDetail = () => {
   return (
     <>
       <Header />
-      <div className="container mx-auto max-w-[1280px] px-4 pt-4 md:px-20">
+      <div className="container mx-auto max-w-[1280px] px-4 pt-10 pt-20 md:px-20">
         <div className="mb-4 flex text-3xl font-semibold text-gray-700">
           <span className="h-8 w-2 bg-[#368dcf]"></span>
           <p className="pl-2">任務資訊</p>
@@ -179,7 +179,7 @@ const TaskDetail = () => {
           <div className="space-y-4 p-4 lg:w-1/3">
             {/* 案主 */}
             <div className="flex items-center space-x-2">
-              <div className="flex-grow items-center text-xl tracking-wider text-[#3178C6]">
+              <div className="flex-grow items-center text-xl tracking-wider">
                 <span className="font-semibold tracking-wider">
                   發案者名稱：
                 </span>
@@ -188,7 +188,7 @@ const TaskDetail = () => {
             </div>
             {/* 任務截止日期 */}
             <div className="flex items-center space-x-2">
-              <div className="flex-grow tracking-wider">
+              <div className="flex-grow tracking-wider text-xl">
                 <span className="font-semibold tracking-wider">
                   任務截止日期：
                 </span>
@@ -203,7 +203,7 @@ const TaskDetail = () => {
             {/* 以下是六個欄位，根據屏幕大小分為一列或兩列 */}
             <div className="rounded-md bg-white p-4">
               {/* 任務名稱 */}
-              <div className="mb-3  border-b-4 border-b-[#B3D7FF] text-center text-xl font-black text-gray-500">
+              <div className="mb-3 border-b-4 border-b-[#B3D7FF] text-center text-xl font-bold text-gray-500">
                 任務名稱
               </div>
               <div className="font-medium text-[#3178C6]">
@@ -212,7 +212,7 @@ const TaskDetail = () => {
             </div>
             <div className="rounded-md bg-white p-4">
               {/* 任務地點 */}
-              <div className="mb-3  border-b-4 border-b-[#B3D7FF] text-center text-xl font-black text-gray-500">
+              <div className="mb-3  border-b-4 border-b-[#B3D7FF] text-center text-xl font-bold text-gray-500">
                 任務地點
               </div>
               <div className="font-medium text-[#3178C6]">
@@ -223,7 +223,7 @@ const TaskDetail = () => {
             </div>
             <div className="rounded-md bg-white p-4">
               {/* 任務類型 */}
-              <div className="mb-3  border-b-4 border-b-[#B3D7FF] text-center text-xl font-black text-gray-500">
+              <div className="mb-3  border-b-4 border-b-[#B3D7FF] text-center text-xl font-bold text-gray-500">
                 任務類型
               </div>
               <div className="font-medium text-[#3178C6]">
@@ -233,9 +233,9 @@ const TaskDetail = () => {
               </div>
             </div>
             <div className="rounded-md bg-white p-4">
-              {/* 任務報酬 Super Coin */}
-              <div className="mb-3  border-b-4 border-b-[#B3D7FF] text-center text-xl font-black text-gray-500">
-                任務報酬 Super Coin
+              {/* 任務報酬 Super Coins */}
+              <div className="mb-3  border-b-4 border-b-[#B3D7FF] text-center text-xl font-bold text-gray-500">
+                任務報酬 Super Coins
               </div>
               <div className="flex items-center font-medium text-[#3178C6]">
                 <span>{taskDetails.cost}</span>
@@ -243,7 +243,7 @@ const TaskDetail = () => {
             </div>
             <div className="rounded-md bg-white p-4">
               {/* 任務說明 */}
-              <div className="mb-3 border-b-4 border-b-[#B3D7FF] text-center text-xl font-black text-gray-500">
+              <div className="mb-3 border-b-4 border-b-[#B3D7FF] text-center text-xl font-bold text-gray-500">
                 任務說明
               </div>
               <div className="font-medium text-[#3178C6]">
@@ -252,7 +252,7 @@ const TaskDetail = () => {
             </div>
             <div className="rounded-md bg-white p-4">
               {/* 其他備註 */}
-              <div className="mb-3 border-b-4 border-b-[#B3D7FF] text-center text-xl font-black text-gray-500">
+              <div className="mb-3 border-b-4 border-b-[#B3D7FF] text-center text-xl font-bold text-gray-500">
                 其他備註
               </div>
               <div className="font-medium text-[#3178C6]">
@@ -275,6 +275,7 @@ const TaskDetail = () => {
                 className="h-52 w-52 border-2 border-dashed border-[#368dcf]"
               >
                 <img
+                  title="點擊預覽"
                   className="h-full w-full cursor-pointer object-cover p-2"
                   src={photo}
                   alt="Task photo"
@@ -300,22 +301,33 @@ const TaskDetail = () => {
 
           {isModalOpen && (
             <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
-              <div className=" relative max-w-full overflow-auto ">
-                <img
-                  className="min-w-[500px] max-w-[800px] object-cover"
-                  src={selectedPhoto || "defaultImagePath"}
-                  alt="Enlarged task photo"
-                />
-                <button
-                  className="absolute bottom-3 left-1/2 mt-4 flex h-10 w-10 -translate-x-1/2 transform items-center justify-center rounded-full  p-2 text-black"
-                  onClick={() => setIsModalOpen(false)}
-                >
-                  <span className="absolute -left-4 -top-4 h-16 w-16 animate-ping rounded-full  opacity-75" />
-                  <span className="absolute -left-3 -top-3 h-16 w-16 rounded-full bg-[#2B79B4]" />
-                  <span className="relative z-10 text-center text-sm text-white">
-                    Close
-                  </span>
-                </button>
+              <div className="relative h-full w-full max-w-screen-md overflow-auto">
+                <div className="flex h-full items-center justify-center">
+                  <img
+                    className="max-h-full max-w-full object-cover"
+                    src={selectedPhoto || "defaultImagePath"}
+                    alt="Enlarged task photo"
+                  />
+                  <button
+                    className="absolute bottom-3 left-1/2 flex h-10 w-10 -translate-x-1/2 transform items-center justify-center rounded-full p-2 text-black"
+                    onClick={() => setIsModalOpen(false)}
+                  >
+                    <span className="absolute -left-4 -top-4 flex h-10 w-10 animate-ping items-center justify-center rounded-full bg-[#2B79B4] text-sm text-white opacity-75">
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        className="h-5 w-5"
+                        viewBox="0 0 20 20"
+                        fill="currentColor"
+                      >
+                        <path
+                          fillRule="evenodd"
+                          d="M14.293 5.293a1 1 0 011.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 11-1.414-1.414L8.586 10 4.293 5.707a1 1 0 111.414-1.414L10 8.586l4.293-4.293z"
+                          clipRule="evenodd"
+                        />
+                      </svg>
+                    </span>
+                  </button>
+                </div>
               </div>
             </div>
           )}
@@ -323,7 +335,7 @@ const TaskDetail = () => {
         <div className="flex justify-center gap-4">
           <button
             onClick={handleConfirmAcceptTask}
-            className="flex items-center rounded-md bg-[#368DCF] p-3 text-xl font-medium tracking-wider text-white transition duration-500 ease-in-out hover:bg-[#3178C6]"
+            className="flex items-center rounded-md bg-[#368DCF] p-2 text-lg font-medium tracking-wider text-white transition duration-500 ease-in-out hover:bg-[#2b79b4]"
           >
             <Icon icon="icon-park-outline:check-correct" className="mr-3" />
             確認接案

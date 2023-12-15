@@ -44,7 +44,7 @@ const Task = () => {
     "不用準備任何打掃用具，我家什麼都有，帶人就好",
   );
   const [taskReward, setTaskReward] = useState("");
-  const [superCoins, setSuperCoins] = useState(5000); // 初始 Super Coin 數量
+  const [superCoins, setSuperCoins] = useState(5000); // 初始 Super Coins 數量
   const [currentUserId, setCurrentUserId] = useState<string | null>(null);
   const serviceTypeRef = useRef<ServiceTypeRef>(null);
   const [userName, setUserName] = useState("");
@@ -208,7 +208,7 @@ const Task = () => {
       taskRewardValue > superCoins
     ) {
       showAlert(
-        "超過可用 Super Coin 數量",
+        "超過可用 Super Coins 數量",
         `您目前剩餘 ${superCoins} Super Coins`,
         "error",
       );
@@ -265,7 +265,7 @@ const Task = () => {
         navigate("/");
       } catch (error) {
         console.error("錯誤：", error);
-        await Swal.fire("錯誤", "任務提交失敗或無可用 Super Coin");
+        await Swal.fire("錯誤", "任務提交失敗或無可用 Super Coins");
       }
     }
     setIsLoading(false);
@@ -306,7 +306,7 @@ const Task = () => {
           </div>
           <form>
             <div className="mb-8 flex flex-col font-semibold">
-              <div className="mb-4 flex items-center">
+              <div className="mb-4 flex items-center ">
                 <span className="mr-2 h-8 w-2 bg-[#368dcf]"></span>
                 <label htmlFor="taskTitle" className="text-2xl">
                   標題
@@ -318,7 +318,7 @@ const Task = () => {
                 value={taskTitle}
                 onChange={(e) => setTaskTitle(e.target.value)}
                 placeholder="例如 : 請人幫我...，請盡量輸入明白的任務需求"
-                className="w-full rounded-md border bg-[#EFF7FF] p-3 font-semibold focus:bg-white focus:outline-none"
+                className="w-full rounded-md border bg-[#EFF7FF] p-3 font-medium focus:bg-white focus:outline-none"
               />
             </div>
             <div className="mb-8 flex flex-wrap items-center">
@@ -334,15 +334,15 @@ const Task = () => {
                   <button
                     type="button"
                     onClick={toggleCountyDropdown}
-                    className="relative z-10 block overflow-hidden rounded border bg-blue-200 px-3 py-2 shadow focus:outline-none"
+                    className="relative z-10 block overflow-hidden rounded border px-3 py-2 font-semibold shadow focus:outline-none"
                   >
                     {selectedCounty || "選擇縣市"}{" "}
                     <span className="ml-2">▼</span>
                   </button>
 
                   {isCountyDropdownOpen && (
-                    <div className="absolute mt-1 w-full rounded-md bg-blue-200 shadow-lg">
-                      <div className="absolute z-10 mt-1 max-h-80 w-40 overflow-auto rounded border bg-blue-200 font-bold shadow-lg">
+                    <div className="absolute mt-1 w-full rounded-md shadow-lg">
+                      <div className="absolute z-10 mt-1 max-h-80 w-40 overflow-auto rounded border bg-white font-semibold shadow-lg">
                         {[
                           "台北市",
                           "新北市",
@@ -366,7 +366,7 @@ const Task = () => {
                         ].map((county) => (
                           <div
                             key={county}
-                            className="cursor-pointer px-4 py-1 hover:bg-blue-300 hover:text-white"
+                            className="cursor-pointer px-4 py-1 hover:bg-blue-100"
                             onClick={() => {
                               onCountyChange(county);
                               setIsCountyDropdownOpen(false);
@@ -386,17 +386,17 @@ const Task = () => {
                   <button
                     type="button"
                     onClick={toggleRegionDropdown}
-                    className="relative z-10 block overflow-hidden rounded border bg-blue-200 px-3 py-2 shadow focus:outline-none"
+                    className="relative z-10 block overflow-hidden rounded border px-3 py-2 font-semibold shadow focus:outline-none"
                   >
                     {selectedRegion || "選擇地區"}{" "}
                     <span className="ml-2">▼</span>
                   </button>
                   {isRegionDropdownOpen && (
-                    <div className="absolute mt-1 max-h-80 w-40 overflow-auto rounded-md bg-blue-200 shadow-lg">
+                    <div className="absolute mt-1 max-h-80 w-40 overflow-auto rounded-md bg-white shadow-lg">
                       {countyToRegion[selectedCounty]?.map((region) => (
                         <div
                           key={region}
-                          className="cursor-pointer px-4 py-1 hover:bg-blue-300 hover:text-white"
+                          className="cursor-pointer px-4 py-1 font-semibold hover:bg-blue-100"
                           onClick={() => onRegionChange(region)}
                         >
                           {region}
@@ -409,7 +409,7 @@ const Task = () => {
               <input
                 type="text"
                 placeholder="請輸入詳細地址，例如 : xx 路 x 巷 x 弄 x 號 x 樓"
-                className="w-full rounded-md border bg-[#EFF7FF] p-3 font-semibold focus:bg-white focus:outline-none"
+                className="w-full rounded-md border bg-[#EFF7FF] p-3 font-medium focus:bg-white focus:outline-none"
                 value={detailedAddress}
                 onChange={(e) => setDetailedAddress(e.target.value)}
               />
@@ -428,7 +428,7 @@ const Task = () => {
                   </div>
                 </div>
                 <textarea
-                  className="h-30 mb-4 w-full resize-none rounded-md border bg-[#EFF7FF] p-4 font-semibold focus:bg-white focus:outline-none"
+                  className="h-30 mb-4 w-full resize-none rounded-md border bg-[#EFF7FF] p-4 font-medium focus:bg-white focus:outline-none"
                   name="startTaskContent"
                   id="startTaskContent"
                   value={taskDescription}
@@ -442,7 +442,7 @@ const Task = () => {
                   <p className="mr-3 text-2xl font-semibold">其它備註</p>
                 </div>
                 <textarea
-                  className="h-30 mb-4 w-full resize-none rounded-md border bg-[#EFF7FF] p-4 font-semibold focus:bg-white focus:outline-none"
+                  className="h-30 mb-4 w-full resize-none rounded-md border bg-[#EFF7FF] p-4 font-medium focus:bg-white focus:outline-none"
                   name="additionalNotes"
                   id="additionalNotes"
                   placeholder="例：誠信交易，請有經驗的帥哥美女幫幫忙"
@@ -457,18 +457,16 @@ const Task = () => {
                   <span className="mr-2 h-8 w-2 bg-[#368dcf]"></span>
                   <p className="mr-3 text-2xl font-semibold">任務報酬</p>
                   <div className="text-medium flex items-center font-medium">
-                    <p>{"("}剩餘</p>
-                    <span className="ml-1 underline">
-                      &emsp;{superCoins}&emsp;
-                    </span>
-                    <span className="ml-1">Super Coins{")"}</span>
+                    <p>剩餘</p>
+                    <span className="ml-1">&emsp;{superCoins}&emsp;</span>
+                    <span className="ml-1">Super Coins</span>
                   </div>
                 </div>
                 <input
                   type="text"
                   id="taskReward"
                   placeholder="願支付多少 Coin 請人完成任務"
-                  className="w-full rounded-md border bg-[#EFF7FF] p-3 font-semibold focus:bg-white focus:outline-none"
+                  className="w-full  rounded-md border bg-[#EFF7FF] p-3 font-medium focus:bg-white focus:outline-none"
                   value={taskReward}
                   onChange={handleTaskRewardChange}
                 />
@@ -513,7 +511,7 @@ const Task = () => {
                 <button
                   type="button"
                   onClick={confirmSubmitTask}
-                  className="rounded-md bg-[#368DCF] p-4 text-2xl font-medium tracking-wider text-white transition duration-500 ease-in-out hover:bg-[#3178C6]"
+                  className="rounded-md bg-[#368DCF] p-4 text-2xl font-medium tracking-wider text-white transition duration-500 ease-in-out hover:bg-[#2b79b4]"
                 >
                   {isLoading ? (
                     <div className="absolute inset-0 flex items-center justify-center bg-gray-200 bg-opacity-50">

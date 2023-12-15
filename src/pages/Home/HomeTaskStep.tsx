@@ -100,7 +100,7 @@ const HomeTaskStep = () => {
                 </div>
                 <div className="font-semibold">
                   <span className="text-base">{task.cost}</span>
-                  <span className="text-sm">/ Super Coin</span>
+                  <span className="text-sm">/ Super Coins</span>
                 </div>
                 <button
                   onClick={() => navigate(`/acceptDetail/${task.id}`)}
