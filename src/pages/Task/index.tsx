@@ -56,14 +56,6 @@ const Task = () => {
   const [isRegionDropdownOpen, setIsRegionDropdownOpen] = useState(false);
 
   const navigate = useNavigate();
-  // const handleCountyChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
-  //   const county = event.target.value;
-  //   setSelectedCounty(county);
-  //   setSelectedRegion("");
-  // };
-  // const handleRegionChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
-  //   setSelectedRegion(event.target.value);
-  // };
   const handleTaskRewardChange = (
     event: React.ChangeEvent<HTMLInputElement>,
   ) => {
@@ -279,6 +271,7 @@ const Task = () => {
     setAdditionalNotes("");
     setTaskReward("");
   };
+
   return (
     <>
       <div className="bg-[url('/home_pain_point.png')] bg-cover bg-fixed bg-center object-cover">
