@@ -56,7 +56,6 @@ const Header = () => {
             showConfirmButton: false,
             allowOutsideClick: false,
           });
-          console.log("您已成功登出");
           navigate("/");
         } catch (error) {
           console.error("登出錯誤", error);
@@ -159,113 +158,123 @@ const Header = () => {
             : ""
         } transition-all duration-300`}
       >
-        <div className="container relative mx-auto flex max-w-[1280px] items-center justify-between px-4 lg:px-20">
-          <Link
-            to="/"
-            className="flex items-center text-lg font-black text-[#2b79b4] sm:text-3xl"
-          >
-            <img
-              className="hidden sm:block"
-              width="70"
-              src="/superman_logo.png"
-              alt="superman-logo"
-            />
-            <p className="mr-1 italic">SuperTask co.</p>
-            <span className="hidden lg:block">|</span>
-          </Link>
-          <p className="text-gray hidden pl-2 pt-2 text-lg font-medium xl:block">
-            只有不想發的案，沒有做不到的事
-          </p>
-          {/* <SearchBar onSearch={handleSearch} placeholder="快速搜尋任務" /> */}
-          <div className={`${isMenuOpen ? "hidden" : "block"} hidden lg:block`}>
-            <ul className="ml-auto flex items-center text-xl md:mr-4 md:gap-4">
-              <li className="relative font-semibold tracking-widest after:absolute after:bottom-0 after:left-0 after:h-[5px] after:w-full after:translate-y-1 after:bg-[#368dcf] after:opacity-0 after:transition after:duration-200 after:ease-in-out hover:after:translate-y-0 hover:after:opacity-100">
-                <Link to="/acceptTask">接任務</Link>
-              </li>
-              <li className="font-semibold">|</li>
-              <li className="relative font-semibold tracking-widest after:absolute after:bottom-0 after:left-0 after:h-[5px] after:w-full after:translate-y-1 after:bg-[#368dcf] after:opacity-0 after:transition after:duration-200 after:ease-in-out hover:after:translate-y-0 hover:after:opacity-100">
-                <Link to="/taskPage">發任務</Link>
-              </li>
-            </ul>
+        <div className="container relative mx-auto flex max-w-[1280px] items-center justify-between px-4 py-4 sm:py-0 lg:px-20">
+          <div className="flex items-center">
+            <Link
+              to="/"
+              className="flex items-center text-lg font-black text-[#2b79b4] sm:text-3xl"
+            >
+              <img
+                className="hidden sm:block"
+                width="70"
+                src="/superman_logo.png"
+                alt="superman-logo"
+              />
+              <p className="mr-1 italic">SuperTask co.</p>
+              <span className="hidden lg:block">|</span>
+            </Link>
+            <p className="text-gray hidden pl-2 pt-2 text-lg font-medium xl:block">
+              只有不想發的案，沒有做不到的事
+            </p>
           </div>
-          {currentUser ? (
-            <div className="group relative flex items-center">
-              {profilePicUrl ? (
-                <img
-                  src={profilePicUrl}
-                  alt="User Profile"
-                  className="h-[40px] w-[40px] cursor-pointer rounded-full border-2 border-blue-200 object-cover"
-                  onClick={toggleDropdown}
-                />
-              ) : (
-                <Icon
-                  className="cursor-pointer"
-                  icon="mingcute:user-4-fill"
-                  color="#3178C6"
-                  width="40"
-                  height="40"
-                  onClick={toggleDropdown}
-                />
-              )}
-              {/* Header 點擊頭像之後的選單 */}
-              <div
-                ref={dropdownRef}
-                className={`absolute -right-[0px] top-[50px] z-10 flex-col space-y-2 rounded-md border border-[#B3D7FF] bg-blue-100 transition-opacity duration-300 ease-in-out ${
-                  isDropdownOpen ? "flex opacity-100" : "hidden opacity-0"
-                }`}
-              >
-                <button
-                  onClick={handleToAdmin}
-                  type="button"
-                  className="w-36 rounded-md px-4 py-2 text-sm font-medium text-gray-700 hover:bg-[#368DCF] hover:text-white"
+          <div className="flex items-center">
+            <div
+              className={`${isMenuOpen ? "hidden" : "block"} hidden md:block`}
+            >
+              <ul className="ml-auto flex items-center text-xl md:mr-4 md:gap-4">
+                <li className="relative font-semibold tracking-widest after:absolute after:bottom-0 after:left-0 after:h-[5px] after:w-full after:translate-y-1 after:bg-[#368dcf] after:opacity-0 after:transition after:duration-200 after:ease-in-out hover:after:translate-y-0 hover:after:opacity-100">
+                  <Link to="/acceptTask">接任務</Link>
+                </li>
+                <li className="font-semibold">|</li>
+                <li className="relative font-semibold tracking-widest after:absolute after:bottom-0 after:left-0 after:h-[5px] after:w-full after:translate-y-1 after:bg-[#368dcf] after:opacity-0 after:transition after:duration-200 after:ease-in-out hover:after:translate-y-0 hover:after:opacity-100">
+                  <Link to="/taskPage">發任務</Link>
+                </li>
+              </ul>
+            </div>
+            {currentUser ? (
+              <div className="group relative flex items-center">
+                {profilePicUrl ? (
+                  <img
+                    src={profilePicUrl}
+                    alt="User Profile"
+                    className="h-[40px] w-[40px] cursor-pointer rounded-full border-2 border-blue-200 object-cover"
+                    onClick={toggleDropdown}
+                  />
+                ) : (
+                  <Icon
+                    className="cursor-pointer"
+                    icon="mingcute:user-4-fill"
+                    color="#3178C6"
+                    width="40"
+                    height="40"
+                    onClick={toggleDropdown}
+                  />
+                )}
+                {/* Header 點擊頭像之後的選單 */}
+                <div
+                  ref={dropdownRef}
+                  className={`absolute -right-[0px] top-[50px] z-10 flex-col space-y-2 rounded-md border border-[#B3D7FF] bg-blue-100 transition-opacity duration-300 ease-in-out ${
+                    isDropdownOpen ? "flex opacity-100" : "hidden opacity-0"
+                  }`}
                 >
-                  {currentUser ? "會員中心" : "Login"}
-                </button>
-                <button
-                  type="button"
-                  onClick={handleTaskManagement}
-                  className="w-36 rounded-md  px-4 py-2 text-sm font-medium text-gray-700 hover:bg-[#368DCF] hover:text-white"
-                >
-                  任務管理
-                </button>
-                <button
-                  onClick={handleToReviews}
-                  type="button"
-                  className="w-36 rounded-md  px-4 py-2 text-sm font-medium text-gray-700 hover:bg-[#368DCF] hover:text-white"
-                >
-                  我的評價
-                </button>
-              </div>
-              <div className="ml-3 mr-3 flex items-center lg:mr-0">
-                <img
-                  color="#3178C6"
-                  onClick={handleLogout}
-                  className="h-auto w-[16px] min-w-[16px] cursor-pointer sm:h-auto sm:w-[20px]"
-                  src="/logout.svg"
-                  alt="logout"
-                />
-              </div>
+                  <button
+                    onClick={handleToAdmin}
+                    type="button"
+                    className="w-36 rounded-md px-4 py-2 text-sm font-medium text-gray-700 hover:bg-[#368DCF] hover:text-white"
+                  >
+                    {currentUser ? "會員中心" : "Login"}
+                  </button>
+                  <button
+                    type="button"
+                    onClick={handleTaskManagement}
+                    className="w-36 rounded-md  px-4 py-2 text-sm font-medium text-gray-700 hover:bg-[#368DCF] hover:text-white"
+                  >
+                    任務管理
+                  </button>
+                  <button
+                    onClick={handleToReviews}
+                    type="button"
+                    className="w-36 rounded-md  px-4 py-2 text-sm font-medium text-gray-700 hover:bg-[#368DCF] hover:text-white"
+                  >
+                    我的評價
+                  </button>
+                </div>
+                <div className="ml-3 mr-3 hidden items-center lg:mr-0 lg:flex">
+                  <img
+                    color="#3178C6"
+                    onClick={handleLogout}
+                    className="h-auto w-[16px] min-w-[16px] cursor-pointer sm:h-auto sm:w-[20px]"
+                    src="/logout.svg"
+                    alt="logout"
+                  />
+                </div>
 
-              <div className="lg:hidden">
-                <button onClick={toggleMenu}>
-                  <Icon icon="mdi:menu" width="40" height="40" />
-                </button>
+                <div className="ml-2 lg:hidden">
+                  <button onClick={toggleMenu}>
+                    <Icon
+                      icon="heroicons:bars-3-bottom-right-solid"
+                      color="#2B79B4"
+                      width="30"
+                      height="30"
+                    />
+                  </button>
+                </div>
               </div>
-            </div>
-          ) : (
-            <div title="註冊 | 登入">
-              <Link to="/signIn" className="flex items-center">
-                <Icon
-                  className="mr-1 cursor-pointer"
-                  icon="mingcute:user-4-fill"
-                  color="#3178C6"
-                  width="40"
-                  height="40"
-                  onClick={handleSignIn}
-                />
-              </Link>
-            </div>
-          )}
+            ) : (
+              <div title="註冊 | 登入">
+                <Link to="/signIn" className="flex items-center">
+                  <Icon
+                    className="mr-1 cursor-pointer"
+                    icon="mingcute:user-4-fill"
+                    color="#3178C6"
+                    width="40"
+                    height="40"
+                    onClick={handleSignIn}
+                  />
+                </Link>
+              </div>
+            )}
+          </div>
         </div>
         <div
           className={`absolute left-0 top-0 z-20 w-full bg-[#B3D7FF] transition-transform duration-300 ease-in-out lg:hidden ${
@@ -273,7 +282,7 @@ const Header = () => {
           }`}
         >
           {/* 漢堡選單內容 */}
-          <ul className="flex flex-col items-center">
+          <ul className="flex flex-col items-center divide-y-2">
             <li>
               <img
                 className="w-24"
@@ -325,6 +334,15 @@ const Header = () => {
               >
                 發任務
               </Link>
+            </li>
+            <li className="w-full text-center">
+              <button
+                type="button"
+                className="block w-full p-5 text-lg font-bold text-[#3178C6] hover:bg-[#368DCF] hover:text-white"
+                onClick={handleLogout}
+              >
+                登出
+              </button>
             </li>
           </ul>
         </div>

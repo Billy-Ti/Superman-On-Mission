@@ -189,8 +189,8 @@ const TaskDetail = () => {
           <div className="space-y-4 p-4 lg:w-1/3">
             {/* 案主 */}
             <div className="flex items-center space-x-2">
-              <div className="flex-grow items-center text-xl tracking-wider">
-                <span className="font-semibold tracking-wider">
+              <div className="flex-grow items-center font-semibold text-xl tracking-wider text-[#3178C6]">
+                <span className="tracking-wider">
                   發案者名稱：
                 </span>
                 {posterName}
@@ -198,8 +198,8 @@ const TaskDetail = () => {
             </div>
             {/* 任務截止日期 */}
             <div className="flex items-center space-x-2">
-              <div className="flex-grow text-xl tracking-wider">
-                <span className="font-semibold tracking-wider">
+              <div className="flex-grow text-xl font-semibold tracking-wider">
+                <span className="tracking-wider">
                   任務截止日期：
                 </span>
                 {taskDetails.dueDate}

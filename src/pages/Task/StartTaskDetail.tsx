@@ -65,6 +65,7 @@ const StartTaskDetail = () => {
   const [ratedUser, setRatedUser] = useState<string>("defaultRatedUserId");
   const [ratedStatus, setRatedStatus] = useState<boolean>(false);
   const [ratingComment, setRatingComment] = useState("");
+  const [acceptorName, setAcceptorName] = useState<string>(""); // 用於保存接案人名稱的狀態
 
   const renderPhotoList = () => {
     const totalSlots = 5;
@@ -110,11 +111,19 @@ const StartTaskDetail = () => {
       const taskSnap = await getDoc(taskRef);
 
       if (taskSnap.exists()) {
-        console.log("Task data exists");
         const taskData = taskSnap.data() as Task;
         setTaskDetails(taskData);
         setRatedUser(taskData.acceptedBy || ""); // 從任務數據中獲取接案者 ID
         setRatedStatus(taskData.hasBeenRated || false);
+        if (taskData.acceptedBy) {
+          const acceptorRef = doc(db, "users", taskData.acceptedBy);
+          const acceptorSnap = await getDoc(acceptorRef);
+          if (acceptorSnap.exists()) {
+            setAcceptorName(acceptorSnap.data().name); // 更新接案者名稱
+          } else {
+            setAcceptorName("未知接案者");
+          }
+        }
 
         if (taskData.feedbackMessage) {
           setFeedbackMessage(taskData.feedbackMessage);
@@ -365,19 +374,15 @@ const StartTaskDetail = () => {
           <div className="space-y-4 p-4 lg:w-1/3">
             {/* 案主 */}
             <div className="flex items-center space-x-2">
-              <div className="flex-grow items-center text-xl tracking-wider text-[#3178C6]">
-                <span className="text-xl font-semibold tracking-wider">
-                  發案者名稱：
-                </span>
+              <div className="flex-grow items-center text-xl font-semibold tracking-wider text-[#3178C6]">
+                <span className="text-xl tracking-wider">發案者名稱：</span>
                 {posterName}
               </div>
             </div>
             {/* 任務截止日期 */}
             <div className="flex items-center space-x-2">
-              <div className="flex-grow tracking-wider">
-                <span className="font-semibold tracking-wider">
-                  任務截止日期：
-                </span>
+              <div className="flex-grow font-semibold tracking-wider ">
+                <span className="tracking-wider">任務截止日期：</span>
                 {taskDetails.dueDate}
               </div>
             </div>
@@ -444,6 +449,13 @@ const StartTaskDetail = () => {
               <div className="font-medium text-[#3178C6]">
                 {taskDetails.notes}
               </div>
+            </div>
+            <div className="rounded-md bg-white p-4">
+              {/* 接案者名稱 */}
+              <div className="mb-3 border-b-4 border-b-[#B3D7FF] text-center text-xl font-black text-gray-500">
+                接案者名稱
+              </div>
+              <div className="font-medium text-[#3178C6]">{acceptorName}</div>
             </div>
           </div>
           {/* 右邊區塊結束 */}

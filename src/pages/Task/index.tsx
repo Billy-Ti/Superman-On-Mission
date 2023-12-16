@@ -327,7 +327,7 @@ const Task = () => {
                   <button
                     type="button"
                     onClick={toggleCountyDropdown}
-                    className="relative z-10 block overflow-hidden rounded border px-3 py-2 font-semibold shadow focus:outline-none"
+                    className="relative z-4 block overflow-hidden rounded border px-3 py-2 font-semibold shadow focus:outline-none"
                   >
                     {selectedCounty || "選擇縣市"}{" "}
                     <span className="ml-2">▼</span>
@@ -335,7 +335,7 @@ const Task = () => {
 
                   {isCountyDropdownOpen && (
                     <div className="absolute mt-1 w-full rounded-md shadow-lg">
-                      <div className="absolute z-10 mt-1 max-h-80 w-40 overflow-auto rounded border bg-white font-semibold shadow-lg">
+                      <div className="absolute z-4 mt-1 max-h-80 w-40 overflow-auto rounded border bg-white font-semibold shadow-lg">
                         {[
                           "台北市",
                           "新北市",
@@ -379,7 +379,7 @@ const Task = () => {
                   <button
                     type="button"
                     onClick={toggleRegionDropdown}
-                    className="relative z-10 block overflow-hidden rounded border px-3 py-2 font-semibold shadow focus:outline-none"
+                    className="relative z-4 block overflow-hidden rounded border px-3 py-2 font-semibold shadow focus:outline-none"
                   >
                     {selectedRegion || "選擇地區"}{" "}
                     <span className="ml-2">▼</span>

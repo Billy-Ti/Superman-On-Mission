@@ -1,10 +1,11 @@
 import { Icon } from "@iconify/react";
-import { getAuth } from "firebase/auth";
+import { getAuth, onAuthStateChanged } from "firebase/auth";
 import {
   collection,
   doc,
   getDoc,
   getDocs,
+  getFirestore,
   query,
   updateDoc,
   where,
@@ -18,7 +19,6 @@ import Footer from "../../components/layout/Footer";
 import Header from "../../components/layout/Header";
 import { db, storage } from "../../config/firebase";
 import { showAlert } from "../../utils/showAlert";
-
 // 使用 Task interface 替代原來的 TaskData
 interface Task {
   id: string;
@@ -44,7 +44,6 @@ interface Task {
   categorys: string[];
   photos?: string[]; // photos 是可選的
 }
-
 const AcceptTaskDetail = () => {
   const { taskId } = useParams<{ taskId: string }>();
   const [taskDetails, setTaskDetails] = useState<Task | null>(null);
@@ -52,40 +51,34 @@ const AcceptTaskDetail = () => {
   // 存發案者名稱，以存取不同集合中的 user
   const [posterName, setPosterName] = useState<string>("");
   const [showOverlay, setShowOverlay] = useState<boolean>(true);
-
   // 儲存已選擇的圖片，用作點及圖片可放大的前置準備
   const [selectedPhoto, setSelectedPhoto] = useState<string | null>(null);
   // 建立一個視窗，讓圖片可以被點擊後放大，有預覽的效果
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
   const taskIsAccepted = taskDetails && taskDetails.accepted;
-
   // 建立回報說明欄位的狀態
   const [reportDescription, setReportDescription] = useState("");
   const [reportSupplementaryNotes, setReportSupplementaryNotes] = useState("");
   const [selectedImages, setSelectedImages] = useState(Array(5).fill(null));
   const [ratedComment, setRatedComment] = useState<string>("");
-
   const [taskStatus, setTaskStatus] = useState("");
   const [imageFiles, setImageFiles] = useState<File[]>(Array(5).fill(null));
   const [isChatOpen, setIsChatOpen] = useState(false);
+  const [acceptorName, setAcceptorName] = useState(""); // 用於保存接案人名稱的狀態
 
   const handleOverlay = () => {
     setShowOverlay(false);
   };
-
   const handleAskDetails = () => {
     setIsChatOpen(true);
   };
-
   const handleCloseChat = () => {
     setIsChatOpen(false);
   };
-
   const handleReportDescriptionChange = (
     event: React.ChangeEvent<HTMLTextAreaElement>,
   ) => {
     if (taskDetails === null) return;
-
     // 檢查 taskStatus 是否為 "任務回報完成" 或 "已完成"
     if (
       taskDetails.taskStatus === "任務回報完成" ||
@@ -93,28 +86,23 @@ const AcceptTaskDetail = () => {
     ) {
       return;
     }
-
     // 更新 reportDescription 並同時更新 taskDetails 的 reportDescription 屬性
     const newReportDescription = event.target.value;
     setReportDescription(newReportDescription);
-
     setTaskDetails((prevDetails) => {
       if (prevDetails === null) return null;
-
       return {
         ...prevDetails,
         reportDescription: newReportDescription,
       };
     });
   };
-
   const handleReportSupplementaryNotesChange = (
     event: React.ChangeEvent<HTMLTextAreaElement>,
   ) => {
     setReportSupplementaryNotes(event.target.value);
     setTaskDetails((prevDetails) => {
       if (prevDetails === null) return null;
-
       return {
         ...prevDetails,
         reportSupplementaryNotes: event.target.value,
@@ -135,7 +123,6 @@ const AcceptTaskDetail = () => {
           const updatedImageFiles = [...imageFiles];
           updatedImageFiles[index] = file;
           setImageFiles(updatedImageFiles);
-
           // 生成 Base64 预览
           const reader = new FileReader();
           reader.onload = (e: ProgressEvent<FileReader>) => {
@@ -155,7 +142,6 @@ const AcceptTaskDetail = () => {
       }
     }
   };
-
   const uploadImages = async () => {
     const urls = await Promise.all(
       imageFiles.map(async (file) => {
@@ -167,32 +153,26 @@ const AcceptTaskDetail = () => {
         return null;
       }),
     );
-
     // 過濾掉所有 null 值
     return urls.filter((url) => url != null);
   };
-
   const fetchTask = async () => {
     if (!taskId) {
       console.log("Task ID is not defined");
       return;
     }
-
     console.log("Fetching task with ID:", taskId);
-
     const taskRef = doc(db, "tasks", taskId);
     try {
       const docSnap = await getDoc(taskRef);
       if (docSnap.exists()) {
         const taskData = docSnap.data() as Task;
         console.log("Task data retrieved:", taskData);
-
         setTaskDetails(taskData);
         setTaskStatus(taskData.status);
         setReportDescription(taskData.reportDescription ?? "");
         setReportSupplementaryNotes(taskData.reportSupplementaryNotes ?? "");
         console.log("taskStatus", taskStatus);
-
         const userRef = doc(db, "users", taskData.createdBy);
         const userSnap = await getDoc(userRef);
         if (userSnap.exists()) {
@@ -209,35 +189,43 @@ const AcceptTaskDetail = () => {
       console.error("Error getting document:", error);
     }
   };
-
   useEffect(() => {
     fetchTask();
   }, []);
-
   useEffect(() => {
     if (taskDetails) {
       setTaskStatus(taskDetails.status);
     }
   }, [taskDetails]);
-
+  useEffect(() => {
+    const auth = getAuth();
+    onAuthStateChanged(auth, async (user) => {
+      if (user) {
+        const db = getFirestore();
+        const userRef = doc(db, "users", user.uid);
+        const userSnap = await getDoc(userRef);
+        if (userSnap.exists()) {
+          // 設置接案人的名稱
+          setAcceptorName(userSnap.data().name);
+        }
+      }
+    });
+  }, []);
   useEffect(() => {
     if (taskStatus === "已完成") {
       setShowOverlay(false);
     }
   }, [taskStatus]);
-
   const handleReportSubmit = async () => {
     if (!taskId) {
       console.error("Task ID is undefined");
       return;
     }
-
     if (reportDescription === undefined) {
       console.error("reportDescription is undefined");
       // 處理這個錯誤，比如通過顯示錯誤消息給用戶
       return;
     }
-
     Swal.fire({
       title: "確定提交驗收？",
       html: "<strong style='color: red;'>請檢查所輸入的資料有無正確</strong>",
@@ -250,26 +238,21 @@ const AcceptTaskDetail = () => {
       if (result.isConfirmed) {
         try {
           const imageUrls = await uploadImages();
-
           // 确保 imageUrls 不包含 null 值
           const filteredImageUrls = imageUrls.filter(
             (url) => url !== null,
           ) as string[];
-
           const updates = {
             reportFiles: filteredImageUrls,
             reportDescription: reportDescription ?? "",
             reportSupplementaryNotes: reportSupplementaryNotes ?? "",
             status: "任務回報完成",
           };
-
           const taskRef = doc(db, "tasks", taskId);
           await updateDoc(taskRef, updates);
-
           setTaskDetails((prev) =>
             prev ? { ...prev, ...updates, photos: filteredImageUrls } : null,
           );
-
           // 更新狀態並顯示成功消息
           setShowOverlay(true);
           setTaskStatus("任務回報完成");
@@ -293,7 +276,6 @@ const AcceptTaskDetail = () => {
       }
     });
   };
-
   useEffect(() => {
     const fetchRatedComment = async () => {
       if (typeof taskId === "string") {
@@ -301,7 +283,6 @@ const AcceptTaskDetail = () => {
         const reviewsRef = collection(db, "reviews");
         // 創建一個查詢，根據 reviewTaskId 篩選文檔
         const q = query(reviewsRef, where("reviewTaskId", "==", taskId));
-
         try {
           const querySnapshot = await getDocs(q);
           querySnapshot.forEach((doc) => {
@@ -314,10 +295,8 @@ const AcceptTaskDetail = () => {
         }
       }
     };
-
     fetchRatedComment();
   }, [taskId]);
-
   useEffect(() => {
     const fetchTaskDetails = async () => {
       if (!taskId) return;
@@ -325,16 +304,13 @@ const AcceptTaskDetail = () => {
       try {
         const taskRef = doc(db, "tasks", taskId);
         const taskSnap = await getDoc(taskRef);
-
         if (taskSnap.exists()) {
           const taskData = taskSnap.data() as Task;
           setTaskDetails(taskData);
-
           // 判斷當前用戶是否為發案者
           const auth = getAuth();
           const currentUser = auth.currentUser;
           const isPoster = currentUser?.uid === taskData.createdBy;
-
           // 如果是發案者，且任務狀態是"任務回報完成"，則移除遮罩
           if (isPoster && taskData.status === "任務回報完成") {
             setShowOverlay(false);
@@ -349,10 +325,8 @@ const AcceptTaskDetail = () => {
         setLoading(false);
       }
     };
-
     fetchTaskDetails();
   }, [taskId]);
-
   if (loading) {
     return (
       <div>
@@ -360,7 +334,6 @@ const AcceptTaskDetail = () => {
       </div>
     );
   }
-
   if (!taskDetails) {
     return (
       <div>
@@ -368,7 +341,6 @@ const AcceptTaskDetail = () => {
       </div>
     );
   }
-
   return (
     <>
       <Header />
@@ -395,7 +367,6 @@ const AcceptTaskDetail = () => {
             </div>
           </div>
           <div className="flex-auto border-t-2 border-black"></div>
-
           <div className="flex items-center justify-center">
             <div
               className={`flex h-40 w-40 items-center justify-center rounded-full text-xl font-bold ${
@@ -421,25 +392,20 @@ const AcceptTaskDetail = () => {
           </div>
         </div>
         {/* 任務資訊 */}
-
         <div className="flex flex-col lg:flex-row">
           {/* 左邊區塊開始 */}
           <div className="space-y-4 p-4 lg:w-1/3">
             {/* 案主 */}
             <div className="flex items-center space-x-2">
-              <div className="flex-grow items-center text-xl tracking-wider text-[#3178C6]">
-                <span className="text-xl font-semibold tracking-wider">
-                  發案者名稱：
-                </span>
+              <div className="flex-grow items-center text-xl  font-semibold tracking-wider text-[#3178C6]">
+                <span className="text-xl tracking-wider">發案者名稱：</span>
                 {posterName}
               </div>
             </div>
             {/* 任務截止日期 */}
             <div className="flex items-center space-x-2">
-              <div className="grow text-xl tracking-wider">
-                <span className="font-semibold tracking-wider">
-                  任務截止日期：
-                </span>
+              <div className="grow text-xl font-semibold tracking-wider ">
+                <span className="tracking-wider">任務截止日期：</span>
                 {taskDetails.dueDate}
               </div>
             </div>
@@ -463,7 +429,6 @@ const AcceptTaskDetail = () => {
             </div>
           </div>
           {/* 左邊區塊結束 */}
-
           {/* 右邊區塊開始 */}
           <div className="grid grid-cols-1 gap-4 rounded-md bg-[#B3D7FF] p-4 md:grid-cols-2 lg:w-2/3">
             <div className="rounded-md bg-white p-4">
@@ -524,10 +489,18 @@ const AcceptTaskDetail = () => {
                 {taskDetails.notes}
               </div>
             </div>
+            <div className="rounded-md bg-white p-4">
+              {/* 其他備註 */}
+              <div className="mb-3 border-b-4 border-b-[#B3D7FF] text-center text-xl font-black text-gray-500">
+                接案者名稱
+              </div>
+              <div className="font-medium text-[#3178C6]">
+                {acceptorName}
+              </div>
+            </div>
           </div>
           {/* 右邊區塊結束 */}
         </div>
-
         <div className="mb-4 flex text-3xl font-semibold text-gray-700">
           <span className="h-8 w-2 bg-[#368dcf]"></span>
           <p className="pl-2">任務照片</p>
@@ -550,7 +523,6 @@ const AcceptTaskDetail = () => {
                 />
               </li>
             ))}
-
             {[...Array(5 - (taskDetails.photos?.length || 0))].map(
               (_, index) => (
                 <li
@@ -562,7 +534,6 @@ const AcceptTaskDetail = () => {
               ),
             )}
           </ul>
-
           {isModalOpen && (
             <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
               <div className="relative h-full w-full max-w-screen-md overflow-auto">
@@ -635,7 +606,6 @@ const AcceptTaskDetail = () => {
               </li>
             ))}
           </ul>
-
           {/* 顯示任務回報說明 */}
           <div>
             <label
@@ -722,7 +692,6 @@ const AcceptTaskDetail = () => {
               value={taskDetails.feedbackMessage} // feedbackMessage 是從 taskDetails 獲取
             />
           </div>
-
           {/* 禁用送出按鈕 */}
           <div className="flex justify-center">
             <button
@@ -781,5 +750,4 @@ const AcceptTaskDetail = () => {
     </>
   );
 };
-
 export default AcceptTaskDetail;

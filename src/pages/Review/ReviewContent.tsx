@@ -20,6 +20,7 @@ interface Review {
   userName: string;
   status: string;
   reviewTaskId: string;
+  reviewedUserName: string;
 }
 
 const ReviewContent = () => {
@@ -56,6 +57,10 @@ const ReviewContent = () => {
       const userDocRef = doc(db, "users", reviewData.ratedBy);
       const userDoc = await getDoc(userDocRef);
       const userData = userDoc.data();
+      // 获取被评价用户的文档引用和数据
+      const reviewedUserDocRef = doc(db, "users", reviewData.ratedUser);
+      const reviewedUserDoc = await getDoc(reviewedUserDocRef);
+      const reviewedUserData = reviewedUserDoc.data();
 
       loadedReviews.push({
         title: taskData?.title || "Unknown Task",
@@ -64,6 +69,7 @@ const ReviewContent = () => {
         userName: userData?.name || "Unknown User",
         status: taskData?.status || "Unknown Status",
         reviewTaskId: reviewData.reviewTaskId,
+        reviewedUserName: reviewedUserData?.name || "Unknown User", // 添加被评价用户的名称
       });
     }
 
@@ -143,8 +149,11 @@ const ReviewContent = () => {
                   className="h-full w-full rounded-md object-cover transition-transform duration-300 ease-in-out hover:scale-110"
                 />
               </div>
-              <div className="mt-4 grow text-center text-xl font-semibold">
+              <div className="mt-4 mb-4 line-clamp-1 grow text-center text-xl font-semibold">
                 {review.title}
+              </div>
+              <div className="mb-4 text-center text-lg font-medium">
+                <p>給 {review.reviewedUserName} 的評價</p>
               </div>
               <div className="mb-4 mt-2 flex justify-center">
                 {renderRatingStars(review.rating)}
