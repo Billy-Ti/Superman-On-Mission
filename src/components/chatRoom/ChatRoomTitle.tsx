@@ -1,7 +1,7 @@
 const ChatRoomTitle = () => {
   return (
     <div className="flex h-12 w-full flex-row items-center justify-center">
-      <div className="rounded-md-2xl flex h-10 w-10 items-center justify-center bg-indigo-100 text-indigo-700">
+      <div className="rounded-md-2xl flex h-10 w-10 items-center justify-center text-[#368DCF]">
         <svg
           className="h-6 w-6"
           fill="none"

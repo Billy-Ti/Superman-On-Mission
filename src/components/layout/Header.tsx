@@ -162,9 +162,14 @@ const Header = () => {
         <div className="container relative mx-auto flex max-w-[1280px] items-center justify-between px-4 lg:px-20">
           <Link
             to="/"
-            className="flex items-center text-3xl font-black text-[#2b79b4]"
+            className="flex items-center text-lg font-black text-[#2b79b4] sm:text-3xl"
           >
-            <img width="70" src="/superman_logo.png" alt="superman-logo" />
+            <img
+              className="hidden sm:block"
+              width="70"
+              src="/superman_logo.png"
+              alt="superman-logo"
+            />
             <p className="mr-1 italic">SuperTask co.</p>
             <span className="hidden lg:block">|</span>
           </Link>
@@ -231,15 +236,16 @@ const Header = () => {
                   我的評價
                 </button>
               </div>
-              <div className="ml-3 mr-3 lg:mr-0" title="登出">
+              <div className="ml-3 mr-3 flex items-center lg:mr-0">
                 <img
                   color="#3178C6"
                   onClick={handleLogout}
-                  className="w-[16px] cursor-pointer"
+                  className="h-auto w-[16px] min-w-[16px] cursor-pointer sm:h-auto sm:w-[20px]"
                   src="/logout.svg"
                   alt="logout"
                 />
               </div>
+
               <div className="lg:hidden">
                 <button onClick={toggleMenu}>
                   <Icon icon="mdi:menu" width="40" height="40" />

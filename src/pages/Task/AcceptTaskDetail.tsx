@@ -11,7 +11,7 @@ import {
 } from "firebase/firestore";
 import { getDownloadURL, ref, uploadBytes } from "firebase/storage";
 import { useEffect, useState } from "react";
-import { Link, useNavigate, useParams } from "react-router-dom";
+import { useParams } from "react-router-dom";
 import Swal from "sweetalert2";
 import ChatRoomWindow from "../../components/chatRoom/ChatRoomWindow";
 import Footer from "../../components/layout/Footer";
@@ -69,28 +69,6 @@ const AcceptTaskDetail = () => {
   const [imageFiles, setImageFiles] = useState<File[]>(Array(5).fill(null));
   const [isChatOpen, setIsChatOpen] = useState(false);
 
-  const navigate = useNavigate();
-
-  // const renderPhotoList = () => {
-  //   if (taskDetails?.status === "已完成") {
-  //     const photos = taskDetails.reportFiles || [];
-  //     return photos.map((photo, index) => (
-  //       <li
-  //         key={index}
-  //         className="h-52 w-52 border-2 border-dashed border-[#368dcf]"
-  //       >
-  //         <img
-  //           className="h-full w-full object-cover p-2"
-  //           src={photo}
-  //           alt={`Uploaded photo ${index}`}
-  //         />
-  //       </li>
-  //     ));
-  //   } else {
-  //     return null; // 當任務狀態不是 "已完成" 時不顯示圖片
-  //   }
-  // };
-
   const handleOverlay = () => {
     setShowOverlay(false);
   };
@@ -103,9 +81,6 @@ const AcceptTaskDetail = () => {
     setIsChatOpen(false);
   };
 
-  const handleToReviews = () => {
-    navigate("/reviewLists");
-  };
   const handleReportDescriptionChange = (
     event: React.ChangeEvent<HTMLTextAreaElement>,
   ) => {
@@ -379,40 +354,30 @@ const AcceptTaskDetail = () => {
   }, [taskId]);
 
   if (loading) {
-    return <div>Loading task details...</div>;
+    return (
+      <div>
+        <p>任務載入中...請稍等</p>
+      </div>
+    );
   }
 
   if (!taskDetails) {
-    return <div>No task details available.</div>;
+    return (
+      <div>
+        <p>目前沒有任務...</p>
+      </div>
+    );
   }
 
   return (
     <>
       <Header />
       <div className="container mx-auto max-w-[1280px] px-4 py-10 md:pb-20 md:pt-10 lg:px-20">
-        <div className="flex justify-between py-4">
-          <Link
-            to="/profile"
-            className="w-1/5 rounded-md bg-[#3178C6] p-4 text-center font-medium text-white transition duration-300 ease-in-out hover:bg-[#368DCF]"
-          >
-            會員中心
-          </Link>
-          <Link
-            to="/taskManagement"
-            className="w-1/5 rounded-md bg-[#3178C6] p-4 text-center font-medium text-white transition duration-300 ease-in-out hover:bg-[#368DCF]"
-          >
-            任務管理
-          </Link>
-          <button
-            type="button"
-            onClick={handleToReviews}
-            className="w-1/5 rounded-md bg-[#3178C6] p-4 text-center font-medium text-white transition duration-300 ease-in-out hover:bg-[#368DCF]"
-          >
-            我的評價
-          </button>
+        <div className="mb-4 flex text-3xl font-semibold text-gray-700">
+          <span className="h-8 w-2 bg-[#368dcf]"></span>
+          <p className="pl-2">任務資訊</p>
         </div>
         {/* 任務進度 */}
-        <div className="mb-10 h-3 bg-black"></div>
         <div className="mb-10 flex items-center justify-center space-x-2 py-4">
           <div className="flex items-center justify-center">
             <div className="flex h-40 w-40 items-center justify-center rounded-full bg-green-500 text-xl font-bold text-white">
@@ -456,10 +421,7 @@ const AcceptTaskDetail = () => {
           </div>
         </div>
         {/* 任務資訊 */}
-        <div className="mb-4 flex text-3xl font-semibold text-gray-700">
-          <span className="h-8 w-2 bg-[#368dcf]"></span>
-          <p className="pl-2">任務資訊</p>
-        </div>
+
         <div className="flex flex-col lg:flex-row">
           {/* 左邊區塊開始 */}
           <div className="space-y-4 p-4 lg:w-1/3">
@@ -474,7 +436,7 @@ const AcceptTaskDetail = () => {
             </div>
             {/* 任務截止日期 */}
             <div className="flex items-center space-x-2">
-              <div className="flex-grow tracking-wider">
+              <div className="grow text-xl tracking-wider">
                 <span className="font-semibold tracking-wider">
                   任務截止日期：
                 </span>
@@ -484,12 +446,15 @@ const AcceptTaskDetail = () => {
             <div className="my-auto mb-6 ml-auto">
               <button
                 onClick={handleAskDetails}
-                type="button"
-                className="group relative overflow-hidden rounded-md bg-gray-300 [transform:translateZ(0)] before:absolute before:bottom-0 before:left-0 before:h-full before:w-full before:origin-[100%_100%] before:scale-x-0 before:bg-sky-600 before:transition before:duration-500 before:ease-in-out hover:before:origin-[0_0] hover:before:scale-x-100"
+                className="flex items-center justify-center rounded-md bg-[#368DCF] px-4 py-2 text-lg font-medium text-white transition duration-500 ease-in-out hover:bg-[#2b79b4]"
               >
-                <span className=" relative z-0 flex w-60 items-center justify-center rounded-md p-2 text-xl font-bold text-black transition duration-500 ease-in-out group-hover:text-gray-200">
-                  <Icon icon="ant-design:message-filled" className="mr-3" />
+                <Icon icon="ant-design:message-filled" className="mr-3" />
+                <span className="flex items-center text-xl">
                   聯繫發案者
+                  <span
+                    aria-hidden="true"
+                    className="ml-2 inline-block translate-x-0 transition-transform duration-300 ease-in-out group-hover:translate-x-2"
+                  ></span>
                 </span>
               </button>
               {isChatOpen && taskId && (
@@ -600,22 +565,33 @@ const AcceptTaskDetail = () => {
 
           {isModalOpen && (
             <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
-              <div className=" relative max-w-full overflow-auto ">
-                <img
-                  className="min-w-[500px] max-w-[800px] object-cover"
-                  src={selectedPhoto || "defaultImagePath"}
-                  alt="Enlarged task photo"
-                />
-                <button
-                  className="absolute bottom-10 left-1/2 mt-4 flex h-10 w-10 -translate-x-1/2 transform items-center justify-center rounded-full  p-2 text-black"
-                  onClick={() => setIsModalOpen(false)}
-                >
-                  <span className="absolute -left-4 -top-4 h-16 w-16 animate-ping rounded-full  opacity-75" />
-                  <span className="absolute -left-4 -top-4 h-16 w-16 rounded-full bg-red-200" />
-                  <span className="relative z-10 text-center text-sm">
-                    Close
-                  </span>
-                </button>
+              <div className="relative h-full w-full max-w-screen-md overflow-auto">
+                <div className="flex h-full items-center justify-center">
+                  <img
+                    className="max-h-full max-w-full object-cover"
+                    src={selectedPhoto || "defaultImagePath"}
+                    alt="Enlarged task photo"
+                  />
+                  <button
+                    className="absolute bottom-3 left-1/2 flex h-10 w-10 -translate-x-1/2 transform items-center justify-center rounded-full p-2 text-black"
+                    onClick={() => setIsModalOpen(false)}
+                  >
+                    <span className="absolute -left-4 -top-4 flex h-10 w-10 animate-ping items-center justify-center rounded-full bg-[#2B79B4] text-sm text-white opacity-75">
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        className="h-5 w-5"
+                        viewBox="0 0 20 20"
+                        fill="currentColor"
+                      >
+                        <path
+                          fillRule="evenodd"
+                          d="M14.293 5.293a1 1 0 011.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 11-1.414-1.414L8.586 10 4.293 5.707a1 1 0 111.414-1.414L10 8.586l4.293-4.293z"
+                          clipRule="evenodd"
+                        />
+                      </svg>
+                    </span>
+                  </button>
+                </div>
               </div>
             </div>
           )}

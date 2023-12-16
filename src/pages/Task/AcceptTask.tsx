@@ -203,7 +203,7 @@ const AcceptTask = () => {
             className="mb-4 justify-end"
           />
           {currentTasks.length === 0 ? (
-            <div className="mb-10 text-center">
+            <div className="mb-10 h-64 border border-[#368DCF] text-center">
               <p className="text-xl">目前還沒有可接的任務...</p>
             </div>
           ) : (
@@ -231,7 +231,7 @@ const AcceptTask = () => {
                       </div>
 
                       <div className="flex w-full grow flex-col gap-4 pl-2">
-                        <p className="grow text-center text-2xl font-semibold">
+                        <p className="line-clamp-1 grow text-center text-2xl font-semibold">
                           {task.title}
                         </p>
                         <div className="mt-1 flex grow items-center font-semibold">
@@ -239,7 +239,7 @@ const AcceptTask = () => {
                             href={`https://www.google.com/maps/search/${task.city}${task.district}${task.address}`}
                             target="_blank"
                             rel="noopener noreferrer"
-                            className="flex grow items-center"
+                            className="flex  items-center"
                           >
                             <Icon
                               icon="mdi:location"

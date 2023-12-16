@@ -90,61 +90,85 @@ const ReviewContent = () => {
         color="#ffc107"
         width="20"
         height="20"
-        className="mr-2 flex cursor-pointer"
+        className="mr-2 flex"
       />
     ));
   };
-
   return (
     <div className="container mx-auto">
-      <DisplaySwitchButton
-        onToggleUrgent={handleToggleDisplay}
-        buttonText="顯示已給他人的評價"
-        className="mb-4"
-      />
+      <div className="mb-10 flex items-center">
+        <svg
+          className="h-5 w-5 sm:h-10 sm:w-10"
+          xmlns="http://www.w3.org/2000/svg"
+          width="24"
+          height="24"
+          viewBox="0 0 24 24"
+        >
+          <path
+            fill="currentColor"
+            d="M9.153 5.408C10.42 3.136 11.053 2 12 2c.947 0 1.58 1.136 2.847 3.408l.328.588c.36.646.54.969.82 1.182c.28.213.63.292 1.33.45l.636.144c2.46.557 3.689.835 3.982 1.776c.292.94-.546 1.921-2.223 3.882l-.434.507c-.476.557-.715.836-.822 1.18c-.107.345-.071.717.001 1.46l.066.677c.253 2.617.38 3.925-.386 4.506c-.766.582-1.918.051-4.22-1.009l-.597-.274c-.654-.302-.981-.452-1.328-.452c-.347 0-.674.15-1.328.452l-.596.274c-2.303 1.06-3.455 1.59-4.22 1.01c-.767-.582-.64-1.89-.387-4.507l.066-.676c.072-.744.108-1.116 0-1.46c-.106-.345-.345-.624-.821-1.18l-.434-.508c-1.677-1.96-2.515-2.941-2.223-3.882c.293-.941 1.523-1.22 3.983-1.776l.636-.144c.699-.158 1.048-.237 1.329-.45c.28-.213.46-.536.82-1.182z"
+          />
+        </svg>
+        <span className="p-2 text-3xl font-bold">我的評價</span>
+      </div>
+      <div className="flex">
+        <span className="mr-2 h-8 w-2 bg-[#368DCF]"></span>
+        <DisplaySwitchButton
+          onToggleUrgent={handleToggleDisplay}
+          buttonText="顯示已給他人的評價"
+          className="mb-4"
+        />
+      </div>
       <Pagination
         tasksPerPage={reviewsPerPage}
         totalTasks={reviews.length}
         paginate={paginate}
         currentPage={currentPage}
       />
-      <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3">
+      <div className="mt-10 grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3 ">
         {currentReviews.length > 0 ? (
           currentReviews.map((review) => (
-            <div key={review.reviewTaskId} className="rounded-md p-4 shadow-lg">
-              <Link
-                to={`/detail/${review.reviewTaskId}`}
-                className="hover:bg-white-700/80 group relative mt-2 flex h-full w-full cursor-pointer flex-col items-center rounded-md bg-[#92afd6] px-4 py-10 sm:py-20"
-              >
+            <div
+              key={review.reviewTaskId}
+              className="border-gradient relative flex flex-col rounded-md border-2 border-gray-200 bg-white p-4 shadow-xl transition-all duration-300 ease-in-out hover:shadow-2xl"
+            >
+              <p className="text-black-700 flex items-center justify-center text-lg font-bold">
+                <span className="mr-2 block h-6 w-6 rounded-full bg-green-500 text-2xl"></span>
+                {review.status}
+              </p>
+              <div className="mt-4 h-64 overflow-hidden">
                 <img
                   src={review.photo}
                   alt={review.title}
-                  className="mobject-covetext-lgr h-40 w-40 rounded-full object-cover"
+                  className="h-full w-full rounded-md object-cover transition-transform duration-300 ease-in-out hover:scale-110"
                 />
-                <div className="flex w-full items-center justify-center font-extrabold">
-                  <span className="block truncate text-center text-xl font-semibold">
-                    {review.title}
-                  </span>
-                </div>
-                <div className="flex items-center justify-center font-extrabold">
-                  <div className="flex">{renderRatingStars(review.rating)}</div>
-                </div>
-                <p className="text-black-700 absolute top-0 inline-flex items-center text-lg font-bold">
-                  <span className="mr-2 block h-6 w-6 rounded-full bg-green-500 text-2xl group-hover:animate-pulse"></span>
-                  {review.status}
-                </p>
-                {/* 遮罩層 */}
-                <div className="absolute inset-0 flex items-center justify-center bg-black bg-opacity-50 opacity-0 transition-opacity duration-300 group-hover:opacity-100">
-                  <span className="text-xl font-bold text-white">
-                    查看評價資訊
-                  </span>
-                </div>
+              </div>
+              <div className="mt-4 grow text-center text-xl font-semibold">
+                {review.title}
+              </div>
+              <div className="mb-4 mt-2 flex justify-center">
+                {renderRatingStars(review.rating)}
+              </div>
+              <Link
+                to={`/detail/${review.reviewTaskId}`}
+                type="button"
+                className="mt-auto flex items-center justify-center rounded-md bg-[#368DCF] p-3 text-xl font-medium text-white transition duration-500 ease-in-out hover:bg-[#2b79b4]"
+              >
+                <Icon
+                  icon="icon-park:click-tap"
+                  className="mr-2 inline-block h-6 w-6 text-black hover:text-white"
+                />
+                查看評價資訊
               </Link>
             </div>
           ))
         ) : (
-          <div className="text-lg font-semibold text-gray-600">
-            <p>目前尚未得到評價</p>
+          <div className="col-span-1 mt-10 h-64 border border-[#368DCF] md:col-span-2 lg:col-span-3">
+            <div className="flex h-full w-full items-center justify-center">
+              <p className="text-center text-lg font-semibold">
+                尚未得到別人的評價
+              </p>
+            </div>
           </div>
         )}
       </div>

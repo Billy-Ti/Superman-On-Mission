@@ -11,7 +11,7 @@ import {
   where,
 } from "firebase/firestore";
 import { useEffect, useState } from "react";
-import { Link, useNavigate, useParams } from "react-router-dom";
+import { useParams } from "react-router-dom";
 import Swal from "sweetalert2";
 import StarRating from "../../components/StarRating";
 import Footer from "../../components/layout/Footer";
@@ -65,12 +65,6 @@ const StartTaskDetail = () => {
   const [ratedUser, setRatedUser] = useState<string>("defaultRatedUserId");
   const [ratedStatus, setRatedStatus] = useState<boolean>(false);
   const [ratingComment, setRatingComment] = useState("");
-
-  const navigate = useNavigate();
-
-  const handleToReviews = () => {
-    navigate("/reviewLists");
-  };
 
   const renderPhotoList = () => {
     const totalSlots = 5;
@@ -313,29 +307,11 @@ const StartTaskDetail = () => {
     <>
       <Header />
       <div className="container mx-auto max-w-[1280px] px-4 py-10 md:py-20 lg:px-20">
-        <div className="flex justify-between py-4">
-          <Link
-            to="/profile"
-            className="w-1/5 rounded-md bg-[#3178C6] p-4 text-center font-medium text-white transition duration-300 ease-in-out hover:bg-[#368DCF]"
-          >
-            會員中心
-          </Link>
-          <Link
-            to="/taskManagement"
-            className="w-1/5 rounded-md bg-[#3178C6] p-4 text-center font-medium text-white transition duration-300 ease-in-out hover:bg-[#368DCF]"
-          >
-            任務管理
-          </Link>
-          <button
-            type="button"
-            onClick={handleToReviews}
-            className="w-1/5 rounded-md bg-[#3178C6] p-4 text-center font-medium text-white transition duration-300 ease-in-out hover:bg-[#368DCF]"
-          >
-            我的評價
-          </button>
+        <div className="mb-4 flex text-3xl font-semibold text-gray-700">
+          <span className="h-8 w-2 bg-[#368dcf]"></span>
+          <p className="pl-2">任務資訊</p>
         </div>
         {/* 任務進度 */}
-        <div className="mb-10 h-3 bg-[#B3D7FF]"></div>
         <div className="mb-10 flex items-center justify-center space-x-2 py-4">
           <div className="flex items-center justify-center">
             <div className="flex h-40 w-40 items-center justify-center rounded-full bg-green-500 text-xl font-bold text-white">
@@ -383,10 +359,7 @@ const StartTaskDetail = () => {
           </div>
         </div>
         {/* 任務資訊 */}
-        <div className="mb-4 flex text-3xl font-semibold text-gray-700">
-          <span className="h-8 w-2 bg-[#368dcf]"></span>
-          <p className="pl-2">任務資訊</p>
-        </div>
+
         <div className="flex flex-col lg:flex-row">
           {/* 左邊區塊開始 */}
           <div className="space-y-4 p-4 lg:w-1/3">
@@ -513,22 +486,33 @@ const StartTaskDetail = () => {
 
           {isModalOpen && (
             <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
-              <div className=" relative max-w-full overflow-auto ">
-                <img
-                  className="min-w-[500px] max-w-[800px] object-cover"
-                  src={selectedPhoto || "defaultImagePath"}
-                  alt="Enlarged task photo"
-                />
-                <button
-                  className="absolute bottom-3 left-1/2 mt-4 flex h-10 w-10 -translate-x-1/2 transform items-center justify-center rounded-full  p-2 text-black"
-                  onClick={() => setIsModalOpen(false)}
-                >
-                  <span className="absolute -left-4 -top-4 h-16 w-16 animate-ping rounded-full  opacity-75" />
-                  <span className="absolute -left-3 -top-3 h-16 w-16 rounded-full bg-[#2B79B4]" />
-                  <span className="relative z-10 text-center text-sm text-white">
-                    Close
-                  </span>
-                </button>
+              <div className="relative h-full w-full max-w-screen-md overflow-auto">
+                <div className="flex h-full items-center justify-center">
+                  <img
+                    className="max-h-full max-w-full object-cover"
+                    src={selectedPhoto || "defaultImagePath"}
+                    alt="Enlarged task photo"
+                  />
+                  <button
+                    className="absolute bottom-3 left-1/2 flex h-10 w-10 -translate-x-1/2 transform items-center justify-center rounded-full p-2 text-black"
+                    onClick={() => setIsModalOpen(false)}
+                  >
+                    <span className="absolute -left-4 -top-4 flex h-10 w-10 animate-ping items-center justify-center rounded-full bg-[#2B79B4] text-sm text-white opacity-75">
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        className="h-5 w-5"
+                        viewBox="0 0 20 20"
+                        fill="currentColor"
+                      >
+                        <path
+                          fillRule="evenodd"
+                          d="M14.293 5.293a1 1 0 011.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 11-1.414-1.414L8.586 10 4.293 5.707a1 1 0 111.414-1.414L10 8.586l4.293-4.293z"
+                          clipRule="evenodd"
+                        />
+                      </svg>
+                    </span>
+                  </button>
+                </div>
               </div>
             </div>
           )}

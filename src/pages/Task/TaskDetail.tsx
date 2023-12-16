@@ -4,6 +4,7 @@ import { doc, getDoc, updateDoc } from "firebase/firestore";
 import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import Swal from "sweetalert2";
+import ChatRoomWindow from "../../components/chatRoom/ChatRoomWindow";
 import Footer from "../../components/layout/Footer";
 import Header from "../../components/layout/Header";
 import { db } from "../../config/firebase";
@@ -38,8 +39,17 @@ const TaskDetail = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
 
   const [currentUserID, setCurrentUserID] = useState<string | null>(null);
+  const [isChatOpen, setIsChatOpen] = useState(false);
 
   const navigate = useNavigate();
+
+  const handleAskDetails = () => {
+    setIsChatOpen(true);
+  };
+
+  const handleCloseChat = () => {
+    setIsChatOpen(false);
+  };
 
   useEffect(() => {
     const auth = getAuth();
@@ -188,12 +198,30 @@ const TaskDetail = () => {
             </div>
             {/* 任務截止日期 */}
             <div className="flex items-center space-x-2">
-              <div className="flex-grow tracking-wider text-xl">
+              <div className="flex-grow text-xl tracking-wider">
                 <span className="font-semibold tracking-wider">
                   任務截止日期：
                 </span>
                 {taskDetails.dueDate}
               </div>
+            </div>
+            <div className="my-auto mb-6 ml-auto">
+              <button
+                onClick={handleAskDetails}
+                className="flex items-center rounded-md bg-[#368DCF] p-2 text-lg font-medium tracking-wider text-white transition duration-500 ease-in-out hover:bg-[#2b79b4]"
+              >
+                <Icon icon="ant-design:message-filled" className="mr-3" />
+                <span className="flex items-center text-xl">
+                  聯繫發案者
+                  <span
+                    aria-hidden="true"
+                    className="ml-2 inline-block translate-x-0 transition-transform duration-300 ease-in-out group-hover:translate-x-2"
+                  ></span>
+                </span>
+              </button>
+              {isChatOpen && taskId && (
+                <ChatRoomWindow onCloseRoom={handleCloseChat} />
+              )}
             </div>
           </div>
           {/* 左邊區塊結束 */}

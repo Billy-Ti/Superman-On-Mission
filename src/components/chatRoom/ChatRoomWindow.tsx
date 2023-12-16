@@ -475,7 +475,7 @@ const ChatRoomWindow = ({ onCloseRoom }: ChatRoomWindowProps) => {
         <div className="flex w-full flex-shrink-0 flex-grow-0 flex-col bg-white py-1 pl-6 pr-2 lg:w-64">
           {/* 聊天室窗標題 */}
           <ChatRoomTitle />
-          <div className="mb-2 mt-1 flex w-full flex-col items-center rounded-md border border-gray-200 bg-indigo-100 px-4 py-1">
+          <div className="mb-2 mt-1 flex w-full flex-col items-center rounded-md border border-gray-200 bg-[#B3D7FF] px-4 py-1">
             <div className="h-20 w-20 overflow-hidden rounded-full border">
               <img
                 src={currentUser?.profilePicUrl || defaultProfilePic}
@@ -547,7 +547,7 @@ const ChatRoomWindow = ({ onCloseRoom }: ChatRoomWindowProps) => {
                 key={user.id}
                 onClick={() => handleSelectUser(user.id)}
               >
-                <div className="flex h-8 w-8 items-center justify-center rounded-full bg-indigo-200">
+                <div className="flex h-8 w-8 items-center justify-center rounded-full bg-[#B3D7FF]">
                   {user.name ? user.name.charAt(0).toLocaleUpperCase() : ""}{" "}
                   {/* 檢查 user.name 是否存在 */}
                 </div>
@@ -564,13 +564,13 @@ const ChatRoomWindow = ({ onCloseRoom }: ChatRoomWindowProps) => {
           </div>
         </div>
         {/* 聊天視窗主體 */}
-        <div className="flex h-full flex-auto flex-col overflow-y-auto p-6">
+        <div className="flex h-full flex-auto flex-col overflow-y-auto ">
           {selectedUserId && (
             <div className="flex h-full flex-auto flex-shrink-0 flex-col justify-between break-words rounded-md bg-gray-100 p-4">
               <div className="h-full overflow-auto">
                 {/* 訊息列表 */}
-                <div className="flex flex-grow flex-col items-center justify-between p-4">
-                  <div className="mb-10 bg-gradient-to-r from-blue-700 via-blue-500 to-purple-400 bg-clip-text text-center text-2xl font-black text-transparent">
+                <div className="mb-10 flex flex-grow flex-col items-center justify-between ">
+                  <div className="font-black text-[#368DCF] md:text-2xl">
                     {`You are contacting to ${selectedUserName} ...`}
                   </div>
                   {messages
