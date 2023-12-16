@@ -451,7 +451,7 @@ const ChatRoomWindow = ({ onCloseRoom }: ChatRoomWindowProps) => {
   return (
     <div className="fixed inset-0 z-50 my-auto flex h-full items-center justify-center bg-black bg-opacity-50 py-10 text-gray-800 antialiased">
       <div className="relative flex h-[95vh] w-[90%] flex-col overflow-y-auto rounded-md bg-white p-4 shadow-lg lg:h-[70vh] lg:w-3/4 lg:flex-row">
-        <span className="absolute right-5 top-6 h-6 w-6 animate-ping rounded-full bg-gray-200 opacity-75" />
+        <span className="absolute right-5 top-6 h-6 w-6 animate-ping rounded-full " />
         <button
           onClick={onCloseRoom}
           className="absolute right-3 top-3 z-[100] mr-2 mt-2 text-gray-500 hover:text-gray-700"
@@ -472,7 +472,7 @@ const ChatRoomWindow = ({ onCloseRoom }: ChatRoomWindowProps) => {
             />
           </svg>
         </button>
-        <div className="flex w-full flex-shrink-0 flex-grow-0 flex-col bg-white py-1 pl-6 pr-2 lg:w-64">
+        <div className="flex w-full flex-shrink-0 flex-grow-0 flex-col bg-white pl-6 pr-2 lg:w-64">
           {/* 聊天室窗標題 */}
           <ChatRoomTitle />
           <div className="mb-2 mt-1 flex w-full flex-col items-center rounded-md border border-gray-200 bg-[#B3D7FF] px-4 py-1">
@@ -540,7 +540,7 @@ const ChatRoomWindow = ({ onCloseRoom }: ChatRoomWindowProps) => {
               ))
             )}
           </div>
-          <div className="-mx-2 flex h-[150px] flex-col space-y-1 overflow-y-auto lg:h-1/2">
+          <div className="-mx-2 flex h-[100px] flex-col space-y-1 overflow-y-auto lg:h-1/2">
             {userList.map((user) => (
               <button
                 className="relative flex flex-row items-center rounded-md p-2 hover:rounded-md hover:bg-gray-100"
@@ -570,7 +570,7 @@ const ChatRoomWindow = ({ onCloseRoom }: ChatRoomWindowProps) => {
               <div className="h-full overflow-auto">
                 {/* 訊息列表 */}
                 <div className="mb-10 flex flex-grow flex-col items-center justify-between ">
-                  <div className="font-black text-[#368DCF] md:text-2xl">
+                  <div className="mb-10 font-black text-[#368DCF] md:text-2xl">
                     {`You are contacting to ${selectedUserName} ...`}
                   </div>
                   {messages

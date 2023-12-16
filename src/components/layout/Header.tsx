@@ -2,16 +2,25 @@ import { Icon } from "@iconify/react";
 import { getAuth, onAuthStateChanged } from "firebase/auth";
 import {
   collection,
+  doc,
+  getDoc,
+  getDocs,
   getFirestore,
   onSnapshot,
   query,
+  updateDoc,
   where,
 } from "firebase/firestore";
 import { useEffect, useRef, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import Swal from "sweetalert2";
+import { db } from "../../config/firebase";
 import { useAuth } from "../../hooks/AuthProvider";
-// import SearchBar from "./SearchBar";
+
+interface Notification {
+  acceptorName: string;
+  taskName: string;
+}
 
 const Header = () => {
   const { currentUser, logout } = useAuth();
@@ -20,6 +29,8 @@ const Header = () => {
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement | null>(null);
   const [profilePicUrl, setProfilePicUrl] = useState<string>("");
+  const [notifications, setNotifications] = useState<Notification[]>([]);
+  const [notificationCount, setNotificationCount] = useState(0);
 
   const navigate = useNavigate();
   const handleSignIn = () => {
@@ -66,6 +77,110 @@ const Header = () => {
   const handleTaskManagement = () => {
     navigate("/taskManagement");
   };
+
+  const handleShowNotifications = async () => {
+    if (notifications.length > 0) {
+      const notificationMessages = notifications
+        .map(
+          (notification, index) =>
+            `<div key=${index}>${notification.acceptorName} 接了您的 "${notification.taskName}"</div>`,
+        )
+        .join("");
+
+      await Swal.fire({
+        title: "您有新的通知",
+        html: notificationMessages,
+        icon: "info",
+        confirmButtonText: "確定",
+      });
+
+      // 標記通知為已讀
+      await markNotificationsRead();
+    } else {
+      Swal.fire("無新通知", "", "info");
+    }
+  };
+
+  const markNotificationsRead = async () => {
+    if (!currentUser) {
+      console.log("沒有用戶登錄");
+      return;
+    }
+    // 更新數據庫中的通知狀態
+    const notificationsRef = collection(db, "notifications");
+    const q = query(
+      notificationsRef,
+      where("createdBy", "==", currentUser.uid),
+      where("read", "==", false),
+    );
+
+    const querySnapshot = await getDocs(q);
+    querySnapshot.forEach(async (docSnapshot) => {
+      const notificationRef = doc(db, "notifications", docSnapshot.id);
+      await updateDoc(notificationRef, { read: true });
+    });
+
+    // 重設未讀通知計數
+    setNotificationCount(0);
+  };
+
+  useEffect(() => {
+    const fetchNotifications = async () => {
+      if (!currentUser) return;
+
+      const notificationsRef = collection(db, "notifications");
+      const q = query(
+        notificationsRef,
+        where("createdBy", "==", currentUser.uid),
+      );
+      const querySnapshot = await getDocs(q);
+      const fetchedNotifications = [];
+
+      for (const notificationDoc of querySnapshot.docs) {
+        const notificationData = notificationDoc.data();
+        const taskSnap = await getDoc(
+          doc(db, "tasks", notificationData.taskId),
+        );
+
+        if (taskSnap.exists()) {
+          const acceptorId = taskSnap.data().acceptedBy;
+          const acceptorSnap = await getDoc(doc(db, "users", acceptorId));
+
+          if (acceptorSnap.exists()) {
+            fetchedNotifications.push({
+              acceptorName: acceptorSnap.data().name, // 假設接案者的名稱存儲在 'name' 字段
+              taskName: taskSnap.data().title, // 假設任務的名稱存儲在 'title' 字段
+            });
+          }
+        }
+      }
+      setNotifications(fetchedNotifications);
+    };
+
+    fetchNotifications();
+  }, [currentUser]);
+
+  useEffect(() => {
+    const auth = getAuth();
+    const currentUser = auth.currentUser;
+
+    if (currentUser) {
+      const notificationsRef = collection(db, "notifications");
+      const q = query(
+        notificationsRef,
+        where("createdBy", "==", currentUser.uid),
+        where("read", "==", false),
+      );
+
+      const unsubscribe = onSnapshot(q, (snapshot) => {
+        // 設置未讀通知數量
+        setNotificationCount(snapshot.docs.length);
+      });
+
+      return () => unsubscribe(); // 清理監聽器
+    }
+  }, []);
+
   useEffect(() => {
     const auth = getAuth();
     const unsubscribe = onAuthStateChanged(auth, (user) => {
@@ -194,12 +309,30 @@ const Header = () => {
             {currentUser ? (
               <div className="group relative flex items-center">
                 {profilePicUrl ? (
-                  <img
-                    src={profilePicUrl}
-                    alt="User Profile"
-                    className="h-[40px] w-[40px] cursor-pointer rounded-full border-2 border-blue-200 object-cover"
-                    onClick={toggleDropdown}
-                  />
+                  <>
+                    <img
+                      src={profilePicUrl}
+                      alt="User Profile"
+                      className="mr-2 h-[40px] w-[40px] cursor-pointer rounded-full border-2 border-blue-200 object-cover"
+                      onClick={toggleDropdown}
+                    />
+                    <button
+                      onClick={handleShowNotifications}
+                      className="relative"
+                    >
+                      <Icon
+                        icon="iconamoon:notification-fill"
+                        color="#368dcf"
+                        width="30"
+                        height="30"
+                      />
+                      {notifications.length > 0 && (
+                        <span className="absolute right-0 top-0 flex h-5 w-5 items-center justify-center rounded-full bg-red-500 text-xs text-white">
+                          {notificationCount}
+                        </span>
+                      )}
+                    </button>
+                  </>
                 ) : (
                   <Icon
                     className="cursor-pointer"

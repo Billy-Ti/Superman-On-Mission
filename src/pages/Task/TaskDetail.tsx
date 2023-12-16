@@ -1,6 +1,6 @@
 import { Icon } from "@iconify/react";
 import { getAuth, onAuthStateChanged } from "firebase/auth";
-import { doc, getDoc, updateDoc } from "firebase/firestore";
+import { addDoc, collection, doc, getDoc, updateDoc } from "firebase/firestore";
 import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import Swal from "sweetalert2";
@@ -49,6 +49,29 @@ const TaskDetail = () => {
 
   const handleCloseChat = () => {
     setIsChatOpen(false);
+  };
+
+  const createNotification = async (
+    taskId: string,
+    createdBy: string,
+    acceptedBy: string,
+  ) => {
+    const notificationRef = collection(db, "notifications");
+    const newNotification = {
+      taskId: taskId,
+      createdBy: createdBy, // 發案者 ID
+      acceptedBy: acceptedBy, // 接案者 ID
+      message: "您的任務已被接受",  
+      read: false,
+      timestamp: new Date(),
+    };
+
+    try {
+      await addDoc(notificationRef, newNotification);
+      console.log("通知創建成功");
+    } catch (error) {
+      console.error("錯誤創建通知", error);
+    }
   };
 
   useEffect(() => {
@@ -159,7 +182,11 @@ const TaskDetail = () => {
             status: "任務進行中",
             accepted: true,
           });
-
+          await createNotification(
+            taskId,
+            taskDetails.createdBy,
+            currentUserID,
+          );
           Swal.fire({
             title: "已完成",
             html: "<div style='color: #000000; font-weight: bold;'>請至任務管理區查看</div><strong style='color: #22C55E;'>接下後請務必注意任務截止日期</strong>",
@@ -189,19 +216,15 @@ const TaskDetail = () => {
           <div className="space-y-4 p-4 lg:w-1/3">
             {/* 案主 */}
             <div className="flex items-center space-x-2">
-              <div className="flex-grow items-center font-semibold text-xl tracking-wider text-[#3178C6]">
-                <span className="tracking-wider">
-                  發案者名稱：
-                </span>
+              <div className="flex-grow items-center text-xl font-semibold tracking-wider text-[#3178C6]">
+                <span className="tracking-wider">發案者名稱：</span>
                 {posterName}
               </div>
             </div>
             {/* 任務截止日期 */}
             <div className="flex items-center space-x-2">
               <div className="flex-grow text-xl font-semibold tracking-wider">
-                <span className="tracking-wider">
-                  任務截止日期：
-                </span>
+                <span className="tracking-wider">任務截止日期：</span>
                 {taskDetails.dueDate}
               </div>
             </div>
