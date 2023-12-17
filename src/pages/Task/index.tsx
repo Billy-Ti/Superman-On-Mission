@@ -1,4 +1,3 @@
-import { Icon } from "@iconify/react";
 import { getAuth, onAuthStateChanged } from "firebase/auth";
 import {
   addDoc,
@@ -327,7 +326,7 @@ const Task = () => {
                   <button
                     type="button"
                     onClick={toggleCountyDropdown}
-                    className="relative z-4 block overflow-hidden rounded border px-3 py-2 font-semibold shadow focus:outline-none"
+                    className="z-4 relative block overflow-hidden rounded border px-3 py-2 font-semibold shadow focus:outline-none"
                   >
                     {selectedCounty || "選擇縣市"}{" "}
                     <span className="ml-2">▼</span>
@@ -335,7 +334,7 @@ const Task = () => {
 
                   {isCountyDropdownOpen && (
                     <div className="absolute mt-1 w-full rounded-md shadow-lg">
-                      <div className="absolute z-4 mt-1 max-h-80 w-40 overflow-auto rounded border bg-white font-semibold shadow-lg">
+                      <div className="z-4 absolute mt-1 max-h-80 w-40 overflow-auto rounded border bg-white font-semibold shadow-lg">
                         {[
                           "台北市",
                           "新北市",
@@ -379,7 +378,7 @@ const Task = () => {
                   <button
                     type="button"
                     onClick={toggleRegionDropdown}
-                    className="relative z-4 block overflow-hidden rounded border px-3 py-2 font-semibold shadow focus:outline-none"
+                    className="z-4 relative block overflow-hidden rounded border px-3 py-2 font-semibold shadow focus:outline-none"
                   >
                     {selectedRegion || "選擇地區"}{" "}
                     <span className="ml-2">▼</span>
@@ -504,16 +503,32 @@ const Task = () => {
                 <button
                   type="button"
                   onClick={confirmSubmitTask}
-                  className="rounded-md bg-[#368DCF] p-4 text-2xl font-medium tracking-wider text-white transition duration-500 ease-in-out hover:bg-[#2b79b4]"
+                  className="relative flex items-center justify-center rounded-md bg-[#368DCF] p-4 text-2xl font-medium tracking-wider text-white transition duration-500 ease-in-out hover:bg-[#2b79b4]"
                 >
                   {isLoading ? (
-                    <div className="absolute inset-0 flex items-center justify-center bg-gray-200 bg-opacity-50">
-                      {/* 載入指示器，例如旋轉的圖標 */}
-                      <Icon
-                        icon="eos-icons:loading"
-                        className="animate-spin text-4xl text-blue-500"
-                      />
-                    </div>
+                    <>
+                      <svg
+                        className="mr-2 h-5 w-5 animate-spin text-white"
+                        xmlns="http://www.w3.org/2000/svg"
+                        fill="none"
+                        viewBox="0 0 24 24"
+                      >
+                        <circle
+                          className="opacity-25"
+                          cx="12"
+                          cy="12"
+                          r="10"
+                          stroke="currentColor"
+                          strokeWidth="4"
+                        ></circle>
+                        <path
+                          className="opacity-75"
+                          fill="currentColor"
+                          d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+                        ></path>
+                      </svg>
+                      刊登中...
+                    </>
                   ) : (
                     "刊登任務"
                   )}

@@ -374,7 +374,7 @@ const ChatRoomWindow = ({ onCloseRoom }: ChatRoomWindowProps) => {
     event: React.KeyboardEvent<HTMLInputElement>,
   ) => {
     if (event.key === "Enter") {
-      event.preventDefault(); // 防止輸入時換行
+      event.preventDefault(); 
       await handleSendMessage();
     }
   };
@@ -408,9 +408,6 @@ const ChatRoomWindow = ({ onCloseRoom }: ChatRoomWindowProps) => {
         setSelectedUserName("未知用戶");
       }
     }
-
-    setSelectedUserId(userId); // 設置所選用戶的 ID
-
     setSelectedUserId(userId); // 設置所選用戶的 ID
     setMessages([]); // 清空當前訊息
 
@@ -431,7 +428,7 @@ const ChatRoomWindow = ({ onCloseRoom }: ChatRoomWindowProps) => {
       await updateDoc(doc.ref, { isRead: true });
     });
 
-    // 加載與選擇的用戶的對話
+    // 載入與選擇的用戶的對話
     const q2 = query(
       messagesRef,
       where("chatSessionId", "in", [

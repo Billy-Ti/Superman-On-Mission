@@ -2,6 +2,7 @@ import { Icon } from "@iconify/react";
 import { getAuth, onAuthStateChanged } from "firebase/auth";
 import {
   collection,
+  deleteDoc,
   doc,
   getDoc,
   getDocs,
@@ -20,6 +21,7 @@ import { useAuth } from "../../hooks/AuthProvider";
 interface Notification {
   acceptorName: string;
   taskName: string;
+  id: string; // 通知的 ID
 }
 
 const Header = () => {
@@ -78,27 +80,46 @@ const Header = () => {
     navigate("/taskManagement");
   };
 
-  const handleShowNotifications = async () => {
-    if (notifications.length > 0) {
-      const notificationMessages = notifications
-        .map(
-          (notification, index) =>
-            `<div key=${index}>${notification.acceptorName} 接了您的 "${notification.taskName}"</div>`,
-        )
-        .join("");
-
-      await Swal.fire({
-        title: "您有新的通知",
-        html: notificationMessages,
-        icon: "info",
-        confirmButtonText: "確定",
-      });
-
-      // 標記通知為已讀
-      await markNotificationsRead();
-    } else {
-      Swal.fire("無新通知", "", "info");
+  const deleteNotification = async (notificationId: string) => {
+    try {
+      const notificationRef = doc(db, "notifications", notificationId);
+      await deleteDoc(notificationRef);
+      console.log("通知已刪除");
+    } catch (error) {
+      console.error("刪除通知時出錯", error);
     }
+  };
+
+  const handleShowNotifications = async () => {
+    // 檢查是否有未讀通知
+    if (notifications.length === 0) {
+      // 沒有未讀通知，顯示無新通知的提示
+      Swal.fire("無新通知", "", "info");
+      return;
+    }
+
+    const notificationMessages = notifications
+      .map(
+        (notification, index) =>
+          `<div key=${index}>${notification.acceptorName} 接了您的 "${notification.taskName}"</div>`,
+      )
+      .join("");
+
+    await Swal.fire({
+      title: "您有新的通知",
+      html: notificationMessages,
+      icon: "info",
+      confirmButtonText: "確定",
+    });
+
+    // 標記通知為已讀
+    await markNotificationsRead();
+    notifications.forEach(async (notification) => {
+      await deleteNotification(notification.id);
+    });
+
+    // 清空通知陣列
+    setNotifications([]);
   };
 
   const markNotificationsRead = async () => {
@@ -148,6 +169,7 @@ const Header = () => {
 
           if (acceptorSnap.exists()) {
             fetchedNotifications.push({
+              id: notificationDoc.id, // 保存通知的 ID
               acceptorName: acceptorSnap.data().name, // 假設接案者的名稱存儲在 'name' 字段
               taskName: taskSnap.data().title, // 假設任務的名稱存儲在 'title' 字段
             });

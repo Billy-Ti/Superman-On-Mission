@@ -2,6 +2,7 @@ import { Icon } from "@iconify/react";
 import { collection, getDocs, orderBy, query } from "firebase/firestore";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import LoadingSpinner from "../../components/LoadingSpinner";
 import Pagination from "../../components/Pagination";
 import Footer from "../../components/layout/Footer";
 import Header from "../../components/layout/Header";
@@ -38,6 +39,8 @@ const AcceptTask = () => {
   const [selectedCity, setSelectedCity] = useState("");
   const [selectedDistrict, setSelectedDistrict] = useState("");
   const [isUrgentSelected, setIsUrgentSelected] = useState(false);
+  const [loading, setLoading] = useState(true);
+
 
   const navigate = useNavigate();
 
@@ -61,9 +64,11 @@ const AcceptTask = () => {
     "其他",
   ]);
   const [selectedIndexes, setSelectedIndexes] = useState<number[]>([]);
+  
 
   useEffect(() => {
     const fetchTasks = async () => {
+      setLoading(true); 
       const q = query(collection(db, "tasks"));
       const querySnapshot = await getDocs(q);
       const tasksData = querySnapshot.docs
@@ -77,6 +82,7 @@ const AcceptTask = () => {
         .filter((task) => !task.accepted); // 只保留那些未被接受的任務
 
       setTasks(tasksData);
+      setLoading(false);
     };
 
     fetchTasks();
@@ -139,7 +145,9 @@ const AcceptTask = () => {
       : tasks; // 若 isUrgentSelected 為 false，則顯示所有任務
     setFilteredTasks(filteredTasks); // 更新 filteredTasks 狀態
   }, [tasks, isUrgentSelected]);
-
+  if (loading) {
+    return <LoadingSpinner />; // 這裡的 LoadingSpinner 是您的載入指示器組件
+  }
   // 獲取當前頁的任務
   const indexOfLastTask = currentPage * tasksPerPage;
   const indexOfFirstTask = indexOfLastTask - tasksPerPage;

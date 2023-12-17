@@ -1,9 +1,20 @@
 import { Icon } from "@iconify/react";
 import { getAuth, onAuthStateChanged } from "firebase/auth";
-import { addDoc, collection, doc, getDoc, updateDoc } from "firebase/firestore";
+import {
+  Firestore,
+  addDoc,
+  collection,
+  doc,
+  getDoc,
+  getDocs,
+  query,
+  updateDoc,
+  where,
+} from "firebase/firestore";
 import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import Swal from "sweetalert2";
+import LoadingSpinner from "../../components/LoadingSpinner";
 import ChatRoomWindow from "../../components/chatRoom/ChatRoomWindow";
 import Footer from "../../components/layout/Footer";
 import Header from "../../components/layout/Header";
@@ -52,25 +63,38 @@ const TaskDetail = () => {
   };
 
   const createNotification = async (
+    db: Firestore,
     taskId: string,
     createdBy: string,
     acceptedBy: string,
   ) => {
     const notificationRef = collection(db, "notifications");
-    const newNotification = {
-      taskId: taskId,
-      createdBy: createdBy, // 發案者 ID
-      acceptedBy: acceptedBy, // 接案者 ID
-      message: "您的任務已被接受",  
-      read: false,
-      timestamp: new Date(),
-    };
+    const q = query(
+      notificationRef,
+      where("taskId", "==", taskId),
+      where("createdBy", "==", createdBy),
+      where("acceptedBy", "==", acceptedBy),
+    );
 
     try {
-      await addDoc(notificationRef, newNotification);
-      console.log("通知創建成功");
+      const querySnapshot = await getDocs(q);
+      if (querySnapshot.empty) {
+        const newNotification = {
+          taskId,
+          createdBy,
+          acceptedBy,
+          message: "您的任務已被接受",
+          read: false,
+          timestamp: new Date(),
+        };
+        await addDoc(notificationRef, newNotification);
+      } else {
+        querySnapshot.forEach(async (docSnapshot) => {
+          await updateDoc(docSnapshot.ref, { timestamp: new Date() });
+        });
+      }
     } catch (error) {
-      console.error("錯誤創建通知", error);
+      console.error("錯誤創建/更新通知", error);
     }
   };
 
@@ -128,7 +152,7 @@ const TaskDetail = () => {
   }, [taskId]);
 
   if (loading) {
-    return <div>Loading task details...</div>;
+    return <LoadingSpinner />;
   }
 
   if (!taskDetails) {
@@ -183,10 +207,12 @@ const TaskDetail = () => {
             accepted: true,
           });
           await createNotification(
+            db,
             taskId,
             taskDetails.createdBy,
             currentUserID,
           );
+
           Swal.fire({
             title: "已完成",
             html: "<div style='color: #000000; font-weight: bold;'>請至任務管理區查看</div><strong style='color: #22C55E;'>接下後請務必注意任務截止日期</strong>",

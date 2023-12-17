@@ -13,6 +13,7 @@ import {
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import Swal from "sweetalert2";
+import LoadingSpinner from "../../components/LoadingSpinner";
 import StarRating from "../../components/StarRating";
 import Footer from "../../components/layout/Footer";
 import Header from "../../components/layout/Header";
@@ -49,19 +50,16 @@ const StartTaskDetail = () => {
   const [loading, setLoading] = useState(true);
   // 存發案者名稱，以存取不同集合中的 user
   const [posterName, setPosterName] = useState<string>("");
-
   // 儲存已選擇的圖片，用作點及圖片可放大的前置準備
   const [selectedPhoto, setSelectedPhoto] = useState<string | null>(null);
   // 建立一個視窗，讓圖片可以被點擊後放大，有預覽的效果
   const [isModalOpen, setIsModalOpen] = useState(false);
-
   const [currentUserId, setCurrentUserId] = useState<string | null>(null);
   const [showOverlay, setShowOverlay] = useState(true);
   const [feedbackMessage, setFeedbackMessage] = useState("");
   const [isFeedbackSubmitted, setIsFeedbackSubmitted] = useState(false);
   const [showFeedbackContent, setShowFeedbackContent] = useState(false);
   const [isRatingModalOpen, setIsRatingModalOpen] = useState(false);
-
   const [ratedUser, setRatedUser] = useState<string>("defaultRatedUserId");
   const [ratedStatus, setRatedStatus] = useState<boolean>(false);
   const [ratingComment, setRatingComment] = useState("");
@@ -305,13 +303,20 @@ const StartTaskDetail = () => {
   }, [taskId]);
 
   if (loading) {
-    return <div>Loading task details...</div>;
+    return <LoadingSpinner />;
   }
 
   if (!taskDetails) {
-    return <div>No task details available.</div>;
+    return (
+      <div className="flex h-screen items-center justify-center">
+        <div className="text-center">
+          <p className="mb-4 text-lg font-semibold text-gray-800">
+            無相關資料載入，請稍後或重整後再試...
+          </p>
+        </div>
+      </div>
+    );
   }
-  console.log("taskDetails.status 的值：", taskDetails.status);
   return (
     <>
       <Header />
