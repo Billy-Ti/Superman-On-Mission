@@ -159,9 +159,11 @@ const AcceptTaskDetail = () => {
   const fetchTask = async () => {
     if (!taskId) {
       console.log("Task ID is not defined");
+      setLoading(false);
       return;
     }
     console.log("Fetching task with ID:", taskId);
+    setLoading(true);
     const taskRef = doc(db, "tasks", taskId);
     try {
       const docSnap = await getDoc(taskRef);
@@ -187,6 +189,8 @@ const AcceptTaskDetail = () => {
       }
     } catch (error) {
       console.error("Error getting document:", error);
+    } finally {
+      setLoading(false);
     }
   };
   useEffect(() => {
@@ -329,15 +333,16 @@ const AcceptTaskDetail = () => {
   }, [taskId]);
   if (loading) {
     return (
-      <div>
-        <p>任務載入中...請稍等</p>
+      <div className="flex h-screen items-center justify-center">
+        <p>任務載入中...</p>
       </div>
     );
   }
+
   if (!taskDetails) {
     return (
-      <div>
-        <p>目前沒有任務...</p>
+      <div className="flex h-screen items-center justify-center">
+        <p>任務資訊不存在...</p>
       </div>
     );
   }
@@ -536,7 +541,7 @@ const AcceptTaskDetail = () => {
           {isModalOpen && (
             <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
               <div className="relative h-full w-full max-w-screen-md overflow-auto">
-                <div className="flex h-full items-center justify-center">
+                <div className="mx-4 flex h-full items-center justify-center">
                   <img
                     className="max-h-full max-w-full object-cover"
                     src={selectedPhoto || "defaultImagePath"}
@@ -588,6 +593,9 @@ const AcceptTaskDetail = () => {
                   name="taskPhoto"
                   accept="image/png, image/jpeg, image/gif"
                   onChange={(e) => handleImgSelect(e, index)}
+                  disabled={
+                    taskStatus === "任務回報完成" || taskStatus === "已完成"
+                  }
                   className="absolute left-0 top-0 z-10 h-full w-full cursor-pointer opacity-0"
                 />
                 {!image && (

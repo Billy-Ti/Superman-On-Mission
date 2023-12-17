@@ -158,6 +158,7 @@ const ChatRoomWindow = ({ onCloseRoom }: ChatRoomWindowProps) => {
         where("sentBy", "==", user.id),
         where("sentTo", "==", currentUser.id),
         where("isRead", "==", false),
+        where("sentBy", "!=", currentUser.id), // 添加這條件來排除由當前用戶發送的消息
       );
       const snapshot = await getDocs(q);
       updatedUsers.push({
@@ -167,6 +168,7 @@ const ChatRoomWindow = ({ onCloseRoom }: ChatRoomWindowProps) => {
     }
     return updatedUsers;
   };
+  
   // 加載曾經聊過天的用戶列表
   useEffect(() => {
     if (!currentUser) return;

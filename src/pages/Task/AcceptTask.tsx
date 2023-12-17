@@ -1,8 +1,7 @@
 import { Icon } from "@iconify/react";
-import { collection, getDocs, orderBy, query } from "firebase/firestore";
+import { collection, getDocs, orderBy, query, where } from "firebase/firestore";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import LoadingSpinner from "../../components/LoadingSpinner";
 import Pagination from "../../components/Pagination";
 import Footer from "../../components/layout/Footer";
 import Header from "../../components/layout/Header";
@@ -41,7 +40,6 @@ const AcceptTask = () => {
   const [isUrgentSelected, setIsUrgentSelected] = useState(false);
   const [loading, setLoading] = useState(true);
 
-
   const navigate = useNavigate();
 
   const handleAcceptTask = async (taskId: string) => {
@@ -64,25 +62,27 @@ const AcceptTask = () => {
     "其他",
   ]);
   const [selectedIndexes, setSelectedIndexes] = useState<number[]>([]);
-  
 
   useEffect(() => {
     const fetchTasks = async () => {
-      setLoading(true); 
-      const q = query(collection(db, "tasks"));
-      const querySnapshot = await getDocs(q);
-      const tasksData = querySnapshot.docs
-        .map((doc) => {
-          const data = doc.data() as Task;
-          return {
-            ...data,
-            id: doc.id,
-          };
-        })
-        .filter((task) => !task.accepted); // 只保留那些未被接受的任務
+      try {
+        setLoading(true); // 開始加載
+        const q = query(
+          collection(db, "tasks"),
+          where("accepted", "==", false), // 直接從 firebase 中查詢未被接受的任務
+        );
+        const querySnapshot = await getDocs(q);
+        const tasksData = querySnapshot.docs.map((doc) => ({
+          ...(doc.data() as Task),
+          id: doc.id,
+        }));
 
-      setTasks(tasksData);
-      setLoading(false);
+        setTasks(tasksData);
+      } catch (error) {
+        console.error("Error fetching tasks:", error);
+      } finally {
+        setLoading(false);
+      }
     };
 
     fetchTasks();
@@ -146,7 +146,11 @@ const AcceptTask = () => {
     setFilteredTasks(filteredTasks); // 更新 filteredTasks 狀態
   }, [tasks, isUrgentSelected]);
   if (loading) {
-    return <LoadingSpinner />; // 這裡的 LoadingSpinner 是您的載入指示器組件
+    return (
+      <div className="flex h-screen items-center justify-center">
+        <p>資料載入中...</p>
+      </div>
+    );
   }
   // 獲取當前頁的任務
   const indexOfLastTask = currentPage * tasksPerPage;

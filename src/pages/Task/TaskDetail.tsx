@@ -394,9 +394,9 @@ const TaskDetail = () => {
           {isModalOpen && (
             <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
               <div className="relative h-full w-full max-w-screen-md overflow-auto">
-                <div className="flex h-full items-center justify-center">
+                <div className="mx-4 flex h-full items-center justify-center">
                   <img
-                    className="max-h-full max-w-full object-cover"
+                    className="max-h-full max-w-full object-cover "
                     src={selectedPhoto || "defaultImagePath"}
                     alt="Enlarged task photo"
                   />

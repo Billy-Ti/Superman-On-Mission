@@ -205,7 +205,7 @@ const StartTaskDetail = () => {
         await fetchTaskDetails();
 
         await Swal.fire({
-          title: "✅已回饋成功",
+          title: "感謝您的回饋",
           text: "將進入評價流程",
           icon: "success",
           timer: 1500,
@@ -560,7 +560,7 @@ const StartTaskDetail = () => {
           {isModalOpen && (
             <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
               <div className="relative h-full w-full max-w-screen-md overflow-auto">
-                <div className="flex h-full items-center justify-center">
+                <div className="mx-4 flex h-full items-center justify-center">
                   <img
                     className="max-h-full max-w-full object-cover"
                     src={selectedPhoto || "defaultImagePath"}
@@ -641,9 +641,13 @@ const StartTaskDetail = () => {
             <div>
               <label
                 htmlFor="comment"
-                className="block text-xl font-extrabold text-gray-700"
+                className="flex text-xl font-extrabold text-gray-700"
               >
                 To 超人的評價
+                <span className="flex items-center text-sm font-extrabold text-[#2B79B4]">
+                  <Icon icon="solar:star-bold" />
+                  案主填寫
+                </span>
               </label>
               <textarea
                 id="comment"
@@ -661,7 +665,7 @@ const StartTaskDetail = () => {
                 className="flex text-xl font-extrabold text-gray-700"
               >
                 發案者回饋
-                <span className="flex items-center text-sm font-extrabold text-red-500">
+                <span className="flex items-center text-sm font-extrabold text-[#2B79B4]">
                   <Icon icon="solar:star-bold" />
                   案主填寫
                 </span>
@@ -766,9 +770,13 @@ const StartTaskDetail = () => {
             <div>
               <label
                 htmlFor="comment"
-                className="block text-xl font-extrabold text-gray-700"
+                className="flex text-xl font-extrabold text-gray-700"
               >
                 To 超人的評價
+                <span className="flex items-center text-sm font-extrabold text-[#2B79B4]">
+                  <Icon icon="solar:star-bold" />
+                  案主填寫
+                </span>
               </label>
               <textarea
                 id="comment"
@@ -786,7 +794,7 @@ const StartTaskDetail = () => {
                 className="flex text-xl font-extrabold text-gray-700"
               >
                 發案者回饋
-                <span className="flex items-center text-sm font-extrabold text-red-500">
+                <span className="flex items-center text-sm font-extrabold text-[#2B79B4]">
                   <Icon icon="solar:star-bold" />
                   案主填寫
                 </span>
@@ -803,6 +811,7 @@ const StartTaskDetail = () => {
                 }
                 value={feedbackMessage}
                 onChange={(e) => setFeedbackMessage(e.target.value)}
+                disabled={taskDetails.status === "已完成"}
                 readOnly={isFeedbackSubmitted}
               />
             </div>
