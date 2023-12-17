@@ -76,7 +76,7 @@ const StartTaskDetail = () => {
         {photos.map((photo, index) => (
           <li
             key={photo}
-            className="h-52 w-52 border-2 border-dashed border-[#368dcf]"
+            className="h-48 w-full border-2 border-dashed border-[#368dcf] md:w-52"
           >
             <img
               className="h-full w-full cursor-pointer object-cover p-2"
@@ -92,7 +92,7 @@ const StartTaskDetail = () => {
         {[...Array(emptySlots)].map((_, index) => (
           <li
             key={`empty-${index}`}
-            className="flex h-52 w-52 items-center justify-center border-2 border-dashed border-[#368dcf] font-extrabold"
+            className="flex h-48 w-full items-center justify-center border-2 border-dashed border-[#368dcf] font-extrabold md:w-52"
           >
             <span>未提供圖片</span>
           </li>
@@ -326,50 +326,106 @@ const StartTaskDetail = () => {
           <p className="pl-2">任務資訊</p>
         </div>
         {/* 任務進度 */}
-        <div className="mb-10 flex items-center justify-center space-x-2 py-4">
+        <div className="hidden items-center justify-center space-x-2 py-4 md:flex">
           <div className="flex items-center justify-center">
-            <div className="flex h-40 w-40 items-center justify-center rounded-full bg-green-500 text-xl font-bold text-white">
-              任務媒合中
+            <div className="flex h-10 w-10 items-center justify-center rounded-full bg-green-500 text-xl font-bold text-white md:h-40 md:w-40">
+              <p>任務媒合中</p>
             </div>
           </div>
           <div className="flex-auto border-t-2 border-black"></div>
 
           <div className="flex items-center justify-center">
             <div
-              className={`flex h-40 w-40 items-center justify-center rounded-full text-xl font-bold ${
+              className={`hidden h-10 w-10 items-center justify-center rounded-full text-xl font-bold md:flex md:h-40 md:w-40 ${
                 taskDetails && taskDetails.status !== "任務媒合中"
                   ? "bg-green-500 text-white"
                   : "bg-gray-400"
               }`}
             >
-              任務進行中
+              <p>任務進行中</p>
+            </div>
+            <div
+              className={`flex h-10 w-10 items-center justify-center rounded-full text-xl font-bold md:hidden md:h-40 md:w-40 ${
+                taskDetails && taskDetails.status !== "任務媒合中"
+                  ? "bg-green-500 text-white"
+                  : "bg-gray-400"
+              }`}
+            >
+              <p>任務進行中</p>
             </div>
           </div>
           <div className="flex-auto border-t-2 border-black"></div>
 
           <div className="flex items-center justify-center">
             <div
-              className={`flex h-40 w-40 items-center justify-center rounded-full text-xl font-bold ${
+              className={`flex h-10 w-10 items-center justify-center rounded-full text-xl font-bold md:h-40 md:w-40 ${
                 (taskDetails && taskDetails.status === "任務回報完成") ||
                 taskDetails.status === "已完成"
                   ? "bg-green-500 text-white"
                   : "bg-gray-400"
               }`}
             >
-              任務回報完成
+              <p>任務回報完成</p>
             </div>
           </div>
           <div className="flex-auto border-t-2 border-black"></div>
           <div className="flex items-center justify-center">
             <div
-              className={`flex h-40 w-40 items-center justify-center rounded-full text-xl font-bold ${
+              className={`flex h-10 w-10 items-center justify-center rounded-full text-xl font-bold md:h-40 md:w-40 ${
                 taskDetails && taskDetails.status === "已完成"
                   ? "bg-green-500 text-white"
                   : "bg-gray-400 text-black"
               }`}
             >
-              已完成
+              <p>已完成</p>
             </div>
+          </div>
+        </div>
+        {/* 手機版任務內容 */}
+        <div className="flex items-center justify-between space-x-2 py-4 md:hidden">
+          <div className="flex flex-col items-center justify-center">
+            <div className="mb-4 flex h-10 w-10 flex-col items-center justify-center rounded-full bg-green-500 text-xl font-bold text-white sm:h-20 sm:w-20"></div>
+            <div className="flex flex-col">
+              <p>任務媒合中</p>
+            </div>
+          </div>
+          <div className="flex-auto border-t-2 border-black"></div>
+
+          <div className="flex flex-col items-center justify-center">
+            <div
+              className={`mb-4 flex h-10 w-10 items-center justify-center rounded-full text-xl font-bold sm:h-20 sm:w-20 ${
+                taskDetails && taskDetails.status !== "任務媒合中"
+                  ? "bg-green-500 text-white"
+                  : "bg-gray-400"
+              }`}
+            ></div>
+            <div className="flex flex-col">
+              <p>任務進行中</p>
+            </div>
+          </div>
+          <div className="flex-auto border-t-2 border-black"></div>
+
+          <div className="flex flex-col items-center justify-center">
+            <div
+              className={`mb-4 flex h-10 w-10 items-center justify-center rounded-full text-xl font-bold sm:h-20 sm:w-20 ${
+                (taskDetails && taskDetails.status === "任務回報完成") ||
+                taskDetails.status === "已完成"
+                  ? "bg-green-500 text-white"
+                  : "bg-gray-400"
+              }`}
+            ></div>
+            <p>任務回報完成</p>
+          </div>
+          <div className="flex-auto border-t-2 border-black"></div>
+          <div className="flex flex-col items-center justify-center">
+            <div
+              className={`mb-4 flex h-10 w-10 items-center justify-center rounded-full text-xl font-bold sm:h-20 sm:w-20 ${
+                taskDetails && taskDetails.status === "已完成"
+                  ? "bg-green-500 text-white"
+                  : "bg-gray-400 text-black"
+              }`}
+            ></div>
+            <p>已完成</p>
           </div>
         </div>
         {/* 任務資訊 */}
@@ -475,7 +531,7 @@ const StartTaskDetail = () => {
             {taskDetails.photos?.map((photo) => (
               <li
                 key={photo}
-                className="h-52 w-52 border-2 border-dashed border-[#368dcf]"
+                className="h-52 w-full border-2 border-dashed border-[#368dcf] sm:w-52"
               >
                 <img
                   className="h-full w-full cursor-pointer object-cover p-2"
@@ -493,7 +549,7 @@ const StartTaskDetail = () => {
               (_, index) => (
                 <li
                   key={index}
-                  className="flex h-52 w-52 items-center justify-center border-2 border-dashed border-[#368dcf] font-extrabold"
+                  className="flex h-52 w-full items-center justify-center border-2 border-dashed border-[#368dcf] font-extrabold sm:w-52"
                 >
                   <span>未提供圖片</span>
                 </li>
@@ -545,7 +601,9 @@ const StartTaskDetail = () => {
                 </p>
               </div>
             </div>
-            <ul className="flex justify-between gap-4">{renderPhotoList()}</ul>
+            <ul className="flex flex-wrap justify-center gap-4 lg:flex-nowrap">
+              {renderPhotoList()}
+            </ul>
             <div>
               <label
                 htmlFor="input1"
@@ -659,7 +717,9 @@ const StartTaskDetail = () => {
                 </p>
               </div>
             </div>
-            <ul className="flex justify-between gap-4">{renderPhotoList()}</ul>
+            <ul className="flex flex-wrap justify-center gap-4 lg:flex-nowrap">
+              {renderPhotoList()}
+            </ul>
             <div>
               <label
                 htmlFor="input1"

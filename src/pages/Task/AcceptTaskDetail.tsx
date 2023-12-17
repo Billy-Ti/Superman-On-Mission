@@ -494,9 +494,7 @@ const AcceptTaskDetail = () => {
               <div className="mb-3 border-b-4 border-b-[#B3D7FF] text-center text-xl font-black text-gray-500">
                 接案者名稱
               </div>
-              <div className="font-medium text-[#3178C6]">
-                {acceptorName}
-              </div>
+              <div className="font-medium text-[#3178C6]">{acceptorName}</div>
             </div>
           </div>
           {/* 右邊區塊結束 */}
@@ -506,11 +504,11 @@ const AcceptTaskDetail = () => {
           <p className="pl-2">任務照片</p>
         </div>
         <div className="mb-10 flex items-center justify-between">
-          <ul className="flex w-full flex-wrap justify-center gap-4">
+          <ul className="flex flex-wrap justify-center gap-4">
             {taskDetails.photos?.map((photo) => (
               <li
                 key={photo}
-                className="h-52 w-52 border-2 border-dashed border-[#368dcf]"
+                className="h-52 w-full border-2 border-dashed border-[#368dcf] sm:w-52"
               >
                 <img
                   className="h-full w-full cursor-pointer object-cover p-2"
@@ -523,11 +521,12 @@ const AcceptTaskDetail = () => {
                 />
               </li>
             ))}
+
             {[...Array(5 - (taskDetails.photos?.length || 0))].map(
               (_, index) => (
                 <li
                   key={index}
-                  className="flex h-52 w-52 items-center justify-center border-2 border-dashed border-[#368dcf] font-extrabold"
+                  className="flex h-52 w-full items-center justify-center border-2 border-dashed border-[#368dcf] font-extrabold sm:w-52"
                 >
                   <span>未提供圖片</span>
                 </li>
@@ -578,11 +577,11 @@ const AcceptTaskDetail = () => {
               </p>
             </div>
           </div>
-          <ul className="flex gap-4">
+          <ul className="flex flex-wrap gap-4">
             {selectedImages.map((image, index) => (
               <li
                 key={index}
-                className="relative mb-2 h-48 w-48 border-2 border-dashed border-[#368dcf]"
+                className="relative mb-2 h-48 w-full border-2 border-dashed border-[#368dcf] md:w-48"
               >
                 <input
                   type="file"
@@ -606,6 +605,7 @@ const AcceptTaskDetail = () => {
               </li>
             ))}
           </ul>
+
           {/* 顯示任務回報說明 */}
           <div>
             <label
