@@ -1,6 +1,6 @@
 import { Icon } from "@iconify/react";
 import { getAuth } from "firebase/auth";
-import { collection, getDocs, query, where } from "firebase/firestore";
+import { collection, getDocs, orderBy, query, where } from "firebase/firestore";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import NoRecordsComponent from "../../components/NoRecordsComponent";
@@ -38,25 +38,27 @@ const StartTaskRecord = () => {
         return;
       }
 
-      // 只獲取由當前用戶創建的任務
+      // 增加排序條件
       const q = query(
         collection(db, "tasks"),
         where("createdBy", "==", currentUser.uid),
+        orderBy("createdAt", "desc"), // 依據創建時間降序排列
       );
 
       const querySnapshot = await getDocs(q);
-      const fetchedTasks: Task[] = querySnapshot.docs
-        .map((doc) => {
-          const task = doc.data() as Task;
-          return { ...task, id: doc.id };
-        })
-        .filter((task) => task.status !== "已完成"); // 過濾掉已完成的任務
+      const fetchedTasks = querySnapshot.docs
+        .map((doc) => ({
+          ...(doc.data() as Task),
+          id: doc.id,
+        }))
+        .filter((task) => task.status !== "已完成");
 
       setTasks(fetchedTasks);
     };
 
     fetchTasks();
   }, []);
+
   return (
     <div className="container mx-auto py-10">
       <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
@@ -72,11 +74,11 @@ const StartTaskRecord = () => {
                     <img
                       src={task.photos[0]}
                       alt="任務"
-                      className=" mb-4 h-60 w-full rounded-md object-cover transition-transform duration-300 hover:scale-105"
+                      className="mb-4 h-60 w-full rounded-md object-cover transition-transform duration-300 hover:scale-105"
                     />
                   ) : (
-                    <div className="flex h-32 w-32 items-center justify-center font-extrabold">
-                      <span className="text-center">未提供圖片</span>
+                    <div className="mb-4 flex border h-60 w-full items-center justify-center font-extrabold">
+                      <span className="text-center text-lg text-gray-600">無提供圖片</span>
                     </div>
                   )}
                   {task.isUrgent ? (

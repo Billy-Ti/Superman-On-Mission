@@ -182,6 +182,21 @@ const TaskDetail = () => {
       return;
     }
 
+    // 如果嘗試接受自己創建的任務
+    if (taskDetails && currentUserID === taskDetails.createdBy) {
+      Swal.fire({
+        title: "操作無效",
+        text: "您不能接受自己創建的任務",
+        icon: "error",
+        confirmButtonText: "好的",
+        customClass: {
+          confirmButton:
+            "hover:bg-[#2b79b4] text-white font-bold py-2 px-4 rounded-md",
+        },
+      });
+      return;
+    }
+
     Swal.fire({
       title: "確定要接下此任務嗎？",
       html: "<strong style='color: red;'>接下後請務必注意任務截止日期</strong>",
@@ -379,9 +394,9 @@ const TaskDetail = () => {
           {isModalOpen && (
             <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
               <div className="relative h-full w-full max-w-screen-md overflow-auto">
-                <div className="flex h-full items-center justify-center">
+                <div className="mx-4 flex h-full items-center justify-center">
                   <img
-                    className="max-h-full max-w-full object-cover"
+                    className="max-h-full max-w-full object-cover "
                     src={selectedPhoto || "defaultImagePath"}
                     alt="Enlarged task photo"
                   />

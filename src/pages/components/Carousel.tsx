@@ -112,7 +112,9 @@ const Carousel = () => {
               >
                 {/* 標題容器 */}
                 <div className="mb-2 h-14 text-center">
-                  <h3 className="text-lg font-semibold">{task.title}</h3>
+                  <h3 className="line-clamp-1 text-lg font-semibold">
+                    {task.title}
+                  </h3>
                 </div>
 
                 {/* 圖片容器 */}
@@ -128,8 +130,12 @@ const Carousel = () => {
                       </div>
                     ))
                   ) : (
-                    <div className="text-center text-xl font-medium">
-                      未提供圖片
+                    <div className="mx-auto flex h-52 w-52 flex-col items-center justify-center">
+                      <p className="font-semibold">無提供圖片</p>
+                      <Icon
+                        icon="bxs:image-alt"
+                        className="h-20 w-20 text-gray-600"
+                      />
                     </div>
                   )}
                 </div>

@@ -231,7 +231,7 @@ const Profile = () => {
                             <ul className="text-md p-2 text-gray-500">
                               {item.content.map((contentItem, contentIndex) => (
                                 <li
-                                  className="text-lg font-medium hover:bg-[#2b79b4]"
+                                  className="text-lg font-medium "
                                   key={contentIndex}
                                 >
                                   {Object.entries(contentItem).map(

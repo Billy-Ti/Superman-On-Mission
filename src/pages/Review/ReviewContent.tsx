@@ -10,6 +10,7 @@ import {
 } from "firebase/firestore";
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
+import LoadingSpinner from "../../components/LoadingSpinner";
 import Pagination from "../../components/Pagination";
 import { db } from "../../config/firebase";
 import DisplaySwitchButton from "../components/DisplaySwitchButton";
@@ -28,19 +29,20 @@ const ReviewContent = () => {
   const [showReviews, setShowReviews] = useState<boolean>(false);
   const [reviewsPerPage] = useState(6); // 每頁顯示6條評價
   const [currentPage, setCurrentPage] = useState(1);
+  const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
     const auth = getAuth();
     onAuthStateChanged(auth, (user) => {
       if (user) {
         loadReviews(user.uid);
-      } else {
-        // Handle user not logged in
       }
     });
-  }, [showReviews, currentPage]);
+  }, [showReviews]);
 
   const loadReviews = async (userId: string) => {
+    setIsLoading(true);
+
     const reviewsCol = collection(db, "reviews");
     const condition = showReviews ? "ratedBy" : "ratedUser";
     const q = query(reviewsCol, where(condition, "==", userId));
@@ -72,20 +74,21 @@ const ReviewContent = () => {
         reviewedUserName: reviewedUserData?.name || "Unknown User", // 添加被评价用户的名称
       });
     }
-
     setReviews(loadedReviews);
+    setIsLoading(false);
   };
 
   // 獲取當前頁的評價
   const indexOfLastReview = currentPage * reviewsPerPage;
   const indexOfFirstReview = indexOfLastReview - reviewsPerPage;
   const currentReviews = reviews.slice(indexOfFirstReview, indexOfLastReview);
-
+  console.log(currentReviews.length); // 檢查當前顯示的評價數量是否為 6
   // 更改頁碼
   const paginate = (pageNumber: number) => setCurrentPage(pageNumber);
 
   const handleToggleDisplay = (event: React.ChangeEvent<HTMLInputElement>) => {
     setShowReviews(event.target.checked);
+    setCurrentPage(1);
   };
 
   const renderRatingStars = (rating: number) => {
@@ -131,56 +134,60 @@ const ReviewContent = () => {
         paginate={paginate}
         currentPage={currentPage}
       />
-      <div className="mt-10 grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3 ">
-        {currentReviews.length > 0 ? (
-          currentReviews.map((review) => (
-            <div
-              key={review.reviewTaskId}
-              className="border-gradient relative flex flex-col rounded-md border-2 border-gray-200 bg-white p-4 shadow-xl transition-all duration-300 ease-in-out hover:shadow-2xl"
-            >
-              <p className="text-black-700 flex items-center justify-center text-lg font-bold">
-                <span className="mr-2 block h-6 w-6 rounded-full bg-green-500 text-2xl"></span>
-                {review.status}
-              </p>
-              <div className="mt-4 h-64 overflow-hidden">
-                <img
-                  src={review.photo}
-                  alt={review.title}
-                  className="h-full w-full rounded-md object-cover transition-transform duration-300 ease-in-out hover:scale-110"
-                />
-              </div>
-              <div className="mt-4 mb-4 line-clamp-1 grow text-center text-xl font-semibold">
-                {review.title}
-              </div>
-              <div className="mb-4 text-center text-lg font-medium">
-                <p>給 {review.reviewedUserName} 的評價</p>
-              </div>
-              <div className="mb-4 mt-2 flex justify-center">
-                {renderRatingStars(review.rating)}
-              </div>
-              <Link
-                to={`/detail/${review.reviewTaskId}`}
-                type="button"
-                className="mt-auto flex items-center justify-center rounded-md bg-[#368DCF] p-3 text-xl font-medium text-white transition duration-500 ease-in-out hover:bg-[#2b79b4]"
+      {isLoading ? (
+        <LoadingSpinner />
+      ) : (
+        <div className="mt-10 grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3 ">
+          {currentReviews.length > 0 ? (
+            currentReviews.map((review) => (
+              <div
+                key={review.reviewTaskId}
+                className="border-gradient relative flex flex-col rounded-md border-2 border-gray-200 bg-white p-4 shadow-xl transition-all duration-300 ease-in-out hover:shadow-2xl"
               >
-                <Icon
-                  icon="icon-park:click-tap"
-                  className="mr-2 inline-block h-6 w-6 text-black hover:text-white"
-                />
-                查看評價資訊
-              </Link>
+                <p className="text-black-700 flex items-center justify-center text-lg font-bold">
+                  <span className="mr-2 block h-6 w-6 rounded-full bg-green-500 text-2xl"></span>
+                  {review.status}
+                </p>
+                <div className="mt-4 h-64 overflow-hidden">
+                  <img
+                    src={review.photo}
+                    alt={review.title}
+                    className="h-full w-full rounded-md object-cover transition-transform duration-300 ease-in-out hover:scale-110"
+                  />
+                </div>
+                <div className="mb-4 mt-4 line-clamp-1 grow text-center text-xl font-semibold">
+                  {review.title}
+                </div>
+                <div className="mb-4 text-center text-lg font-medium">
+                  <p>給 {review.reviewedUserName} 的評價</p>
+                </div>
+                <div className="mb-4 mt-2 flex justify-center">
+                  {renderRatingStars(review.rating)}
+                </div>
+                <Link
+                  to={`/detail/${review.reviewTaskId}`}
+                  type="button"
+                  className="mt-auto flex items-center justify-center rounded-md bg-[#368DCF] p-3 text-xl font-medium text-white transition duration-500 ease-in-out hover:bg-[#2b79b4]"
+                >
+                  <Icon
+                    icon="icon-park:click-tap"
+                    className="mr-2 inline-block h-6 w-6 text-black hover:text-white"
+                  />
+                  查看評價資訊
+                </Link>
+              </div>
+            ))
+          ) : (
+            <div className="col-span-1 mt-10 h-64 border border-[#368DCF] md:col-span-2 lg:col-span-3">
+              <div className="flex h-full w-full items-center justify-center">
+                <p className="text-center text-lg font-semibold">
+                  尚未得到別人的評價
+                </p>
+              </div>
             </div>
-          ))
-        ) : (
-          <div className="col-span-1 mt-10 h-64 border border-[#368DCF] md:col-span-2 lg:col-span-3">
-            <div className="flex h-full w-full items-center justify-center">
-              <p className="text-center text-lg font-semibold">
-                尚未得到別人的評價
-              </p>
-            </div>
-          </div>
-        )}
-      </div>
+          )}
+        </div>
+      )}
     </div>
   );
 };

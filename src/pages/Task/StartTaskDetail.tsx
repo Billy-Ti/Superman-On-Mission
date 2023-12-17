@@ -76,7 +76,7 @@ const StartTaskDetail = () => {
         {photos.map((photo, index) => (
           <li
             key={photo}
-            className="h-52 w-52 border-2 border-dashed border-[#368dcf]"
+            className="h-48 w-full border-2 border-dashed border-[#368dcf] md:w-52"
           >
             <img
               className="h-full w-full cursor-pointer object-cover p-2"
@@ -92,7 +92,7 @@ const StartTaskDetail = () => {
         {[...Array(emptySlots)].map((_, index) => (
           <li
             key={`empty-${index}`}
-            className="flex h-52 w-52 items-center justify-center border-2 border-dashed border-[#368dcf] font-extrabold"
+            className="flex h-48 w-full items-center justify-center border-2 border-dashed border-[#368dcf] font-extrabold md:w-52"
           >
             <span>未提供圖片</span>
           </li>
@@ -184,7 +184,7 @@ const StartTaskDetail = () => {
 
     const result = await Swal.fire({
       title: "🚨系統提醒",
-      html: "<strong style='color: gray;'>回饋成功後將進入評價流程</strong>",
+      html: "<strong style='color: gray;'>回饋成功後您將進入評價流程</strong>",
       icon: "info",
       showCancelButton: true,
       confirmButtonText: "確定",
@@ -205,7 +205,7 @@ const StartTaskDetail = () => {
         await fetchTaskDetails();
 
         await Swal.fire({
-          title: "✅已回饋成功",
+          title: "感謝您的回饋",
           text: "將進入評價流程",
           icon: "success",
           timer: 1500,
@@ -326,50 +326,106 @@ const StartTaskDetail = () => {
           <p className="pl-2">任務資訊</p>
         </div>
         {/* 任務進度 */}
-        <div className="mb-10 flex items-center justify-center space-x-2 py-4">
+        <div className="hidden items-center justify-center space-x-2 py-4 md:flex">
           <div className="flex items-center justify-center">
-            <div className="flex h-40 w-40 items-center justify-center rounded-full bg-green-500 text-xl font-bold text-white">
-              任務媒合中
+            <div className="flex h-10 w-10 items-center justify-center rounded-full bg-green-500 text-xl font-bold text-white md:h-40 md:w-40">
+              <p>任務媒合中</p>
             </div>
           </div>
           <div className="flex-auto border-t-2 border-black"></div>
 
           <div className="flex items-center justify-center">
             <div
-              className={`flex h-40 w-40 items-center justify-center rounded-full text-xl font-bold ${
+              className={`hidden h-10 w-10 items-center justify-center rounded-full text-xl font-bold md:flex md:h-40 md:w-40 ${
                 taskDetails && taskDetails.status !== "任務媒合中"
                   ? "bg-green-500 text-white"
                   : "bg-gray-400"
               }`}
             >
-              任務進行中
+              <p>任務進行中</p>
+            </div>
+            <div
+              className={`flex h-10 w-10 items-center justify-center rounded-full text-xl font-bold md:hidden md:h-40 md:w-40 ${
+                taskDetails && taskDetails.status !== "任務媒合中"
+                  ? "bg-green-500 text-white"
+                  : "bg-gray-400"
+              }`}
+            >
+              <p>任務進行中</p>
             </div>
           </div>
           <div className="flex-auto border-t-2 border-black"></div>
 
           <div className="flex items-center justify-center">
             <div
-              className={`flex h-40 w-40 items-center justify-center rounded-full text-xl font-bold ${
+              className={`flex h-10 w-10 items-center justify-center rounded-full text-xl font-bold md:h-40 md:w-40 ${
                 (taskDetails && taskDetails.status === "任務回報完成") ||
                 taskDetails.status === "已完成"
                   ? "bg-green-500 text-white"
                   : "bg-gray-400"
               }`}
             >
-              任務回報完成
+              <p>任務回報完成</p>
             </div>
           </div>
           <div className="flex-auto border-t-2 border-black"></div>
           <div className="flex items-center justify-center">
             <div
-              className={`flex h-40 w-40 items-center justify-center rounded-full text-xl font-bold ${
+              className={`flex h-10 w-10 items-center justify-center rounded-full text-xl font-bold md:h-40 md:w-40 ${
                 taskDetails && taskDetails.status === "已完成"
                   ? "bg-green-500 text-white"
                   : "bg-gray-400 text-black"
               }`}
             >
-              已完成
+              <p>已完成</p>
             </div>
+          </div>
+        </div>
+        {/* 手機版任務內容 */}
+        <div className="flex items-center justify-between space-x-2 py-4 md:hidden">
+          <div className="flex flex-col items-center justify-center">
+            <div className="mb-4 flex h-10 w-10 flex-col items-center justify-center rounded-full bg-green-500 text-xl font-bold text-white sm:h-20 sm:w-20"></div>
+            <div className="flex flex-col">
+              <p>任務媒合中</p>
+            </div>
+          </div>
+          <div className="flex-auto border-t-2 border-black"></div>
+
+          <div className="flex flex-col items-center justify-center">
+            <div
+              className={`mb-4 flex h-10 w-10 items-center justify-center rounded-full text-xl font-bold sm:h-20 sm:w-20 ${
+                taskDetails && taskDetails.status !== "任務媒合中"
+                  ? "bg-green-500 text-white"
+                  : "bg-gray-400"
+              }`}
+            ></div>
+            <div className="flex flex-col">
+              <p>任務進行中</p>
+            </div>
+          </div>
+          <div className="flex-auto border-t-2 border-black"></div>
+
+          <div className="flex flex-col items-center justify-center">
+            <div
+              className={`mb-4 flex h-10 w-10 items-center justify-center rounded-full text-xl font-bold sm:h-20 sm:w-20 ${
+                (taskDetails && taskDetails.status === "任務回報完成") ||
+                taskDetails.status === "已完成"
+                  ? "bg-green-500 text-white"
+                  : "bg-gray-400"
+              }`}
+            ></div>
+            <p>任務回報完成</p>
+          </div>
+          <div className="flex-auto border-t-2 border-black"></div>
+          <div className="flex flex-col items-center justify-center">
+            <div
+              className={`mb-4 flex h-10 w-10 items-center justify-center rounded-full text-xl font-bold sm:h-20 sm:w-20 ${
+                taskDetails && taskDetails.status === "已完成"
+                  ? "bg-green-500 text-white"
+                  : "bg-gray-400 text-black"
+              }`}
+            ></div>
+            <p>已完成</p>
           </div>
         </div>
         {/* 任務資訊 */}
@@ -475,7 +531,7 @@ const StartTaskDetail = () => {
             {taskDetails.photos?.map((photo) => (
               <li
                 key={photo}
-                className="h-52 w-52 border-2 border-dashed border-[#368dcf]"
+                className="h-52 w-full border-2 border-dashed border-[#368dcf] sm:w-52"
               >
                 <img
                   className="h-full w-full cursor-pointer object-cover p-2"
@@ -493,7 +549,7 @@ const StartTaskDetail = () => {
               (_, index) => (
                 <li
                   key={index}
-                  className="flex h-52 w-52 items-center justify-center border-2 border-dashed border-[#368dcf] font-extrabold"
+                  className="flex h-52 w-full items-center justify-center border-2 border-dashed border-[#368dcf] font-extrabold sm:w-52"
                 >
                   <span>未提供圖片</span>
                 </li>
@@ -504,7 +560,7 @@ const StartTaskDetail = () => {
           {isModalOpen && (
             <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
               <div className="relative h-full w-full max-w-screen-md overflow-auto">
-                <div className="flex h-full items-center justify-center">
+                <div className="mx-4 flex h-full items-center justify-center">
                   <img
                     className="max-h-full max-w-full object-cover"
                     src={selectedPhoto || "defaultImagePath"}
@@ -545,7 +601,9 @@ const StartTaskDetail = () => {
                 </p>
               </div>
             </div>
-            <ul className="flex justify-between gap-4">{renderPhotoList()}</ul>
+            <ul className="flex flex-wrap justify-center gap-4 lg:flex-nowrap">
+              {renderPhotoList()}
+            </ul>
             <div>
               <label
                 htmlFor="input1"
@@ -583,9 +641,13 @@ const StartTaskDetail = () => {
             <div>
               <label
                 htmlFor="comment"
-                className="block text-xl font-extrabold text-gray-700"
+                className="flex text-xl font-extrabold text-gray-700"
               >
                 To 超人的評價
+                <span className="flex items-center text-sm font-extrabold text-[#2B79B4]">
+                  <Icon icon="solar:star-bold" />
+                  案主填寫
+                </span>
               </label>
               <textarea
                 id="comment"
@@ -603,7 +665,7 @@ const StartTaskDetail = () => {
                 className="flex text-xl font-extrabold text-gray-700"
               >
                 發案者回饋
-                <span className="flex items-center text-sm font-extrabold text-red-500">
+                <span className="flex items-center text-sm font-extrabold text-[#2B79B4]">
                   <Icon icon="solar:star-bold" />
                   案主填寫
                 </span>
@@ -659,7 +721,9 @@ const StartTaskDetail = () => {
                 </p>
               </div>
             </div>
-            <ul className="flex justify-between gap-4">{renderPhotoList()}</ul>
+            <ul className="flex flex-wrap justify-center gap-4 lg:flex-nowrap">
+              {renderPhotoList()}
+            </ul>
             <div>
               <label
                 htmlFor="input1"
@@ -706,9 +770,13 @@ const StartTaskDetail = () => {
             <div>
               <label
                 htmlFor="comment"
-                className="block text-xl font-extrabold text-gray-700"
+                className="flex text-xl font-extrabold text-gray-700"
               >
                 To 超人的評價
+                <span className="flex items-center text-sm font-extrabold text-[#2B79B4]">
+                  <Icon icon="solar:star-bold" />
+                  案主填寫
+                </span>
               </label>
               <textarea
                 id="comment"
@@ -726,7 +794,7 @@ const StartTaskDetail = () => {
                 className="flex text-xl font-extrabold text-gray-700"
               >
                 發案者回饋
-                <span className="flex items-center text-sm font-extrabold text-red-500">
+                <span className="flex items-center text-sm font-extrabold text-[#2B79B4]">
                   <Icon icon="solar:star-bold" />
                   案主填寫
                 </span>
@@ -743,6 +811,7 @@ const StartTaskDetail = () => {
                 }
                 value={feedbackMessage}
                 onChange={(e) => setFeedbackMessage(e.target.value)}
+                disabled={taskDetails.status === "已完成"}
                 readOnly={isFeedbackSubmitted}
               />
             </div>

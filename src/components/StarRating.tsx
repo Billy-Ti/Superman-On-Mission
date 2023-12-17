@@ -45,6 +45,8 @@ const StarRating: React.FC<StarRatingProps> = ({
         ratedComment: comment, // 發案者評論
       };
 
+      let userRef; // 使用 let 宣告變數
+
       Swal.fire({
         title: "提交評價",
         html: `<strong style='color: #8D91AA;'>您將支付 ${taskCost} Super Coins</strong>`,
@@ -74,7 +76,7 @@ const StarRating: React.FC<StarRatingProps> = ({
             const newAverageRating = count > 0 ? totalRating / count : 0;
 
             // 更新 `users` 集合中的 `averageRating`
-            const userRef = doc(db, "users", ratedUser);
+            userRef = doc(db, "users", ratedUser); // 更新 userRef
             await updateDoc(userRef, {
               averageRating: newAverageRating,
             });
@@ -88,9 +90,28 @@ const StarRating: React.FC<StarRatingProps> = ({
               allowOutsideClick: false,
             });
             setComment("");
+
+            // 更新任務評價
+            await addDoc(collection(db, "reviews"), review);
+
+            // 更新接案者金幣餘額
+            const userSnap = await getDoc(userRef);
+            if (userSnap.exists()) {
+              const userData = userSnap.data();
+              const newCoinBalance = (userData.superCoins || 0) + taskCost;
+              await updateDoc(userRef, { superCoins: newCoinBalance });
+            }
+
+            // 更新任務狀態（如果需要）
+            await updateDoc(taskRef, { status: "已完成" });
+
+            // 在這裡執行導航到"/"頁面的操作
             navigate("/");
           } catch (error) {
-            console.error("Error submitting review: ", error);
+            console.error(
+              "Error in handling rating and updating coins: ",
+              error,
+            );
             Swal.fire({
               title: "發生錯誤",
               text: "無法提交評價",
@@ -283,7 +304,7 @@ const StarRating: React.FC<StarRatingProps> = ({
             <button
               onClick={handleSubmit}
               type="button"
-              className="w-1/3 rounded-md bg-blue-500 p-6 text-2xl font-extrabold text-white transition-colors hover:bg-[#355c7d]"
+              className="flex items-center justify-center rounded-md bg-[#368DCF] px-4 py-2 text-lg font-medium text-white transition duration-500 ease-in-out hover:bg-[#2b79b4]"
             >
               送出評價
             </button>

@@ -101,7 +101,7 @@ const Header = () => {
     const notificationMessages = notifications
       .map(
         (notification, index) =>
-          `<div key=${index}>${notification.acceptorName} 接了您的 "${notification.taskName}"</div>`,
+          `<div key=${index}><h3> ${notification.acceptorName} 接了您的 </h3> "${notification.taskName} 任務"</div>`,
       )
       .join("");
 

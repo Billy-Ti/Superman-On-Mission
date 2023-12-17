@@ -159,9 +159,11 @@ const AcceptTaskDetail = () => {
   const fetchTask = async () => {
     if (!taskId) {
       console.log("Task ID is not defined");
+      setLoading(false);
       return;
     }
     console.log("Fetching task with ID:", taskId);
+    setLoading(true);
     const taskRef = doc(db, "tasks", taskId);
     try {
       const docSnap = await getDoc(taskRef);
@@ -187,6 +189,8 @@ const AcceptTaskDetail = () => {
       }
     } catch (error) {
       console.error("Error getting document:", error);
+    } finally {
+      setLoading(false);
     }
   };
   useEffect(() => {
@@ -329,15 +333,16 @@ const AcceptTaskDetail = () => {
   }, [taskId]);
   if (loading) {
     return (
-      <div>
-        <p>任務載入中...請稍等</p>
+      <div className="flex h-screen items-center justify-center">
+        <p>任務載入中...</p>
       </div>
     );
   }
+
   if (!taskDetails) {
     return (
-      <div>
-        <p>目前沒有任務...</p>
+      <div className="flex h-screen items-center justify-center">
+        <p>任務資訊不存在...</p>
       </div>
     );
   }
@@ -494,9 +499,7 @@ const AcceptTaskDetail = () => {
               <div className="mb-3 border-b-4 border-b-[#B3D7FF] text-center text-xl font-black text-gray-500">
                 接案者名稱
               </div>
-              <div className="font-medium text-[#3178C6]">
-                {acceptorName}
-              </div>
+              <div className="font-medium text-[#3178C6]">{acceptorName}</div>
             </div>
           </div>
           {/* 右邊區塊結束 */}
@@ -506,11 +509,11 @@ const AcceptTaskDetail = () => {
           <p className="pl-2">任務照片</p>
         </div>
         <div className="mb-10 flex items-center justify-between">
-          <ul className="flex w-full flex-wrap justify-center gap-4">
+          <ul className="flex flex-wrap justify-center gap-4">
             {taskDetails.photos?.map((photo) => (
               <li
                 key={photo}
-                className="h-52 w-52 border-2 border-dashed border-[#368dcf]"
+                className="h-52 w-full border-2 border-dashed border-[#368dcf] sm:w-52"
               >
                 <img
                   className="h-full w-full cursor-pointer object-cover p-2"
@@ -523,11 +526,12 @@ const AcceptTaskDetail = () => {
                 />
               </li>
             ))}
+
             {[...Array(5 - (taskDetails.photos?.length || 0))].map(
               (_, index) => (
                 <li
                   key={index}
-                  className="flex h-52 w-52 items-center justify-center border-2 border-dashed border-[#368dcf] font-extrabold"
+                  className="flex h-52 w-full items-center justify-center border-2 border-dashed border-[#368dcf] font-extrabold sm:w-52"
                 >
                   <span>未提供圖片</span>
                 </li>
@@ -537,7 +541,7 @@ const AcceptTaskDetail = () => {
           {isModalOpen && (
             <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
               <div className="relative h-full w-full max-w-screen-md overflow-auto">
-                <div className="flex h-full items-center justify-center">
+                <div className="mx-4 flex h-full items-center justify-center">
                   <img
                     className="max-h-full max-w-full object-cover"
                     src={selectedPhoto || "defaultImagePath"}
@@ -578,17 +582,20 @@ const AcceptTaskDetail = () => {
               </p>
             </div>
           </div>
-          <ul className="flex gap-4">
+          <ul className="flex flex-wrap gap-4">
             {selectedImages.map((image, index) => (
               <li
                 key={index}
-                className="relative mb-2 h-48 w-48 border-2 border-dashed border-[#368dcf]"
+                className="relative mb-2 h-48 w-full border-2 border-dashed border-[#368dcf] md:w-48"
               >
                 <input
                   type="file"
                   name="taskPhoto"
                   accept="image/png, image/jpeg, image/gif"
                   onChange={(e) => handleImgSelect(e, index)}
+                  disabled={
+                    taskStatus === "任務回報完成" || taskStatus === "已完成"
+                  }
                   className="absolute left-0 top-0 z-10 h-full w-full cursor-pointer opacity-0"
                 />
                 {!image && (
@@ -606,6 +613,7 @@ const AcceptTaskDetail = () => {
               </li>
             ))}
           </ul>
+
           {/* 顯示任務回報說明 */}
           <div>
             <label
