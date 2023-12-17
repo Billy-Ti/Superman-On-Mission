@@ -283,7 +283,7 @@ const StarRating: React.FC<StarRatingProps> = ({
             <button
               onClick={handleSubmit}
               type="button"
-              className="w-1/3 rounded-md bg-blue-500 p-6 text-2xl font-extrabold text-white transition-colors hover:bg-[#355c7d]"
+              className="flex items-center justify-center rounded-md bg-[#368DCF] px-4 py-2 text-lg font-medium text-white transition duration-500 ease-in-out hover:bg-[#2b79b4]"
             >
               送出評價
             </button>
