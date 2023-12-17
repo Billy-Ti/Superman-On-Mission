@@ -374,7 +374,7 @@ const ChatRoomWindow = ({ onCloseRoom }: ChatRoomWindowProps) => {
     event: React.KeyboardEvent<HTMLInputElement>,
   ) => {
     if (event.key === "Enter") {
-      event.preventDefault(); // 防止輸入時換行
+      event.preventDefault(); 
       await handleSendMessage();
     }
   };
@@ -408,9 +408,6 @@ const ChatRoomWindow = ({ onCloseRoom }: ChatRoomWindowProps) => {
         setSelectedUserName("未知用戶");
       }
     }
-
-    setSelectedUserId(userId); // 設置所選用戶的 ID
-
     setSelectedUserId(userId); // 設置所選用戶的 ID
     setMessages([]); // 清空當前訊息
 
@@ -431,7 +428,7 @@ const ChatRoomWindow = ({ onCloseRoom }: ChatRoomWindowProps) => {
       await updateDoc(doc.ref, { isRead: true });
     });
 
-    // 加載與選擇的用戶的對話
+    // 載入與選擇的用戶的對話
     const q2 = query(
       messagesRef,
       where("chatSessionId", "in", [
@@ -451,7 +448,7 @@ const ChatRoomWindow = ({ onCloseRoom }: ChatRoomWindowProps) => {
   return (
     <div className="fixed inset-0 z-50 my-auto flex h-full items-center justify-center bg-black bg-opacity-50 py-10 text-gray-800 antialiased">
       <div className="relative flex h-[95vh] w-[90%] flex-col overflow-y-auto rounded-md bg-white p-4 shadow-lg lg:h-[70vh] lg:w-3/4 lg:flex-row">
-        <span className="absolute right-5 top-6 h-6 w-6 animate-ping rounded-full bg-gray-200 opacity-75" />
+        <span className="absolute right-5 top-6 h-6 w-6 animate-ping rounded-full " />
         <button
           onClick={onCloseRoom}
           className="absolute right-3 top-3 z-[100] mr-2 mt-2 text-gray-500 hover:text-gray-700"
@@ -472,10 +469,10 @@ const ChatRoomWindow = ({ onCloseRoom }: ChatRoomWindowProps) => {
             />
           </svg>
         </button>
-        <div className="flex w-full flex-shrink-0 flex-grow-0 flex-col bg-white py-1 pl-6 pr-2 lg:w-64">
+        <div className="flex w-full flex-shrink-0 flex-grow-0 flex-col bg-white pl-6 pr-2 lg:w-64">
           {/* 聊天室窗標題 */}
           <ChatRoomTitle />
-          <div className="mb-2 mt-1 flex w-full flex-col items-center rounded-md border border-gray-200 bg-indigo-100 px-4 py-1">
+          <div className="mb-2 mt-1 flex w-full flex-col items-center rounded-md border border-gray-200 bg-[#B3D7FF] px-4 py-1">
             <div className="h-20 w-20 overflow-hidden rounded-full border">
               <img
                 src={currentUser?.profilePicUrl || defaultProfilePic}
@@ -540,14 +537,14 @@ const ChatRoomWindow = ({ onCloseRoom }: ChatRoomWindowProps) => {
               ))
             )}
           </div>
-          <div className="-mx-2 flex h-[150px] flex-col space-y-1 overflow-y-auto lg:h-1/2">
+          <div className="-mx-2 flex h-[100px] flex-col space-y-1 overflow-y-auto lg:h-1/2">
             {userList.map((user) => (
               <button
                 className="relative flex flex-row items-center rounded-md p-2 hover:rounded-md hover:bg-gray-100"
                 key={user.id}
                 onClick={() => handleSelectUser(user.id)}
               >
-                <div className="flex h-8 w-8 items-center justify-center rounded-full bg-indigo-200">
+                <div className="flex h-8 w-8 items-center justify-center rounded-full bg-[#B3D7FF]">
                   {user.name ? user.name.charAt(0).toLocaleUpperCase() : ""}{" "}
                   {/* 檢查 user.name 是否存在 */}
                 </div>
@@ -564,13 +561,13 @@ const ChatRoomWindow = ({ onCloseRoom }: ChatRoomWindowProps) => {
           </div>
         </div>
         {/* 聊天視窗主體 */}
-        <div className="flex h-full flex-auto flex-col overflow-y-auto p-6">
+        <div className="flex h-full flex-auto flex-col overflow-y-auto ">
           {selectedUserId && (
             <div className="flex h-full flex-auto flex-shrink-0 flex-col justify-between break-words rounded-md bg-gray-100 p-4">
               <div className="h-full overflow-auto">
                 {/* 訊息列表 */}
-                <div className="flex flex-grow flex-col items-center justify-between p-4">
-                  <div className="mb-10 bg-gradient-to-r from-blue-700 via-blue-500 to-purple-400 bg-clip-text text-center text-2xl font-black text-transparent">
+                <div className="mb-10 flex flex-grow flex-col items-center justify-between ">
+                  <div className="mb-10 font-black text-[#368DCF] md:text-2xl">
                     {`You are contacting to ${selectedUserName} ...`}
                   </div>
                   {messages
@@ -664,9 +661,9 @@ const ChatRoomWindow = ({ onCloseRoom }: ChatRoomWindowProps) => {
                         xmlns="http://www.w3.org/2000/svg"
                       >
                         <path
-                          stroke-linecap="round"
-                          stroke-linejoin="round"
-                          stroke-width="2"
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth="2"
                           d="M14.828 14.828a4 4 0 01-5.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
                         ></path>
                       </svg>
@@ -688,8 +685,8 @@ const ChatRoomWindow = ({ onCloseRoom }: ChatRoomWindowProps) => {
                         xmlns="http://www.w3.org/2000/svg"
                       >
                         <path
-                          stroke-linecap="round"
-                          stroke-linejoin="round"
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
                           stroke-width="2"
                           d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8"
                         ></path>

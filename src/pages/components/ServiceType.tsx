@@ -1,6 +1,12 @@
 import { Icon } from "@iconify/react";
-import { forwardRef, useImperativeHandle, useState } from "react";
-
+import "air-datepicker";
+import AirDatepicker from "air-datepicker";
+import "air-datepicker/air-datepicker.css";
+import localeZh from "air-datepicker/locale/zh";
+import { forwardRef, useEffect, useImperativeHandle, useState } from "react";
+new AirDatepicker("#zh", {
+  locale: localeZh,
+});
 // 定義 interface 以提供 Task 元件做清空動作
 export interface ServiceTypeRef {
   resetServiceType: () => void;
@@ -8,12 +14,61 @@ export interface ServiceTypeRef {
   getUrgentStatus: () => boolean | null;
   getDate: () => string;
 }
+// 定義一個接口消除 TS 對 data picker 參數的提醒
+interface AirDatepickerInstance {
+  selectDate: (date: Date) => void;
+  setViewDate: (date: Date) => void;
+  hide: () => void;
+}
 
+// 讓 SVG 日期 icon 也能觸發選擇器
+const handleIconClick = () => {
+  const datepickerInput = document.getElementById("datepicker");
+  if (datepickerInput) {
+    datepickerInput.focus(); // 觸發選擇器輸入框的 focus 事件
+  }
+};
 const ServiceType = forwardRef((_props, ref) => {
   const [selectedIndexes, setSelectedIndexes] = useState<number[]>([]);
   const [urgent, setUrgent] = useState<boolean | null>(false);
   const [selectedDate, setSelectedDate] = useState<string>("");
-
+  useEffect(() => {
+    const todayButton = {
+      content: "今天",
+      onClick: (dp: AirDatepickerInstance) => {
+        const currentDate = new Date();
+        dp.selectDate(currentDate);
+        dp.setViewDate(currentDate);
+      },
+    };
+    const confirmButton = {
+      content: "確定",
+      onClick: (dp: AirDatepickerInstance) => {
+        dp.hide();
+      },
+    };
+    // 初始化日期選擇器設定
+    const datepicker = new AirDatepicker("#datepicker", {
+      locale: localeZh, // 將語言設定為英文
+      dateFormat: "yyyy/MM/dd", // 設定日期格式
+      isMobile: true, // 手機板日期跳出視窗，false 的話則只用下拉的
+      buttons: [todayButton, confirmButton], // 加上"今天" "確定" 按鈕
+      firstDay: 0, // 將一周的第一天設為星期日
+      onSelect: function ({ formattedDate }) {
+        if (Array.isArray(formattedDate)) {
+          // 如果日期回傳是陣列，只取第一个元素
+          setSelectedDate(formattedDate[0]);
+        } else {
+          // 如果是字串，直接使用
+          setSelectedDate(formattedDate);
+        }
+      },
+    });
+    // 清除日期選擇器以避免內存洩漏
+    return () => {
+      datepicker.destroy();
+    };
+  }, []);
   useImperativeHandle(ref, () => ({
     resetServiceType: () => {
       setSelectedIndexes([]);
@@ -30,16 +85,13 @@ const ServiceType = forwardRef((_props, ref) => {
       if (!selectedDate) {
         return "";
       }
-
       const date = new Date(selectedDate);
       const year = date.getFullYear();
       const month = (date.getMonth() + 1).toString().padStart(2, "0");
       const day = date.getDate().toString().padStart(2, "0");
-
       return `${year}/${month}/${day}`;
     },
   }));
-
   const serviceType = [
     "生活服務",
     "履歷撰寫",
@@ -51,10 +103,8 @@ const ServiceType = forwardRef((_props, ref) => {
     "影像服務",
     "其他",
   ];
-
   const handleServiceTypeClick = (index: number) => {
     const isSelected = selectedIndexes.includes(index);
-
     if (isSelected) {
       setSelectedIndexes((prevIndexes) =>
         prevIndexes.filter((i) => i !== index),
@@ -63,7 +113,6 @@ const ServiceType = forwardRef((_props, ref) => {
       setSelectedIndexes((prevIndexes) => [...prevIndexes, index]);
     }
   };
-
   const handleUrgentClick = (value: boolean) => {
     setUrgent(value);
   };
@@ -91,21 +140,21 @@ const ServiceType = forwardRef((_props, ref) => {
             <div className="mb-8 flex">
               <div className="flex items-center">
                 <span className="mr-2 h-8 w-2 bg-[#368dcf]"></span>
-                <p className="flex-1 rounded-md py-2 pr-4 text-center text-3xl font-semibold">
-                  是否十萬火急
+                <p className="flex-1 rounded-md py-2 pr-4 text-center text-2xl font-semibold">
+                  急件
                 </p>
               </div>
               <div
-                className={`flex cursor-pointer items-center rounded-md px-4 py-2 font-semibold shadow ${
-                  urgent ? "bg-gray-200" : "bg-white"
+                className={`mr-3 flex cursor-pointer items-center rounded-md px-4 py-2 font-normal shadow ${
+                  urgent ? "bg-[#368DCF] text-white " : ""
                 }`}
                 onClick={() => handleUrgentClick(true)}
               >
                 是
               </div>
               <div
-                className={`flex cursor-pointer items-center rounded-md px-4 py-2 font-semibold shadow ${
-                  urgent === false ? "bg-gray-200" : "bg-white"
+                className={`flex cursor-pointer items-center rounded-md px-4 py-2 font-normal shadow ${
+                  urgent === false ? "bg-[#368DCF] text-white" : ""
                 }`}
                 onClick={() => handleUrgentClick(false)}
               >
@@ -115,14 +164,26 @@ const ServiceType = forwardRef((_props, ref) => {
             <div className="flex items-center">
               <div className="flex items-center font-semibold">
                 <span className="mr-2 h-8 w-2 bg-[#368dcf]"></span>
-                <p className="pr-4 text-3xl font-semibold">完成日期</p>
+                <p className="pr-4 text-2xl font-semibold">任務截止日</p>
               </div>
-              <input
-                className="border"
-                type="date"
-                value={selectedDate}
-                onChange={(e) => setSelectedDate(e.target.value)}
-              />
+              <div className="relative flex items-center">
+                <input
+                  className="scale-95 transform cursor-pointer rounded-md border p-1 pr-6 focus:outline-none"
+                  id="datepicker"
+                  placeholder="請選擇截止日期"
+                  type="text"
+                  value={selectedDate}
+                />
+                <svg
+                  onClick={handleIconClick}
+                  className="absolute right-3 h-5 w-5 cursor-pointer text-[#368dcf]" // 調整這裡來改變 SVG 的大小和顏色
+                  xmlns="http://www.w3.org/2000/svg"
+                  viewBox="0 0 24 24"
+                  fill="currentColor" // 使用currentColor來讓SVG繼承文字顏色
+                >
+                  <path d="M8 14q-.425 0-.712-.288T7 13q0-.425.288-.712T8 12q.425 0 .713.288T9 13q0 .425-.288.713T8 14m4 0q-.425 0-.712-.288T11 13q0-.425.288-.712T12 12q.425 0 .713.288T13 13q0 .425-.288.713T12 14m4 0q-.425 0-.712-.288T15 13q0-.425.288-.712T16 12q.425 0 .713.288T17 13q0 .425-.288.713T16 14M5 22q-.825 0-1.412-.587T3 20V6q0-.825.588-1.412T5 4h1V2h2v2h8V2h2v2h1q.825 0 1.413.588T21 6v14q0 .825-.587 1.413T19 22zm0-2h14V10H5z" />
+                </svg>
+              </div>
             </div>
           </div>
         </div>
@@ -162,5 +223,4 @@ const getIcon = (index: number) => {
       return <Icon icon="subway:redo-icon" width="40" height="40" />; // 若無圖標顯示
   }
 };
-
 export default ServiceType;

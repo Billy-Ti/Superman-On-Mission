@@ -11,8 +11,9 @@ import {
   where,
 } from "firebase/firestore";
 import { useEffect, useState } from "react";
-import { Link, useNavigate, useParams } from "react-router-dom";
+import { useParams } from "react-router-dom";
 import Swal from "sweetalert2";
+import LoadingSpinner from "../../components/LoadingSpinner";
 import StarRating from "../../components/StarRating";
 import Footer from "../../components/layout/Footer";
 import Header from "../../components/layout/Header";
@@ -49,37 +50,26 @@ const StartTaskDetail = () => {
   const [loading, setLoading] = useState(true);
   // 存發案者名稱，以存取不同集合中的 user
   const [posterName, setPosterName] = useState<string>("");
-
   // 儲存已選擇的圖片，用作點及圖片可放大的前置準備
   const [selectedPhoto, setSelectedPhoto] = useState<string | null>(null);
   // 建立一個視窗，讓圖片可以被點擊後放大，有預覽的效果
   const [isModalOpen, setIsModalOpen] = useState(false);
-
   const [currentUserId, setCurrentUserId] = useState<string | null>(null);
   const [showOverlay, setShowOverlay] = useState(true);
   const [feedbackMessage, setFeedbackMessage] = useState("");
   const [isFeedbackSubmitted, setIsFeedbackSubmitted] = useState(false);
   const [showFeedbackContent, setShowFeedbackContent] = useState(false);
   const [isRatingModalOpen, setIsRatingModalOpen] = useState(false);
-
   const [ratedUser, setRatedUser] = useState<string>("defaultRatedUserId");
   const [ratedStatus, setRatedStatus] = useState<boolean>(false);
   const [ratingComment, setRatingComment] = useState("");
-
-  const navigate = useNavigate();
-
-  const handleToReviews = () => {
-    navigate("/reviewLists");
-  };
+  const [acceptorName, setAcceptorName] = useState<string>(""); // 用於保存接案人名稱的狀態
 
   const renderPhotoList = () => {
-    // 定义总共需要显示的格子数量
     const totalSlots = 5;
 
-    // 如果 taskDetails 不是 null，则获取已上传的图片列表，否则为空数组
     const photos = taskDetails ? taskDetails.photos || [] : [];
 
-    // 计算空白格子的数量
     const emptySlots = totalSlots - photos.length;
     return (
       <>
@@ -119,11 +109,19 @@ const StartTaskDetail = () => {
       const taskSnap = await getDoc(taskRef);
 
       if (taskSnap.exists()) {
-        console.log("Task data exists");
         const taskData = taskSnap.data() as Task;
         setTaskDetails(taskData);
         setRatedUser(taskData.acceptedBy || ""); // 從任務數據中獲取接案者 ID
         setRatedStatus(taskData.hasBeenRated || false);
+        if (taskData.acceptedBy) {
+          const acceptorRef = doc(db, "users", taskData.acceptedBy);
+          const acceptorSnap = await getDoc(acceptorRef);
+          if (acceptorSnap.exists()) {
+            setAcceptorName(acceptorSnap.data().name); // 更新接案者名稱
+          } else {
+            setAcceptorName("未知接案者");
+          }
+        }
 
         if (taskData.feedbackMessage) {
           setFeedbackMessage(taskData.feedbackMessage);
@@ -305,40 +303,29 @@ const StartTaskDetail = () => {
   }, [taskId]);
 
   if (loading) {
-    return <div>Loading task details...</div>;
+    return <LoadingSpinner />;
   }
 
   if (!taskDetails) {
-    return <div>No task details available.</div>;
+    return (
+      <div className="flex h-screen items-center justify-center">
+        <div className="text-center">
+          <p className="mb-4 text-lg font-semibold text-gray-800">
+            無相關資料載入，請稍後或重整後再試...
+          </p>
+        </div>
+      </div>
+    );
   }
-
   return (
     <>
       <Header />
       <div className="container mx-auto max-w-[1280px] px-4 py-10 md:py-20 lg:px-20">
-        <div className="flex justify-between py-4">
-          <Link
-            to="/profile"
-            className="w-1/5 rounded-md bg-[#3178C6] p-4 text-center font-medium text-white transition duration-300 ease-in-out hover:bg-[#368DCF]"
-          >
-            會員中心
-          </Link>
-          <Link
-            to="/taskManagement"
-            className="w-1/5 rounded-md bg-[#3178C6] p-4 text-center font-medium text-white transition duration-300 ease-in-out hover:bg-[#368DCF]"
-          >
-            任務管理
-          </Link>
-          <button
-            type="button"
-            onClick={handleToReviews}
-            className="w-1/5 rounded-md bg-[#3178C6] p-4 text-center font-medium text-white transition duration-300 ease-in-out hover:bg-[#368DCF]"
-          >
-            我的評價
-          </button>
+        <div className="mb-4 flex text-3xl font-semibold text-gray-700">
+          <span className="h-8 w-2 bg-[#368dcf]"></span>
+          <p className="pl-2">任務資訊</p>
         </div>
         {/* 任務進度 */}
-        <div className="mb-10 h-3 bg-[#B3D7FF]"></div>
         <div className="mb-10 flex items-center justify-center space-x-2 py-4">
           <div className="flex items-center justify-center">
             <div className="flex h-40 w-40 items-center justify-center rounded-full bg-green-500 text-xl font-bold text-white">
@@ -386,28 +373,21 @@ const StartTaskDetail = () => {
           </div>
         </div>
         {/* 任務資訊 */}
-        <div className="mb-4 flex text-3xl font-semibold text-gray-700">
-          <span className="h-8 w-2 bg-[#368dcf]"></span>
-          <p className="pl-2">任務資訊</p>
-        </div>
+
         <div className="flex flex-col lg:flex-row">
           {/* 左邊區塊開始 */}
           <div className="space-y-4 p-4 lg:w-1/3">
             {/* 案主 */}
             <div className="flex items-center space-x-2">
-              <div className="flex-grow items-center text-xl tracking-wider text-[#3178C6]">
-                <span className="text-xl font-semibold tracking-wider">
-                  發案者名稱：
-                </span>
+              <div className="flex-grow items-center text-xl font-semibold tracking-wider text-[#3178C6]">
+                <span className="text-xl tracking-wider">發案者名稱：</span>
                 {posterName}
               </div>
             </div>
             {/* 任務截止日期 */}
             <div className="flex items-center space-x-2">
-              <div className="flex-grow tracking-wider">
-                <span className="font-semibold tracking-wider">
-                  任務截止日期：
-                </span>
+              <div className="flex-grow font-semibold tracking-wider ">
+                <span className="tracking-wider">任務截止日期：</span>
                 {taskDetails.dueDate}
               </div>
             </div>
@@ -449,9 +429,9 @@ const StartTaskDetail = () => {
               </div>
             </div>
             <div className="rounded-md bg-white p-4">
-              {/* 任務報酬 Super Coin */}
+              {/* 任務報酬 Super Coins */}
               <div className="mb-3  border-b-4 border-b-[#B3D7FF] text-center text-xl font-black text-gray-500">
-                任務報酬 Super Coin
+                任務報酬 Super Coins
               </div>
               <div className="flex items-center font-medium text-[#3178C6]">
                 <span>{taskDetails.cost}</span>
@@ -474,6 +454,13 @@ const StartTaskDetail = () => {
               <div className="font-medium text-[#3178C6]">
                 {taskDetails.notes}
               </div>
+            </div>
+            <div className="rounded-md bg-white p-4">
+              {/* 接案者名稱 */}
+              <div className="mb-3 border-b-4 border-b-[#B3D7FF] text-center text-xl font-black text-gray-500">
+                接案者名稱
+              </div>
+              <div className="font-medium text-[#3178C6]">{acceptorName}</div>
             </div>
           </div>
           {/* 右邊區塊結束 */}
@@ -516,22 +503,33 @@ const StartTaskDetail = () => {
 
           {isModalOpen && (
             <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
-              <div className=" relative max-w-full overflow-auto ">
-                <img
-                  className="min-w-[500px] max-w-[800px] object-cover"
-                  src={selectedPhoto || "defaultImagePath"}
-                  alt="Enlarged task photo"
-                />
-                <button
-                  className="absolute bottom-10 left-1/2 mt-4 flex h-10 w-10 -translate-x-1/2 transform items-center justify-center rounded-full  p-2 text-black"
-                  onClick={() => setIsModalOpen(false)}
-                >
-                  <span className="absolute -left-4 -top-4 h-16 w-16 animate-ping rounded-full  opacity-75" />
-                  <span className="absolute -left-4 -top-4 h-16 w-16 rounded-full bg-red-200" />
-                  <span className="relative z-10 text-center text-sm">
-                    Close
-                  </span>
-                </button>
+              <div className="relative h-full w-full max-w-screen-md overflow-auto">
+                <div className="flex h-full items-center justify-center">
+                  <img
+                    className="max-h-full max-w-full object-cover"
+                    src={selectedPhoto || "defaultImagePath"}
+                    alt="Enlarged task photo"
+                  />
+                  <button
+                    className="absolute bottom-3 left-1/2 flex h-10 w-10 -translate-x-1/2 transform items-center justify-center rounded-full p-2 text-black"
+                    onClick={() => setIsModalOpen(false)}
+                  >
+                    <span className="absolute -left-4 -top-4 flex h-10 w-10 animate-ping items-center justify-center rounded-full bg-[#2B79B4] text-sm text-white opacity-75">
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        className="h-5 w-5"
+                        viewBox="0 0 20 20"
+                        fill="currentColor"
+                      >
+                        <path
+                          fillRule="evenodd"
+                          d="M14.293 5.293a1 1 0 011.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 11-1.414-1.414L8.586 10 4.293 5.707a1 1 0 111.414-1.414L10 8.586l4.293-4.293z"
+                          clipRule="evenodd"
+                        />
+                      </svg>
+                    </span>
+                  </button>
+                </div>
               </div>
             </div>
           )}
@@ -540,38 +538,14 @@ const StartTaskDetail = () => {
         {!showOverlay && (
           <form className="relative mb-10 bg-gray-400 p-4">
             <div className="flex items-center">
-              <div className="mb-2 mr-3 text-3xl font-semibold text-gray-700">
-                驗收內容
+              <div className="mb-2 mr-3  flex items-center text-gray-700">
+                <p className=" mr-2 text-3xl font-semibold">驗收內容</p>
+                <p className="text-medium flex flex-col justify-end font-semibold text-red-600">
+                  圖片大小不超過 5MB
+                </p>
               </div>
             </div>
-            <ul className="flex justify-between gap-4">
-              {/* {taskDetails.reportFiles?.map((fileUrl, index) => (
-                <li key={index} className="mb-2 h-52 w-52 bg-gray-700">
-                  <img
-                    className="h-full w-full cursor-pointer object-cover p-2"
-                    src={fileUrl}
-                    alt={`Report Photo ${index}`}
-                    onClick={() => {
-                      setSelectedPhoto(fileUrl); // 設置選中的圖片
-                      setIsModalOpen(true); // 打開模態視窗
-                    }}
-                  />
-                </li>
-              ))}
-
-              {[...Array(5 - (taskDetails.photos?.length || 0))].map(
-                (_, index) => (
-                  <li
-                    key={index}
-                    className="mb-2 flex h-52 w-52 flex-col items-center justify-center bg-gray-700 font-extrabold"
-                  >
-                    <span>No more images</span>
-                    <Icon icon="openmoji:picture" className="text-8xl" />
-                  </li>
-                ),
-              )} */}
-              {renderPhotoList()}
-            </ul>
+            <ul className="flex justify-between gap-4">{renderPhotoList()}</ul>
             <div>
               <label
                 htmlFor="input1"
@@ -678,38 +652,14 @@ const StartTaskDetail = () => {
         {showFeedbackContent && (
           <form className="relative mb-10 bg-gray-400 p-4">
             <div className="flex items-center">
-              <div className="mb-2 mr-3 text-3xl font-semibold text-gray-700">
-                驗收內容
+              <div className="mb-2 mr-3 flex items-center text-gray-700">
+                <p className=" mr-2 text-3xl font-semibold">驗收內容</p>
+                <p className="text-medium flex flex-col justify-end font-semibold text-red-600">
+                  圖片大小不超過 5MB
+                </p>
               </div>
             </div>
-            <ul className="flex justify-between gap-4">
-              {/* {taskDetails.reportFiles?.map((fileUrl, index) => (
-                <li key={index} className="mb-2 h-52 w-52 bg-gray-700">
-                  <img
-                    className="h-full w-full cursor-pointer object-cover p-2"
-                    src={fileUrl}
-                    alt={`Report Photo ${index}`}
-                    onClick={() => {
-                      setSelectedPhoto(fileUrl); // 設置選中的圖片
-                      setIsModalOpen(true); // 打開模態視窗
-                    }}
-                  />
-                </li>
-              ))}
-
-              {[...Array(6 - (taskDetails.photos?.length || 0))].map(
-                (_, index) => (
-                  <li
-                    key={index}
-                    className="mb-2 flex h-52 w-52 flex-col items-center justify-center bg-gray-700 font-extrabold"
-                  >
-                    <span>No more images</span>
-                    <Icon icon="openmoji:picture" className="text-8xl" />
-                  </li>
-                ),
-              )} */}
-              {renderPhotoList()}
-            </ul>
+            <ul className="flex justify-between gap-4">{renderPhotoList()}</ul>
             <div>
               <label
                 htmlFor="input1"
@@ -722,9 +672,13 @@ const StartTaskDetail = () => {
                 name="input1"
                 rows={3}
                 className="mb-3 mt-1 block w-full resize-none rounded-md border border-gray-300 p-2.5 tracking-wider shadow-sm focus:border-blue-500 focus:outline-none focus:ring-blue-500"
-                placeholder="請填寫關於此任務的詳細完成成果"
+                placeholder={
+                  taskDetails.status === "已完成"
+                    ? "已完成，不能輸入"
+                    : "請填寫關於此任務的詳細完成成果"
+                }
                 defaultValue={taskDetails.reportDescription || ""}
-                readOnly
+                readOnly={taskDetails.status === "已完成"}
               />
             </div>
             <div>
@@ -739,11 +693,16 @@ const StartTaskDetail = () => {
                 name="input2"
                 rows={3}
                 className="mb-3 mt-1 block w-full resize-none rounded-md border border-gray-300 p-2.5 tracking-wider shadow-sm focus:border-blue-500 focus:outline-none focus:ring-blue-500"
-                placeholder="請補充所需要讓發案者知道的資訊"
+                placeholder={
+                  taskDetails.status === "已完成"
+                    ? "已完成，不能輸入"
+                    : "請補充所需要讓發案者知道的資訊"
+                }
                 defaultValue={taskDetails.reportSupplementaryNotes || ""}
-                readOnly
+                readOnly={taskDetails.status === "已完成"}
               />
             </div>
+
             <div>
               <label
                 htmlFor="comment"

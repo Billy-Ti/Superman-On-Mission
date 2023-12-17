@@ -525,3 +525,29 @@ body {
   background: #4489be; /* 單獨滑塊的顏色 */
 }
 
+/* 發任務頁日期選擇器樣式 */
+
+/* 選擇器整體字體大小 */
+.air-datepicker {
+  font-weight: 700;
+}
+
+/* 選擇器 "星期" */
+.air-datepicker-body--day-name {
+  color: #368dcf;
+}
+
+.air-datepicker-button:hover {
+  background-color: #368dcf;
+  color: #fff;
+}
+
+.air-datepicker-nav--title:hover {
+  background-color: #368dcf;
+  color: #fff;
+}
+
+.air-datepicker-nav--title:hover i {
+  background-color: #368dcf;
+  color: #fff;
+}

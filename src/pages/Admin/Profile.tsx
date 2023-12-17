@@ -11,6 +11,7 @@ import { useEffect, useState } from "react";
 import Footer from "../../components/layout/Footer";
 import Header from "../../components/layout/Header";
 import { db } from "../../config/firebase";
+import { showAlert } from "../../utils/showAlert";
 import SideBar from "./SideBar";
 const Profile = () => {
   const [profilePic, setProfilePic] = useState(
@@ -50,7 +51,7 @@ const Profile = () => {
       title: "案件資訊",
       content: [
         {
-          "已完成案件 ": "數字",
+          // "已完成案件 ": "數字",
           "平均星等 ": averageRating,
         },
       ],
@@ -96,11 +97,25 @@ const Profile = () => {
     const file = event.target.files?.[0];
     if (!file || !auth.currentUser) return;
 
+    // 檢查文件格式
+    const validFormats = ["image/png", "image/jpg", "image/jpeg"];
+    if (!validFormats.includes(file.type)) {
+      showAlert("錯誤", "只能上傳圖片格式（.png / .jpg / .jpeg）", "error");
+      return;
+    }
+
+    // 檢查文件大小 (5MB)
+    const maxAllowedSize = 5 * 1024 * 1024; // 5MB
+    if (file.size > maxAllowedSize) {
+      showAlert("錯誤", "圖片大小不能超過 5 MB", "error");
+      return;
+    }
+
     // 顯示本地圖片預覽
     const localImageUrl = URL.createObjectURL(file);
     setProfilePic(localImageUrl);
 
-    setIsLoading(true); // 開始上傳，設置為載入中
+    setIsLoading(true);
 
     const fileRef = storageRef(
       storage,
@@ -124,8 +139,8 @@ const Profile = () => {
       </div>
       <div className="flex min-h-screen">
         <SideBar />
-        <div className="container mx-auto max-w-[1280px] px-4 pt-40 md:py-0  lg:px-20">
-          <div className="relative rounded-lg bg-white shadow sm:mx-auto md:ml-56 md:mt-40 md:max-w-full">
+        <div className="container mx-auto max-w-[1280px] px-4 pt-40 md:py-0 lg:px-20">
+          <div className="relative rounded-lg bg-white shadow sm:mx-auto md:ml-56 md:mt-40 md:max-w-full lg:mx-auto lg:w-1/2">
             <div className="flex justify-center">
               {isLoading && (
                 <div className="absolute inset-0 flex items-center justify-center bg-gray-200 bg-opacity-50">
@@ -194,7 +209,7 @@ const Profile = () => {
                       <li key={index} className="my-10 cursor-pointer">
                         <span
                           onClick={() => toggleAccordion(index)}
-                          className="flex flex-row items-center justify-between bg-[#2B79B4] text-xl font-medium tracking-tight text-gray-500 hover:bg-[#368DCF]"
+                          className="flex flex-row items-center justify-between bg-[#368DCF] text-xl font-medium tracking-tight text-gray-500 transition duration-500 ease-in-out hover:bg-[#2b79b4]"
                         >
                           <p className="p-2 text-white">{item.title}</p>
                           <Icon
@@ -216,7 +231,7 @@ const Profile = () => {
                             <ul className="text-md p-2 text-gray-500">
                               {item.content.map((contentItem, contentIndex) => (
                                 <li
-                                  className="text-lg font-medium"
+                                  className="text-lg font-medium hover:bg-[#2b79b4]"
                                   key={contentIndex}
                                 >
                                   {Object.entries(contentItem).map(

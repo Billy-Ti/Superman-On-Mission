@@ -1,6 +1,4 @@
-import { useEffect, useState } from "react";
 import { BrowserRouter, Navigate, Route, Routes } from "react-router-dom";
-import LandingPageAnimation from "./components/LandingPageAnimation.tsx";
 import ProtectedRoute from "./components/ProtectedRoute.tsx";
 import ScrollToTop from "./components/ScrollToTop.tsx";
 import ChatRoomButton from "./components/chatRoom/ChatRoomButton.tsx";
@@ -18,23 +16,11 @@ import Task from "./pages/Task/index.tsx";
 import SignIn from "./pages/components/SignIn.tsx";
 
 const App = () => {
-  const [showAnimation, setShowAnimation] = useState(true);
-
-  useEffect(() => {
-    const timer = setTimeout(() => {
-      setShowAnimation(false);
-    }, 3000);
-
-    return () => clearTimeout(timer);
-  }, []);
   return (
     <>
       <AuthProvider>
         <BrowserRouter>
           <ScrollToTop />
-          {showAnimation && (
-            <LandingPageAnimation gif="/landing_screen.gif" duration={3000} />
-          )}
           <Routes>
             <Route path="/" element={<Home />} />
             <Route path="/signIn" element={<SignIn />} />

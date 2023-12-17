@@ -16,12 +16,12 @@ const HomeSlogan = () => {
             </p>
           </div>
           <div className="mb-10 flex flex-col items-end justify-end sm:flex-row">
-            <h1 className="mr-3 inline bg-gradient-to-r from-blue-700 via-blue-500 to-purple-400 bg-clip-text text-2xl font-black italic text-transparent sm:text-4xl">
+            <h1 className="mr-3 inline text-2xl font-bold italic text-[#3178C6] sm:text-4xl">
               Super Task co.
             </h1>
             <div className="flex items-center pt-2 text-2xl sm:text-2xl">
-              <p>( 應該 )</p>
-              <p> 都找的到</p>
+              <p className="font-bold text-[#3178C6]">( 應該 )</p>
+              <p className="font-bold text-[#3178C6]"> 都找的到</p>
             </div>
           </div>
           <ActionButton />

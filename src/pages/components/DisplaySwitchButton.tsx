@@ -11,11 +11,10 @@ const DisplaySwitchButton = ({
 }: DisplaySwitchButtonProps) => {
   return (
     <div className={`flex items-center ${className}`}>
-      <p className="mr-2 text-2xl font-semibold text-[#3178C6]">
-        {buttonText}
-      </p>
+      <p className="mr-2 text-2xl font-semibold">{buttonText}</p>
       <div className="relative mr-2 inline-block w-10 select-none align-middle transition duration-200 ease-in">
         <input
+          id="toggle"
           type="checkbox"
           name="toggle"
           className="toggle-checkbox absolute block h-6 w-6 cursor-pointer appearance-none rounded-full border-4 bg-white"

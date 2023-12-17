@@ -9,20 +9,20 @@ const HomeEvaluationCard: React.FC<HomeEvaluationCardProps> = ({
 }) => {
   return (
     <div className="max-w-sm overflow-hidden rounded bg-white shadow-lg">
-      <div className="px-6 py-4">
+      <div className="px-6 py-2">
         <img
           src={evaluation.reviewerPic}
           alt={`評論者：${evaluation.reviewerName}`}
           className="mb-2 w-full object-cover"
         />{" "}
-        <div className="mb-4 border-t text-center text-xl font-bold">
+        <div className="mb-2 border-t text-center text-xl font-bold">
           {evaluation.reviewerName}
         </div>
         <p className="text-center text-base text-gray-700">
           {evaluation.content}
         </p>
       </div>
-      <div className="px-6 pb-2 pt-4">
+      <div className="px-6 py-2">
         {Array.from({ length: evaluation.rating }).map((_, index) => (
           <span
             key={index}

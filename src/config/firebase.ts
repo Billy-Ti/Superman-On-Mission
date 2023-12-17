@@ -2,7 +2,6 @@ import { initializeApp } from "firebase/app";
 import { getAuth } from "firebase/auth";
 import { getDatabase } from "firebase/database"; // 导入 getDatabase
 import { getFirestore } from "firebase/firestore";
-import { getMessaging, getToken } from "firebase/messaging";
 import { getStorage } from "firebase/storage";
 
 // Your web app's Firebase configuration
@@ -27,40 +26,40 @@ const storage = getStorage(app);
 export { auth, database, db, storage }; // 导出所有服务
 
 // 請求通知權限並獲取令牌
-function requestPermission() {
-  console.log("Requesting permission...");
-  Notification.requestPermission().then((permission) => {
-    if (permission === "granted") {
-      console.log("Notification permission granted.");
-      // 獲取令牌c
-      const messaging = getMessaging();
-      getToken(messaging, {
-        vapidKey:
-          "BBhsTBgNYE93liO54Xp_mGeR-8YrnzOg-RtJtzoCOu8jrH5ULT0rUBnfYtrXBGUOLBjzOEj_a6669L4_8-Tx9PM",
-      })
-        .then((currentToken) => {
-          if (currentToken) {
-            console.log("FCM Token:", currentToken);
-            // 將令牌發送到您的伺服器以進行訂閱
-          } else {
-            console.log(
-              "No registration token available. Request permission to generate one.",
-            );
-          }
-        })
-        .catch((err) => {
-          console.log("An error occurred while retrieving token. ", err);
-        });
-    } else {
-      console.log("Unable to get permission to notify.");
-    }
-  });
-}
+// function requestPermission() {
+//   console.log("Requesting permission...");
+//   Notification.requestPermission().then((permission) => {
+//     if (permission === "granted") {
+//       console.log("Notification permission granted.");
+//       // 獲取令牌c
+//       const messaging = getMessaging();
+//       getToken(messaging, {
+//         vapidKey:
+//           "BBhsTBgNYE93liO54Xp_mGeR-8YrnzOg-RtJtzoCOu8jrH5ULT0rUBnfYtrXBGUOLBjzOEj_a6669L4_8-Tx9PM",
+//       })
+//         .then((currentToken) => {
+//           if (currentToken) {
+//             console.log("FCM Token:", currentToken);
+//             // 將令牌發送到您的伺服器以進行訂閱
+//           } else {
+//             console.log(
+//               "No registration token available. Request permission to generate one.",
+//             );
+//           }
+//         })
+//         .catch((err) => {
+//           console.log("An error occurred while retrieving token. ", err);
+//         });
+//     } else {
+//       console.log("Unable to get permission to notify.");
+//     }
+//   });
+// }
 
-// 調用此函數以開始流程
-requestPermission();
-const messaging = getMessaging(app);
-getToken(messaging, {
-  vapidKey:
-    "BBhsTBgNYE93liO54Xp_mGeR-8YrnzOg-RtJtzoCOu8jrH5ULT0rUBnfYtrXBGUOLBjzOEj_a6669L4_8-Tx9PM",
-});
+// // 調用此函數以開始流程
+// requestPermission();
+// const messaging = getMessaging(app);
+// getToken(messaging, {
+//   vapidKey:
+//     "BBhsTBgNYE93liO54Xp_mGeR-8YrnzOg-RtJtzoCOu8jrH5ULT0rUBnfYtrXBGUOLBjzOEj_a6669L4_8-Tx9PM",
+// });

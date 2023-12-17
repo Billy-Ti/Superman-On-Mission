@@ -45,7 +45,7 @@ const RegionFilter: React.FC<RegionFilterProps> = ({
       />
       <a
         onClick={handleClearSelected}
-        className="cursor-pointer rounded-md bg-[#368DCF] p-3 py-2 font-medium tracking-widest text-white transition duration-500 ease-in-out backdrop:px-4 hover:bg-[#3178C6]"
+        className="ml-2 cursor-pointer rounded-md bg-[#368DCF] p-3 py-2 font-medium tracking-widest text-white transition duration-500 ease-in-out backdrop:px-4 hover:bg-[#3178C6]"
       >
         清除所選地區
       </a>

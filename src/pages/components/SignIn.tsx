@@ -52,7 +52,6 @@ const SignIn = () => {
         averageRating: 0,
         profilePicUrl: "https://cdn-icons-png.flaticon.com/512/149/149071.png",
       });
-      // 清除輸入狀態
       setName("");
       setEmail("");
       setPassword("");
@@ -62,7 +61,7 @@ const SignIn = () => {
       if (error instanceof Error) {
         console.error("登入錯誤：", error.message);
       } else {
-        console.error("未知登入錯誤");
+        console.error("未知登入錯誤", error);
       }
     }
   };

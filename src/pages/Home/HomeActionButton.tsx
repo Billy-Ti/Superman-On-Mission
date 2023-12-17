@@ -8,10 +8,10 @@ const HomeActionButton = () => {
   };
 
   return (
-    <div className="flex justify-end gap-4 text-2xl">
+    <div className="flex justify-center gap-4 text-2xl sm:justify-end">
       <button
         onClick={handleAcceptTask}
-        className="items-center justify-center rounded-md  bg-[#368DCF] p-3 text-2xl font-bold text-white transition duration-500 ease-in-out hover:bg-[#2b79b4] lg:w-1/6"
+        className="w-24 items-center justify-center  rounded-md bg-[#368DCF] p-3 text-2xl font-medium text-white transition duration-500 ease-in-out hover:bg-[#2b79b4] sm:w-48 lg:w-52"
       >
         開始
       </button>

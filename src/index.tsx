@@ -2,16 +2,16 @@ import React from "react";
 import ReactDOM from "react-dom/client";
 import App from "./App.tsx";
 import "./index.css";
-if ("serviceWorker" in navigator) {
-  navigator.serviceWorker
-    .register("/firebase-messaging-sw.js", { scope: "./" })
-    .then(function (registration) {
-      console.log("Service Worker 注冊成功:", registration.scope);
-    })
-    .catch(function (error) {
-      console.log("Service Worker 注冊失敗:", error);
-    });
-}
+// if ("serviceWorker" in navigator) {
+//   navigator.serviceWorker
+//     .register("/firebase-messaging-sw.js", { scope: "./" })
+//     .then(function (registration) {
+//       console.log("Service Worker 注冊成功:", registration.scope);
+//     })
+//     .catch(function (error) {
+//       console.log("Service Worker 注冊失敗:", error);
+//     });
+// }
 
 ReactDOM.createRoot(document.getElementById("root")!).render(
   <React.StrictMode>

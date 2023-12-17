@@ -1,23 +1,24 @@
 import { Icon } from "@iconify/react";
-import { getAuth } from "firebase/auth";
+import { getAuth, onAuthStateChanged } from "firebase/auth";
 import {
   collection,
   doc,
   getDoc,
   getDocs,
+  getFirestore,
   query,
   updateDoc,
   where,
 } from "firebase/firestore";
 import { getDownloadURL, ref, uploadBytes } from "firebase/storage";
 import { useEffect, useState } from "react";
-import { Link, useNavigate, useParams } from "react-router-dom";
+import { useParams } from "react-router-dom";
 import Swal from "sweetalert2";
 import ChatRoomWindow from "../../components/chatRoom/ChatRoomWindow";
 import Footer from "../../components/layout/Footer";
 import Header from "../../components/layout/Header";
 import { db, storage } from "../../config/firebase";
-
+import { showAlert } from "../../utils/showAlert";
 // 使用 Task interface 替代原來的 TaskData
 interface Task {
   id: string;
@@ -39,10 +40,10 @@ interface Task {
   status: string;
   ratedComment: string;
   taskId: string;
+  taskStatus: string;
   categorys: string[];
   photos?: string[]; // photos 是可選的
 }
-
 const AcceptTaskDetail = () => {
   const { taskId } = useParams<{ taskId: string }>();
   const [taskDetails, setTaskDetails] = useState<Task | null>(null);
@@ -50,94 +51,97 @@ const AcceptTaskDetail = () => {
   // 存發案者名稱，以存取不同集合中的 user
   const [posterName, setPosterName] = useState<string>("");
   const [showOverlay, setShowOverlay] = useState<boolean>(true);
-
   // 儲存已選擇的圖片，用作點及圖片可放大的前置準備
   const [selectedPhoto, setSelectedPhoto] = useState<string | null>(null);
   // 建立一個視窗，讓圖片可以被點擊後放大，有預覽的效果
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
   const taskIsAccepted = taskDetails && taskDetails.accepted;
-
   // 建立回報說明欄位的狀態
   const [reportDescription, setReportDescription] = useState("");
   const [reportSupplementaryNotes, setReportSupplementaryNotes] = useState("");
   const [selectedImages, setSelectedImages] = useState(Array(5).fill(null));
   const [ratedComment, setRatedComment] = useState<string>("");
-
   const [taskStatus, setTaskStatus] = useState("");
   const [imageFiles, setImageFiles] = useState<File[]>(Array(5).fill(null));
   const [isChatOpen, setIsChatOpen] = useState(false);
-
-  const navigate = useNavigate();
+  const [acceptorName, setAcceptorName] = useState(""); // 用於保存接案人名稱的狀態
 
   const handleOverlay = () => {
     setShowOverlay(false);
   };
-
   const handleAskDetails = () => {
     setIsChatOpen(true);
   };
-
   const handleCloseChat = () => {
     setIsChatOpen(false);
-  };
-
-  const handleToReviews = () => {
-    navigate("/reviewLists");
   };
   const handleReportDescriptionChange = (
     event: React.ChangeEvent<HTMLTextAreaElement>,
   ) => {
-    setReportDescription(event.target.value);
+    if (taskDetails === null) return;
+    // 檢查 taskStatus 是否為 "任務回報完成" 或 "已完成"
+    if (
+      taskDetails.taskStatus === "任務回報完成" ||
+      taskDetails.taskStatus === "已完成"
+    ) {
+      return;
+    }
+    // 更新 reportDescription 並同時更新 taskDetails 的 reportDescription 屬性
+    const newReportDescription = event.target.value;
+    setReportDescription(newReportDescription);
     setTaskDetails((prevDetails) => {
-      // 確保 prevDetails 不是 null
       if (prevDetails === null) return null;
-
       return {
-        ...prevDetails, // 保留所有現有的屬性
-        reportDescription: event.target.value, // 更新 reportDescription 屬性
+        ...prevDetails,
+        reportDescription: newReportDescription,
       };
     });
   };
-
   const handleReportSupplementaryNotesChange = (
     event: React.ChangeEvent<HTMLTextAreaElement>,
   ) => {
     setReportSupplementaryNotes(event.target.value);
     setTaskDetails((prevDetails) => {
       if (prevDetails === null) return null;
-
       return {
-        ...prevDetails, // 保留所有現有的屬性
-        reportSupplementaryNotes: event.target.value, // 更新 reportSupplementaryNotes 屬性
+        ...prevDetails,
+        reportSupplementaryNotes: event.target.value,
       };
     });
   };
-
   const handleImgSelect = (
     event: React.ChangeEvent<HTMLInputElement>,
     index: number,
   ) => {
     const file = event.target.files && event.target.files[0];
-    if (file && file.type.match("image.*")) {
-      // 更新圖片文件
-      const updatedImageFiles = [...imageFiles];
-      updatedImageFiles[index] = file;
-      setImageFiles(updatedImageFiles);
-
-      // 生成 Base64 預覽
-      const reader = new FileReader();
-      reader.onload = (e: ProgressEvent<FileReader>) => {
-        const result = e.target?.result;
-        if (result) {
-          const updatedImages = [...selectedImages];
-          updatedImages[index] = result.toString();
-          setSelectedImages(updatedImages);
+    if (file) {
+      // 判断是否为图片格式（.png / .jpg / .jpeg）
+      if (file.type.match(/image\/(png|jpg|jpeg)/)) {
+        // 判断文件大小是否小于等于5MB
+        if (file.size <= 5 * 1024 * 1024) {
+          // 更新图片文件
+          const updatedImageFiles = [...imageFiles];
+          updatedImageFiles[index] = file;
+          setImageFiles(updatedImageFiles);
+          // 生成 Base64 预览
+          const reader = new FileReader();
+          reader.onload = (e: ProgressEvent<FileReader>) => {
+            const result = e.target?.result;
+            if (result) {
+              const updatedImages = [...selectedImages];
+              updatedImages[index] = result.toString();
+              setSelectedImages(updatedImages);
+            }
+          };
+          reader.readAsDataURL(file);
+        } else {
+          showAlert("錯誤", "圖片大小不能超過 5 MB", "error");
         }
-      };
-      reader.readAsDataURL(file);
+      } else {
+        showAlert("錯誤", "只能上傳圖片格式（.png / .jpg / .jpeg）", "error");
+      }
     }
   };
-
   const uploadImages = async () => {
     const urls = await Promise.all(
       imageFiles.map(async (file) => {
@@ -149,72 +153,26 @@ const AcceptTaskDetail = () => {
         return null;
       }),
     );
-
     // 過濾掉所有 null 值
     return urls.filter((url) => url != null);
   };
-
-  // const renderPhotoList = () => {
-  //   // 定义总共需要显示的格子数量
-  //   const totalSlots = 5;
-
-  //   // 获取已上传的图片列表，如果没有则为空数组
-  //   const photos = taskDetails.photos || [];
-
-  //   // 计算空白格子的数量
-  //   const emptySlots = totalSlots - photos.length;
-
-  //   return (
-  //     <>
-  //       {photos.map((photo, index) => (
-  //         <li
-  //           key={photo}
-  //           className="h-52 w-52 border-2 border-dashed border-[#368dcf]"
-  //         >
-  //           <img
-  //             className="h-full w-full cursor-pointer object-cover p-2"
-  //             src={photo}
-  //             alt={`Task photo ${index + 1}`}
-  //             onClick={() => {
-  //               setSelectedPhoto(photo);
-  //               setIsModalOpen(true);
-  //             }}
-  //           />
-  //         </li>
-  //       ))}
-  //       {[...Array(emptySlots)].map((_, index) => (
-  //         <li
-  //           key={`empty-${index}`}
-  //           className="flex h-52 w-52 items-center justify-center border-2 border-dashed border-[#368dcf] font-extrabold"
-  //         >
-  //           <span>未提供圖片</span>
-  //         </li>
-  //       ))}
-  //     </>
-  //   );
-  // };
-
   const fetchTask = async () => {
     if (!taskId) {
       console.log("Task ID is not defined");
       return;
     }
-
     console.log("Fetching task with ID:", taskId);
-
     const taskRef = doc(db, "tasks", taskId);
     try {
       const docSnap = await getDoc(taskRef);
       if (docSnap.exists()) {
         const taskData = docSnap.data() as Task;
         console.log("Task data retrieved:", taskData);
-
         setTaskDetails(taskData);
         setTaskStatus(taskData.status);
         setReportDescription(taskData.reportDescription ?? "");
         setReportSupplementaryNotes(taskData.reportSupplementaryNotes ?? "");
         console.log("taskStatus", taskStatus);
-
         const userRef = doc(db, "users", taskData.createdBy);
         const userSnap = await getDoc(userRef);
         if (userSnap.exists()) {
@@ -231,35 +189,43 @@ const AcceptTaskDetail = () => {
       console.error("Error getting document:", error);
     }
   };
-
   useEffect(() => {
     fetchTask();
   }, []);
-
   useEffect(() => {
     if (taskDetails) {
       setTaskStatus(taskDetails.status);
     }
   }, [taskDetails]);
-
+  useEffect(() => {
+    const auth = getAuth();
+    onAuthStateChanged(auth, async (user) => {
+      if (user) {
+        const db = getFirestore();
+        const userRef = doc(db, "users", user.uid);
+        const userSnap = await getDoc(userRef);
+        if (userSnap.exists()) {
+          // 設置接案人的名稱
+          setAcceptorName(userSnap.data().name);
+        }
+      }
+    });
+  }, []);
   useEffect(() => {
     if (taskStatus === "已完成") {
       setShowOverlay(false);
     }
   }, [taskStatus]);
-
   const handleReportSubmit = async () => {
     if (!taskId) {
       console.error("Task ID is undefined");
       return;
     }
-
     if (reportDescription === undefined) {
       console.error("reportDescription is undefined");
       // 處理這個錯誤，比如通過顯示錯誤消息給用戶
       return;
     }
-
     Swal.fire({
       title: "確定提交驗收？",
       html: "<strong style='color: red;'>請檢查所輸入的資料有無正確</strong>",
@@ -272,26 +238,21 @@ const AcceptTaskDetail = () => {
       if (result.isConfirmed) {
         try {
           const imageUrls = await uploadImages();
-
           // 确保 imageUrls 不包含 null 值
           const filteredImageUrls = imageUrls.filter(
             (url) => url !== null,
           ) as string[];
-
           const updates = {
             reportFiles: filteredImageUrls,
             reportDescription: reportDescription ?? "",
             reportSupplementaryNotes: reportSupplementaryNotes ?? "",
             status: "任務回報完成",
           };
-
           const taskRef = doc(db, "tasks", taskId);
           await updateDoc(taskRef, updates);
-
           setTaskDetails((prev) =>
             prev ? { ...prev, ...updates, photos: filteredImageUrls } : null,
           );
-
           // 更新狀態並顯示成功消息
           setShowOverlay(true);
           setTaskStatus("任務回報完成");
@@ -315,7 +276,6 @@ const AcceptTaskDetail = () => {
       }
     });
   };
-
   useEffect(() => {
     const fetchRatedComment = async () => {
       if (typeof taskId === "string") {
@@ -323,13 +283,11 @@ const AcceptTaskDetail = () => {
         const reviewsRef = collection(db, "reviews");
         // 創建一個查詢，根據 reviewTaskId 篩選文檔
         const q = query(reviewsRef, where("reviewTaskId", "==", taskId));
-
         try {
           const querySnapshot = await getDocs(q);
           querySnapshot.forEach((doc) => {
             // 假設每個任務只有一條評價
             const reviewData = doc.data();
-            console.log("Review data:", reviewData); // 檢查獲取到的數據
             setRatedComment(reviewData.ratedComment);
           });
         } catch (error) {
@@ -337,10 +295,8 @@ const AcceptTaskDetail = () => {
         }
       }
     };
-
     fetchRatedComment();
   }, [taskId]);
-
   useEffect(() => {
     const fetchTaskDetails = async () => {
       if (!taskId) return;
@@ -348,16 +304,13 @@ const AcceptTaskDetail = () => {
       try {
         const taskRef = doc(db, "tasks", taskId);
         const taskSnap = await getDoc(taskRef);
-
         if (taskSnap.exists()) {
           const taskData = taskSnap.data() as Task;
           setTaskDetails(taskData);
-
           // 判斷當前用戶是否為發案者
           const auth = getAuth();
           const currentUser = auth.currentUser;
           const isPoster = currentUser?.uid === taskData.createdBy;
-
           // 如果是發案者，且任務狀態是"任務回報完成"，則移除遮罩
           if (isPoster && taskData.status === "任務回報完成") {
             setShowOverlay(false);
@@ -372,45 +325,31 @@ const AcceptTaskDetail = () => {
         setLoading(false);
       }
     };
-
     fetchTaskDetails();
   }, [taskId]);
-
   if (loading) {
-    return <div>Loading task details...</div>;
+    return (
+      <div>
+        <p>任務載入中...請稍等</p>
+      </div>
+    );
   }
-
   if (!taskDetails) {
-    return <div>No task details available.</div>;
+    return (
+      <div>
+        <p>目前沒有任務...</p>
+      </div>
+    );
   }
-
   return (
     <>
       <Header />
       <div className="container mx-auto max-w-[1280px] px-4 py-10 md:pb-20 md:pt-10 lg:px-20">
-        <div className="flex justify-between py-4">
-          <Link
-            to="/profile"
-            className="w-1/5 rounded-md bg-[#3178C6] p-4 text-center font-medium text-white transition duration-300 ease-in-out hover:bg-[#368DCF]"
-          >
-            會員中心
-          </Link>
-          <Link
-            to="/taskManagement"
-            className="w-1/5 rounded-md bg-[#3178C6] p-4 text-center font-medium text-white transition duration-300 ease-in-out hover:bg-[#368DCF]"
-          >
-            任務管理
-          </Link>
-          <button
-            type="button"
-            onClick={handleToReviews}
-            className="w-1/5 rounded-md bg-[#3178C6] p-4 text-center font-medium text-white transition duration-300 ease-in-out hover:bg-[#368DCF]"
-          >
-            我的評價
-          </button>
+        <div className="mb-4 flex text-3xl font-semibold text-gray-700">
+          <span className="h-8 w-2 bg-[#368dcf]"></span>
+          <p className="pl-2">任務資訊</p>
         </div>
         {/* 任務進度 */}
-        <div className="mb-10 h-3 bg-black"></div>
         <div className="mb-10 flex items-center justify-center space-x-2 py-4">
           <div className="flex items-center justify-center">
             <div className="flex h-40 w-40 items-center justify-center rounded-full bg-green-500 text-xl font-bold text-white">
@@ -428,7 +367,6 @@ const AcceptTaskDetail = () => {
             </div>
           </div>
           <div className="flex-auto border-t-2 border-black"></div>
-
           <div className="flex items-center justify-center">
             <div
               className={`flex h-40 w-40 items-center justify-center rounded-full text-xl font-bold ${
@@ -454,40 +392,35 @@ const AcceptTaskDetail = () => {
           </div>
         </div>
         {/* 任務資訊 */}
-        <div className="mb-4 flex text-3xl font-semibold text-gray-700">
-          <span className="h-8 w-2 bg-[#368dcf]"></span>
-          <p className="pl-2">任務資訊</p>
-        </div>
         <div className="flex flex-col lg:flex-row">
           {/* 左邊區塊開始 */}
           <div className="space-y-4 p-4 lg:w-1/3">
             {/* 案主 */}
             <div className="flex items-center space-x-2">
-              <div className="flex-grow items-center text-xl tracking-wider text-[#3178C6]">
-                <span className="text-xl font-semibold tracking-wider">
-                  發案者名稱：
-                </span>
+              <div className="flex-grow items-center text-xl  font-semibold tracking-wider text-[#3178C6]">
+                <span className="text-xl tracking-wider">發案者名稱：</span>
                 {posterName}
               </div>
             </div>
             {/* 任務截止日期 */}
             <div className="flex items-center space-x-2">
-              <div className="flex-grow tracking-wider">
-                <span className="font-semibold tracking-wider">
-                  任務截止日期：
-                </span>
+              <div className="grow text-xl font-semibold tracking-wider ">
+                <span className="tracking-wider">任務截止日期：</span>
                 {taskDetails.dueDate}
               </div>
             </div>
             <div className="my-auto mb-6 ml-auto">
               <button
                 onClick={handleAskDetails}
-                type="button"
-                className="group relative overflow-hidden rounded-md bg-gray-300 [transform:translateZ(0)] before:absolute before:bottom-0 before:left-0 before:h-full before:w-full before:origin-[100%_100%] before:scale-x-0 before:bg-sky-600 before:transition before:duration-500 before:ease-in-out hover:before:origin-[0_0] hover:before:scale-x-100"
+                className="flex items-center justify-center rounded-md bg-[#368DCF] px-4 py-2 text-lg font-medium text-white transition duration-500 ease-in-out hover:bg-[#2b79b4]"
               >
-                <span className=" relative z-0 flex w-60 items-center justify-center rounded-md p-2 text-xl font-bold text-black transition duration-500 ease-in-out group-hover:text-gray-200">
-                  <Icon icon="ant-design:message-filled" className="mr-3" />
+                <Icon icon="ant-design:message-filled" className="mr-3" />
+                <span className="flex items-center text-xl">
                   聯繫發案者
+                  <span
+                    aria-hidden="true"
+                    className="ml-2 inline-block translate-x-0 transition-transform duration-300 ease-in-out group-hover:translate-x-2"
+                  ></span>
                 </span>
               </button>
               {isChatOpen && taskId && (
@@ -496,10 +429,8 @@ const AcceptTaskDetail = () => {
             </div>
           </div>
           {/* 左邊區塊結束 */}
-
           {/* 右邊區塊開始 */}
           <div className="grid grid-cols-1 gap-4 rounded-md bg-[#B3D7FF] p-4 md:grid-cols-2 lg:w-2/3">
-            {/* 以下是六個欄位，根據屏幕大小分為一列或兩列 */}
             <div className="rounded-md bg-white p-4">
               {/* 任務名稱 */}
               <div className="mb-3 border-b-4 border-b-[#B3D7FF] text-center text-xl font-black text-gray-500">
@@ -532,9 +463,9 @@ const AcceptTaskDetail = () => {
               </div>
             </div>
             <div className="rounded-md bg-white p-4">
-              {/* 任務報酬 Super Coin */}
+              {/* 任務報酬 Super Coins */}
               <div className="mb-3  border-b-4 border-b-[#B3D7FF] text-center text-xl font-black text-gray-500">
-                任務報酬 Super Coin
+                任務報酬 Super Coins
               </div>
               <div className="flex items-center font-medium text-[#3178C6]">
                 <span>{taskDetails.cost}</span>
@@ -558,10 +489,18 @@ const AcceptTaskDetail = () => {
                 {taskDetails.notes}
               </div>
             </div>
+            <div className="rounded-md bg-white p-4">
+              {/* 其他備註 */}
+              <div className="mb-3 border-b-4 border-b-[#B3D7FF] text-center text-xl font-black text-gray-500">
+                接案者名稱
+              </div>
+              <div className="font-medium text-[#3178C6]">
+                {acceptorName}
+              </div>
+            </div>
           </div>
           {/* 右邊區塊結束 */}
         </div>
-
         <div className="mb-4 flex text-3xl font-semibold text-gray-700">
           <span className="h-8 w-2 bg-[#368dcf]"></span>
           <p className="pl-2">任務照片</p>
@@ -584,7 +523,6 @@ const AcceptTaskDetail = () => {
                 />
               </li>
             ))}
-
             {[...Array(5 - (taskDetails.photos?.length || 0))].map(
               (_, index) => (
                 <li
@@ -595,27 +533,36 @@ const AcceptTaskDetail = () => {
                 </li>
               ),
             )}
-            {/* {renderPhotoList()} */}
           </ul>
-
           {isModalOpen && (
             <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
-              <div className=" relative max-w-full overflow-auto ">
-                <img
-                  className="min-w-[500px] max-w-[800px] object-cover"
-                  src={selectedPhoto || "defaultImagePath"}
-                  alt="Enlarged task photo"
-                />
-                <button
-                  className="absolute bottom-10 left-1/2 mt-4 flex h-10 w-10 -translate-x-1/2 transform items-center justify-center rounded-full  p-2 text-black"
-                  onClick={() => setIsModalOpen(false)}
-                >
-                  <span className="absolute -left-4 -top-4 h-16 w-16 animate-ping rounded-full  opacity-75" />
-                  <span className="absolute -left-4 -top-4 h-16 w-16 rounded-full bg-red-200" />
-                  <span className="relative z-10 text-center text-sm">
-                    Close
-                  </span>
-                </button>
+              <div className="relative h-full w-full max-w-screen-md overflow-auto">
+                <div className="flex h-full items-center justify-center">
+                  <img
+                    className="max-h-full max-w-full object-cover"
+                    src={selectedPhoto || "defaultImagePath"}
+                    alt="Enlarged task photo"
+                  />
+                  <button
+                    className="absolute bottom-3 left-1/2 flex h-10 w-10 -translate-x-1/2 transform items-center justify-center rounded-full p-2 text-black"
+                    onClick={() => setIsModalOpen(false)}
+                  >
+                    <span className="absolute -left-4 -top-4 flex h-10 w-10 animate-ping items-center justify-center rounded-full bg-[#2B79B4] text-sm text-white opacity-75">
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        className="h-5 w-5"
+                        viewBox="0 0 20 20"
+                        fill="currentColor"
+                      >
+                        <path
+                          fillRule="evenodd"
+                          d="M14.293 5.293a1 1 0 011.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 11-1.414-1.414L8.586 10 4.293 5.707a1 1 0 111.414-1.414L10 8.586l4.293-4.293z"
+                          clipRule="evenodd"
+                        />
+                      </svg>
+                    </span>
+                  </button>
+                </div>
               </div>
             </div>
           )}
@@ -623,14 +570,12 @@ const AcceptTaskDetail = () => {
         {/* 驗收內容 */}
         <form className="relative mb-10  p-4">
           <div className="flex items-center">
-            <div className="mb-2 flex items-center text-3xl font-semibold text-gray-700">
-              驗收內容
+            <div className="mb-2 flex items-center text-gray-700">
+              <p className=" mr-2 text-3xl font-semibold">驗收內容</p>
               {/* 條件渲染：僅在非"已完成"狀態時顯示 */}
-              {taskStatus !== "已完成" && (
-                <p className="ml-3 text-xl font-medium text-[#2B79B4]">
-                  僅限上傳圖片格式為 {"("}png / jpg / gif{")"}
-                </p>
-              )}
+              <p className="text-medium flex flex-col justify-end font-semibold text-red-600">
+                圖片大小不超過 5MB
+              </p>
             </div>
           </div>
           <ul className="flex gap-4">
@@ -661,7 +606,6 @@ const AcceptTaskDetail = () => {
               </li>
             ))}
           </ul>
-
           {/* 顯示任務回報說明 */}
           <div>
             <label
@@ -674,6 +618,7 @@ const AcceptTaskDetail = () => {
               id="input1"
               name="input1"
               rows={3}
+              readOnly={taskStatus === "已完成"}
               className={`mb-3 mt-1 block w-full resize-none rounded-md border border-gray-300 p-2.5 tracking-wider shadow-sm focus:border-blue-500 focus:outline-none focus:ring-blue-500 ${
                 taskStatus === "任務回報完成" || taskStatus === "已完成"
                   ? "cursor-not-allowed "
@@ -695,6 +640,7 @@ const AcceptTaskDetail = () => {
               id="input2"
               name="input2"
               rows={3}
+              readOnly={taskStatus === "已完成"}
               onChange={handleReportSupplementaryNotesChange}
               className={`mb-3 mt-1 block w-full resize-none rounded-md border border-gray-300 p-2.5 tracking-wider ${
                 taskStatus === "任務回報完成" || taskStatus === "已完成"
@@ -746,7 +692,6 @@ const AcceptTaskDetail = () => {
               value={taskDetails.feedbackMessage} // feedbackMessage 是從 taskDetails 獲取
             />
           </div>
-
           {/* 禁用送出按鈕 */}
           <div className="flex justify-center">
             <button
@@ -805,5 +750,4 @@ const AcceptTaskDetail = () => {
     </>
   );
 };
-
 export default AcceptTaskDetail;

@@ -54,7 +54,7 @@ const Pagination: React.FC<PaginationProps> = ({
       <nav className="flex space-x-2" aria-label="Pagination">
         <a
           onClick={handlePreviousPageButton}
-          className="cursor-pointer rounded-md bg-[#368DCF] px-4 py-2 font-medium text-white transition duration-500 ease-in-out hover:bg-[#3178C6]"
+          className="cursor-pointer rounded-md bg-[#368DCF] px-4 py-2 font-medium text-white transition duration-500 ease-in-out hover:bg-[#2b79b4]"
         >
           上一頁
         </a>
@@ -64,8 +64,8 @@ const Pagination: React.FC<PaginationProps> = ({
             onClick={() => paginate(number)}
             className={`cursor-pointer rounded-md px-4 py-2 font-medium ${
               currentPage === number
-                ? "bg-[#368DCF] text-white transition duration-500 ease-in-out hover:bg-[#368DCF]"
-                : "bg-white text-gray-700 hover:bg-[#368DCF] hover:text-white"
+                ? "bg-[#368DCF] text-white transition duration-500 ease-in-out"
+                : "bg-white text-gray-700 hover:bg-[#2b79b4] hover:text-white"
             }`}
           >
             {number}

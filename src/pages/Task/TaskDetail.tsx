@@ -1,9 +1,21 @@
 import { Icon } from "@iconify/react";
 import { getAuth, onAuthStateChanged } from "firebase/auth";
-import { doc, getDoc, updateDoc } from "firebase/firestore";
+import {
+  Firestore,
+  addDoc,
+  collection,
+  doc,
+  getDoc,
+  getDocs,
+  query,
+  updateDoc,
+  where,
+} from "firebase/firestore";
 import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import Swal from "sweetalert2";
+import LoadingSpinner from "../../components/LoadingSpinner";
+import ChatRoomWindow from "../../components/chatRoom/ChatRoomWindow";
 import Footer from "../../components/layout/Footer";
 import Header from "../../components/layout/Header";
 import { db } from "../../config/firebase";
@@ -38,8 +50,53 @@ const TaskDetail = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
 
   const [currentUserID, setCurrentUserID] = useState<string | null>(null);
+  const [isChatOpen, setIsChatOpen] = useState(false);
 
   const navigate = useNavigate();
+
+  const handleAskDetails = () => {
+    setIsChatOpen(true);
+  };
+
+  const handleCloseChat = () => {
+    setIsChatOpen(false);
+  };
+
+  const createNotification = async (
+    db: Firestore,
+    taskId: string,
+    createdBy: string,
+    acceptedBy: string,
+  ) => {
+    const notificationRef = collection(db, "notifications");
+    const q = query(
+      notificationRef,
+      where("taskId", "==", taskId),
+      where("createdBy", "==", createdBy),
+      where("acceptedBy", "==", acceptedBy),
+    );
+
+    try {
+      const querySnapshot = await getDocs(q);
+      if (querySnapshot.empty) {
+        const newNotification = {
+          taskId,
+          createdBy,
+          acceptedBy,
+          message: "您的任務已被接受",
+          read: false,
+          timestamp: new Date(),
+        };
+        await addDoc(notificationRef, newNotification);
+      } else {
+        querySnapshot.forEach(async (docSnapshot) => {
+          await updateDoc(docSnapshot.ref, { timestamp: new Date() });
+        });
+      }
+    } catch (error) {
+      console.error("錯誤創建/更新通知", error);
+    }
+  };
 
   useEffect(() => {
     const auth = getAuth();
@@ -95,7 +152,7 @@ const TaskDetail = () => {
   }, [taskId]);
 
   if (loading) {
-    return <div>Loading task details...</div>;
+    return <LoadingSpinner />;
   }
 
   if (!taskDetails) {
@@ -149,6 +206,12 @@ const TaskDetail = () => {
             status: "任務進行中",
             accepted: true,
           });
+          await createNotification(
+            db,
+            taskId,
+            taskDetails.createdBy,
+            currentUserID,
+          );
 
           Swal.fire({
             title: "已完成",
@@ -158,7 +221,7 @@ const TaskDetail = () => {
             timerProgressBar: true,
             showConfirmButton: false,
           });
-          navigate("/");
+          navigate("/taskManagement");
         } catch (error) {
           console.error("Error updating task:", error);
         }
@@ -169,7 +232,7 @@ const TaskDetail = () => {
   return (
     <>
       <Header />
-      <div className="container mx-auto max-w-[1280px] px-4 pt-4 md:px-20">
+      <div className="container mx-auto max-w-[1280px] px-4 pt-10 pt-20 md:px-20">
         <div className="mb-4 flex text-3xl font-semibold text-gray-700">
           <span className="h-8 w-2 bg-[#368dcf]"></span>
           <p className="pl-2">任務資訊</p>
@@ -179,21 +242,35 @@ const TaskDetail = () => {
           <div className="space-y-4 p-4 lg:w-1/3">
             {/* 案主 */}
             <div className="flex items-center space-x-2">
-              <div className="flex-grow items-center text-xl tracking-wider text-[#3178C6]">
-                <span className="font-semibold tracking-wider">
-                  發案者名稱：
-                </span>
+              <div className="flex-grow items-center text-xl font-semibold tracking-wider text-[#3178C6]">
+                <span className="tracking-wider">發案者名稱：</span>
                 {posterName}
               </div>
             </div>
             {/* 任務截止日期 */}
             <div className="flex items-center space-x-2">
-              <div className="flex-grow tracking-wider">
-                <span className="font-semibold tracking-wider">
-                  任務截止日期：
-                </span>
+              <div className="flex-grow text-xl font-semibold tracking-wider">
+                <span className="tracking-wider">任務截止日期：</span>
                 {taskDetails.dueDate}
               </div>
+            </div>
+            <div className="my-auto mb-6 ml-auto">
+              <button
+                onClick={handleAskDetails}
+                className="flex items-center rounded-md bg-[#368DCF] p-2 text-lg font-medium tracking-wider text-white transition duration-500 ease-in-out hover:bg-[#2b79b4]"
+              >
+                <Icon icon="ant-design:message-filled" className="mr-3" />
+                <span className="flex items-center text-xl">
+                  聯繫發案者
+                  <span
+                    aria-hidden="true"
+                    className="ml-2 inline-block translate-x-0 transition-transform duration-300 ease-in-out group-hover:translate-x-2"
+                  ></span>
+                </span>
+              </button>
+              {isChatOpen && taskId && (
+                <ChatRoomWindow onCloseRoom={handleCloseChat} />
+              )}
             </div>
           </div>
           {/* 左邊區塊結束 */}
@@ -203,7 +280,7 @@ const TaskDetail = () => {
             {/* 以下是六個欄位，根據屏幕大小分為一列或兩列 */}
             <div className="rounded-md bg-white p-4">
               {/* 任務名稱 */}
-              <div className="mb-3  border-b-4 border-b-[#B3D7FF] text-center text-xl font-black text-gray-500">
+              <div className="mb-3 border-b-4 border-b-[#B3D7FF] text-center text-xl font-bold text-gray-500">
                 任務名稱
               </div>
               <div className="font-medium text-[#3178C6]">
@@ -212,7 +289,7 @@ const TaskDetail = () => {
             </div>
             <div className="rounded-md bg-white p-4">
               {/* 任務地點 */}
-              <div className="mb-3  border-b-4 border-b-[#B3D7FF] text-center text-xl font-black text-gray-500">
+              <div className="mb-3  border-b-4 border-b-[#B3D7FF] text-center text-xl font-bold text-gray-500">
                 任務地點
               </div>
               <div className="font-medium text-[#3178C6]">
@@ -223,7 +300,7 @@ const TaskDetail = () => {
             </div>
             <div className="rounded-md bg-white p-4">
               {/* 任務類型 */}
-              <div className="mb-3  border-b-4 border-b-[#B3D7FF] text-center text-xl font-black text-gray-500">
+              <div className="mb-3  border-b-4 border-b-[#B3D7FF] text-center text-xl font-bold text-gray-500">
                 任務類型
               </div>
               <div className="font-medium text-[#3178C6]">
@@ -233,9 +310,9 @@ const TaskDetail = () => {
               </div>
             </div>
             <div className="rounded-md bg-white p-4">
-              {/* 任務報酬 Super Coin */}
-              <div className="mb-3  border-b-4 border-b-[#B3D7FF] text-center text-xl font-black text-gray-500">
-                任務報酬 Super Coin
+              {/* 任務報酬 Super Coins */}
+              <div className="mb-3  border-b-4 border-b-[#B3D7FF] text-center text-xl font-bold text-gray-500">
+                任務報酬 Super Coins
               </div>
               <div className="flex items-center font-medium text-[#3178C6]">
                 <span>{taskDetails.cost}</span>
@@ -243,7 +320,7 @@ const TaskDetail = () => {
             </div>
             <div className="rounded-md bg-white p-4">
               {/* 任務說明 */}
-              <div className="mb-3 border-b-4 border-b-[#B3D7FF] text-center text-xl font-black text-gray-500">
+              <div className="mb-3 border-b-4 border-b-[#B3D7FF] text-center text-xl font-bold text-gray-500">
                 任務說明
               </div>
               <div className="font-medium text-[#3178C6]">
@@ -252,7 +329,7 @@ const TaskDetail = () => {
             </div>
             <div className="rounded-md bg-white p-4">
               {/* 其他備註 */}
-              <div className="mb-3 border-b-4 border-b-[#B3D7FF] text-center text-xl font-black text-gray-500">
+              <div className="mb-3 border-b-4 border-b-[#B3D7FF] text-center text-xl font-bold text-gray-500">
                 其他備註
               </div>
               <div className="font-medium text-[#3178C6]">
@@ -275,6 +352,7 @@ const TaskDetail = () => {
                 className="h-52 w-52 border-2 border-dashed border-[#368dcf]"
               >
                 <img
+                  title="點擊預覽"
                   className="h-full w-full cursor-pointer object-cover p-2"
                   src={photo}
                   alt="Task photo"
@@ -300,22 +378,33 @@ const TaskDetail = () => {
 
           {isModalOpen && (
             <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
-              <div className=" relative max-w-full overflow-auto ">
-                <img
-                  className="min-w-[500px] max-w-[800px] object-cover"
-                  src={selectedPhoto || "defaultImagePath"}
-                  alt="Enlarged task photo"
-                />
-                <button
-                  className="absolute bottom-10 left-1/2 mt-4 flex h-10 w-10 -translate-x-1/2 transform items-center justify-center rounded-full  p-2 text-black"
-                  onClick={() => setIsModalOpen(false)}
-                >
-                  <span className="absolute -left-4 -top-4 h-16 w-16 animate-ping rounded-full  opacity-75" />
-                  <span className="absolute -left-4 -top-4 h-16 w-16 rounded-full bg-red-200" />
-                  <span className="relative z-10 text-center text-sm">
-                    Close
-                  </span>
-                </button>
+              <div className="relative h-full w-full max-w-screen-md overflow-auto">
+                <div className="flex h-full items-center justify-center">
+                  <img
+                    className="max-h-full max-w-full object-cover"
+                    src={selectedPhoto || "defaultImagePath"}
+                    alt="Enlarged task photo"
+                  />
+                  <button
+                    className="absolute bottom-3 left-1/2 flex h-10 w-10 -translate-x-1/2 transform items-center justify-center rounded-full p-2 text-black"
+                    onClick={() => setIsModalOpen(false)}
+                  >
+                    <span className="absolute -left-4 -top-4 flex h-10 w-10 animate-ping items-center justify-center rounded-full bg-[#2B79B4] text-sm text-white opacity-75">
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        className="h-5 w-5"
+                        viewBox="0 0 20 20"
+                        fill="currentColor"
+                      >
+                        <path
+                          fillRule="evenodd"
+                          d="M14.293 5.293a1 1 0 011.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 11-1.414-1.414L8.586 10 4.293 5.707a1 1 0 111.414-1.414L10 8.586l4.293-4.293z"
+                          clipRule="evenodd"
+                        />
+                      </svg>
+                    </span>
+                  </button>
+                </div>
               </div>
             </div>
           )}
@@ -323,7 +412,7 @@ const TaskDetail = () => {
         <div className="flex justify-center gap-4">
           <button
             onClick={handleConfirmAcceptTask}
-            className="flex items-center rounded-md bg-[#368DCF] p-3 text-xl font-medium tracking-wider text-white transition duration-500 ease-in-out hover:bg-[#3178C6]"
+            className="flex items-center rounded-md bg-[#368DCF] p-2 text-lg font-medium tracking-wider text-white transition duration-500 ease-in-out hover:bg-[#2b79b4]"
           >
             <Icon icon="icon-park-outline:check-correct" className="mr-3" />
             確認接案

@@ -39,10 +39,10 @@ const HomeTaskStep = () => {
   return (
     <div className="container mx-auto max-w-[1280px] px-4 md:px-20">
       <div className="py-10 md:py-20">
-        <p className="mb-3 text-center text-4xl font-bold">
+        <p className="mb-3 text-center text-3xl font-bold">
           發案 3 步驟，跟著一起 go
         </p>
-        <div className="mx-auto mb-10 h-[10px] w-1/5 bg-[#2B79B4]"></div>
+        <div className="mx-auto mb-10 h-[10px] w-4/5 bg-[#2B79B4] sm:w-1/5"></div>
         <div className="flex justify-between">
           <p className="mb-1 font-bold sm:text-2xl">Step 1</p>
           <p className="font-bold sm:text-2xl">Step 2</p>
@@ -56,7 +56,7 @@ const HomeTaskStep = () => {
             vFlip={true}
             className="h-[40px] w-[40px] sm:h-[60px] sm:w-[60px]"
           />
-          <div className="flex-auto border-t-2 border-gray-300"></div>
+          <div className="flex-auto border-t-2 border-[#000]"></div>
           <Icon
             icon="ant-design:thunderbolt-filled"
             className="h-[40px] w-[40px] sm:h-[60px] sm:w-[60px]"
@@ -64,18 +64,18 @@ const HomeTaskStep = () => {
             hFlip={true}
             vFlip={true}
           />
-          <div className="flex-auto border-t-2 border-gray-300"></div>
+          <div className="flex-auto border-t-2 border-[#000]"></div>
           <Icon
             color="4B5563"
             className="ml-0 h-[40px] w-[40px] text-white sm:h-[60px] sm:w-[60px]"
             icon="icon-park-solid:good-two"
           />
         </div>
-        <div className="mb-10 flex justify-between">
-          <p className="mb-1 font-bold sm:text-2xl">刊登任務</p>
-          <p className="font-bold sm:text-2xl">出任務囉</p>
-          <p className="font-bold sm:text-2xl">完成評價</p>
-        </div>
+        <ul className="mb-10 flex justify-between">
+          <li className="mb-1 font-bold sm:text-lg">刊登任務</li>
+          <li className="font-bold sm:text-lg">出任務囉</li>
+          <li className="font-bold sm:text-lg">完成評價</li>
+        </ul>
         <div className="mb-10 flex flex-col">
           <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-4">
             {tasks.map((task, index) => (
@@ -83,7 +83,7 @@ const HomeTaskStep = () => {
                 className="group relative flex h-full w-full flex-col items-center justify-between rounded-xl bg-white p-4 shadow-xl transition-all duration-300 ease-in-out hover:shadow-2xl"
                 key={index}
               >
-                <div className="flex items-center bg-gradient-to-r from-blue-700 via-blue-500 to-purple-400 bg-clip-text text-xl font-black text-transparent">
+                <div className="flex items-center text-xl font-black text-[#2b79b4]">
                   <p className="mr-1 italic">SuperTask co.</p>
                 </div>
                 <div className="my-2 text-xl font-bold">{task.title}</div>
@@ -100,17 +100,11 @@ const HomeTaskStep = () => {
                 </div>
                 <div className="font-semibold">
                   <span className="text-base">{task.cost}</span>
-                  <span className="text-sm">/ Super Coin</span>
+                  <span className="text-sm">/ Super Coins</span>
                 </div>
-                {/* 遮罩層 */}
-                {/* <div className="absolute bottom-[64px] left-0 right-0 top-0 flex items-center justify-start overflow-hidden rounded-md bg-blue-400 bg-opacity-50 opacity-0 transition-opacity duration-300 ease-linear group-hover:opacity-100">
-                  <span className="ml-4 translate-x-[-100%] text-lg font-semibold text-white transition-transform duration-300 ease-out group-hover:translate-x-0">
-                    推薦任務
-                  </span>
-                </div> */}
                 <button
                   onClick={() => navigate(`/acceptDetail/${task.id}`)}
-                  className="mt-2 w-full rounded-full border border-[#F0F0F6] bg-[#F4F5FA] px-4 py-3 tracking-widest shadow-lg transition duration-300 ease-in-out hover:bg-blue-200"
+                  className="mt-2 w-full items-center justify-center rounded-md  bg-[#368DCF] py-2 text-xl font-medium text-white transition duration-500 ease-in-out hover:bg-[#2b79b4]"
                 >
                   看更多
                 </button>
@@ -121,7 +115,7 @@ const HomeTaskStep = () => {
         <div className="flex justify-center">
           <button
             onClick={() => navigate("/taskPage")}
-            className="rounded-md bg-[#368DCF] p-3 text-xl font-medium tracking-widest text-white transition duration-500 ease-in-out hover:bg-[#3178C6]"
+            className="items-center justify-center rounded-md  bg-[#368DCF] p-3 text-2xl font-medium text-white transition duration-500 ease-in-out hover:bg-[#2b79b4]"
           >
             立即刊登任務
           </button>

@@ -13,9 +13,9 @@ const SideBar = () => {
       <div className="fixed bottom-0 left-0 flex h-16 w-full items-center justify-around border-none bg-[#B3D7FF] md:relative md:h-screen md:flex-col md:justify-start  md:gap-10 lg:space-y-0">
         <Link
           to="/"
-          className="hidden items-center justify-center bg-gradient-to-r from-blue-700 via-blue-500 to-purple-400 bg-clip-text text-2xl  font-black text-transparent md:flex"
+          className="hidden items-center justify-center text-2xl font-black md:flex"
         >
-          <p className="pl-4 pr-1 pt-3 italic">SuperTask co.</p>
+          <p className="pl-4 pr-1 pt-3 italic text-[#3178C6]">SuperTask co.</p>
         </Link>
         {/* Inicio */}
         <Link
@@ -23,7 +23,7 @@ const SideBar = () => {
           className={`relative flex w-full items-center justify-center rounded-md px-4 py-3 text-lg transition duration-300 ease-in-out md:space-x-1 ${
             activeLink === "/profile"
               ? "bg-[#3178C6] text-white"
-              : "text-[#3178C6] hover:bg-[#3178C6] hover:text-white"
+              : "text-[#3178C6] hover:bg-[#2b79b4] hover:text-white"
           }`}
           onClick={() => handleSetActiveLink("/profile")}
         >
@@ -44,8 +44,10 @@ const SideBar = () => {
         </Link>
         <Link
           to="/taskManagement"
-          className={`relative flex w-full items-center justify-center rounded-md px-4 py-3 text-lg text-[#3178C6] transition duration-300 ease-in-out hover:bg-[#3178C6] hover:text-white md:space-x-1 ${
-            activeLink === "/taskManagement" ? "bg-[#3178C6] text-white" : ""
+          className={`relative flex w-full items-center justify-center rounded-md px-4 py-3 text-lg text-[#3178C6] transition duration-300 ease-in-out hover:bg-[#2b79b4] hover:text-white md:space-x-1 ${
+            activeLink === "/taskManagement"
+              ? "bg-[#3178C6] text-white"
+              : "text-[#3178C6] hover:bg-[#2b79b4] hover:text-white"
           }`}
           onClick={() => handleSetActiveLink("/taskManagement")}
         >
@@ -66,7 +68,7 @@ const SideBar = () => {
         </Link>
         <Link
           to="/reviewLists"
-          className="relative flex w-full items-center justify-center rounded-md px-4 py-3 text-lg text-[#3178C6] transition duration-300 ease-in-out hover:bg-[#3178C6] hover:text-white md:space-x-1"
+          className="relative flex w-full items-center justify-center rounded-md px-4 py-3 text-lg text-[#3178C6] transition duration-300 ease-in-out hover:bg-[#2b79b4] hover:text-white md:space-x-1"
         >
           <svg
             xmlns="http://www.w3.org/2000/svg"
@@ -78,9 +80,9 @@ const SideBar = () => {
             <path
               fill="currentColor"
               stroke="currentColor"
-              stroke-linecap="round"
-              stroke-linejoin="round"
-              stroke-width="1.5"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth="1.5"
               d="m8.587 8.236l2.598-5.232a.911.911 0 0 1 1.63 0l2.598 5.232l5.808.844a.902.902 0 0 1 .503 1.542l-4.202 4.07l.992 5.75c.127.738-.653 1.3-1.32.952L12 18.678l-5.195 2.716c-.666.349-1.446-.214-1.319-.953l.992-5.75l-4.202-4.07a.902.902 0 0 1 .503-1.54l5.808-.845Z"
             />
           </svg>
@@ -89,7 +91,7 @@ const SideBar = () => {
         </Link>
         <Link
           to="/"
-          className="relative flex w-full items-center justify-center rounded-md px-4 py-3 text-lg text-[#3178C6] transition duration-300 ease-in-out hover:bg-[#3178C6] hover:text-white md:space-x-1"
+          className="relative flex w-full items-center justify-center rounded-md px-4 py-3 text-lg text-[#3178C6] transition duration-300 ease-in-out hover:bg-[#2b79b4] hover:text-white md:space-x-1"
         >
           <svg
             xmlns="http://www.w3.org/2000/svg"
