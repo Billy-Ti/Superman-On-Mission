@@ -350,7 +350,7 @@ const AcceptTaskDetail = () => {
     <>
       <Header />
       <div className="container mx-auto max-w-[1280px] px-4 py-10 md:pb-20 md:pt-10 lg:px-20">
-        <div className="mb-4 flex text-3xl font-semibold text-gray-700">
+        <div className="mb-4 mt-4 flex text-3xl font-semibold text-gray-700">
           <span className="h-8 w-2 bg-[#368dcf]"></span>
           <p className="pl-2">任務資訊</p>
         </div>
@@ -504,7 +504,7 @@ const AcceptTaskDetail = () => {
           </div>
           {/* 右邊區塊結束 */}
         </div>
-        <div className="mb-4 flex text-3xl font-semibold text-gray-700">
+        <div className="mb-4 mt-4 flex text-3xl font-semibold text-gray-700">
           <span className="h-8 w-2 bg-[#368dcf]"></span>
           <p className="pl-2">任務照片</p>
         </div>

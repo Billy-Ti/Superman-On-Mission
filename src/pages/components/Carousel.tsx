@@ -92,13 +92,13 @@ const Carousel = () => {
       <div className="mb-10 items-center lg:mb-20">
         <div className="flex flex-col ">
           <div className="mb-4 mr-4 flex items-center border-l-[10px] border-l-[#368DCF] pl-2">
-            <h2 className="text-4xl font-bold leading-normal">找任務</h2>
+            <h2 className="text-2xl md:text-4xl font-bold leading-normal">找任務</h2>
           </div>
           <div className="mb-20 flex flex-col pl-2">
-            <p className="mb-1 text-xl font-medium leading-normal text-gray-600">
+            <p className="mb-1 text-lg md:text-xl font-medium leading-normal text-gray-600">
               大顯身手的時候到了！
             </p>
-            <p className="text-xl font-medium leading-normal text-gray-600">
+            <p className="text-lg md:text-xl font-medium leading-normal text-gray-600">
               限時推薦
             </p>
           </div>

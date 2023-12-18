@@ -522,7 +522,7 @@ const StartTaskDetail = () => {
           {/* 右邊區塊結束 */}
         </div>
 
-        <div className="mb-4 flex text-3xl font-semibold text-gray-700">
+        <div className="mb-4 mt-4 flex text-3xl font-semibold text-gray-700">
           <span className="h-8 w-2 bg-[#368dcf]"></span>
           <p className="pl-2">任務照片</p>
         </div>

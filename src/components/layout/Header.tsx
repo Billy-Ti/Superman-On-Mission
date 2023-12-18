@@ -414,7 +414,7 @@ const Header = () => {
                 {/* Header 點擊頭像之後的選單 */}
                 <div
                   ref={dropdownRef}
-                  className={`absolute -right-[0px] top-[50px] z-10 flex-col space-y-2 rounded-md border border-[#B3D7FF] bg-blue-100 transition-opacity duration-300 ease-in-out ${
+                  className={`absolute -right-[-16px] top-[50px] z-10 flex-col space-y-2 rounded-md border border-[#B3D7FF] bg-blue-100 transition-opacity duration-300 ease-in-out ${
                     isDropdownOpen ? "flex opacity-100" : "hidden opacity-0"
                   }`}
                 >
@@ -478,7 +478,7 @@ const Header = () => {
           </div>
         </div>
         <div
-          className={`absolute left-0 top-0 z-20 w-full bg-[#B3D7FF] transition-transform duration-300 ease-in-out lg:hidden ${
+          className={`absolute left-0 top-0 z-[100] w-full bg-[#B3D7FF] transition-transform duration-300 ease-in-out lg:hidden ${
             isMenuOpen ? "translate-y-[106px]" : "-translate-y-full"
           }`}
         >
