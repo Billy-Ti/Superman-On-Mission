@@ -1,4 +1,18 @@
 {
-  "indexes": [],
-  "fieldOverrides": []
+  "indexes": [
+    {
+      "collectionId": "tasks",
+      "fields": [
+        { "fieldPath": "createdBy", "mode": "ASCENDING" },
+        { "fieldPath": "createdAt", "mode": "DESCENDING" }
+      ]
+    },
+    {
+      "collectionId": "tasks",
+      "fields": [
+        { "fieldPath": "createdAt", "mode": "DESCENDING" },
+        { "fieldPath": "createdBy", "mode": "ASCENDING" }
+      ]
+    }
+  ]
 }

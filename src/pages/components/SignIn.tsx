@@ -21,12 +21,12 @@ const SignIn = () => {
   // 註冊切換，不做功能
   const handleSignUpClick = () => {
     // Demo 結束後要改回 true
-    setIsRightPanelActive(false);
+    setIsRightPanelActive(true);
   };
   // 登入切換，不做功能
   const handleSignInClick = () => {
     // Demo 結束後要改回 false
-    setIsRightPanelActive(true);
+    setIsRightPanelActive(false);
   };
   // 註冊功能
   const handleSignUp = async (event: React.FormEvent<HTMLFormElement>) => {
@@ -145,7 +145,7 @@ const SignIn = () => {
                 type="email"
                 placeholder="Email"
                 // Demo 結束後要將 value 行刪除，讓預設值恢復改回為註冊頁
-                value={email}
+                // value={email}
                 onChange={(e) => setEmail(e.target.value)}
               />
               <input
@@ -153,7 +153,7 @@ const SignIn = () => {
                 type="password"
                 placeholder="Password"
                 // Demo 結束後要將 value 行刪除，讓預設值恢復改回為註冊頁
-                value={password}
+                // value={password}
                 onChange={(e) => setPassword(e.target.value)}
               />
               <button className="mt-[15px] rounded-md border-[1px] border-[#A7B4FC] border-[solid] bg-[#A7B4FC] px-[45px] py-3 text-[12px] font-bold uppercase tracking-[1px] text-[#FFFFFF] [transition:transform_80ms_ease-in] focus:outline-[none] active:scale-[0.95]">
