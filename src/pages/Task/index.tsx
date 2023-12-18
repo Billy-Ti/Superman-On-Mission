@@ -278,8 +278,8 @@ const Task = () => {
         <div className="container mx-auto px-4 md:max-w-7xl lg:px-20">
           <div className="mb-10 mt-10 flex items-center justify-between">
             <div className="flex">
-              <span className="mr-2 h-10 w-2 bg-[#368dcf]"></span>
-              <h3 className="text-4xl font-bold">發任務</h3>
+              <span className="mr-2 h-8 w-2 bg-[#368dcf] md:h-10"></span>
+              <h3 className="text-2xl font-bold md:text-4xl">發任務</h3>
             </div>
             <svg
               xmlns="http://www.w3.org/2000/svg"
@@ -300,7 +300,7 @@ const Task = () => {
             <div className="mb-8 flex flex-col font-semibold">
               <div className="mb-4 flex items-center ">
                 <span className="mr-2 h-8 w-2 bg-[#368dcf]"></span>
-                <label htmlFor="taskTitle" className="text-2xl">
+                <label htmlFor="taskTitle" className="text-xl md:text-2xl">
                   標題
                 </label>
               </div>
@@ -313,20 +313,22 @@ const Task = () => {
                 className="w-full rounded-md border bg-[#EFF7FF] p-3 font-medium focus:bg-white focus:outline-none"
               />
             </div>
-            <div className="mb-8 flex flex-wrap items-center">
+            <div className="mb-8 flex flex-col flex-wrap items-start sm:flex-row sm:items-center">
               <div
-                className="relative mb-4 mr-4 flex items-center"
+                className="relative mb-4 mr-4 flex flex-col items-start sm:flex-row md:items-center"
                 ref={countyRef}
               >
-                <span className="mr-2 h-8 w-2 bg-[#368dcf]"></span>
-                <p className="mr-3 whitespace-nowrap text-2xl font-semibold">
-                  選擇類別 / 輸入地址
-                </p>
-                <div className=" relative">
+                <div className="flex items-center">
+                  <span className="mr-2 h-8 w-2 bg-[#368dcf]"></span>
+                  <p className="mr-3 whitespace-nowrap text-xl font-semibold md:text-2xl">
+                    選擇類別 / 輸入地址
+                  </p>
+                </div>
+                <div className="relative flex">
                   <button
                     type="button"
                     onClick={toggleCountyDropdown}
-                    className="z-4 relative block overflow-hidden rounded border px-3 py-2 font-semibold shadow focus:outline-none"
+                    className="relative z-10 block overflow-hidden rounded border px-3 py-2 font-semibold shadow focus:outline-none"
                   >
                     {selectedCounty || "選擇縣市"}{" "}
                     <span className="ml-2">▼</span>
@@ -334,7 +336,7 @@ const Task = () => {
 
                   {isCountyDropdownOpen && (
                     <div className="absolute mt-1 w-full rounded-md shadow-lg">
-                      <div className="z-4 absolute mt-1 max-h-80 w-40 overflow-auto rounded border bg-white font-semibold shadow-lg">
+                      <div className="absolute z-10 mt-1 max-h-80 w-40 overflow-auto rounded border bg-white font-semibold shadow-lg">
                         {[
                           "台北市",
                           "新北市",
@@ -413,8 +415,10 @@ const Task = () => {
                 <div className="mb-4 flex items-center">
                   <div className="flex">
                     <span className="mr-2 h-8 w-2 bg-[#368dcf]"></span>
-                    <p className="mr-3 text-2xl font-semibold">任務說明</p>
-                    <p className="text-medium flex flex-col justify-end font-semibold text-red-600">
+                    <p className="mr-3 text-xl font-semibold md:text-2xl">
+                      任務說明
+                    </p>
+                    <p className="md:text-medium flex flex-col justify-end text-sm font-semibold text-red-600">
                       請輸入20字以上，以明白要做什麼事情
                     </p>
                   </div>
@@ -431,7 +435,9 @@ const Task = () => {
               <div className="flex w-full flex-col items-start lg:w-1/2">
                 <div className="mb-4 flex items-center text-right">
                   <span className="mr-2 h-8 w-2 bg-[#368dcf]"></span>
-                  <p className="mr-3 text-2xl font-semibold">其它備註</p>
+                  <p className="mr-3 text-xl font-semibold md:text-2xl">
+                    其它備註
+                  </p>
                 </div>
                 <textarea
                   className="h-30 mb-4 w-full resize-none rounded-md border bg-[#EFF7FF] p-4 font-medium focus:bg-white focus:outline-none"
@@ -447,10 +453,15 @@ const Task = () => {
               <div className="flex w-full flex-col items-start lg:w-1/2">
                 <div className="mb-4 flex items-end text-right">
                   <span className="mr-2 h-8 w-2 bg-[#368dcf]"></span>
-                  <p className="mr-3 text-2xl font-semibold">任務報酬</p>
+                  <p className="mr-3 text-xl font-semibold md:text-2xl">
+                    任務報酬
+                  </p>
                   <div className="text-medium flex items-center font-medium">
                     <p>剩餘</p>
-                    <span className="ml-1">&emsp;{superCoins}&emsp;</span>
+                    <span className="ml-1 hidden sm:block">
+                      &emsp;{superCoins}&emsp;
+                    </span>
+                    <span className="ml-1 sm:hidden">{superCoins}</span>
                     <span className="ml-1">Super Coins</span>
                   </div>
                 </div>
@@ -467,12 +478,14 @@ const Task = () => {
             <div className="mb-">
               <div className="mb-4 flex">
                 <span className="mr-2 h-8 w-2 bg-[#368dcf]"></span>
-                <p className="mr-3 text-2xl font-semibold">上傳照片</p>
+                <p className="mr-3 text-xl font-semibold md:text-2xl">
+                  上傳照片
+                </p>
                 <p className="text-medium flex flex-col justify-end font-semibold text-red-600">
                   圖片大小不超過 5MB
                 </p>
               </div>
-              <ul className="mb-8 flex items-center justify-between">
+              <ul className="mb-8 flex flex-wrap items-center justify-center md:justify-between">
                 {uploadedImages.map((image, index) => (
                   <li
                     key={index}
@@ -503,7 +516,7 @@ const Task = () => {
                 <button
                   type="button"
                   onClick={confirmSubmitTask}
-                  className="relative flex items-center justify-center rounded-md bg-[#368DCF] p-4 text-2xl font-medium tracking-wider text-white transition duration-500 ease-in-out hover:bg-[#2b79b4]"
+                  className="relative flex items-center justify-center rounded-md bg-[#368DCF] p-2 text-xl font-medium tracking-wider text-white transition duration-500 ease-in-out hover:bg-[#2b79b4] sm:p-4"
                 >
                   {isLoading ? (
                     <>
