@@ -137,7 +137,7 @@ const Profile = () => {
       <div className="md:hidden">
         <Header />
       </div>
-      <div className="flex min-h-screen">
+      <div className="flex flex-col md:min-h-screen">
         <SideBar />
         <div className="container mx-auto max-w-[1280px] px-4 pt-40 md:py-0 lg:px-20">
           <div className="relative rounded-lg bg-white shadow sm:mx-auto md:ml-56 md:mt-40 md:max-w-full lg:mx-auto lg:w-1/2">

@@ -2,15 +2,15 @@ import { useState } from "react";
 import { Link } from "react-router-dom";
 
 const SideBar = () => {
-  const [activeLink, setActiveLink] = useState<string>("");
+  const [activeLink, setActiveLink] = useState<string>("/profile");
 
   const handleSetActiveLink = (link: string) => {
     setActiveLink(link);
   };
   return (
-    <div className="fixed h-screen border-none bg-[#B3D7FF] md:block">
+    <div className="fixed border-none bg-[#B3D7FF] md:block md:h-screen">
       {/* Items */}
-      <div className="fixed bottom-0 left-0 flex h-16 w-full items-center justify-around border-none bg-[#B3D7FF] md:relative md:h-screen md:flex-col md:justify-start  md:gap-10 lg:space-y-0">
+      <div className="fixed bottom-0 left-0 flex w-full items-center justify-around border-none bg-[#B3D7FF] md:relative md:h-screen md:flex-col md:justify-start  md:gap-10 lg:space-y-0">
         <Link
           to="/"
           className="hidden items-center justify-center text-2xl font-black md:flex"

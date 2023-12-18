@@ -77,8 +77,10 @@ const StartTaskRecord = () => {
                       className="mb-4 h-60 w-full rounded-md object-cover transition-transform duration-300 hover:scale-105"
                     />
                   ) : (
-                    <div className="mb-4 flex border h-60 w-full items-center justify-center font-extrabold">
-                      <span className="text-center text-lg text-gray-600">無提供圖片</span>
+                    <div className="mb-4 flex h-60 w-full items-center justify-center border font-extrabold">
+                      <span className="text-center text-lg text-gray-600">
+                        無提供圖片
+                      </span>
                     </div>
                   )}
                   {task.isUrgent ? (

@@ -1,26 +1,67 @@
 import { Icon } from "@iconify/react";
+import React, { useEffect, useRef, useState } from "react";
+import { animated, useSpring } from "react-spring";
 import { Evaluation } from "./types";
 
 type HomeEvaluationCardProps = {
   evaluation: Evaluation;
+  leftSide?: boolean; // 新增一個 prop 來指示卡片是從左邊還是右邊進場
 };
 
 const HomeEvaluationCard: React.FC<HomeEvaluationCardProps> = ({
   evaluation,
+  leftSide = false,
 }) => {
   const defaultProfilePic =
     "https://cdn-icons-png.flaticon.com/512/149/149071.png";
-  console.log("评估卡片数据：", evaluation);
+  const ref = useRef<HTMLDivElement>(null);
+  const [inView, setInView] = useState(false);
+
+  const props = useSpring({
+    to: {
+      opacity: inView ? 1 : 0,
+      transform: inView
+        ? "translateX(0)"
+        : `translateX(${leftSide ? "-100%" : "100%"})`,
+    },
+    from: {
+      opacity: 0,
+      transform: `translateX(${leftSide ? "-100%" : "100%"})`,
+    },
+    config: { mass: 5, tension: 350, friction: 40 },
+  });
+
+  useEffect(() => {
+    const checkIfInView = () => {
+      if (ref.current) {
+        const rect = ref.current.getBoundingClientRect();
+        if (rect.top < window.innerHeight && rect.bottom >= 0) {
+          setInView(true);
+        }
+      }
+    };
+
+    window.addEventListener("scroll", checkIfInView);
+    checkIfInView();
+    return () => window.removeEventListener("scroll", checkIfInView);
+  }, []);
+
   return (
-    <div className="flex h-full flex-col justify-center overflow-hidden rounded bg-white shadow-lg md:w-full">
-      <div className="flex flex-col gap-4 overflow-hidden">
+    <animated.div
+      style={props}
+      ref={ref}
+      className="flex h-full flex-col justify-center overflow-hidden rounded bg-white shadow-lg md:w-full"
+    >
+      <div className="flex flex-col gap-4 ">
         {evaluation.reviewerPic &&
         evaluation.reviewerPic !== defaultProfilePic ? (
-          <img
-            src={evaluation.reviewerPic}
-            alt={`評論者：${evaluation.reviewerName}`}
-            className="mb-2 h-[300px] w-full transform rounded-md object-cover transition-transform duration-300 ease-in-out hover:scale-110"
-          />
+          <div className="h-[300px] overflow-hidden">
+            <img
+              src={evaluation.reviewerPic}
+              alt={`評論者：${evaluation.reviewerName}`}
+              className="mb-2 h-[300px] w-full transform rounded-md object-cover transition-transform duration-300 ease-in-out hover:scale-110"
+            />
+          </div>
         ) : (
           <Icon
             className="mb-2 h-[300px] w-full transform rounded-md object-cover transition-transform duration-300 ease-in-out hover:scale-110"
@@ -30,7 +71,7 @@ const HomeEvaluationCard: React.FC<HomeEvaluationCardProps> = ({
             height="40"
           />
         )}
-        <div className="mb-2 border-t border-[#368dcf] text-center text-xl font-bold">
+        <div className="mb-2 text-center text-xl font-bold">
           {evaluation.reviewerName}
         </div>
         <p className="grow text-center text-base text-gray-700">
@@ -47,7 +88,7 @@ const HomeEvaluationCard: React.FC<HomeEvaluationCardProps> = ({
           </span>
         ))}
       </div>
-    </div>
+    </animated.div>
   );
 };
 

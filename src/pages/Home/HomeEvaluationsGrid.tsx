@@ -54,14 +54,9 @@ const EvaluationsGrid: React.FC = () => {
 
   useEffect(() => {
     const fetchData = async () => {
-      console.log("开始获取评论数据");
       const reviews = await fetchTopReviews();
-      console.log("评论数据获取完成：", reviews);
-      // 可以根据需要获取用户信息
       const userIds = reviews.map((review) => review.userId); // 假设每个评论都有 userId
-      console.log("userIds:", userIds); // 添加这行日志来检查 userIds
       const userInfo = await fetchUsersInfoByIds(userIds);
-      console.log("用户信息：", userInfo);
 
       const combinedEvaluations = reviews.map((review, index) => {
         const user = userInfo.find((u) => u.id === review.userId); // 假设 UserInfo 有 id 字段
@@ -73,8 +68,6 @@ const EvaluationsGrid: React.FC = () => {
           rating: review.rating,
         };
       });
-      console.log("组合后的评估数据：", combinedEvaluations);
-
       setEvaluations(combinedEvaluations);
     };
 
@@ -84,12 +77,15 @@ const EvaluationsGrid: React.FC = () => {
   return (
     <div className="container mx-auto max-w-7xl px-4 md:px-8">
       <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-4">
-        {evaluations.map((evaluation) => (
+        {evaluations.map((evaluation, index) => (
           <div
             key={evaluation.id}
             className="mb-4 h-full min-h-[200px] w-full break-inside-avoid" // 確保卡片填滿高度
           >
-            <HomeEvaluationCard evaluation={evaluation} />
+            <HomeEvaluationCard
+              evaluation={evaluation}
+              leftSide={index % 4 < 2}
+            />
           </div>
         ))}
       </div>
