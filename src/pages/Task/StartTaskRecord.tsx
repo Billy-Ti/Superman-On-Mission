@@ -4,7 +4,9 @@ import { collection, getDocs, orderBy, query, where } from "firebase/firestore";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import NoRecordsComponent from "../../components/NoRecordsComponent";
+import Pagination from "../../components/Pagination";
 import { db } from "../../config/firebase";
+import usePagination from "../../hooks/usePagination";
 
 interface Task {
   id: string;
@@ -24,6 +26,12 @@ interface Task {
 const StartTaskRecord = () => {
   const [tasks, setTasks] = useState<Task[]>([]);
   const navigate = useNavigate();
+
+  const itemsPerPage = 6;
+  const { currentData, jumpToPage, currentPage } = usePagination(
+    tasks,
+    itemsPerPage,
+  );
 
   const handleStartTask = (taskId: string) => {
     navigate(`/detail/${taskId}`);
@@ -61,9 +69,17 @@ const StartTaskRecord = () => {
 
   return (
     <div className="container mx-auto py-10">
+      <div className="mb-4">
+        <Pagination
+          tasksPerPage={itemsPerPage}
+          totalTasks={tasks.length}
+          paginate={jumpToPage}
+          currentPage={currentPage}
+        />
+      </div>
       <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
-        {tasks.length > 0 ? (
-          tasks.map((task) => (
+        {currentData().length > 0 ? (
+          currentData().map((task) => (
             <div
               key={task.id}
               className="relative flex flex-col rounded-md border-2 border-gray-200 bg-white p-4 shadow-xl transition-all duration-300 ease-in-out hover:shadow-2xl"
@@ -77,8 +93,10 @@ const StartTaskRecord = () => {
                       className="mb-4 h-60 w-full rounded-md object-cover transition-transform duration-300 hover:scale-105"
                     />
                   ) : (
-                    <div className="mb-4 flex border h-60 w-full items-center justify-center font-extrabold">
-                      <span className="text-center text-lg text-gray-600">無提供圖片</span>
+                    <div className="mb-4 flex h-60 w-full items-center justify-center border font-extrabold">
+                      <span className="text-center text-lg text-gray-600">
+                        無提供圖片
+                      </span>
                     </div>
                   )}
                   {task.isUrgent ? (

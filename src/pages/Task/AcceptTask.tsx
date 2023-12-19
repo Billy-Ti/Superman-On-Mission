@@ -1,7 +1,7 @@
 import { Icon } from "@iconify/react";
 import { collection, getDocs, orderBy, query, where } from "firebase/firestore";
 import { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import Pagination from "../../components/Pagination";
 import Footer from "../../components/layout/Footer";
 import Header from "../../components/layout/Header";
@@ -185,7 +185,7 @@ const AcceptTask = () => {
           <div className="mb-4">
             <div className="mb-4 flex items-center font-semibold">
               <span className="mr-2 h-8 w-2 bg-[#368DCF]"></span>
-              <p className="text-2xl">依照分類搜尋</p>
+              <p className="text-xl md:text-2xl">依照分類搜尋</p>
             </div>
             <ServiceTypeSelector
               serviceType={serviceType}
@@ -212,11 +212,18 @@ const AcceptTask = () => {
             totalTasks={tasks.length}
             paginate={paginate}
             currentPage={currentPage}
-            className="mb-4 justify-end"
+            className="mb-4 justify-center"
           />
           {currentTasks.length === 0 ? (
-            <div className="mb-10 h-64 border border-[#368DCF] text-center">
+            <div className="mb-10 flex h-64 flex-col items-center justify-center gap-10 border border-[#368DCF] text-center">
               <p className="text-xl">目前還沒有可接的任務...</p>
+              <p className="text-lg font-medium">
+                有需要發任務可至
+                <span className="text-[#368def]">
+                  <Link to="/taskPage">發任務</Link>
+                </span>
+                開始
+              </p>
             </div>
           ) : (
             <div className="mb-4 grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3">

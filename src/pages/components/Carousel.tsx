@@ -1,6 +1,7 @@
 import { Icon } from "@iconify/react";
 import { collection, getDocs, getFirestore } from "firebase/firestore";
 import { useEffect, useState } from "react";
+import { Link } from "react-router-dom";
 import Slider from "react-slick";
 import "slick-carousel/slick/slick-theme.css";
 import "slick-carousel/slick/slick.css";
@@ -92,13 +93,15 @@ const Carousel = () => {
       <div className="mb-10 items-center lg:mb-20">
         <div className="flex flex-col ">
           <div className="mb-4 mr-4 flex items-center border-l-[10px] border-l-[#368DCF] pl-2">
-            <h2 className="text-4xl font-bold leading-normal">找任務</h2>
+            <h2 className="text-2xl font-bold leading-normal md:text-4xl">
+              找任務
+            </h2>
           </div>
           <div className="mb-20 flex flex-col pl-2">
-            <p className="mb-1 text-xl font-medium leading-normal text-gray-600">
+            <p className="mb-1 text-lg font-medium leading-normal text-gray-600 md:text-xl">
               大顯身手的時候到了！
             </p>
-            <p className="text-xl font-medium leading-normal text-gray-600">
+            <p className="text-lg font-medium leading-normal text-gray-600 md:text-xl">
               限時推薦
             </p>
           </div>
@@ -112,7 +115,7 @@ const Carousel = () => {
               >
                 {/* 標題容器 */}
                 <div className="mb-2 h-14 text-center">
-                  <h3 className="line-clamp-1 text-lg font-semibold">
+                  <h3 className="line-clamp-1 rounded-md bg-[#B3D7FF] p-1 text-lg font-semibold">
                     {task.title}
                   </h3>
                 </div>
@@ -120,15 +123,19 @@ const Carousel = () => {
                 {/* 圖片容器 */}
                 <div className="min-h-[225px]">
                   {task.photos && task.photos.length > 0 ? (
-                    task.photos.map((photoUrl, photoIndex) => (
-                      <div key={photoIndex} className="mb-4 text-center">
+                    <div className="mb-4 text-center">
+                      <Link
+                        title="前往任務資訊"
+                        to={`/acceptDetail/${task.id}`}
+                        className="mb-4 block text-center"
+                      >
                         <img
-                          src={photoUrl}
+                          src={task.photos[0]}
                           alt={task.title}
                           className="mx-auto h-52 w-52 rounded-md border-[4px] border-[transparent] object-cover duration-300 [box-shadow:rgb(0_0_0_/_69%)_0px_26px_30px_-10px,rgb(0_0_0_/_20%)_0px_16px_10px_-10px] hover:border-[4px]  hover:border-[rgba(249,249,249,0.8)]"
                         />
-                      </div>
-                    ))
+                      </Link>
+                    </div>
                   ) : (
                     <div className="mx-auto flex h-52 w-52 flex-col items-center justify-center">
                       <p className="font-semibold">無提供圖片</p>

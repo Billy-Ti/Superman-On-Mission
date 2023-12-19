@@ -2,7 +2,7 @@ const LoadingSpinner = () => {
   return (
     <div className="flex h-screen items-center justify-center">
       <div className="text-center">
-        <p className="mb-4 text-lg font-semibold text-gray-800">
+        <p className="mb-4 text-xl font-semibold text-gray-800">
           資料載入中，請稍後...
         </p>
         <svg

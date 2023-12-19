@@ -8,11 +8,14 @@ import {
   uploadBytes,
 } from "firebase/storage";
 import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
+import Swal from "sweetalert2";
 import Footer from "../../components/layout/Footer";
 import Header from "../../components/layout/Header";
 import { db } from "../../config/firebase";
 import { showAlert } from "../../utils/showAlert";
 import SideBar from "./SideBar";
+
 const Profile = () => {
   const [profilePic, setProfilePic] = useState(
     "https://cdn-icons-png.flaticon.com/512/149/149071.png",
@@ -26,6 +29,7 @@ const Profile = () => {
   const [isLoading, setIsLoading] = useState(false);
 
   const auth = getAuth();
+  const navigate = useNavigate();
   const storage = getStorage();
   const accordionItems = [
     {
@@ -91,6 +95,23 @@ const Profile = () => {
     };
     fetchUserData();
   }, [auth]);
+
+  useEffect(() => {
+    if (!auth.currentUser) {
+      Swal.fire({
+        title: "🚨系統提醒",
+        text: "您需要登入才能使用",
+        icon: "warning",
+        confirmButtonText: "確定",
+        allowOutsideClick: false,
+      }).then((result) => {
+        if (result.isConfirmed) {
+          navigate("/signIn");
+        }
+      });
+    }
+  }, [auth, navigate]);
+
   const handleImageUpload = async (
     event: React.ChangeEvent<HTMLInputElement>,
   ) => {
@@ -137,7 +158,7 @@ const Profile = () => {
       <div className="md:hidden">
         <Header />
       </div>
-      <div className="flex min-h-screen">
+      <div className="flex flex-col md:min-h-screen">
         <SideBar />
         <div className="container mx-auto max-w-[1280px] px-4 pt-40 md:py-0 lg:px-20">
           <div className="relative rounded-lg bg-white shadow sm:mx-auto md:ml-56 md:mt-40 md:max-w-full lg:mx-auto lg:w-1/2">

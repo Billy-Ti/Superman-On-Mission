@@ -91,9 +91,6 @@ const StarRating: React.FC<StarRatingProps> = ({
             });
             setComment("");
 
-            // 更新任務評價
-            await addDoc(collection(db, "reviews"), review);
-
             // 更新接案者金幣餘額
             const userSnap = await getDoc(userRef);
             if (userSnap.exists()) {

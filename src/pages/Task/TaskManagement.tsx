@@ -1,4 +1,5 @@
 import { useState } from "react";
+import LoadingSpinner from "../../components/LoadingSpinner";
 import Footer from "../../components/layout/Footer";
 import Header from "../../components/layout/Header";
 import AcceptTaskRecord from "./AcceptTaskRecord";
@@ -7,17 +8,24 @@ import StartTaskRecord from "./StartTaskRecord";
 
 const TaskManagement = () => {
   const [activeButton, setActiveButton] = useState("post");
-  const handleButtonClick = (buttonName: string) => {
+  const [isLoading, setIsLoading] = useState(false);
+
+  const handleButtonClick = async (buttonName: string) => {
+    setIsLoading(true);
     setActiveButton(buttonName);
+
+    setTimeout(() => {
+      setIsLoading(false);
+    }, 500);
   };
 
   return (
     <>
       <Header />
-      <div className="container mx-auto w-full max-w-[1280px] px-4 pb-4 pt-10 md:px-20">
+      <div className="container mx-auto flex w-full max-w-[1280px] flex-col px-4 pb-4 pt-10 md:px-20">
         <div className="flex items-center">
           <svg
-            className="h-5 w-5 sm:h-10 sm:w-10"
+            className="h-8 w-8 sm:h-10 sm:w-10"
             xmlns="http://www.w3.org/2000/svg"
             width="24"
             height="24"
@@ -30,40 +38,48 @@ const TaskManagement = () => {
           </svg>
           <span className="p-2 text-3xl font-bold">任務管理</span>
         </div>
-        <div className="mt-10 flex items-center justify-between">
-          <button
-            className={`w-36 rounded-md bg-[#368DCF] px-4 py-2 text-lg font-medium transition duration-500 ease-in-out hover:bg-[#2b79b4] hover:text-white ${
-              activeButton === "post"
-                ? "bg-[#3178C6] text-white"
-                : " bg-white text-gray-700 "
-            }`}
-            type="button"
-            onClick={() => handleButtonClick("post")}
-          >
-            發案紀錄
-          </button>
-          <button
-            className={`w-36 rounded-md bg-[#368DCF] px-4 py-2 text-lg font-medium transition duration-500 ease-in-out hover:bg-[#2b79b4] hover:text-white ${
-              activeButton === "accept"
-                ? "bg-[#3178C6] text-white"
-                : "bg-white text-gray-700 "
-            }`}
-            type="button"
-            onClick={() => handleButtonClick("accept")}
-          >
-            接案紀錄
-          </button>
-          <button
-            className={`w-36 rounded-md bg-[#368DCF] px-4 py-2 text-lg font-medium transition duration-500 ease-in-out hover:bg-[#2b79b4] hover:text-white ${
-              activeButton === "completed"
-                ? "bg-[#3178C6] text-white"
-                : "bg-white text-gray-700 "
-            }`}
-            type="button"
-            onClick={() => handleButtonClick("completed")}
-          >
-            已完成
-          </button>
+        <div className="mt-10 flex flex-col items-center justify-between gap-4 md:flex-row md:gap-0">
+          {isLoading ? (
+            <div className="w-full">
+              <LoadingSpinner />
+            </div>
+          ) : (
+            <>
+              <button
+                className={`w-full rounded-md bg-[#368DCF] px-4 py-2 text-lg font-medium transition duration-500 ease-in-out hover:bg-[#2b79b4] hover:text-white md:w-36 ${
+                  activeButton === "post"
+                    ? "bg-[#3178C6] text-white"
+                    : " bg-white text-gray-700 "
+                }`}
+                type="button"
+                onClick={() => handleButtonClick("post")}
+              >
+                發案紀錄
+              </button>
+              <button
+                className={`w-full rounded-md bg-[#368DCF] px-4 py-2 text-lg font-medium transition duration-500 ease-in-out hover:bg-[#2b79b4] hover:text-white md:w-36 ${
+                  activeButton === "accept"
+                    ? "bg-[#3178C6] text-white"
+                    : "bg-white text-gray-700 "
+                }`}
+                type="button"
+                onClick={() => handleButtonClick("accept")}
+              >
+                接案紀錄
+              </button>
+              <button
+                className={`w-full rounded-md bg-[#368DCF] px-4 py-2 text-lg font-medium transition duration-500 ease-in-out hover:bg-[#2b79b4] hover:text-white md:w-36 ${
+                  activeButton === "completed"
+                    ? "bg-[#3178C6] text-white"
+                    : "bg-white text-gray-700 "
+                }`}
+                type="button"
+                onClick={() => handleButtonClick("completed")}
+              >
+                已完成
+              </button>
+            </>
+          )}
         </div>
         {activeButton === "post" && <StartTaskRecord />}
         {activeButton === "accept" && <AcceptTaskRecord />}

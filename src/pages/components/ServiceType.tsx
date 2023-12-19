@@ -3,10 +3,14 @@ import "air-datepicker";
 import AirDatepicker from "air-datepicker";
 import "air-datepicker/air-datepicker.css";
 import localeZh from "air-datepicker/locale/zh";
-import { forwardRef, useEffect, useImperativeHandle, useState } from "react";
-new AirDatepicker("#zh", {
-  locale: localeZh,
-});
+import {
+  forwardRef,
+  useEffect,
+  useImperativeHandle,
+  useLayoutEffect,
+  useState,
+} from "react";
+
 // 定義 interface 以提供 Task 元件做清空動作
 export interface ServiceTypeRef {
   resetServiceType: () => void;
@@ -32,7 +36,10 @@ const ServiceType = forwardRef((_props, ref) => {
   const [selectedIndexes, setSelectedIndexes] = useState<number[]>([]);
   const [urgent, setUrgent] = useState<boolean | null>(false);
   const [selectedDate, setSelectedDate] = useState<string>("");
-  useEffect(() => {
+  // const datepickerInitialized = useRef(false);
+  useLayoutEffect(() => {
+    // 初始化日期選擇器
+    // 初始化日期選擇器
     const todayButton = {
       content: "今天",
       onClick: (dp: AirDatepickerInstance) => {
@@ -69,6 +76,11 @@ const ServiceType = forwardRef((_props, ref) => {
       datepicker.destroy();
     };
   }, []);
+
+  useEffect(() => {
+    // 使用 setTimeout 延遲初始化
+  }, []);
+
   useImperativeHandle(ref, () => ({
     resetServiceType: () => {
       setSelectedIndexes([]);
@@ -140,7 +152,7 @@ const ServiceType = forwardRef((_props, ref) => {
             <div className="mb-8 flex">
               <div className="flex items-center">
                 <span className="mr-2 h-8 w-2 bg-[#368dcf]"></span>
-                <p className="flex-1 rounded-md py-2 pr-4 text-center text-2xl font-semibold">
+                <p className="flex-1 rounded-md py-2 pr-4 text-center text-xl font-semibold sm:text-2xl">
                   急件
                 </p>
               </div>
@@ -164,11 +176,13 @@ const ServiceType = forwardRef((_props, ref) => {
             <div className="flex items-center">
               <div className="flex items-center font-semibold">
                 <span className="mr-2 h-8 w-2 bg-[#368dcf]"></span>
-                <p className="pr-4 text-2xl font-semibold">任務截止日</p>
+                <p className="pr-4 text-xl font-semibold sm:text-2xl">
+                  任務截止日
+                </p>
               </div>
               <div className="relative flex items-center">
                 <input
-                  className="scale-95 transform cursor-pointer rounded-md border p-1 pr-6 focus:outline-none"
+                  className="scale-95 transform cursor-pointer rounded-md border p-1  focus:outline-none"
                   id="datepicker"
                   placeholder="請選擇截止日期"
                   type="text"

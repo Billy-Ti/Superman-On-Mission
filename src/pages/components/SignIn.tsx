@@ -13,9 +13,9 @@ import { db } from "../../config/firebase";
 import { showAlert } from "../../utils/showAlert";
 const SignIn = () => {
   const [isRightPanelActive, setIsRightPanelActive] = useState(false);
-  const [email, setEmail] = useState("billy@gmail.com");
+  const [email, setEmail] = useState("Billy@gmail.com");
   const [password, setPassword] = useState("aqqqqq");
-  const [name, setName] = useState("billy");
+  const [name, setName] = useState("Billy");
   const navigate = useNavigate();
   const auth = getAuth();
   // 註冊切換，不做功能

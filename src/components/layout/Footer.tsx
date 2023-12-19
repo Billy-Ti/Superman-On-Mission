@@ -4,7 +4,7 @@ import HomeEndingButton from "../../pages/Home/HomeEndingButton";
 const Footer: React.FC = () => {
   return (
     <footer className="container mx-auto w-full max-w-[1280px] px-4 py-4 md:px-20 md:pb-10 md:pt-20">
-      <div className="mx-auto flex max-w-6xl flex-col items-center justify-between lg:flex-row">
+      <div className="mx-auto flex max-w-6xl items-center justify-between lg:flex-row">
         <div className="flex flex-col">
           <svg
             width="100"
@@ -43,60 +43,47 @@ const Footer: React.FC = () => {
           </svg>
           <HomeEndingButton />
         </div>
-        <div className="flex flex-col gap-4 tracking-widest sm:flex-row">
-          <div className="flex items-center">
+        <div className="flex flex-col tracking-widest sm:flex-row">
+          <div className="flex">
             <div className="flex w-32 flex-col items-center">
-              <h5 className="mb-3 font-bold">接案者專區</h5>
-              <span className="mb-1 cursor-pointer text-sm font-medium text-gray-600 hover:text-gray-900">
-                如何接任務
-              </span>
               <Link
                 to="/acceptTask"
-                className="cursor-pointer text-sm font-medium text-gray-600 hover:text-gray-900"
+                className="text-medium relative cursor-pointer font-medium tracking-widest text-gray-600 after:absolute after:bottom-0 after:left-0 after:h-[8px] after:w-full after:translate-y-1 after:bg-[#368dcf] after:opacity-0 after:transition after:duration-200 after:ease-in-out hover:text-gray-900 hover:after:translate-y-0 hover:after:opacity-50"
               >
                 立即接任務
               </Link>
             </div>
             <div className="flex w-32 flex-col items-center">
-              <h5 className="mb-3 font-bold">發案者專區</h5>
-              <span className="mb-1 cursor-pointer text-sm font-medium text-gray-600 hover:text-gray-900">
-                如何發任務
-              </span>
               <Link
                 to="/taskPage"
-                className="cursor-pointer text-sm font-medium text-gray-600 hover:text-gray-900"
+                className="text-medium relative cursor-pointer font-medium tracking-widest text-gray-600 after:absolute after:bottom-0 after:left-0 after:h-[8px] after:w-full after:translate-y-1 after:bg-[#368dcf] after:opacity-0 after:transition after:duration-200 after:ease-in-out hover:text-gray-900 hover:after:translate-y-0 hover:after:opacity-50"
               >
                 立即發任務
               </Link>
             </div>
           </div>
-          <div className="flex items-center">
+          <div className="flex">
             <div className="flex w-32 flex-col items-center">
-              <h5 className="mb-3 font-bold">會員專區</h5>
               <Link
                 to="/signIn"
-                className="mb-1 cursor-pointer text-sm font-medium text-gray-600 hover:text-gray-900"
+                className="text-medium relative cursor-pointer font-medium tracking-widest text-gray-600 after:absolute after:bottom-0 after:left-0 after:h-[8px] after:w-full after:translate-y-1 after:bg-[#368dcf] after:opacity-0 after:transition after:duration-200 after:ease-in-out hover:text-gray-900 hover:after:translate-y-0 hover:after:opacity-50"
               >
                 登入 | 註冊
               </Link>
-              <span className="cursor-pointer text-sm font-medium text-gray-600 hover:text-gray-900">
-                我的帳戶
-              </span>
             </div>
             <div className="flex w-32 flex-col items-center">
-              <h5 className="mb-3 font-bold">更多訊息</h5>
-              <span className="mb-1 cursor-pointer text-sm font-medium text-gray-600 placeholder:cursor-pointer hover:text-gray-900">
-                關於我們
-              </span>
-              <span className="cursor-pointer text-sm font-medium text-gray-600 placeholder:cursor-pointer hover:text-gray-900">
-                常見問題
-              </span>
+              <Link
+                to="/profile"
+                className="text-medium relative cursor-pointer font-medium tracking-widest text-gray-600 after:absolute after:bottom-0 after:left-0 after:h-[8px] after:w-full after:translate-y-1 after:bg-[#368dcf] after:opacity-0 after:transition after:duration-200 after:ease-in-out hover:text-gray-900 hover:after:translate-y-0 hover:after:opacity-50"
+              >
+                我的帳戶
+              </Link>
             </div>
           </div>
         </div>
       </div>
       <div className="mt-4 border-t border-gray-300 pt-4 text-center">
-        <span className="text-sm text-gray-600">
+        <span className="text-sm font-medium text-gray-600">
           &copy; 2023 All Rights Reserved
         </span>
       </div>

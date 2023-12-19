@@ -37,7 +37,7 @@ const RegionSelector: React.FC<RegionSelectorProps> = ({
     };
   }, []);
   return (
-    <div ref={wrapperRef} className="flex space-x-2">
+    <div ref={wrapperRef} className="flex space-x-2 mb-2 sm:mb-0">
       {/* County Selector */}
       <div className="relative">
         <div
