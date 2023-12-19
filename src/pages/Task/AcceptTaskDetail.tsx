@@ -241,6 +241,7 @@ const AcceptTaskDetail = () => {
     }).then(async (result) => {
       if (result.isConfirmed) {
         try {
+          setLoading(true);
           const imageUrls = await uploadImages();
           // 确保 imageUrls 不包含 null 值
           const filteredImageUrls = imageUrls.filter(
@@ -278,6 +279,7 @@ const AcceptTaskDetail = () => {
           });
         }
       }
+      setLoading(false);
     });
   };
   useEffect(() => {
@@ -334,7 +336,7 @@ const AcceptTaskDetail = () => {
   if (loading) {
     return (
       <div className="flex h-screen items-center justify-center">
-        <p>任務載入中...</p>
+        <p>資料載入中...</p>
       </div>
     );
   }
@@ -342,7 +344,7 @@ const AcceptTaskDetail = () => {
   if (!taskDetails) {
     return (
       <div className="flex h-screen items-center justify-center">
-        <p>任務資訊不存在...</p>
+        <p>資訊不存在...</p>
       </div>
     );
   }
@@ -540,10 +542,10 @@ const AcceptTaskDetail = () => {
           </ul>
           {isModalOpen && (
             <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
-              <div className="relative h-full w-full max-w-screen-md overflow-auto">
+              <div className="relative overflow-auto">
                 <div className="mx-4 flex h-full items-center justify-center">
                   <img
-                    className="max-h-full max-w-full object-cover"
+                    className="object-cover"
                     src={selectedPhoto || "defaultImagePath"}
                     alt="Enlarged task photo"
                   />
@@ -572,7 +574,7 @@ const AcceptTaskDetail = () => {
           )}
         </div>
         {/* 驗收內容 */}
-        <form className="relative mb-10  p-4">
+        <form className="relative mb-10 py-4">
           <div className="flex items-center">
             <div className="mb-2 flex items-center text-gray-700">
               <p className=" mr-2 text-3xl font-semibold">驗收內容</p>
@@ -627,7 +629,7 @@ const AcceptTaskDetail = () => {
               name="input1"
               rows={3}
               readOnly={taskStatus === "已完成"}
-              className={`mb-3 mt-1 block w-full resize-none rounded-md border border-gray-300 p-2.5 tracking-wider shadow-sm focus:border-blue-500 focus:outline-none focus:ring-blue-500 ${
+              className={`mb-3 mt-1 block w-full resize-none rounded-md border border-gray-300 p-2.5 font-medium tracking-wider shadow-sm focus:border-blue-500 focus:outline-none focus:ring-blue-500 ${
                 taskStatus === "任務回報完成" || taskStatus === "已完成"
                   ? "cursor-not-allowed "
                   : ""
@@ -650,7 +652,7 @@ const AcceptTaskDetail = () => {
               rows={3}
               readOnly={taskStatus === "已完成"}
               onChange={handleReportSupplementaryNotesChange}
-              className={`mb-3 mt-1 block w-full resize-none rounded-md border border-gray-300 p-2.5 tracking-wider ${
+              className={`mb-3 mt-1 block w-full resize-none rounded-md border border-gray-300 p-2.5 font-medium tracking-wider ${
                 taskStatus === "任務回報完成" || taskStatus === "已完成"
                   ? "cursor-not-allowed"
                   : ""
@@ -674,7 +676,7 @@ const AcceptTaskDetail = () => {
               id="comment"
               name="comment"
               rows={3}
-              className={`bg-[#f7f4f0]] mb-3 mt-1 block w-full cursor-not-allowed resize-none rounded-md border border-gray-300 p-2.5 tracking-wider shadow-sm focus:border-blue-500 focus:outline-none focus:ring-blue-300`}
+              className={`bg-[#f7f4f0]] mb-3 mt-1 block w-full cursor-not-allowed resize-none rounded-md border border-gray-300 p-2.5 font-medium tracking-wider shadow-sm focus:border-blue-500 focus:outline-none focus:ring-blue-300`}
               readOnly
               value={ratedComment} // ratedComment 是從 reviews 集合獲取
             />
@@ -695,7 +697,7 @@ const AcceptTaskDetail = () => {
               id="input3"
               name="input3"
               rows={3}
-              className="bg-[#f7f4f0]] mb-10 mt-1 block w-full cursor-not-allowed resize-none rounded-md border border-gray-300 p-2.5 tracking-wider shadow-sm focus:border-blue-500 focus:outline-none focus:ring-blue-500"
+              className="bg-[#f7f4f0]] mb-10 mt-1 block w-full cursor-not-allowed resize-none rounded-md border border-gray-300 p-2.5 font-medium tracking-wider shadow-sm focus:border-blue-500 focus:outline-none focus:ring-blue-500"
               readOnly
               value={taskDetails.feedbackMessage} // feedbackMessage 是從 taskDetails 獲取
             />
@@ -712,7 +714,33 @@ const AcceptTaskDetail = () => {
                   : ""
               }rounded-md bg-[#368DCF] px-6 py-3 text-xl font-medium tracking-wider text-white transition duration-500 ease-in-out hover:bg-[#3178C6]`}
             >
-              送出
+              {loading ? (
+                <>
+                  <svg
+                    className="mr-2 h-5 w-5 animate-spin text-white"
+                    xmlns="http://www.w3.org/2000/svg"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                  >
+                    <circle
+                      className="opacity-25"
+                      cx="12"
+                      cy="12"
+                      r="10"
+                      stroke="currentColor"
+                      strokeWidth="4"
+                    ></circle>
+                    <path
+                      className="opacity-75"
+                      fill="currentColor"
+                      d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+                    ></path>
+                  </svg>
+                  送出中...
+                </>
+              ) : (
+                "送出"
+              )}
             </button>
           </div>
           {/* 遮罩區塊 */}

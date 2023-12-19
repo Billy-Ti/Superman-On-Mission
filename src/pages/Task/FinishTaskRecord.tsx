@@ -4,7 +4,9 @@ import { collection, getDocs, query, where } from "firebase/firestore";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import NoRecordsComponent from "../../components/NoRecordsComponent";
+import Pagination from "../../components/Pagination";
 import { db } from "../../config/firebase";
+import usePagination from "../../hooks/usePagination";
 
 interface Task {
   id: string;
@@ -25,6 +27,11 @@ interface Task {
 const FinishTaskRecord = () => {
   const [tasks, setTasks] = useState<Task[]>([]);
   const navigate = useNavigate();
+  const itemsPerPage = 6;
+  const { currentData, jumpToPage, currentPage } = usePagination(
+    tasks,
+    itemsPerPage,
+  );
 
   const handleStartTask = (taskId: string) => {
     navigate(`/detail/${taskId}`);
@@ -60,9 +67,15 @@ const FinishTaskRecord = () => {
   }, []);
   return (
     <div className="container mx-auto py-10">
+      <Pagination
+        tasksPerPage={itemsPerPage}
+        totalTasks={tasks.length}
+        paginate={jumpToPage}
+        currentPage={currentPage}
+      />
       <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
-        {tasks.length > 0 ? (
-          tasks.map((task) => (
+        {currentData().length > 0 ? (
+          currentData().map((task) => (
             <div
               key={task.id}
               className="relative flex flex-col rounded-md border-2 border-gray-200 bg-white p-4 shadow-xl transition-all duration-300 ease-in-out hover:shadow-2xl"

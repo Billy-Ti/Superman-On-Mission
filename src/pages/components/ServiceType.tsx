@@ -3,10 +3,14 @@ import "air-datepicker";
 import AirDatepicker from "air-datepicker";
 import "air-datepicker/air-datepicker.css";
 import localeZh from "air-datepicker/locale/zh";
-import { forwardRef, useEffect, useImperativeHandle, useState } from "react";
-new AirDatepicker("#zh", {
-  locale: localeZh,
-});
+import {
+  forwardRef,
+  useEffect,
+  useImperativeHandle,
+  useLayoutEffect,
+  useState,
+} from "react";
+
 // 定義 interface 以提供 Task 元件做清空動作
 export interface ServiceTypeRef {
   resetServiceType: () => void;
@@ -32,7 +36,10 @@ const ServiceType = forwardRef((_props, ref) => {
   const [selectedIndexes, setSelectedIndexes] = useState<number[]>([]);
   const [urgent, setUrgent] = useState<boolean | null>(false);
   const [selectedDate, setSelectedDate] = useState<string>("");
-  useEffect(() => {
+  // const datepickerInitialized = useRef(false);
+  useLayoutEffect(() => {
+    // 初始化日期選擇器
+    // 初始化日期選擇器
     const todayButton = {
       content: "今天",
       onClick: (dp: AirDatepickerInstance) => {
@@ -69,6 +76,11 @@ const ServiceType = forwardRef((_props, ref) => {
       datepicker.destroy();
     };
   }, []);
+
+  useEffect(() => {
+    // 使用 setTimeout 延遲初始化
+  }, []);
+
   useImperativeHandle(ref, () => ({
     resetServiceType: () => {
       setSelectedIndexes([]);

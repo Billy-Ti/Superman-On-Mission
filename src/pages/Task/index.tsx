@@ -485,7 +485,7 @@ const Task = () => {
                   圖片大小不超過 5MB
                 </p>
               </div>
-              <ul className="mb-8 flex flex-wrap items-center justify-center md:justify-between">
+              <ul className="mb-8 flex flex-wrap items-center justify-center lg:justify-between">
                 {uploadedImages.map((image, index) => (
                   <li
                     key={index}

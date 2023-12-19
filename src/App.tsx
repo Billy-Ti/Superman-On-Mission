@@ -65,7 +65,14 @@ const App = () => {
               />
               <Route path="/reviewLists" element={<ReviewLists />} />
               <Route path="/admin" element={<Admin />} />
-              <Route path="/profile" element={<Profile />} />
+              <Route
+                path="/profile"
+                element={
+                  <ProtectedRoute>
+                    <Profile />
+                  </ProtectedRoute>
+                }
+              />
             </Routes>
             <ChatRoomButton />
           </TransitionPage>

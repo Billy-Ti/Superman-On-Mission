@@ -396,12 +396,12 @@ const TaskDetail = () => {
               <div className="relative h-full w-full max-w-screen-md overflow-auto">
                 <div className="mx-4 flex h-full items-center justify-center">
                   <img
-                    className="max-h-full max-w-full object-cover "
+                    className=" object-cover "
                     src={selectedPhoto || "defaultImagePath"}
                     alt="Enlarged task photo"
                   />
                   <button
-                    className="absolute bottom-3 left-1/2 flex h-10 w-10 -translate-x-1/2 transform items-center justify-center rounded-full p-2 text-black"
+                    className="absolute bottom-24 left-1/2 flex h-10 w-10 -translate-x-1/2 transform items-center justify-center rounded-full p-2 text-black"
                     onClick={() => setIsModalOpen(false)}
                   >
                     <span className="absolute -left-4 -top-4 flex h-10 w-10 animate-ping items-center justify-center rounded-full bg-[#2B79B4] text-sm text-white opacity-75">

@@ -74,7 +74,7 @@ const HomeEvaluationCard: React.FC<HomeEvaluationCardProps> = ({
         <div className="mb-2 text-center text-xl font-bold">
           {evaluation.reviewerName}
         </div>
-        <p className="grow text-center text-base text-gray-700">
+        <p className="grow px-2 text-center text-base text-gray-700">
           {evaluation.content}
         </p>
       </div>

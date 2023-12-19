@@ -68,12 +68,13 @@ const StartTaskDetail = () => {
   const renderPhotoList = () => {
     const totalSlots = 5;
 
-    const photos = taskDetails ? taskDetails.photos || [] : [];
+    // 使用 taskDetails.reportFiles 來取得驗收圖片
+    const reportPhotos = taskDetails ? taskDetails.reportFiles || [] : [];
 
-    const emptySlots = totalSlots - photos.length;
+    const emptySlots = totalSlots - reportPhotos.length;
     return (
       <>
-        {photos.map((photo, index) => (
+        {reportPhotos.map((photo, index) => (
           <li
             key={photo}
             className="h-48 w-full border-2 border-dashed border-[#368dcf] md:w-52"
@@ -81,7 +82,7 @@ const StartTaskDetail = () => {
             <img
               className="h-full w-full cursor-pointer object-cover p-2"
               src={photo}
-              alt={`Task photo ${index + 1}`}
+              alt={`Task report photo ${index + 1}`}
               onClick={() => {
                 setSelectedPhoto(photo);
                 setIsModalOpen(true);
@@ -559,10 +560,10 @@ const StartTaskDetail = () => {
 
           {isModalOpen && (
             <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
-              <div className="relative h-full w-full max-w-screen-md overflow-auto">
+              <div className="relative overflow-auto">
                 <div className="mx-4 flex h-full items-center justify-center">
                   <img
-                    className="max-h-full max-w-full object-cover"
+                    className="object-cover"
                     src={selectedPhoto || "defaultImagePath"}
                     alt="Enlarged task photo"
                   />
@@ -615,7 +616,7 @@ const StartTaskDetail = () => {
                 id="input1"
                 name="input1"
                 rows={3}
-                className="mb-3 mt-1 block w-full resize-none rounded-md border border-gray-300 p-2.5 tracking-wider shadow-sm focus:border-blue-500 focus:outline-none focus:ring-blue-500"
+                className="mb-3 mt-1 block w-full resize-none rounded-md border border-gray-300 p-2.5 font-medium tracking-wider shadow-sm focus:border-blue-500 focus:outline-none focus:ring-blue-500"
                 placeholder="請填寫關於此任務的詳細完成成果"
                 defaultValue={taskDetails.reportDescription || ""}
                 readOnly
@@ -632,7 +633,7 @@ const StartTaskDetail = () => {
                 id="input2"
                 name="input2"
                 rows={3}
-                className="mb-3 mt-1 block w-full resize-none rounded-md border border-gray-300 p-2.5 tracking-wider shadow-sm focus:border-blue-500 focus:outline-none focus:ring-blue-500"
+                className="mb-3 mt-1 block w-full resize-none rounded-md border border-gray-300 p-2.5 font-medium tracking-wider shadow-sm focus:border-blue-500 focus:outline-none focus:ring-blue-500"
                 placeholder="請補充所需要讓發案者知道的資訊"
                 defaultValue={taskDetails.reportSupplementaryNotes || ""}
                 readOnly
@@ -653,7 +654,7 @@ const StartTaskDetail = () => {
                 id="comment"
                 name="comment"
                 rows={3}
-                className="mb-3 mt-1 block w-full resize-none rounded-md border border-gray-300 p-2.5 tracking-wider shadow-sm focus:border-blue-500 focus:outline-none focus:ring-blue-500"
+                className="mb-3 mt-1 block w-full resize-none rounded-md border border-gray-300 p-2.5 font-medium tracking-wider shadow-sm focus:border-blue-500 focus:outline-none focus:ring-blue-500"
                 placeholder="尚未有評價內容"
                 defaultValue={ratingComment}
                 readOnly
@@ -674,7 +675,7 @@ const StartTaskDetail = () => {
                 id="input3"
                 name="input3"
                 rows={3}
-                className="mb-10 mt-1 block w-full resize-none rounded-md border border-gray-300 bg-blue-200 p-2.5 tracking-wider shadow-sm focus:border-blue-500 focus:outline-none focus:ring-blue-500"
+                className="mb-10 mt-1 block w-full resize-none rounded-md border border-gray-300 bg-blue-200 p-2.5 font-medium tracking-wider shadow-sm focus:border-blue-500 focus:outline-none focus:ring-blue-500"
                 placeholder={
                   isFeedbackSubmitted
                     ? feedbackMessage
@@ -689,11 +690,9 @@ const StartTaskDetail = () => {
               <button
                 onClick={handleFeedBack}
                 type="button"
-                className="group relative w-52 overflow-hidden rounded-md bg-gray-200 px-6 py-3 [transform:translateZ(0)] before:absolute before:left-1/2 before:top-1/2 before:h-8 before:w-8 before:-translate-x-1/2 before:-translate-y-1/2 before:scale-[0] before:rounded-full before:bg-sky-600 before:opacity-0 before:transition before:duration-500 before:ease-in-out hover:before:scale-[10] hover:before:opacity-100"
+                className="rounded-md bg-[#368DCF] px-6 py-4 text-xl font-medium text-white transition duration-500 ease-in-out hover:bg-[#2b79b4]"
               >
-                <span className="relative z-0 text-2xl text-black transition duration-500 ease-in-out group-hover:text-gray-200">
-                  送出
-                </span>
+                送出
               </button>
             </div>
             {/* 遮罩區塊 */}
@@ -735,7 +734,7 @@ const StartTaskDetail = () => {
                 id="input1"
                 name="input1"
                 rows={3}
-                className="mb-3 mt-1 block w-full resize-none rounded-md border border-gray-300 p-2.5 tracking-wider shadow-sm focus:border-blue-500 focus:outline-none focus:ring-blue-500"
+                className="mb-3 mt-1 block w-full resize-none rounded-md border border-gray-300 p-2.5 font-medium tracking-wider shadow-sm focus:border-blue-500 focus:outline-none focus:ring-blue-500"
                 placeholder={
                   taskDetails.status === "已完成"
                     ? "已完成，不能輸入"
@@ -756,7 +755,7 @@ const StartTaskDetail = () => {
                 id="input2"
                 name="input2"
                 rows={3}
-                className="mb-3 mt-1 block w-full resize-none rounded-md border border-gray-300 p-2.5 tracking-wider shadow-sm focus:border-blue-500 focus:outline-none focus:ring-blue-500"
+                className="mb-3 mt-1 block w-full resize-none rounded-md border border-gray-300 p-2.5 font-medium tracking-wider shadow-sm focus:border-blue-500 focus:outline-none focus:ring-blue-500"
                 placeholder={
                   taskDetails.status === "已完成"
                     ? "已完成，不能輸入"
@@ -782,7 +781,7 @@ const StartTaskDetail = () => {
                 id="comment"
                 name="comment"
                 rows={3}
-                className="mb-3 mt-1 block w-full resize-none rounded-md border border-gray-300 p-2.5 tracking-wider shadow-sm focus:border-blue-500 focus:outline-none focus:ring-blue-500"
+                className="mb-3 mt-1 block w-full resize-none rounded-md border border-gray-300 p-2.5 font-medium tracking-wider shadow-sm focus:border-blue-500 focus:outline-none focus:ring-blue-500"
                 placeholder="尚未有評價內容"
                 defaultValue={ratingComment}
                 readOnly
@@ -803,7 +802,7 @@ const StartTaskDetail = () => {
                 id="input3"
                 name="input3"
                 rows={3}
-                className="mb-10 mt-1 block w-full resize-none rounded-md border border-gray-300 bg-blue-200 p-2.5 tracking-wider shadow-sm focus:border-blue-500 focus:outline-none focus:ring-blue-500"
+                className="mb-10 mt-1 block w-full resize-none rounded-md border border-gray-300 bg-blue-200 p-2.5 font-medium tracking-wider shadow-sm focus:border-blue-500 focus:outline-none focus:ring-blue-500"
                 placeholder={
                   isFeedbackSubmitted
                     ? feedbackMessage
@@ -819,14 +818,16 @@ const StartTaskDetail = () => {
               <button
                 onClick={handleFeedBack}
                 type="button"
-                disabled={isFeedbackSubmitted} // 禁用按鈕
-                className={`group relative w-52 overflow-hidden rounded-md bg-gray-200 px-6 py-3 [transform:translateZ(0)] ${
-                  isFeedbackSubmitted ? "opacity-50" : ""
-                } before:absolute before:left-1/2 before:top-1/2 before:h-8 before:w-8 before:-translate-x-1/2 before:-translate-y-1/2 before:scale-[0] before:rounded-full before:bg-sky-600 before:opacity-0 before:transition before:duration-500 before:ease-in-out hover:before:scale-[10] hover:before:opacity-100`}
+                disabled={
+                  isFeedbackSubmitted || taskDetails.status === "已完成"
+                } // 在這裡添加檢查
+                className={`rounded-md bg-[#368DCF] px-6 py-4 text-xl font-medium text-white transition duration-500 ease-in-out hover:bg-[#2b79b4] ${
+                  isFeedbackSubmitted || taskDetails.status === "已完成"
+                    ? "cursor-not-allowed opacity-50"
+                    : ""
+                }`}
               >
-                <span className="relative z-0 text-2xl text-black transition duration-500 ease-in-out group-hover:text-gray-200">
-                  送出
-                </span>
+                送出
               </button>
             </div>
           </form>

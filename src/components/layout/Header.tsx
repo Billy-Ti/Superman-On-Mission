@@ -365,11 +365,11 @@ const Header = () => {
               className={`${isMenuOpen ? "hidden" : "block"} hidden md:block`}
             >
               <ul className="ml-auto flex items-center text-xl md:mr-4 md:gap-4">
-                <li className="relative font-semibold tracking-widest after:absolute after:bottom-0 after:left-0 after:h-[8px] after:w-full after:translate-y-1 after:bg-[#368dcf] after:opacity-0 after:transition after:duration-200 after:ease-in-out hover:after:translate-y-0 hover:after:opacity-50">
+                <li className="relative font-semibold tracking-widest after:absolute after:bottom-0 after:left-0 after:h-[8px] after:w-full after:translate-y-1 after:bg-[#368dcf] after:opacity-0 after:transition after:duration-200 after:ease-in-out hover:text-[#368dcf] hover:after:translate-y-0 hover:after:opacity-50">
                   <Link to="/acceptTask">接任務</Link>
                 </li>
                 <li className="font-semibold">|</li>
-                <li className="relative font-semibold tracking-widest after:absolute after:bottom-0 after:left-0 after:h-[8px] after:w-full after:translate-y-1 after:bg-[#368dcf] after:opacity-0 after:transition after:duration-200 after:ease-in-out hover:after:translate-y-0 hover:after:opacity-50">
+                <li className="relative font-semibold tracking-widest after:absolute after:bottom-0 after:left-0 after:h-[8px] after:w-full after:translate-y-1 after:bg-[#368dcf] after:opacity-0 after:transition after:duration-200 after:ease-in-out hover:text-[#368dcf] hover:after:translate-y-0 hover:after:opacity-50">
                   <Link to="/taskPage">發任務</Link>
                 </li>
               </ul>
