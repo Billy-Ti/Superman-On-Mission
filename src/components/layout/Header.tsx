@@ -35,6 +35,9 @@ const Header = () => {
   const [notifications, setNotifications] = useState<Notification[]>([]);
   const [notificationCount, setNotificationCount] = useState(0);
   const [windowWidth, setWindowWidth] = useState(window.innerWidth);
+  {
+    /* 跑馬燈 */
+  }
   const [content, setContent] = useState(
     <h2 className="text-medium bg-inherit p-2 font-semibold text-[#368dcf] md:text-xl">
       老闆抱負叫人讚，卻讓您心頭發冷颤，上 Super Task co.
@@ -164,7 +167,9 @@ const Header = () => {
     window.addEventListener("resize", handleResize);
     return () => window.removeEventListener("resize", handleResize);
   }, []);
-
+  {
+    /* 跑馬燈 */
+  }
   useEffect(() => {
     if (window.innerWidth < 992) {
       setContent(
@@ -334,12 +339,13 @@ const Header = () => {
   return (
     <>
       <header
-        className={`sticky top-0 z-10 w-full ${
+        className={`sticky top-0 z-[9999] w-full ${
           isScrolled
-            ? "border-b border-blue-100 shadow-xl shadow-neutral-100 backdrop-blur-xl"
+            ? "border-b border-blue-100 shadow-xl shadow-neutral-100 backdrop-blur-lg"
             : ""
         } transition-all duration-300`}
       >
+        {/* 跑馬燈 */}
         <Marquee content={content} />
         <div className="container relative mx-auto flex max-w-[1280px] items-center justify-between px-4 py-4 sm:py-0 lg:px-20">
           <div className="flex items-center">

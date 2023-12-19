@@ -157,7 +157,7 @@ const ServiceType = forwardRef((_props, ref) => {
                 </p>
               </div>
               <div
-                className={`mr-3 flex cursor-pointer items-center rounded-md px-4 py-2 font-normal shadow ${
+                className={`mr-3 flex cursor-pointer items-center rounded-md px-4 font-normal shadow ${
                   urgent ? "bg-[#368DCF] text-white " : ""
                 }`}
                 onClick={() => handleUrgentClick(true)}
@@ -165,7 +165,7 @@ const ServiceType = forwardRef((_props, ref) => {
                 是
               </div>
               <div
-                className={`flex cursor-pointer items-center rounded-md px-4 py-2 font-normal shadow ${
+                className={`flex cursor-pointer items-center rounded-md px-4 font-normal shadow ${
                   urgent === false ? "bg-[#368DCF] text-white" : ""
                 }`}
                 onClick={() => handleUrgentClick(false)}
