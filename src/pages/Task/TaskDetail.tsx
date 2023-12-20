@@ -284,7 +284,9 @@ const TaskDetail = () => {
                 </span>
               </button>
               {isChatOpen && taskId && (
-                <ChatRoomWindow onCloseRoom={handleCloseChat} />
+                <div className="h-[100vh]">
+                  <ChatRoomWindow onCloseRoom={handleCloseChat} />
+                </div>
               )}
             </div>
           </div>
