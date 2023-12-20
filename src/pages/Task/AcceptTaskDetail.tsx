@@ -437,7 +437,7 @@ const AcceptTaskDetail = () => {
           </div>
           {/* 左邊區塊結束 */}
           {/* 右邊區塊開始 */}
-          <div className="grid grid-cols-1 gap-4 rounded-md bg-[#B3D7FF] p-4 md:grid-cols-2 lg:w-2/3">
+          <div className="mb-10 grid grid-cols-1 gap-4 rounded-md bg-[#B3D7FF] p-4 md:grid-cols-2 lg:w-2/3">
             <div className="rounded-md bg-white p-4">
               {/* 任務名稱 */}
               <div className="mb-3 border-b-4 border-b-[#B3D7FF] text-center text-xl font-black text-gray-500">

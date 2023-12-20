@@ -284,14 +284,16 @@ const TaskDetail = () => {
                 </span>
               </button>
               {isChatOpen && taskId && (
-                <ChatRoomWindow onCloseRoom={handleCloseChat} />
+                <div className="h-[100vh]">
+                  <ChatRoomWindow onCloseRoom={handleCloseChat} />
+                </div>
               )}
             </div>
           </div>
           {/* 左邊區塊結束 */}
 
           {/* 右邊區塊開始 */}
-          <div className="grid grid-cols-1 gap-4 rounded-md bg-[#B3D7FF] p-4 md:grid-cols-2 lg:w-2/3">
+          <div className="grid grid-cols-1 mb-10 gap-4 rounded-md bg-[#B3D7FF] p-4 md:grid-cols-2 lg:w-2/3">
             {/* 以下是六個欄位，根據屏幕大小分為一列或兩列 */}
             <div className="rounded-md bg-white p-4">
               {/* 任務名稱 */}

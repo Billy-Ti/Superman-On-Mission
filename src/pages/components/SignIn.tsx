@@ -21,12 +21,12 @@ const SignIn = () => {
   // 註冊切換，不做功能
   const handleSignUpClick = () => {
     // Demo 結束後要改回 true
-    setIsRightPanelActive(false);
+    setIsRightPanelActive(true);
   };
   // 登入切換，不做功能
   const handleSignInClick = () => {
     // Demo 結束後要改回 false
-    setIsRightPanelActive(true);
+    setIsRightPanelActive(false);
   };
   // 註冊功能
   const handleSignUp = async (event: React.FormEvent<HTMLFormElement>) => {

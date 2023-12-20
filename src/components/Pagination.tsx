@@ -50,7 +50,7 @@ const Pagination: React.FC<PaginationProps> = ({
   };
 
   return (
-    <div className={`flex justify-center lg:justify-end ${className}`}>
+    <div className={`mb-4 flex justify-center lg:justify-end ${className}`}>
       <nav className="flex space-x-2" aria-label="Pagination">
         <a
           onClick={handlePreviousPageButton}

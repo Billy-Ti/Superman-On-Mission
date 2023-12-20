@@ -4,7 +4,7 @@ import HomeEndingButton from "../../pages/Home/HomeEndingButton";
 const Footer: React.FC = () => {
   return (
     <footer className="container mx-auto w-full max-w-[1280px] px-4 py-4 md:px-20 md:pb-10 md:pt-20">
-      <div className="mx-auto flex max-w-6xl items-center justify-between lg:flex-row">
+      <div className="mx-auto flex max-w-6xl flex-col items-center justify-between lg:flex-row">
         <div className="flex flex-col">
           <svg
             width="100"

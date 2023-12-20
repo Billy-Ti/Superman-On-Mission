@@ -45,7 +45,6 @@ interface User {
 }
 interface EmojiObject {
   emoji: string;
-  // 在這裡可以添加更多的屬性，如果需要的話
 }
 
 const ChatRoomWindow = ({ onCloseRoom }: ChatRoomWindowProps) => {
@@ -168,7 +167,7 @@ const ChatRoomWindow = ({ onCloseRoom }: ChatRoomWindowProps) => {
     }
     return updatedUsers;
   };
-  
+
   // 加載曾經聊過天的用戶列表
   useEffect(() => {
     if (!currentUser) return;
@@ -376,7 +375,7 @@ const ChatRoomWindow = ({ onCloseRoom }: ChatRoomWindowProps) => {
     event: React.KeyboardEvent<HTMLInputElement>,
   ) => {
     if (event.key === "Enter") {
-      event.preventDefault(); 
+      event.preventDefault();
       await handleSendMessage();
     }
   };
@@ -449,11 +448,11 @@ const ChatRoomWindow = ({ onCloseRoom }: ChatRoomWindowProps) => {
 
   return (
     <div className="fixed inset-0 z-50 my-auto flex h-full items-center justify-center bg-black bg-opacity-50 py-10 text-gray-800 antialiased">
-      <div className="relative flex h-[95vh] w-[90%] flex-col overflow-y-auto rounded-md bg-white p-4 shadow-lg lg:h-[70vh] lg:w-3/4 lg:flex-row">
+      <div className="relative flex h-[100vh] w-[95%] flex-col overflow-y-auto rounded-md bg-white p-2 shadow-lg md:p-4 lg:w-[99%] lg:flex-row">
         <span className="absolute right-5 top-6 h-6 w-6 animate-ping rounded-full " />
         <button
           onClick={onCloseRoom}
-          className="absolute right-3 top-3 z-[100] mr-2 mt-2 text-gray-500 hover:text-gray-700"
+          className="absolute right-0 top-0 z-[100] mr-2 mt-2 text-gray-500 hover:text-gray-700"
           aria-label="Close chat window"
         >
           <svg
@@ -471,10 +470,10 @@ const ChatRoomWindow = ({ onCloseRoom }: ChatRoomWindowProps) => {
             />
           </svg>
         </button>
-        <div className="flex w-full flex-shrink-0 flex-grow-0 flex-col bg-white pl-6 pr-2 lg:w-64">
+        <div className="flex w-full flex-shrink-0 flex-grow-0 flex-col bg-white pr-2 lg:w-64">
           {/* 聊天室窗標題 */}
           <ChatRoomTitle />
-          <div className="mb-2 mt-1 flex w-full flex-col items-center rounded-md border border-gray-200 bg-[#B3D7FF] px-4 py-1">
+          <div className="flex w-full items-center justify-center rounded-md border border-gray-200 bg-[#B3D7FF] px-4 py-1">
             <div className="h-20 w-20 overflow-hidden rounded-full border">
               <img
                 src={currentUser?.profilePicUrl || defaultProfilePic}
@@ -482,12 +481,14 @@ const ChatRoomWindow = ({ onCloseRoom }: ChatRoomWindowProps) => {
                 className="h-full w-full object-cover"
               />
             </div>
-            <div className="mt-2 text-lg font-semibold">
-              {currentUser ? currentUser.name : "加載中..."}
+            <div className="ml-2 text-center">
+              <div className="mt-2 text-lg font-semibold">
+                {currentUser ? currentUser.name : "加載中..."}
+              </div>
+              <div className="text-xs text-gray-500">{currentUser?.email}</div>
             </div>
-            <div className="text-xs text-gray-500">{currentUser?.email}</div>
           </div>
-          <div className="mb-2 flex flex-row items-center justify-between px-2 text-xs"></div>
+          <div className="mb-1 flex flex-row items-center justify-between px-2 text-xs"></div>
           <div className="relative ">
             <input
               className="w-full rounded-md border p-2 font-semibold focus:outline-none"
@@ -565,7 +566,7 @@ const ChatRoomWindow = ({ onCloseRoom }: ChatRoomWindowProps) => {
         {/* 聊天視窗主體 */}
         <div className="flex h-full flex-auto flex-col overflow-y-auto ">
           {selectedUserId && (
-            <div className="flex h-full flex-auto flex-shrink-0 flex-col justify-between break-words rounded-md bg-gray-100 p-4">
+            <div className="flex h-full flex-auto flex-shrink-0 flex-col justify-between break-words rounded-md bg-gray-100 p-0 md:p-4">
               <div className="h-full overflow-auto">
                 {/* 訊息列表 */}
                 <div className="mb-10 flex flex-grow flex-col items-center justify-between ">
@@ -675,7 +676,7 @@ const ChatRoomWindow = ({ onCloseRoom }: ChatRoomWindowProps) => {
                 <div className="ml-4">
                   <button
                     onClick={handleSendMessage}
-                    className="flex flex-shrink-0 items-center justify-center rounded-md bg-[#368DCF] py-1 pl-4 pr-3 text-xl font-medium tracking-wider text-white transition duration-500 ease-in-out hover:bg-[#3178C6]"
+                    className="flex items-center justify-center rounded-md bg-[#368DCF] py-1 pl-2 text-sm font-medium tracking-wider text-white transition duration-500 ease-in-out hover:bg-[#3178C6] md:text-lg"
                   >
                     <span>Send</span>
                     <span className="ml-2">

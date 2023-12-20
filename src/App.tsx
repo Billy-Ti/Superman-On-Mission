@@ -74,9 +74,9 @@ const App = () => {
                 }
               />
             </Routes>
-            <ChatRoomButton />
           </TransitionPage>
         </BrowserRouter>
+        <ChatRoomButton />
       </AuthProvider>
     </>
   );

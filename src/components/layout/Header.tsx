@@ -17,7 +17,7 @@ import { Link, useNavigate } from "react-router-dom";
 import Swal from "sweetalert2";
 import { db } from "../../config/firebase";
 import { useAuth } from "../../hooks/AuthProvider";
-import Marquee from "../animate/Marquee";
+// import Marquee from "../animate/Marquee";
 
 interface Notification {
   acceptorName: string;
@@ -34,16 +34,6 @@ const Header = () => {
   const [profilePicUrl, setProfilePicUrl] = useState<string>("");
   const [notifications, setNotifications] = useState<Notification[]>([]);
   const [notificationCount, setNotificationCount] = useState(0);
-  const [windowWidth, setWindowWidth] = useState(window.innerWidth);
-  const [content, setContent] = useState(
-    <h2 className="text-medium bg-inherit p-2 font-semibold text-[#368dcf] md:text-xl">
-      老闆抱負叫人讚，卻讓您心頭發冷颤，上 Super Task co.
-      <span className="bg-gradient-to-r from-blue-700 via-blue-500 to-purple-400 bg-clip-text font-black text-transparent">
-        ，註冊享 5000 coins 折抵
-      </span>
-      ，讓您有如神助，外包不必自己擔，Task co. 團隊，助您無所難，人生道路不孤單
-    </h2>,
-  );
 
   const navigate = useNavigate();
   const handleSignIn = () => {
@@ -155,40 +145,6 @@ const Header = () => {
     // 重設未讀通知計數
     setNotificationCount(0);
   };
-
-  useEffect(() => {
-    const handleResize = () => {
-      setWindowWidth(window.innerWidth);
-    };
-
-    window.addEventListener("resize", handleResize);
-    return () => window.removeEventListener("resize", handleResize);
-  }, []);
-
-  useEffect(() => {
-    if (window.innerWidth < 992) {
-      setContent(
-        <h2 className="text-medium bg-inherit p-2 font-semibold text-[#368dcf] md:text-xl">
-          老闆抱負叫人讚，卻讓您心頭發冷颤，上 Super Task co.
-          <span className="bg-gradient-to-r from-blue-700 via-blue-500 to-purple-400 bg-clip-text font-black text-transparent">
-            ，<Link to="/signIn">，註冊享 5000 coins 折抵</Link>
-          </span>
-          ，助您無所難、不孤單
-        </h2>,
-      );
-    } else {
-      setContent(
-        <h2 className="text-medium bg-inherit p-2 font-semibold text-[#368dcf] md:text-xl">
-          老闆抱負叫人讚，卻讓您心頭發冷颤，上 Super Task co.
-          <span className="bg-gradient-to-r from-blue-700 via-blue-500 to-purple-400 bg-clip-text font-black text-transparent">
-            ，<Link to="/signIn">，註冊享 5000 coins 折抵</Link>
-          </span>
-          ，讓您有如神助，外包不必自己擔，Task co.
-          團隊，助您無所難，人生道路不孤單
-        </h2>,
-      );
-    }
-  }, [windowWidth]);
 
   useEffect(() => {
     const fetchNotifications = async () => {
@@ -334,13 +290,12 @@ const Header = () => {
   return (
     <>
       <header
-        className={`sticky top-0 z-10 w-full ${
+        className={`sticky top-0 z-[9999] w-full ${
           isScrolled
-            ? "border-b border-blue-100 shadow-xl shadow-neutral-100 backdrop-blur-xl"
+            ? "border-b border-blue-100 shadow-xl shadow-neutral-100 backdrop-blur-lg"
             : ""
         } transition-all duration-300`}
       >
-        <Marquee content={content} />
         <div className="container relative mx-auto flex max-w-[1280px] items-center justify-between px-4 py-4 sm:py-0 lg:px-20">
           <div className="flex items-center">
             <Link
