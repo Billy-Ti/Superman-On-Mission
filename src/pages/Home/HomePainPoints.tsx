@@ -1,6 +1,6 @@
+import "animate.css";
 import { useEffect } from "react";
 import Typed from "typed.js";
-import 'animate.css';
 
 const HomePainPoints = () => {
   useEffect(() => {
