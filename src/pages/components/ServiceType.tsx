@@ -7,7 +7,7 @@ import {
   forwardRef,
   useEffect,
   useImperativeHandle,
-  useLayoutEffect,
+  useRef,
   useState,
 } from "react";
 
@@ -23,63 +23,39 @@ interface AirDatepickerInstance {
   selectDate: (date: Date) => void;
   setViewDate: (date: Date) => void;
   hide: () => void;
+  show: () => void;
+  destroy: () => void;
 }
 
-// 讓 SVG 日期 icon 也能觸發選擇器
-const handleIconClick = () => {
-  const datepickerInput = document.getElementById("datepicker");
-  if (datepickerInput) {
-    datepickerInput.focus(); // 觸發選擇器輸入框的 focus 事件
-  }
-};
 const ServiceType = forwardRef((_props, ref) => {
   const [selectedIndexes, setSelectedIndexes] = useState<number[]>([]);
   const [urgent, setUrgent] = useState<boolean | null>(false);
   const [selectedDate, setSelectedDate] = useState<string>("");
-  // const datepickerInitialized = useRef(false);
-  useLayoutEffect(() => {
-    // 初始化日期選擇器
-    // 初始化日期選擇器
-    const todayButton = {
-      content: "今天",
-      onClick: (dp: AirDatepickerInstance) => {
-        const currentDate = new Date();
-        dp.selectDate(currentDate);
-        dp.setViewDate(currentDate);
-      },
-    };
-    const confirmButton = {
-      content: "確定",
-      onClick: (dp: AirDatepickerInstance) => {
-        dp.hide();
-      },
-    };
-    // 初始化日期選擇器設定
-    const datepicker = new AirDatepicker("#datepicker", {
-      locale: localeZh, // 將語言設定為英文
-      dateFormat: "yyyy/MM/dd", // 設定日期格式
-      isMobile: true, // 手機板日期跳出視窗，false 的話則只用下拉的
-      buttons: [todayButton, confirmButton], // 加上"今天" "確定" 按鈕
-      firstDay: 0, // 將一周的第一天設為星期日
-      onSelect: function ({ formattedDate }) {
+  const datepickerRef = useRef<AirDatepickerInstance | null>(null);
+
+  useEffect(() => {
+    datepickerRef.current = new AirDatepicker("#datepicker", {
+      locale: localeZh,
+      dateFormat: "yyyy/MM/dd",
+      isMobile: true,
+      firstDay: 0,
+      onSelect: ({ formattedDate }) => {
         if (Array.isArray(formattedDate)) {
-          // 如果日期回傳是陣列，只取第一个元素
           setSelectedDate(formattedDate[0]);
         } else {
-          // 如果是字串，直接使用
           setSelectedDate(formattedDate);
         }
       },
     });
-    // 清除日期選擇器以避免內存洩漏
+
     return () => {
-      datepicker.destroy();
+      datepickerRef.current?.destroy();
     };
   }, []);
 
-  useEffect(() => {
-    // 使用 setTimeout 延遲初始化
-  }, []);
+  const handleIconClick = () => {
+    datepickerRef.current?.show();
+  };
 
   useImperativeHandle(ref, () => ({
     resetServiceType: () => {
@@ -104,6 +80,7 @@ const ServiceType = forwardRef((_props, ref) => {
       return `${year}/${month}/${day}`;
     },
   }));
+
   const serviceType = [
     "生活服務",
     "履歷撰寫",
@@ -115,6 +92,7 @@ const ServiceType = forwardRef((_props, ref) => {
     "影像服務",
     "其他",
   ];
+
   const handleServiceTypeClick = (index: number) => {
     const isSelected = selectedIndexes.includes(index);
     if (isSelected) {
@@ -125,6 +103,7 @@ const ServiceType = forwardRef((_props, ref) => {
       setSelectedIndexes((prevIndexes) => [...prevIndexes, index]);
     }
   };
+
   const handleUrgentClick = (value: boolean) => {
     setUrgent(value);
   };
@@ -190,10 +169,10 @@ const ServiceType = forwardRef((_props, ref) => {
                 />
                 <svg
                   onClick={handleIconClick}
-                  className="absolute right-3 h-5 w-5 cursor-pointer text-[#368dcf]" // 調整這裡來改變 SVG 的大小和顏色
+                  className="absolute right-3 h-5 w-5 cursor-pointer text-[#368dcf]"
                   xmlns="http://www.w3.org/2000/svg"
                   viewBox="0 0 24 24"
-                  fill="currentColor" // 使用currentColor來讓SVG繼承文字顏色
+                  fill="currentColor"
                 >
                   <path d="M8 14q-.425 0-.712-.288T7 13q0-.425.288-.712T8 12q.425 0 .713.288T9 13q0 .425-.288.713T8 14m4 0q-.425 0-.712-.288T11 13q0-.425.288-.712T12 12q.425 0 .713.288T13 13q0 .425-.288.713T12 14m4 0q-.425 0-.712-.288T15 13q0-.425.288-.712T16 12q.425 0 .713.288T17 13q0 .425-.288.713T16 14M5 22q-.825 0-1.412-.587T3 20V6q0-.825.588-1.412T5 4h1V2h2v2h8V2h2v2h1q.825 0 1.413.588T21 6v14q0 .825-.587 1.413T19 22zm0-2h14V10H5z" />
                 </svg>
