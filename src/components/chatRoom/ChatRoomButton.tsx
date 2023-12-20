@@ -8,13 +8,13 @@ import {
   where,
 } from "firebase/firestore";
 import { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
+// import { useNavigate } from "react-router-dom";
 import ChatRoomWindow from "./ChatRoomWindow";
 
 const ChatRoomButton = () => {
   const [isChatOpen, setIsChatOpen] = useState(false);
   const [newMessageCount, setNewMessageCount] = useState(0);
-  const navigate = useNavigate();
+  // const navigate = useNavigate();
   const auth = getAuth();
 
   useEffect(() => {
@@ -41,7 +41,7 @@ const ChatRoomButton = () => {
     if (auth.currentUser) {
       setIsChatOpen(true);
     } else {
-      navigate("/SignIn");
+      // navigate("/SignIn");
     }
   };
 

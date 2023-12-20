@@ -45,7 +45,6 @@ interface User {
 }
 interface EmojiObject {
   emoji: string;
-  // 在這裡可以添加更多的屬性，如果需要的話
 }
 
 const ChatRoomWindow = ({ onCloseRoom }: ChatRoomWindowProps) => {
@@ -168,7 +167,7 @@ const ChatRoomWindow = ({ onCloseRoom }: ChatRoomWindowProps) => {
     }
     return updatedUsers;
   };
-  
+
   // 加載曾經聊過天的用戶列表
   useEffect(() => {
     if (!currentUser) return;
@@ -376,7 +375,7 @@ const ChatRoomWindow = ({ onCloseRoom }: ChatRoomWindowProps) => {
     event: React.KeyboardEvent<HTMLInputElement>,
   ) => {
     if (event.key === "Enter") {
-      event.preventDefault(); 
+      event.preventDefault();
       await handleSendMessage();
     }
   };
@@ -471,7 +470,7 @@ const ChatRoomWindow = ({ onCloseRoom }: ChatRoomWindowProps) => {
             />
           </svg>
         </button>
-        <div className="flex w-full flex-shrink-0 flex-grow-0 flex-col bg-white pl-6 pr-2 lg:w-64">
+        <div className="flex w-full flex-shrink-0 flex-grow-0 flex-col bg-white pr-2 lg:w-64">
           {/* 聊天室窗標題 */}
           <ChatRoomTitle />
           <div className="mb-2 mt-1 flex w-full flex-col items-center rounded-md border border-gray-200 bg-[#B3D7FF] px-4 py-1">
