@@ -1,5 +1,11 @@
 import { Icon } from "@iconify/react";
-import { collection, getDocs, getFirestore } from "firebase/firestore";
+import {
+  collection,
+  getDocs,
+  getFirestore,
+  query,
+  where,
+} from "firebase/firestore";
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import Slider from "react-slick";
@@ -12,10 +18,15 @@ interface Task {
 }
 const Carousel = () => {
   const [tasks, setTasks] = useState<Task[]>([]);
+
+  // 只篩選任務狀態為"任務媒合中"的任務才顯示
   useEffect(() => {
     const fetchTasks = async () => {
-      const tasksCol = collection(getFirestore(), "tasks");
-      const taskSnapshot = await getDocs(tasksCol);
+      const firestore = getFirestore();
+      const tasksCol = collection(firestore, "tasks");
+      // 添加過濾條件
+      const q = query(tasksCol, where("status", "==", "任務媒合中"));
+      const taskSnapshot = await getDocs(q);
       const tasksList: Task[] = taskSnapshot.docs.map((doc) => ({
         ...(doc.data() as Task),
         id: doc.id,
