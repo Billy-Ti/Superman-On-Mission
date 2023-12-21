@@ -15,10 +15,10 @@ import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import Swal from "sweetalert2";
 import ChatRoomWindow from "../../components/chatRoom/ChatRoomWindow";
-import Footer from "../../components/layout/Footer";
-import Header from "../../components/layout/Header";
 import { db, storage } from "../../config/firebase";
 import { showAlert } from "../../utils/showAlert";
+import Footer from "../layout/Footer";
+import Header from "../layout/Header";
 // 使用 Task interface 替代原來的 TaskData
 interface Task {
   id: string;

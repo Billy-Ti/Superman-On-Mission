@@ -1,5 +1,5 @@
-import Footer from "../../components/layout/Footer";
-import Header from "../../components/layout/Header";
+import Footer from "../layout/Footer";
+import Header from "../layout/Header";
 import ReviewContent from "./ReviewContent";
 const ReviewLists: React.FC = () => {
   return (

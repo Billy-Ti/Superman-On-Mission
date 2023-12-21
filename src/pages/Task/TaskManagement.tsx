@@ -1,7 +1,7 @@
 import { useState } from "react";
 import LoadingSpinner from "../../components/LoadingSpinner";
-import Footer from "../../components/layout/Footer";
-import Header from "../../components/layout/Header";
+import Footer from "../layout/Footer";
+import Header from "../layout/Header";
 import AcceptTaskRecord from "./AcceptTaskRecord";
 import FinishTaskRecord from "./FinishTaskRecord";
 import StartTaskRecord from "./StartTaskRecord";

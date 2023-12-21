@@ -10,10 +10,10 @@ import {
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import Swal from "sweetalert2";
-import Footer from "../../components/layout/Footer";
-import Header from "../../components/layout/Header";
 import { db } from "../../config/firebase";
 import { showAlert } from "../../utils/showAlert";
+import Footer from "../layout/Footer";
+import Header from "../layout/Header";
 import SideBar from "./SideBar";
 
 const Profile = () => {
@@ -55,7 +55,6 @@ const Profile = () => {
       title: "案件資訊",
       content: [
         {
-          // "已完成案件 ": "數字",
           "平均星等 ": averageRating,
         },
       ],
@@ -196,33 +195,6 @@ const Profile = () => {
                   修改會員照
                 </label>
               </div>
-              {/* 導航社群 */}
-              {/* <div className="my-5 flex items-center justify-between px-6">
-                  <a
-                    href=""
-                    className="w-full rounded py-3 text-center text-sm font-medium text-gray-500 transition duration-150 ease-in hover:bg-gray-100 hover:text-gray-900"
-                  >
-                    Facebook
-                  </a>
-                  <a
-                    href=""
-                    className="w-full rounded py-3 text-center text-sm font-medium text-gray-500 transition duration-150 ease-in hover:bg-gray-100 hover:text-gray-900"
-                  >
-                    Twitter
-                  </a>
-                  <a
-                    href=""
-                    className="w-full rounded py-3 text-center text-sm font-medium text-gray-500 transition duration-150 ease-in hover:bg-gray-100 hover:text-gray-900"
-                  >
-                    Instagram
-                  </a>
-                  <a
-                    href=""
-                    className="w-full rounded py-3 text-center text-sm font-medium text-gray-500 transition duration-150 ease-in hover:bg-gray-100 hover:text-gray-900"
-                  >
-                    Email
-                  </a>
-                </div> */}
               <div className="w-full shadow-xl">
                 <div className="mt-5 flex w-full flex-col items-center overflow-hidden text-sm">
                   <ul className="accordion w-full rounded-lg bg-gray-50 px-6 shadow-lg shadow-gray-100">

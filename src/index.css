@@ -6,7 +6,6 @@ body {
   font-family: "Segoe UI", "Noto Sans TC", "Roboto", "Helvetica Neue", Arial,
     "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji",
     sans-serif;
-  line-height: 1.5 !important;
 }
 .typed-container .typed-cursor {
   @apply text-5xl;
@@ -532,7 +531,7 @@ body {
   font-weight: 700;
 }
 
-/* 選擇器 "星期" */
+/* 選擇器 "星期 " */
 .air-datepicker-body--day-name {
   color: #368dcf;
 }

@@ -7,10 +7,10 @@ import {
 import { doc, setDoc } from "firebase/firestore";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import Footer from "../../components/layout/Footer";
-import Header from "../../components/layout/Header";
 import { db } from "../../config/firebase";
 import { showAlert } from "../../utils/showAlert";
+import Footer from "../layout/Footer";
+import Header from "../layout/Header";
 const SignIn = () => {
   const [isRightPanelActive, setIsRightPanelActive] = useState(false);
   const [email, setEmail] = useState("Billy@gmail.com");
@@ -86,7 +86,7 @@ const SignIn = () => {
     const unsubscribe = onAuthStateChanged(auth, (user) => {
       if (user) {
         showAlert("您已經是我們的一份子囉😊", undefined, "success");
-        navigate("/"); // 將用戶重定向到首頁或其他頁面
+        navigate("/");
       }
     });
     return () => unsubscribe();

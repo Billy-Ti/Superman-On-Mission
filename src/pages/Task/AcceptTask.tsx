@@ -3,12 +3,12 @@ import { collection, getDocs, orderBy, query, where } from "firebase/firestore";
 import { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import Pagination from "../../components/Pagination";
-import Footer from "../../components/layout/Footer";
-import Header from "../../components/layout/Header";
 import { db } from "../../config/firebase";
 import Carousel from "../components/Carousel";
 import DisplaySwitchButton from "../components/DisplaySwitchButton";
 import ServiceTypeSelector from "../components/ServiceTypeSelectorProps";
+import Footer from "../layout/Footer";
+import Header from "../layout/Header";
 import RegionFilter from "./RegionFilter";
 
 interface Task {
