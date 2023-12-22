@@ -34,7 +34,6 @@ const HomePainPoints = () => {
               <span className="typed text-xl font-medium md:text-3xl"></span>
             </div>
           </div>
-          {/* 交錯式 */}
           <div className="flex justify-center">
             <div className="w-full md:w-10/12">
               <div className="mb-5 flex flex-wrap items-center justify-center md:mb-6 md:flex-row-reverse">

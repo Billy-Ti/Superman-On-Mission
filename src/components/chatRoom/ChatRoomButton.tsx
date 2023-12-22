@@ -8,19 +8,16 @@ import {
   where,
 } from "firebase/firestore";
 import { useEffect, useState } from "react";
-// import { useNavigate } from "react-router-dom";
 import ChatRoomWindow from "./ChatRoomWindow";
 
 const ChatRoomButton = () => {
   const [isChatOpen, setIsChatOpen] = useState(false);
   const [newMessageCount, setNewMessageCount] = useState(0);
-  // const navigate = useNavigate();
   const auth = getAuth();
 
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (user) => {
       if (user) {
-        // 用戶已登錄，監聽新消息
         const firestore = getFirestore();
         const messagesRef = collection(firestore, "messages");
         const q = query(
@@ -40,8 +37,6 @@ const ChatRoomButton = () => {
   const handleChatButtonClick = () => {
     if (auth.currentUser) {
       setIsChatOpen(true);
-    } else {
-      // navigate("/SignIn");
     }
   };
 

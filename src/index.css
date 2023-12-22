@@ -443,7 +443,6 @@ body {
   width: 60px;
   margin: 0 10px;
 }
-/* 點點 paging 樣式 */
 .slick-thumb li a img {
   box-shadow:
     rgb(0 0 0 / 69%) 0px 26px 30px -10px,
@@ -457,7 +456,6 @@ body {
   border: 4px solid rgba(249, 249, 249, 0.8);
 }
 
-/* 針對沒有被選到的圖片，圖片改為灰階，並且要加上前綴詞 "-webkit-" */
 .slick-thumb li.slick-active img {
   -webkit-filter: grayscale(0);
   filter: grayscale(0);
@@ -467,25 +465,21 @@ body {
   filter: grayscale(100%);
 }
 
-/* 針對上方圖片的灰階顯示做處理 */
 .slick-slide:not(.slick-current) div div img {
   -webkit-filter: grayscale(100%);
   filter: grayscale(100%);
 }
 
-/* 改變按鈕的背景色 */
 .slick-prev:before,
 .slick-next:before {
   color: #368dcf;
 }
 
-/* 改變按鈕懸停時的背景色 */
 .slick-prev:hover:before,
 .slick-next:hover:before {
   color: #368dcf;
 }
 
-/* 首頁輪播圖因應 Tailwind 列出所有角度 */
 .rotate-0 {
   transform: rotateY(0deg) translateZ(250px);
 }
@@ -505,33 +499,27 @@ body {
   transform: rotateY(300deg) translateZ(250px);
 }
 
-/* 修改瀏覽器滾動條 */
 ::-webkit-scrollbar {
-  width: 16px; /* 滾動條的寬度 */
+  width: 16px;
 }
 
 ::-webkit-scrollbar-track {
-  background: #bfdbfe; /* 整條軌道的顏色 */
+  background: #bfdbfe;
 }
 
 ::-webkit-scrollbar-thumb {
-  background: #2b79b4; /* 單獨滑塊的顏色 */
+  background: #2b79b4;
   border-radius: 10px;
 }
 
-/* 當滑鼠 hover 在滾動條滑塊上時的樣式 */
 ::-webkit-scrollbar-thumb:hover {
-  background: #4489be; /* 單獨滑塊的顏色 */
+  background: #4489be;
 }
 
-/* 發任務頁日期選擇器樣式 */
-
-/* 選擇器整體字體大小 */
 .air-datepicker {
   font-weight: 700;
 }
 
-/* 選擇器 "星期 " */
 .air-datepicker-body--day-name {
   color: #368dcf;
 }

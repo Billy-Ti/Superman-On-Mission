@@ -24,10 +24,9 @@ const HomeTaskStep = () => {
       const tasksArray: Task[] = [];
       querySnapshot.forEach((doc) => {
         const taskData = doc.data() as Task;
-        tasksArray.push({ ...taskData, id: doc.id }); // 添加每個任務的 id
+        tasksArray.push({ ...taskData, id: doc.id });
       });
 
-      // 對任務按照 cost 降序排列，並選取前四個
       const sortedTasks = tasksArray
         .sort((a, b) => b.cost - a.cost)
         .slice(0, 4);

@@ -1,5 +1,4 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
-// 位移由左至右
 import { useLocation } from "react-router-dom";
 import { animated, useTransition } from "react-spring";
 

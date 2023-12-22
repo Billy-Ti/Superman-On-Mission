@@ -27,7 +27,7 @@ interface Review {
 const ReviewContent = () => {
   const [reviews, setReviews] = useState<Review[]>([]);
   const [showReviews, setShowReviews] = useState<boolean>(false);
-  const [reviewsPerPage] = useState(6); // 每頁顯示 6 條評價
+  const [reviewsPerPage] = useState(6);
   const [currentPage, setCurrentPage] = useState(1);
   const [isLoading, setIsLoading] = useState(false);
 
@@ -78,11 +78,9 @@ const ReviewContent = () => {
     setIsLoading(false);
   };
 
-  // 獲取當前頁的評價
   const indexOfLastReview = currentPage * reviewsPerPage;
   const indexOfFirstReview = indexOfLastReview - reviewsPerPage;
   const currentReviews = reviews.slice(indexOfFirstReview, indexOfLastReview);
-  // 更改頁碼
   const paginate = (pageNumber: number) => setCurrentPage(pageNumber);
 
   const handleToggleDisplay = (event: React.ChangeEvent<HTMLInputElement>) => {

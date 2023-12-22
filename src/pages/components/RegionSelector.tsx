@@ -8,7 +8,6 @@ interface RegionSelectorProps {
   onRegionChange: (region: string) => void;
 }
 
-// 接任務頁地區
 const RegionSelector: React.FC<RegionSelectorProps> = ({
   selectedCounty,
   selectedRegion,
@@ -22,7 +21,6 @@ const RegionSelector: React.FC<RegionSelectorProps> = ({
 
   useEffect(() => {
     function handleClickOutside(event: MouseEvent) {
-      // 確保 event.target 是一個 Node
       const target = event.target as Node;
       if (wrapperRef.current && !wrapperRef.current.contains(target)) {
         setIsCountyOpen(false);
@@ -38,7 +36,6 @@ const RegionSelector: React.FC<RegionSelectorProps> = ({
   }, []);
   return (
     <div ref={wrapperRef} className="flex space-x-2 mb-2 sm:mb-0">
-      {/* County Selector */}
       <div className="relative">
         <div
           className="cursor-pointer rounded border px-4 py-2 font-semibold"
@@ -87,7 +84,6 @@ const RegionSelector: React.FC<RegionSelectorProps> = ({
         )}
       </div>
 
-      {/* Region Selector */}
       {selectedCounty && (
         <div className="relative">
           <div

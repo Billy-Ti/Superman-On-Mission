@@ -18,17 +18,12 @@ const SignIn = () => {
   const [name, setName] = useState("Billy");
   const navigate = useNavigate();
   const auth = getAuth();
-  // 註冊切換，不做功能
   const handleSignUpClick = () => {
-    // Demo 結束後要改回 true
     setIsRightPanelActive(true);
   };
-  // 登入切換，不做功能
   const handleSignInClick = () => {
-    // Demo 結束後要改回 false
     setIsRightPanelActive(false);
   };
-  // 註冊功能
   const handleSignUp = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     try {
@@ -39,7 +34,6 @@ const SignIn = () => {
         password,
       );
       showAlert("🚨系統提醒", "註冊成功", "success");
-      // 註冊成功後，將用戶名存入 Firestore
       await setDoc(doc(db, "users", userCredential.user.uid), {
         name,
         email,
@@ -82,7 +76,6 @@ const SignIn = () => {
     }
   };
   
-  // 阻擋來自輸入網址強行進入 endpoint "/signIn" 的使用者
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (user) => {
       if (user) {
@@ -145,7 +138,6 @@ const SignIn = () => {
                 className="mx-0 my-2 w-full rounded-md border-[none] bg-[#eee] px-[15px] py-3 focus:outline-none"
                 type="email"
                 placeholder="Email"
-                // Demo 結束後要將 value 行刪除，讓預設值恢復改回為註冊頁
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
               />
@@ -153,7 +145,6 @@ const SignIn = () => {
                 className="mx-0 my-2 w-full rounded-md border-[none] bg-[#eee] px-[15px] py-3 focus:outline-none"
                 type="password"
                 placeholder="Password"
-                // Demo 結束後要將 value 行刪除，讓預設值恢復改回為註冊頁
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
               />

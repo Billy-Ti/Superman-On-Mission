@@ -29,7 +29,7 @@ const RatingModal: React.FC<RatingModalProps> = ({
 
   const handleSubmit = () => {
     onSubmit(rating);
-    onClose(); // 關閉模態視窗
+    onClose();
   };
 
   return isOpen ? (

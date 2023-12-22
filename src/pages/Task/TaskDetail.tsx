@@ -41,14 +41,9 @@ const TaskDetail = () => {
   const { taskId } = useParams();
   const [taskDetails, setTaskDetails] = useState<Task | null>(null);
   const [loading, setLoading] = useState(true);
-  // 存發案者名稱，以存取不同集合中的 user
   const [posterName, setPosterName] = useState("");
-
-  // 儲存已選擇的圖片，用作點及圖片可放大的前置準備
   const [selectedPhoto, setSelectedPhoto] = useState<string | null>(null);
-  // 建立一個視窗，讓圖片可以被點擊後放大，有預覽的效果
   const [isModalOpen, setIsModalOpen] = useState(false);
-
   const [currentUserID, setCurrentUserID] = useState<string | null>(null);
   const [isChatOpen, setIsChatOpen] = useState(false);
 
@@ -102,10 +97,8 @@ const TaskDetail = () => {
     const auth = getAuth();
     const unsubscribe = onAuthStateChanged(auth, (user) => {
       if (user) {
-        // 使用者登錄了，設置使用者 ID
         setCurrentUserID(user.uid);
       } else {
-        // 使用者未登錄
         setCurrentUserID(null);
       }
     });
@@ -124,14 +117,11 @@ const TaskDetail = () => {
         if (taskSnap.exists()) {
           const taskData = taskSnap.data() as Task;
           setTaskDetails(taskData);
-
-          // 使用 taskData.createdBy 來讀取發案者的使用者 ID
           const userId = taskData.createdBy;
           if (userId) {
             const userRef = doc(db, "users", userId);
             const userSnap = await getDoc(userRef);
             if (userSnap.exists()) {
-              // 找 users 集合內的 user 名字，資料結構叫 name
               setPosterName(userSnap.data().name);
             } else {
               console.log("No such user!");
@@ -182,7 +172,6 @@ const TaskDetail = () => {
       return;
     }
 
-    // 如果嘗試接受自己創建的任務
     if (taskDetails && currentUserID === taskDetails.createdBy) {
       Swal.fire({
         title: "操作無效",
@@ -253,16 +242,13 @@ const TaskDetail = () => {
           <p className="pl-2">任務資訊</p>
         </div>
         <div className="flex flex-col lg:flex-row">
-          {/* 左邊區塊開始 */}
           <div className="space-y-4 p-4 lg:w-1/3">
-            {/* 案主 */}
             <div className="flex items-center space-x-2">
               <div className="flex-grow items-center text-xl font-semibold tracking-wider text-[#3178C6]">
                 <span className="tracking-wider">發案者名稱：</span>
                 {posterName}
               </div>
             </div>
-            {/* 任務截止日期 */}
             <div className="flex items-center space-x-2">
               <div className="flex-grow text-xl font-semibold tracking-wider">
                 <span className="tracking-wider">任務截止日期：</span>
@@ -290,13 +276,8 @@ const TaskDetail = () => {
               )}
             </div>
           </div>
-          {/* 左邊區塊結束 */}
-
-          {/* 右邊區塊開始 */}
           <div className="mb-10 grid grid-cols-1 gap-4 rounded-md bg-[#B3D7FF] p-4 md:grid-cols-2 lg:w-2/3">
-            {/* 以下是六個欄位，根據屏幕大小分為一列或兩列 */}
             <div className="rounded-md bg-white p-4">
-              {/* 任務名稱 */}
               <div className="mb-3 border-b-4 border-b-[#B3D7FF] text-center text-xl font-bold text-gray-500">
                 任務名稱
               </div>
@@ -305,7 +286,6 @@ const TaskDetail = () => {
               </div>
             </div>
             <div className="rounded-md bg-white p-4">
-              {/* 任務地點 */}
               <div className="mb-3  border-b-4 border-b-[#B3D7FF] text-center text-xl font-bold text-gray-500">
                 任務地點
               </div>
@@ -316,7 +296,6 @@ const TaskDetail = () => {
               </div>
             </div>
             <div className="rounded-md bg-white p-4">
-              {/* 任務類型 */}
               <div className="mb-3  border-b-4 border-b-[#B3D7FF] text-center text-xl font-bold text-gray-500">
                 任務類型
               </div>
@@ -327,7 +306,6 @@ const TaskDetail = () => {
               </div>
             </div>
             <div className="rounded-md bg-white p-4">
-              {/* 任務報酬 Super Coins */}
               <div className="mb-3  border-b-4 border-b-[#B3D7FF] text-center text-xl font-bold text-gray-500">
                 任務報酬 Super Coins
               </div>
@@ -336,7 +314,6 @@ const TaskDetail = () => {
               </div>
             </div>
             <div className="rounded-md bg-white p-4">
-              {/* 任務說明 */}
               <div className="mb-3 border-b-4 border-b-[#B3D7FF] text-center text-xl font-bold text-gray-500">
                 任務說明
               </div>
@@ -345,7 +322,6 @@ const TaskDetail = () => {
               </div>
             </div>
             <div className="rounded-md bg-white p-4">
-              {/* 其他備註 */}
               <div className="mb-3 border-b-4 border-b-[#B3D7FF] text-center text-xl font-bold text-gray-500">
                 其他備註
               </div>
@@ -354,7 +330,6 @@ const TaskDetail = () => {
               </div>
             </div>
           </div>
-          {/* 右邊區塊結束 */}
         </div>
 
         <div className="mb-4 flex text-3xl font-semibold text-gray-700">

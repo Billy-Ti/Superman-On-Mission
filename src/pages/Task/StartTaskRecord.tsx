@@ -46,11 +46,10 @@ const StartTaskRecord = () => {
         return;
       }
 
-      // 增加排序條件
       const q = query(
         collection(db, "tasks"),
         where("createdBy", "==", currentUser.uid),
-        orderBy("createdAt", "desc"), // 依據創建時間降序排列
+        orderBy("createdAt", "desc"),
       );
 
       const querySnapshot = await getDocs(q);

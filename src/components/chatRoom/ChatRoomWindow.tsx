@@ -29,16 +29,16 @@ interface Message {
   sentAt?: Timestamp;
   sentTo: string;
   isRead: boolean;
-  chatSessionId: string; // 根據 ChatSession 的 ID 來儲存訊息
+  chatSessionId: string;
   messageId?: string;
 }
 interface UserList {
   id: string;
   name: string;
-  unreadCount?: number; // 未讀消息數量
+  unreadCount?: number;
 }
 interface User {
-  id: string; // 使用 Firebase User ID 作為 id
+  id: string;
   name: string;
   email: string;
   profilePicUrl: string;
@@ -52,10 +52,10 @@ const ChatRoomWindow = ({ onCloseRoom }: ChatRoomWindowProps) => {
   const [messages, setMessages] = useState<Message[]>([]);
   const [currentUser, setCurrentUser] = useState<User | null>(null);
   const [searchQuery, setSearchQuery] = useState("");
-  const [userList, setUserList] = useState<UserList[]>([]); // 儲存用戶列表
-  const [hasSearched, setHasSearched] = useState(false); // 判斷是否搜尋過了，要出現 " 查無此使用者 " 文字
-  const [selectedUserId, setSelectedUserId] = useState<string | null>(null); // 點擊所選的使用者進行聊天
-  const [searchResults, setSearchResults] = useState<UserList[]>([]); // 新增一個狀態來單獨管理搜索結果
+  const [userList, setUserList] = useState<UserList[]>([]);
+  const [hasSearched, setHasSearched] = useState(false);
+  const [selectedUserId, setSelectedUserId] = useState<string | null>(null);
+  const [searchResults, setSearchResults] = useState<UserList[]>([]);
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const [selectedUserName, setSelectedUserName] = useState("");
   const [showPicker, setShowPicker] = useState(false);
@@ -73,7 +73,6 @@ const ChatRoomWindow = ({ onCloseRoom }: ChatRoomWindowProps) => {
     if (isInitialMount.current) {
       isInitialMount.current = false;
     } else {
-      // 延遲滾動以確保 DOM 完全更新
       const timer = setTimeout(() => {
         if (messagesEndRef.current) {
           messagesEndRef.current.scrollIntoView({ behavior: "auto" });
@@ -90,21 +89,18 @@ const ChatRoomWindow = ({ onCloseRoom }: ChatRoomWindowProps) => {
 
     const unsubscribe = onAuthStateChanged(auth, async (firebaseUser) => {
       if (firebaseUser) {
-        // 從 Firestore 的 users 集合中獲取用戶資料
         const userRef = doc(firestore, "users", firebaseUser.uid);
         const docSnap = await getDoc(userRef);
         if (docSnap.exists()) {
           const userData = docSnap.data();
-          // 使用從 Firestore 獲得的名稱和電子郵件
           console.log(userData);
           setCurrentUser({
             id: firebaseUser.uid,
-            name: userData.name, // 使用從 Firestore 獲得的名稱
+            name: userData.name,
             email: userData.email || firebaseUser.email || "未提供電子郵件",
             profilePicUrl: userData.profilePicUrl,
           });
         } else {
-          // 處理找不到用戶的情況
           setCurrentUser({
             id: firebaseUser.uid,
             name: "未知用戶",
@@ -114,7 +110,6 @@ const ChatRoomWindow = ({ onCloseRoom }: ChatRoomWindowProps) => {
           });
         }
       } else {
-        // 沒有用戶登入
         setCurrentUser(null);
       }
     });
@@ -124,7 +119,6 @@ const ChatRoomWindow = ({ onCloseRoom }: ChatRoomWindowProps) => {
 
   useEffect(() => {
     const firestore = getFirestore();
-    // 根據 chatSession 的 ID 來查詢聊天消息
     const messagesRef = collection(firestore, "messages");
     const q = query(messagesRef);
     const unsubscribe = onSnapshot(q, (querySnapshot) => {
@@ -144,7 +138,7 @@ const ChatRoomWindow = ({ onCloseRoom }: ChatRoomWindowProps) => {
         const userData = doc.data();
         return { id: doc.id, name: userData.name };
       });
-      setUserList(activeUsers); // 更新用戶列表狀態
+      setUserList(activeUsers);
     });
     return () => unsubscribe();
   }, []);
@@ -157,7 +151,7 @@ const ChatRoomWindow = ({ onCloseRoom }: ChatRoomWindowProps) => {
         where("sentBy", "==", user.id),
         where("sentTo", "==", currentUser.id),
         where("isRead", "==", false),
-        where("sentBy", "!=", currentUser.id), // 添加這條件來排除由當前用戶發送的消息
+        where("sentBy", "!=", currentUser.id),
       );
       const snapshot = await getDocs(q);
       updatedUsers.push({
@@ -168,7 +162,6 @@ const ChatRoomWindow = ({ onCloseRoom }: ChatRoomWindowProps) => {
     return updatedUsers;
   };
 
-  // 加載曾經聊過天的用戶列表
   useEffect(() => {
     if (!currentUser) return;
     const firestore = getFirestore();
@@ -194,7 +187,6 @@ const ChatRoomWindow = ({ onCloseRoom }: ChatRoomWindowProps) => {
     const loadConversations = async () => {
       const firestore = getFirestore();
       const messagesRef = collection(firestore, "messages");
-      // 查詢當前用戶發起的對話
       const q = query(messagesRef, where("sentBy", "==", currentUser.id));
 
       const querySnapshot = await getDocs(q);
@@ -202,7 +194,6 @@ const ChatRoomWindow = ({ onCloseRoom }: ChatRoomWindowProps) => {
 
       querySnapshot.forEach((doc) => {
         const message = doc.data() as Message;
-        // 只添加對話接收方的ID
         const otherUserId = message.chatSessionId
           .replace(`${currentUser.id}_`, "")
           .replace(`_${currentUser.id}`, "");
@@ -256,8 +247,6 @@ const ChatRoomWindow = ({ onCloseRoom }: ChatRoomWindowProps) => {
 
     try {
       const firestore = getFirestore();
-
-      // 發送訊息到 'messages' 集合
       await addDoc(collection(firestore, "messages"), {
         content: message,
         sentAt: serverTimestamp(),
@@ -267,11 +256,9 @@ const ChatRoomWindow = ({ onCloseRoom }: ChatRoomWindowProps) => {
         isRead: false,
       });
 
-      // 更新用戶間的對話記錄
       await updateChattedWith(firestore, currentUser.id, selectedUserId);
       await updateChattedWith(firestore, selectedUserId, currentUser.id);
 
-      // 重新加載與選中用戶的對話
       loadMessagesForSelectedUser(firestore, selectedUserId);
 
       setMessage("");
@@ -287,7 +274,6 @@ const ChatRoomWindow = ({ onCloseRoom }: ChatRoomWindowProps) => {
   ) => {
     if (!currentUser || !userId) return;
 
-    // 先清空當前訊息列表，避免閃屏看到上一位使用者的對話
     setMessages([]);
 
     const messagesRef = collection(firestore, "messages");
@@ -304,7 +290,6 @@ const ChatRoomWindow = ({ onCloseRoom }: ChatRoomWindowProps) => {
     setMessages(userMessages.sort((a, b) => getTimestamp(a) - getTimestamp(b)));
   };
 
-  // 更新聊過天的用戶列表的 func
   const updateChattedWith = async (
     firestore: Firestore,
     userId: string,
@@ -335,7 +320,6 @@ const ChatRoomWindow = ({ onCloseRoom }: ChatRoomWindowProps) => {
       if (userSnap.exists()) {
         const userData = userSnap.data() as User;
         if (userData.id !== currentUser?.id) {
-          // 確保不加載當前用戶自己
           users.push({
             id: userId,
             name: userData.name,
@@ -359,10 +343,9 @@ const ChatRoomWindow = ({ onCloseRoom }: ChatRoomWindowProps) => {
         name: userData.name,
       };
     });
-    setSearchResults(users); // 更新搜索結果狀態
+    setSearchResults(users);
     setHasSearched(true);
   };
-  // 處理鍵盤事件
   const handleKeyDown = async (
     event: React.KeyboardEvent<HTMLInputElement>,
   ) => {
@@ -379,15 +362,12 @@ const ChatRoomWindow = ({ onCloseRoom }: ChatRoomWindowProps) => {
       await handleSendMessage();
     }
   };
-  // 處理點擊事件
   const handleButtonClick = async () => {
     await executeSearch();
   };
-  // 移除搜尋結果
   const handleRemoveUser = (userId: string) => {
     setSearchResults(searchResults.filter((user) => user.id !== userId));
   };
-  // 加一個輔助判斷函式，若不存在則返回大的數字，確保為定義的時間排在最後
   const getTimestamp = (message: Message) => {
     return message.sentAt?.toMillis() ?? Number.MAX_SAFE_INTEGER;
   };
@@ -395,10 +375,8 @@ const ChatRoomWindow = ({ onCloseRoom }: ChatRoomWindowProps) => {
     console.log("選擇的用戶 ID:", userId);
     const selectedUser = userList.find((user) => user.id === userId);
     if (selectedUser) {
-      // 如果在 userList 中找到了用戶，直接設置用戶名稱
       setSelectedUserName(selectedUser.name);
     } else {
-      // 如果在 userList 中沒有找到用戶，從 Firestore 中查詢用戶資訊
       const firestore = getFirestore();
       const userRef = doc(firestore, "users", userId);
       const userSnap = await getDoc(userRef);
@@ -409,14 +387,13 @@ const ChatRoomWindow = ({ onCloseRoom }: ChatRoomWindowProps) => {
         setSelectedUserName("未知用戶");
       }
     }
-    setSelectedUserId(userId); // 設置所選用戶的 ID
-    setMessages([]); // 清空當前訊息
+    setSelectedUserId(userId);
+    setMessages([]);
 
     if (!currentUser || !userId) return;
 
     const firestore = getFirestore();
 
-    // 標記與選定用戶的所有未讀消息為已讀
     const messagesRef = collection(firestore, "messages");
     const q = query(
       messagesRef,
@@ -429,7 +406,6 @@ const ChatRoomWindow = ({ onCloseRoom }: ChatRoomWindowProps) => {
       await updateDoc(doc.ref, { isRead: true });
     });
 
-    // 載入與選擇的用戶的對話
     const q2 = query(
       messagesRef,
       where("chatSessionId", "in", [
@@ -471,7 +447,6 @@ const ChatRoomWindow = ({ onCloseRoom }: ChatRoomWindowProps) => {
           </svg>
         </button>
         <div className="flex w-full flex-shrink-0 flex-grow-0 flex-col bg-white pr-2 lg:w-64">
-          {/* 聊天室窗標題 */}
           <ChatRoomTitle />
           <div className="flex w-full items-center justify-center rounded-md border border-gray-200 bg-[#B3D7FF] px-4 py-1">
             <div className="h-20 w-20 overflow-hidden rounded-full border">
@@ -549,7 +524,6 @@ const ChatRoomWindow = ({ onCloseRoom }: ChatRoomWindowProps) => {
               >
                 <div className="flex h-8 w-8 items-center justify-center rounded-full bg-[#B3D7FF]">
                   {user.name ? user.name.charAt(0).toLocaleUpperCase() : ""}{" "}
-                  {/* 檢查 user.name 是否存在 */}
                 </div>
                 <div className="ml-2 text-sm font-semibold">{user.name}</div>
                 {user.unreadCount! > 0 && (
@@ -563,19 +537,17 @@ const ChatRoomWindow = ({ onCloseRoom }: ChatRoomWindowProps) => {
             ))}
           </div>
         </div>
-        {/* 聊天視窗主體 */}
         <div className="flex h-full flex-auto flex-col overflow-y-auto ">
           {selectedUserId && (
             <div className="flex h-full flex-auto flex-shrink-0 flex-col justify-between break-words rounded-md bg-gray-100 p-0 md:p-4">
               <div className="h-full overflow-auto">
-                {/* 訊息列表 */}
                 <div className="mb-10 flex flex-grow flex-col items-center justify-between ">
                   <div className="mb-10 font-black text-[#368DCF] md:text-2xl">
                     {`You are contacting to ${selectedUserName} ...`}
                   </div>
                   {messages
-                    .filter((msg) => msg.content) // 過濾空白的訊息
-                    .sort((a, b) => getTimestamp(a) - getTimestamp(b)) // 照時間排序
+                    .filter((msg) => msg.content)
+                    .sort((a, b) => getTimestamp(a) - getTimestamp(b))
                     .map((message, index) => {
                       const isCurrentUserMessage =
                         message.sentBy === currentUser?.id;
@@ -650,7 +622,6 @@ const ChatRoomWindow = ({ onCloseRoom }: ChatRoomWindowProps) => {
                         />
                       </div>
                     )}
-                    {/* emoji icon button */}
                     <button
                       title="來點表情符號吧~"
                       onClick={() => setShowPicker(!showPicker)}

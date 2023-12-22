@@ -10,7 +10,7 @@ interface InteractiveBlockProps {
 
 const InteractiveBlock: React.FC<InteractiveBlockProps> = ({
   bgColor,
-  transformClass, // 接收 transformStyle prop
+  transformClass,
   content,
   userId,
   onSendMessageClick,

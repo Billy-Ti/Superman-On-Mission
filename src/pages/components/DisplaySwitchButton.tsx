@@ -1,6 +1,6 @@
 interface DisplaySwitchButtonProps {
   onToggleUrgent: (event: React.ChangeEvent<HTMLInputElement>) => void;
-  buttonText: string; // 傳一個新的 prop 來自定義文字
+  buttonText: string;
   className: string;
 }
 

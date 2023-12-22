@@ -1,5 +1,4 @@
 import { Icon } from "@iconify/react";
-// 重用 ServiceType 元件
 interface ServiceTypeSelectorProps {
   serviceType: string[];
   selectedIndexes: number[];
@@ -23,7 +22,7 @@ const ServiceTypeSelector: React.FC<ServiceTypeSelectorProps> = ({
           }`}
           onClick={() => handleServiceTypeClick(index)}
         >
-          {getIcon(index)} {/* 使用對應的 SVG 圖標 */}
+          {getIcon(index)}
           {item}
         </div>
       ))}
@@ -60,7 +59,7 @@ const getIcon = (index: number) => {
     case 8:
       return <Icon icon="mingcute:more-3-fill" width="40" height="40" />;
     default:
-      return <Icon icon="subway:redo-icon" width="40" height="40" />; // 若無圖標顯示
+      return <Icon icon="subway:redo-icon" width="40" height="40" />;
   }
 };
 

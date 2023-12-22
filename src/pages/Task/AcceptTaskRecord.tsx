@@ -44,7 +44,7 @@ const AcceptTaskRecord = () => {
       }
       const q = query(
         collection(db, "tasks"),
-        where("acceptedBy", "==", currentUser.uid), // 只獲取由當前用戶接受的任務
+        where("acceptedBy", "==", currentUser.uid),
       );
       const querySnapshot = await getDocs(q);
       const fetchedTasks: Task[] = querySnapshot.docs

@@ -22,7 +22,6 @@ const Carousel = () => {
     const fetchTasks = async () => {
       const firestore = getFirestore();
       const tasksCol = collection(firestore, "tasks");
-      // 添加過濾條件
       const q = query(tasksCol, where("status", "==", "任務媒合中"));
       const taskSnapshot = await getDocs(q);
       const tasksList: Task[] = taskSnapshot.docs.map((doc) => ({
@@ -34,24 +33,23 @@ const Carousel = () => {
     fetchTasks();
   }, []);
 
-  // 只顯示前 6 個任務的 dots，若低於 6 個任務則 dots 不顯示
   const showDots = true;
   const visibleTasks = tasks.slice(0, 6);
-  // Slider 的設定
+  // Slider setting
   const CarouselSetting = {
     dots: showDots,
     infinite: true,
     speed: 500,
-    slidesToShow: 5, // 一次要顯示幾張圖片
-    slidesToScroll: 1, // 一次滑動要滑動幾張圖片
-    autoplay: true, // 自動播放
-    autoplaySpeed: 2000, // 自動播放的速率 (毫秒)
-    cssEase: "linear", // css 動畫執行過程的速率，不間斷
-    centerMode: true, // 代表點完 " 點點" 後圖片會出現在正中間，這會使左右兩側看到其餘一半的圖片
-    dotsClass: "slick-dots slick-thumb", // 原本被選中的 "點點" class 叫做 slick-dots，因要設定 "點點" 樣式，怕 class 衝突，所以多加一個自定義的 class 名稱
+    slidesToShow: 5,
+    slidesToScroll: 1,
+    autoplay: true,
+    autoplaySpeed: 2000,
+    cssEase: "linear",
+    centerMode: true,
+    dotsClass: "slick-dots slick-thumb",
     responsive: [
       {
-        breakpoint: 1280, // 當斷點到 1024，一次顯示 3 張圖片，一次滑動 3 張
+        breakpoint: 1280,
         settings: {
           slidesToShow: 3,
           slidesToScroll: 3,
@@ -81,10 +79,8 @@ const Carousel = () => {
     ],
 
     customPaging: (i: number) => {
-      // 只為前 10 個任務創建 dots
       if (visibleTasks.length > i) {
         const task = visibleTasks[i];
-        // 檢查 task.photos 是否存在且有元素
         if (task.photos && task.photos.length > 0) {
           return (
             <a href="#">
@@ -93,7 +89,6 @@ const Carousel = () => {
           );
         }
       }
-      // 當沒有圖片時顯示預設 icon
       return <Icon icon="bxs:image-alt" className="text-6xl text-gray-600" />;
     },
   };
@@ -122,14 +117,12 @@ const Carousel = () => {
                 key={index}
                 className="flex flex-col items-center justify-center p-2"
               >
-                {/* 標題容器 */}
                 <div className="mb-2 h-14 text-center">
                   <h3 className="line-clamp-1 rounded-md bg-[#B3D7FF] p-1 text-lg font-semibold">
                     {task.title}
                   </h3>
                 </div>
 
-                {/* 圖片容器 */}
                 <div className="min-h-[225px]">
                   {task.photos && task.photos.length > 0 ? (
                     <div className="mb-4 text-center">
