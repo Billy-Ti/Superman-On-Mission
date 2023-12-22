@@ -46,7 +46,7 @@ const HomePainPoints = () => {
                   </p>
                 </div>
                 <div className="mb-10 flex justify-center md:w-1/2">
-                  <img src="/pain_point_1.png" alt="pain-point-1" />
+                  <img src="/home_pain_point_1.png" alt="pain-point-1" />
                 </div>
               </div>
               <div className="mb-5 flex flex-wrap items-center justify-center md:mb-6">
@@ -59,7 +59,7 @@ const HomePainPoints = () => {
                   </p>
                 </div>
                 <div className="mb-10 flex justify-center md:w-1/2">
-                  <img src="/pain_point_2.png" alt="pain_point_2.png" />
+                  <img src="/home_pain_point_2.png" alt="pain_point_2.png" />
                 </div>
               </div>
 
@@ -73,7 +73,7 @@ const HomePainPoints = () => {
                   </p>
                 </div>
                 <div className="mb-10 flex justify-center md:w-1/2">
-                  <img src="/pain_point_3.png" alt="pain-point-3" />
+                  <img src="/home_pain_point_3.png" alt="pain-point-3" />
                 </div>
               </div>
             </div>

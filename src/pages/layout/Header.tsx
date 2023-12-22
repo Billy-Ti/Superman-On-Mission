@@ -274,7 +274,7 @@ const Header = () => {
               <img
                 className="hidden sm:block"
                 width="70"
-                src="/superman_logo.png"
+                src="/header_superman_logo.png"
                 alt="superman-logo"
               />
               <p className="mr-1 italic">SuperTask co.</p>
