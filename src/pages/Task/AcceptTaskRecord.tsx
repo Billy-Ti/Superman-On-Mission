@@ -32,7 +32,7 @@ const AcceptTaskRecord = () => {
   );
 
   const handleViewTaskDetails = (taskId: string) => {
-    navigate(`/acceptTaskDetail/${taskId}`); // 導航到任務詳情頁面
+    navigate(`/acceptTaskDetail/${taskId}`);
   };
   useEffect(() => {
     const fetchTasks = async () => {

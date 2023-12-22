@@ -5,7 +5,6 @@ import TransitionPage from "./components/TransitionPage.tsx";
 import ChatRoomButton from "./components/chatRoom/ChatRoomButton.tsx";
 import { AuthProvider } from "./hooks/AuthProvider.tsx";
 import Profile from "./pages/Admin/Profile.tsx";
-import Admin from "./pages/Admin/index.tsx";
 import Home from "./pages/Home/index.tsx";
 import ReviewLists from "./pages/Review/index.tsx";
 import AcceptTask from "./pages/Task/AcceptTask.tsx";
@@ -50,7 +49,6 @@ const App = () => {
               element={<AcceptTaskDetail />}
             />
             <Route path="/reviewLists" element={<ReviewLists />} />
-            <Route path="/admin" element={<Admin />} />
             <Route
               path="/profile"
               element={

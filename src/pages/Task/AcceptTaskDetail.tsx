@@ -115,15 +115,15 @@ const AcceptTaskDetail = () => {
   ) => {
     const file = event.target.files && event.target.files[0];
     if (file) {
-      // 判断是否为图片格式（.png / .jpg / .jpeg）
+      // 判斷檔案是否為圖片格式（.png / .jpg / .jpeg）
       if (file.type.match(/image\/(png|jpg|jpeg)/)) {
-        // 判断文件大小是否小于等于5MB
+        // 判斷文件大小是否 <= 5MB
         if (file.size <= 5 * 1024 * 1024) {
-          // 更新图片文件
+          // 更新圖片文件
           const updatedImageFiles = [...imageFiles];
           updatedImageFiles[index] = file;
           setImageFiles(updatedImageFiles);
-          // 生成 Base64 预览
+          // 生成 Base64 預覽
           const reader = new FileReader();
           reader.onload = (e: ProgressEvent<FileReader>) => {
             const result = e.target?.result;
@@ -180,11 +180,9 @@ const AcceptTaskDetail = () => {
         if (userSnap.exists()) {
           setPosterName(userSnap.data().name);
         } else {
-          console.log("No such user!");
           setPosterName("未知用戶");
         }
       } else {
-        console.log("No such task!");
         setTaskDetails(null);
       }
     } catch (error) {
@@ -243,7 +241,6 @@ const AcceptTaskDetail = () => {
         try {
           setLoading(true);
           const imageUrls = await uploadImages();
-          // 确保 imageUrls 不包含 null 值
           const filteredImageUrls = imageUrls.filter(
             (url) => url !== null,
           ) as string[];
@@ -322,7 +319,6 @@ const AcceptTaskDetail = () => {
             setShowOverlay(false);
           }
         } else {
-          console.log("No such task!");
           setTaskDetails(null);
         }
       } catch (error) {

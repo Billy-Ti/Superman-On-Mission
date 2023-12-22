@@ -23,7 +23,7 @@ const db = getFirestore(app);
 const database = getDatabase(app); // 初始化 Realtime Database
 const storage = getStorage(app);
 
-export { auth, database, db, storage }; // 导出所有服务
+export { auth, database, db, storage }; 
 
 // 請求通知權限並獲取令牌
 // function requestPermission() {

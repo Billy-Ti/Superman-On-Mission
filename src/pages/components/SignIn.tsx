@@ -81,6 +81,7 @@ const SignIn = () => {
       console.error("登入錯誤：", error);
     }
   };
+  
   // 阻擋來自輸入網址強行進入 endpoint "/signIn" 的使用者
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (user) => {
