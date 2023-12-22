@@ -32,7 +32,7 @@ const AcceptTaskRecord = () => {
   );
 
   const handleViewTaskDetails = (taskId: string) => {
-    navigate(`/acceptTaskDetail/${taskId}`); // 導航到任務詳情頁面
+    navigate(`/acceptTaskDetail/${taskId}`);
   };
   useEffect(() => {
     const fetchTasks = async () => {
@@ -65,12 +65,12 @@ const AcceptTaskRecord = () => {
         paginate={jumpToPage}
         currentPage={currentPage}
       />
-      <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
+      <div className="grid grid-cols-1 gap-6 overflow-visible md:grid-cols-2 lg:grid-cols-3">
         {currentData().length > 0 ? (
           currentData().map((task) => (
             <div
               key={task.id}
-              className="relative flex flex-col rounded-md border-2 border-gray-200 bg-white p-4 shadow-xl transition-all duration-300 ease-in-out hover:shadow-2xl"
+              className="relative flex flex-col rounded-md border-2 border-gray-200 bg-white p-4 shadow-xl transition-all duration-300 ease-in-out hover:z-50 hover:scale-105 hover:shadow-2xl"
             >
               <div className="flex flex-1 flex-col space-y-4  lg:justify-between lg:space-y-0">
                 <div className="overflow-hidden">

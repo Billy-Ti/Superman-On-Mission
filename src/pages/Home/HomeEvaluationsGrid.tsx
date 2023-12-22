@@ -3,6 +3,7 @@ import React, { useEffect, useState } from "react";
 import { db } from "../../config/firebase";
 import HomeEvaluationCard from "./HomeEvaluationCard";
 import { Evaluation, ReviewData, UserInfo } from "./types";
+
 const fetchUsersInfoByIds = async (userIds: string[]): Promise<UserInfo[]> => {
   const usersCollectionRef = collection(db, "users");
   const users: UserInfo[] = [];
@@ -55,11 +56,11 @@ const EvaluationsGrid: React.FC = () => {
   useEffect(() => {
     const fetchData = async () => {
       const reviews = await fetchTopReviews();
-      const userIds = reviews.map((review) => review.userId); // 假设每个评论都有 userId
+      const userIds = reviews.map((review) => review.userId);
       const userInfo = await fetchUsersInfoByIds(userIds);
 
       const combinedEvaluations = reviews.map((review, index) => {
-        const user = userInfo.find((u) => u.id === review.userId); // 假设 UserInfo 有 id 字段
+        const user = userInfo.find((u) => u.id === review.userId);
         return {
           id: `eval-${index}`,
           reviewerName: user ? user.name : "未知用戶",
@@ -80,7 +81,7 @@ const EvaluationsGrid: React.FC = () => {
         {evaluations.map((evaluation, index) => (
           <div
             key={evaluation.id}
-            className="mb-4 h-full min-h-[200px] w-full break-inside-avoid" // 確保卡片填滿高度
+            className="mb-4 h-full min-h-[200px] w-full break-inside-avoid"
           >
             <HomeEvaluationCard
               evaluation={evaluation}

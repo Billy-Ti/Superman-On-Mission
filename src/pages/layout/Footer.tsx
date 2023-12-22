@@ -1,5 +1,5 @@
 import { Link } from "react-router-dom";
-import HomeEndingButton from "../../pages/Home/HomeEndingButton";
+import HomeEndingButton from "../Home/HomeEndingButton";
 
 const Footer: React.FC = () => {
   return (

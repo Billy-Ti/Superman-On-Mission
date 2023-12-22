@@ -3,12 +3,12 @@ import { collection, getDocs, orderBy, query, where } from "firebase/firestore";
 import { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import Pagination from "../../components/Pagination";
-import Footer from "../../components/layout/Footer";
-import Header from "../../components/layout/Header";
 import { db } from "../../config/firebase";
 import Carousel from "../components/Carousel";
 import DisplaySwitchButton from "../components/DisplaySwitchButton";
 import ServiceTypeSelector from "../components/ServiceTypeSelectorProps";
+import Footer from "../layout/Footer";
+import Header from "../layout/Header";
 import RegionFilter from "./RegionFilter";
 
 interface Task {
@@ -226,12 +226,12 @@ const AcceptTask = () => {
               </p>
             </div>
           ) : (
-            <div className="mb-4 grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3">
+            <div className="mb-4 grid grid-cols-1 gap-4 overflow-visible md:grid-cols-2 lg:grid-cols-3">
               {currentTasks.map((task) => (
                 <>
                   <div
                     key={task.id}
-                    className="border-gradient relative flex grow flex-col rounded-md border-2 border-gray-200 bg-white p-4 shadow-xl transition-all duration-300 ease-in-out hover:shadow-2xl"
+                    className="border-gradient relative flex grow flex-col rounded-md border-2 border-gray-200 bg-white p-4 shadow-xl transition-all duration-300 ease-in-out hover:z-50 hover:scale-105 hover:shadow-2xl"
                   >
                     <div className="flex grow flex-col items-start gap-2">
                       <div className="flex h-64 w-full items-center justify-center overflow-hidden rounded-md border-2 border-gray-300">

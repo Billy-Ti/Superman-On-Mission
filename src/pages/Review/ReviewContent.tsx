@@ -27,7 +27,7 @@ interface Review {
 const ReviewContent = () => {
   const [reviews, setReviews] = useState<Review[]>([]);
   const [showReviews, setShowReviews] = useState<boolean>(false);
-  const [reviewsPerPage] = useState(6); // 每頁顯示6條評價
+  const [reviewsPerPage] = useState(6); // 每頁顯示 6 條評價
   const [currentPage, setCurrentPage] = useState(1);
   const [isLoading, setIsLoading] = useState(false);
 
@@ -59,7 +59,7 @@ const ReviewContent = () => {
       const userDocRef = doc(db, "users", reviewData.ratedBy);
       const userDoc = await getDoc(userDocRef);
       const userData = userDoc.data();
-      // 获取被评价用户的文档引用和数据
+
       const reviewedUserDocRef = doc(db, "users", reviewData.ratedUser);
       const reviewedUserDoc = await getDoc(reviewedUserDocRef);
       const reviewedUserData = reviewedUserDoc.data();
@@ -71,7 +71,7 @@ const ReviewContent = () => {
         userName: userData?.name || "Unknown User",
         status: taskData?.status || "Unknown Status",
         reviewTaskId: reviewData.reviewTaskId,
-        reviewedUserName: reviewedUserData?.name || "Unknown User", // 添加被评价用户的名称
+        reviewedUserName: reviewedUserData?.name || "Unknown User",
       });
     }
     setReviews(loadedReviews);
@@ -82,7 +82,6 @@ const ReviewContent = () => {
   const indexOfLastReview = currentPage * reviewsPerPage;
   const indexOfFirstReview = indexOfLastReview - reviewsPerPage;
   const currentReviews = reviews.slice(indexOfFirstReview, indexOfLastReview);
-  console.log(currentReviews.length); // 檢查當前顯示的評價數量是否為 6
   // 更改頁碼
   const paginate = (pageNumber: number) => setCurrentPage(pageNumber);
 

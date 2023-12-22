@@ -14,7 +14,7 @@ interface User {
 }
 const HomeTaskHeroCard: React.FC = () => {
   const [users, setUsers] = useState<User[]>([]);
-  
+
   useEffect(() => {
     const fetchData = async () => {
       const db = getFirestore();
@@ -28,7 +28,7 @@ const HomeTaskHeroCard: React.FC = () => {
     };
     fetchData();
   }, []);
-  
+
   console.log(users);
 
   return (
@@ -47,42 +47,6 @@ const HomeTaskHeroCard: React.FC = () => {
           <div className="mx-auto mb-10 h-[10px] w-4/5 bg-[#2B79B4]"></div>
         </div>
       </div>
-      {/* <div className="relative mb-20 select-none">
-        <div className="container relative mx-[auto] my-[0] h-[200px] w-[250px] [perspective:1000px]">
-          <div
-            className="carousel absolute h-full w-full [transform-style:preserve-3d] [transition:transform_1s]"
-            style={{
-              transform: `rotateY(${currdeg}deg)`,
-            }}
-          >
-            {renderBlocks()}
-          </div>
-        </div>
-        <button
-          type="button"
-          className="next absolute right-[20px] top-[-90px] mx-auto bg-transparent sm:bottom-0 sm:right-[10%] sm:top-0"
-          onClick={() => rotate("next")}
-        >
-          <Icon
-            icon="icon-park-outline:right-c"
-            color="#2B79B4"
-            width="30"
-            height="30"
-          />
-        </button>
-        <button
-          type="button"
-          className="next absolute left-[20px] top-[-90px] mx-auto bg-transparent sm:bottom-0 sm:left-[10%] sm:top-0"
-          onClick={() => rotate("prev")}
-        >
-          <Icon
-            icon="icon-park-outline:left-c"
-            color="#2B79B4"
-            width="30"
-            height="30"
-          />
-        </button>
-      </div> */}
     </div>
   );
 };

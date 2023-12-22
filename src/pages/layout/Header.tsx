@@ -17,7 +17,6 @@ import { Link, useNavigate } from "react-router-dom";
 import Swal from "sweetalert2";
 import { db } from "../../config/firebase";
 import { useAuth } from "../../hooks/AuthProvider";
-// import Marquee from "../animate/Marquee";
 
 interface Notification {
   acceptorName: string;

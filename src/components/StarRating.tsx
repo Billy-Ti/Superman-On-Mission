@@ -45,7 +45,7 @@ const StarRating: React.FC<StarRatingProps> = ({
         ratedComment: comment, // 發案者評論
       };
 
-      let userRef; // 使用 let 宣告變數
+      let userRef;
 
       Swal.fire({
         title: "提交評價",
@@ -99,7 +99,7 @@ const StarRating: React.FC<StarRatingProps> = ({
               await updateDoc(userRef, { superCoins: newCoinBalance });
             }
 
-            // 更新任務狀態（如果需要）
+            // 更新任務狀態
             await updateDoc(taskRef, { status: "已完成" });
 
             // 在這裡執行導航到"/"頁面的操作

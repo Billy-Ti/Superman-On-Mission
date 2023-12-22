@@ -18,12 +18,12 @@ import { useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import Swal from "sweetalert2";
 import { v4 as uuidv4 } from "uuid";
-import Footer from "../../components/layout/Footer";
-import Header from "../../components/layout/Header";
 import { app, auth } from "../../config/firebase"; // 導入初始化的 Firebase app
 import { showAlert } from "../../utils/showAlert";
 import ServiceType, { ServiceTypeRef } from "../components/ServiceType";
 import countyToRegion from "../components/TaiwanRegion";
+import Footer from "../layout/Footer";
+import Header from "../layout/Header";
 
 const db = getFirestore(app);
 // 使用Firebase App實例獲取Storage的參考

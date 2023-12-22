@@ -18,8 +18,6 @@ interface Task {
 }
 const Carousel = () => {
   const [tasks, setTasks] = useState<Task[]>([]);
-
-  // 只篩選任務狀態為"任務媒合中"的任務才顯示
   useEffect(() => {
     const fetchTasks = async () => {
       const firestore = getFirestore();
@@ -36,7 +34,7 @@ const Carousel = () => {
     fetchTasks();
   }, []);
 
-  // 只顯示前 6 個任務的 dots
+  // 只顯示前 6 個任務的 dots，若低於 6 個任務則 dots 不顯示
   const showDots = true;
   const visibleTasks = tasks.slice(0, 6);
   // Slider 的設定

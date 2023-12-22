@@ -9,7 +9,6 @@ const SideBar = () => {
   };
   return (
     <div className="fixed border-none bg-[#B3D7FF] md:block md:h-screen">
-      {/* Items */}
       <div className="fixed bottom-0 left-0 flex w-full items-center justify-around border-none bg-[#B3D7FF] md:relative md:h-screen md:flex-col md:justify-start  md:gap-10 lg:space-y-0">
         <Link
           to="/"
@@ -17,7 +16,6 @@ const SideBar = () => {
         >
           <p className="pl-4 pr-1 pt-3 italic text-[#3178C6]">SuperTask co.</p>
         </Link>
-        {/* Inicio */}
         <Link
           to="/profile"
           className={`relative flex w-full items-center justify-center rounded-md px-4 py-3 text-lg transition duration-300 ease-in-out md:space-x-1 ${

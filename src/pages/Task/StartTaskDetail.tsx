@@ -15,9 +15,9 @@ import { useParams } from "react-router-dom";
 import Swal from "sweetalert2";
 import LoadingSpinner from "../../components/LoadingSpinner";
 import StarRating from "../../components/StarRating";
-import Footer from "../../components/layout/Footer";
-import Header from "../../components/layout/Header";
 import { db } from "../../config/firebase";
+import Footer from "../layout/Footer";
+import Header from "../layout/Header";
 
 // 使用 Task interface 替代原來的 TaskData
 interface Task {
@@ -452,7 +452,7 @@ const StartTaskDetail = () => {
           {/* 左邊區塊結束 */}
 
           {/* 右邊區塊開始 */}
-          <div className="grid grid-cols-1 mb-10 gap-4 rounded-md bg-[#B3D7FF] p-4 md:grid-cols-2 lg:w-2/3">
+          <div className="mb-10 grid grid-cols-1 gap-4 rounded-md bg-[#B3D7FF] p-4 md:grid-cols-2 lg:w-2/3">
             {/* 以下是六個欄位，根據屏幕大小分為一列或兩列 */}
             <div className="rounded-md bg-white p-4">
               {/* 任務名稱 */}
