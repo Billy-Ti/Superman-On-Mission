@@ -169,6 +169,8 @@ const StarRating: React.FC<StarRatingProps> = ({
                 height={32}
                 viewBox="0 0 32 32"
                 aria-hidden="true"
+                role="img"
+                aria-label="評價星等icon"
               >
                 <ellipse
                   className="rating__star-shadow"
@@ -193,6 +195,8 @@ const StarRating: React.FC<StarRatingProps> = ({
                 height={32}
                 viewBox="0 0 32 32"
                 aria-hidden="true"
+                role="img"
+                aria-label="評價星等icon"
               >
                 <ellipse
                   className="rating__star-shadow"
@@ -217,6 +221,8 @@ const StarRating: React.FC<StarRatingProps> = ({
                 height={32}
                 viewBox="0 0 32 32"
                 aria-hidden="true"
+                role="img"
+                aria-label="評價星等icon"
               >
                 <ellipse
                   className="rating__star-shadow"
@@ -241,6 +247,8 @@ const StarRating: React.FC<StarRatingProps> = ({
                 height={32}
                 viewBox="0 0 32 32"
                 aria-hidden="true"
+                role="img"
+                aria-label="評價星等icon"
               >
                 <ellipse
                   className="rating__star-shadow"
@@ -265,6 +273,8 @@ const StarRating: React.FC<StarRatingProps> = ({
                 height={32}
                 viewBox="0 0 32 32"
                 aria-hidden="true"
+                role="img"
+                aria-label="評價星等icon"
               >
                 <ellipse
                   className="rating__star-shadow"

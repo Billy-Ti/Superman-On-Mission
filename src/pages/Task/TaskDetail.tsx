@@ -15,7 +15,7 @@ import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import Swal from "sweetalert2";
 import LoadingSpinner from "../../components/LoadingSpinner";
-import ChatRoomWindow from "../../components/chatRoom/ChatRoomWindow";
+import ChatRoomWindow from "../../components/chatRoom";
 import { db } from "../../config/firebase";
 import Footer from "../layout/Footer";
 import Header from "../layout/Header";
@@ -257,6 +257,7 @@ const TaskDetail = () => {
             </div>
             <div className="my-auto mb-6 ml-auto">
               <button
+                type="button"
                 onClick={handleAskDetails}
                 className="flex items-center rounded-md bg-[#368DCF] p-2 text-lg font-medium tracking-wider text-white transition duration-500 ease-in-out hover:bg-[#2b79b4]"
               >
@@ -378,6 +379,7 @@ const TaskDetail = () => {
                     alt="Enlarged task photo"
                   />
                   <button
+                    type="button"
                     className="absolute bottom-24 left-1/2 flex h-10 w-10 -translate-x-1/2 transform items-center justify-center rounded-full p-2 text-black"
                     onClick={() => setIsModalOpen(false)}
                   >
@@ -387,6 +389,8 @@ const TaskDetail = () => {
                         className="h-5 w-5"
                         viewBox="0 0 20 20"
                         fill="currentColor"
+                        role="img"
+                        aria-label="關閉icon"
                       >
                         <path
                           fillRule="evenodd"
@@ -403,6 +407,7 @@ const TaskDetail = () => {
         </div>
         <div className="flex justify-center gap-4">
           <button
+            type="button"
             onClick={handleConfirmAcceptTask}
             className="flex items-center rounded-md bg-[#368DCF] p-2 text-lg font-medium tracking-wider text-white transition duration-500 ease-in-out hover:bg-[#2b79b4]"
           >

@@ -537,6 +537,7 @@ const StartTaskDetail = () => {
                     alt="Enlarged task photo"
                   />
                   <button
+                    type="button"
                     className="absolute bottom-3 left-1/2 flex h-10 w-10 -translate-x-1/2 transform items-center justify-center rounded-full p-2 text-black"
                     onClick={() => setIsModalOpen(false)}
                   >
@@ -546,6 +547,8 @@ const StartTaskDetail = () => {
                         className="h-5 w-5"
                         viewBox="0 0 20 20"
                         fill="currentColor"
+                        role="img"
+                        aria-label="關閉icon"
                       >
                         <path
                           fillRule="evenodd"

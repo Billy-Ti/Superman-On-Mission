@@ -15,7 +15,6 @@ import { showAlert } from "../../utils/showAlert";
 import Footer from "../layout/Footer";
 import Header from "../layout/Header";
 import SideBar from "./SideBar";
-
 const Profile = () => {
   const [profilePic, setProfilePic] = useState(
     "https://cdn-icons-png.flaticon.com/512/149/149071.png",
@@ -27,7 +26,6 @@ const Profile = () => {
   const [superCoins, setSuperCoins] = useState(0);
   const [averageRating, setAverageRating] = useState(0);
   const [isLoading, setIsLoading] = useState(false);
-
   const auth = getAuth();
   const navigate = useNavigate();
   const storage = getStorage();
@@ -90,7 +88,6 @@ const Profile = () => {
     };
     fetchUserData();
   }, [auth]);
-
   useEffect(() => {
     if (!auth.currentUser) {
       Swal.fire({
@@ -106,41 +103,33 @@ const Profile = () => {
       });
     }
   }, [auth, navigate]);
-
   const handleImageUpload = async (
     event: React.ChangeEvent<HTMLInputElement>,
   ) => {
     const file = event.target.files?.[0];
-    if (!file || !auth.currentUser) return;
-
     const validFormats = ["image/png", "image/jpg", "image/jpeg"];
+    const maxAllowedSize = 5 * 1024 * 1024;
+    if (!file || !auth.currentUser) return;
     if (!validFormats.includes(file.type)) {
       showAlert("錯誤", "只能上傳圖片格式（.png / .jpg / .jpeg）", "error");
       return;
     }
-
-    const maxAllowedSize = 5 * 1024 * 1024; // 5MB
     if (file.size > maxAllowedSize) {
       showAlert("錯誤", "圖片大小不能超過 5 MB", "error");
       return;
     }
-
     const localImageUrl = URL.createObjectURL(file);
     setProfilePic(localImageUrl);
-
     setIsLoading(true);
-
     const fileRef = storageRef(
       storage,
       `profilePics/${auth.currentUser.uid}/${file.name}`,
     );
     await uploadBytes(fileRef, file);
     const newProfilePicUrl = await getDownloadURL(fileRef);
-
     await updateDoc(doc(db, "users", auth.currentUser.uid), {
       profilePicUrl: newProfilePicUrl,
     });
-
     setProfilePic(newProfilePicUrl);
     setIsLoading(false);
   };

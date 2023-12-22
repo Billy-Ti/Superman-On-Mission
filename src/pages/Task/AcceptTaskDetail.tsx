@@ -14,7 +14,7 @@ import { getDownloadURL, ref, uploadBytes } from "firebase/storage";
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import Swal from "sweetalert2";
-import ChatRoomWindow from "../../components/chatRoom/ChatRoomWindow";
+import ChatRoomWindow from "../../components/chatRoom";
 import { db, storage } from "../../config/firebase";
 import { showAlert } from "../../utils/showAlert";
 import Footer from "../layout/Footer";
@@ -389,6 +389,7 @@ const AcceptTaskDetail = () => {
             </div>
             <div className="my-auto mb-6 ml-auto">
               <button
+                type="button"
                 onClick={handleAskDetails}
                 className="flex items-center justify-center rounded-md bg-[#368DCF] px-4 py-2 text-lg font-medium text-white transition duration-500 ease-in-out hover:bg-[#2b79b4]"
               >
@@ -511,6 +512,7 @@ const AcceptTaskDetail = () => {
                     alt="Enlarged task photo"
                   />
                   <button
+                    type="button"
                     className="absolute bottom-3 left-1/2 flex h-10 w-10 -translate-x-1/2 transform items-center justify-center rounded-full p-2 text-black"
                     onClick={() => setIsModalOpen(false)}
                   >
@@ -520,6 +522,8 @@ const AcceptTaskDetail = () => {
                         className="h-5 w-5"
                         viewBox="0 0 20 20"
                         fill="currentColor"
+                        role="img"
+                        aria-label="關閉icon"
                       >
                         <path
                           fillRule="evenodd"

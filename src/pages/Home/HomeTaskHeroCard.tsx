@@ -1,36 +1,6 @@
 import { Icon } from "@iconify/react";
-import {
-  collection,
-  getDocs,
-  getFirestore,
-  query,
-  where,
-} from "firebase/firestore";
-import { useEffect, useState } from "react";
-interface User {
-  name: string;
-  averageRating: number;
-  profilePicUrl: string;
-}
+
 const HomeTaskHeroCard: React.FC = () => {
-  const [users, setUsers] = useState<User[]>([]);
-
-  useEffect(() => {
-    const fetchData = async () => {
-      const db = getFirestore();
-      const q = query(collection(db, "users"), where("averageRating", ">=", 4));
-      const querySnapshot = await getDocs(q);
-      const fetchedUsers: User[] = [];
-      querySnapshot.forEach((doc) => {
-        fetchedUsers.push(doc.data() as User);
-      });
-      setUsers(fetchedUsers);
-    };
-    fetchData();
-  }, []);
-
-  console.log(users);
-
   return (
     <div className="container mx-auto max-w-[1280px] px-4 py-10 md:px-20 md:pb-0 md:pt-20">
       <div className="px-4 text-center md:px-0">

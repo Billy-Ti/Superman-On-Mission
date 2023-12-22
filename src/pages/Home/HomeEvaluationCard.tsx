@@ -40,7 +40,6 @@ const HomeEvaluationCard: React.FC<HomeEvaluationCardProps> = ({
         }
       }
     };
-
     window.addEventListener("scroll", checkIfInView);
     checkIfInView();
     return () => window.removeEventListener("scroll", checkIfInView);

@@ -309,6 +309,7 @@ const Header = () => {
                       onClick={toggleDropdown}
                     />
                     <button
+                      type="button"
                       onClick={handleShowNotifications}
                       className="relative"
                     >
@@ -374,7 +375,7 @@ const Header = () => {
                 </div>
 
                 <div className="ml-2 lg:hidden">
-                  <button onClick={toggleMenu}>
+                  <button type="button" onClick={toggleMenu}>
                     <Icon
                       icon="heroicons:bars-3-bottom-right-solid"
                       color="#2B79B4"
@@ -415,8 +416,8 @@ const Header = () => {
             </li>
             <li className="w-full ">
               <button
-                onClick={handleSignIn}
                 type="button"
+                onClick={handleSignIn}
                 className="w-full rounded-md p-5 text-lg font-bold text-[#3178C6] hover:bg-[#368DCF] hover:text-white"
               >
                 {currentUser ? "會員中心" : "Login"}

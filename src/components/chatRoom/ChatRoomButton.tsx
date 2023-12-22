@@ -8,11 +8,11 @@ import {
   where,
 } from "firebase/firestore";
 import { useEffect, useState } from "react";
-import ChatRoomWindow from "./ChatRoomWindow";
+import ChatRoomWindow from "./index";
 
 const ChatRoomButton = () => {
-  const [isChatOpen, setIsChatOpen] = useState(false);
-  const [newMessageCount, setNewMessageCount] = useState(0);
+  const [isChatOpen, setIsChatOpen] = useState<boolean>(false);
+  const [newMessageCount, setNewMessageCount] = useState<number>(0);
   const auth = getAuth();
 
   useEffect(() => {

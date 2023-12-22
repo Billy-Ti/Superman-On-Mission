@@ -75,7 +75,7 @@ const SignIn = () => {
       console.error("登入錯誤：", error);
     }
   };
-  
+
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (user) => {
       if (user) {
@@ -123,7 +123,10 @@ const SignIn = () => {
                 placeholder="Password"
                 onChange={(e) => setPassword(e.target.value)}
               />
-              <button className="mt-[22px] rounded-md border-[1px] border-[#A7B4FC] border-[solid] bg-[#A7B4FC] px-[45px] py-3 text-[12px] font-bold uppercase tracking-[1px] text-[#FFFFFF] [transition:transform_80ms_ease-in] focus:outline-[none] active:scale-[0.95]">
+              <button
+                type="button"
+                className="mt-[22px] rounded-md border-[1px] border-[#A7B4FC] border-[solid] bg-[#A7B4FC] px-[45px] py-3 text-[12px] font-bold uppercase tracking-[1px] text-[#FFFFFF] [transition:transform_80ms_ease-in] focus:outline-[none] active:scale-[0.95]"
+              >
                 Sign Up
               </button>
             </form>
@@ -148,7 +151,10 @@ const SignIn = () => {
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
               />
-              <button className="mt-[15px] rounded-md border-[1px] border-[#A7B4FC] border-[solid] bg-[#A7B4FC] px-[45px] py-3 text-[12px] font-bold uppercase tracking-[1px] text-[#FFFFFF] [transition:transform_80ms_ease-in] focus:outline-[none] active:scale-[0.95]">
+              <button
+                type="button"
+                className="mt-[15px] rounded-md border-[1px] border-[#A7B4FC] border-[solid] bg-[#A7B4FC] px-[45px] py-3 text-[12px] font-bold uppercase tracking-[1px] text-[#FFFFFF] [transition:transform_80ms_ease-in] focus:outline-[none] active:scale-[0.95]"
+              >
                 Sign In
               </button>
             </form>
@@ -174,6 +180,7 @@ const SignIn = () => {
                   Enter your personal details and start journey with us
                 </p>
                 <button
+                  type="button"
                   className="ghost rounded-md border-[1px] border-[#A7B4FC] border-[solid] bg-[#A7B4FC] px-[45px] py-3 text-[12px] font-bold uppercase tracking-[1px] text-[#FFFFFF] [transition:transform_80ms_ease-in] focus:outline-[none] active:scale-[0.95] "
                   id="signUp"
                   onClick={handleSignUpClick}

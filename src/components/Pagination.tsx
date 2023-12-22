@@ -49,14 +49,16 @@ const Pagination: React.FC<PaginationProps> = ({
   return (
     <div className={`mb-4 flex justify-center lg:justify-end ${className}`}>
       <nav className="flex space-x-2" aria-label="Pagination">
-        <a
+        <button
+          type="button"
           onClick={handlePreviousPageButton}
           className="cursor-pointer rounded-md bg-[#368DCF] px-4 py-2 font-medium text-white transition duration-500 ease-in-out hover:bg-[#2b79b4]"
         >
           上一頁
-        </a>
+        </button>
         {pageNumbers.map((number) => (
-          <a
+          <button
+            type="button"
             key={number}
             onClick={() => paginate(number)}
             className={`cursor-pointer rounded-md px-4 py-2 font-medium ${
@@ -66,7 +68,7 @@ const Pagination: React.FC<PaginationProps> = ({
             }`}
           >
             {number}
-          </a>
+          </button>
         ))}
         <a
           onClick={handleNextPageButton}

@@ -23,10 +23,17 @@ import ChatRoomTitle from "./ChatRoomTitle";
 interface ChatRoomWindowProps {
   onCloseRoom: () => void;
 }
+interface User {
+  id: string;
+  name: string;
+  email: string;
+  profilePicUrl: string;
+  chattedWith?: string[];
+}
 interface Message {
   content: string;
   sentBy: string;
-  sentAt?: Timestamp;
+  sentAt: Timestamp | null;
   sentTo: string;
   isRead: boolean;
   chatSessionId: string;
@@ -37,18 +44,11 @@ interface UserList {
   name: string;
   unreadCount?: number;
 }
-interface User {
-  id: string;
-  name: string;
-  email: string;
-  profilePicUrl: string;
-}
 interface EmojiObject {
   emoji: string;
 }
-
 const ChatRoomWindow = ({ onCloseRoom }: ChatRoomWindowProps) => {
-  const [message, setMessage] = useState("請問有提供便當嗎??");
+  const [message, setMessage] = useState("");
   const [messages, setMessages] = useState<Message[]>([]);
   const [currentUser, setCurrentUser] = useState<User | null>(null);
   const [searchQuery, setSearchQuery] = useState("");
@@ -59,16 +59,12 @@ const ChatRoomWindow = ({ onCloseRoom }: ChatRoomWindowProps) => {
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const [selectedUserName, setSelectedUserName] = useState("");
   const [showPicker, setShowPicker] = useState(false);
-
   const defaultProfilePic =
     "https://cdn-icons-png.flaticon.com/512/149/149071.png";
-
   const isInitialMount = useRef(true);
-
   const onEmojiClick = (emojiObject: EmojiObject) => {
     setMessage((prevMessage) => prevMessage + emojiObject.emoji);
   };
-
   useLayoutEffect(() => {
     if (isInitialMount.current) {
       isInitialMount.current = false;
@@ -78,15 +74,12 @@ const ChatRoomWindow = ({ onCloseRoom }: ChatRoomWindowProps) => {
           messagesEndRef.current.scrollIntoView({ behavior: "auto" });
         }
       }, 100);
-
       return () => clearTimeout(timer);
     }
   }, [messages]);
-
   useEffect(() => {
     const auth = getAuth();
     const firestore = getFirestore();
-
     const unsubscribe = onAuthStateChanged(auth, async (firebaseUser) => {
       if (firebaseUser) {
         const userRef = doc(firestore, "users", firebaseUser.uid);
@@ -113,10 +106,8 @@ const ChatRoomWindow = ({ onCloseRoom }: ChatRoomWindowProps) => {
         setCurrentUser(null);
       }
     });
-
     return () => unsubscribe();
   }, []);
-
   useEffect(() => {
     const firestore = getFirestore();
     const messagesRef = collection(firestore, "messages");
@@ -142,7 +133,6 @@ const ChatRoomWindow = ({ onCloseRoom }: ChatRoomWindowProps) => {
     });
     return () => unsubscribe();
   }, []);
-
   const loadUnreadCounts = async (users: UserList[], currentUser: User) => {
     const updatedUsers = [];
     for (const user of users) {
@@ -161,17 +151,19 @@ const ChatRoomWindow = ({ onCloseRoom }: ChatRoomWindowProps) => {
     }
     return updatedUsers;
   };
-
   useEffect(() => {
     if (!currentUser) return;
     const firestore = getFirestore();
-
     const userRef = doc(firestore, "users", currentUser.id);
     getDoc(userRef).then(async (docSnap) => {
       if (docSnap.exists()) {
-        const userData = docSnap.data();
+        const userData = docSnap.data() as User;
         const chattedWithIds = userData.chattedWith || [];
-        const users = await loadUsers(firestore, chattedWithIds);
+        const users = await loadUsers(
+          firestore,
+          chattedWithIds,
+          currentUser.id,
+        );
         const usersWithUnreadCounts = await loadUnreadCounts(
           users,
           currentUser,
@@ -180,18 +172,14 @@ const ChatRoomWindow = ({ onCloseRoom }: ChatRoomWindowProps) => {
       }
     });
   }, [currentUser]);
-
   useEffect(() => {
     if (!currentUser) return;
-
     const loadConversations = async () => {
       const firestore = getFirestore();
       const messagesRef = collection(firestore, "messages");
       const q = query(messagesRef, where("sentBy", "==", currentUser.id));
-
       const querySnapshot = await getDocs(q);
       const userIds = new Set<string>();
-
       querySnapshot.forEach((doc) => {
         const message = doc.data() as Message;
         const otherUserId = message.chatSessionId
@@ -199,7 +187,6 @@ const ChatRoomWindow = ({ onCloseRoom }: ChatRoomWindowProps) => {
           .replace(`_${currentUser.id}`, "");
         userIds.add(otherUserId);
       });
-
       const users = await Promise.all(
         Array.from(userIds).map(async (userId) => {
           const userRef = doc(firestore, "users", userId);
@@ -209,42 +196,18 @@ const ChatRoomWindow = ({ onCloseRoom }: ChatRoomWindowProps) => {
             : null;
         }),
       );
-
       const validUsers = users.filter(
         (user): user is UserList => user !== null,
       );
-
       setUserList(validUsers);
     };
-
     loadConversations();
   }, [currentUser]);
-
-  useEffect(() => {
-    if (!currentUser) return;
-    const firestore = getFirestore();
-
-    const userRef = doc(firestore, "users", currentUser.id);
-    getDoc(userRef).then(async (docSnap) => {
-      if (docSnap.exists()) {
-        const userData = docSnap.data();
-        const chattedWithIds = userData.chattedWith || [];
-        const users = await loadUsers(firestore, chattedWithIds);
-        const usersWithUnreadCounts = await loadUnreadCounts(
-          users,
-          currentUser,
-        );
-        setUserList(usersWithUnreadCounts);
-      }
-    });
-  }, [currentUser]);
-
-  const handleSendMessage = async () => {
+  const handleSendMessage = async (): Promise<void> => {
     if (!currentUser || !selectedUserId || !message.trim()) {
       showAlert("🚨 系統提醒", "未選擇聊天對象或未登入", "error");
       return;
     }
-
     try {
       const firestore = getFirestore();
       await addDoc(collection(firestore, "messages"), {
@@ -255,27 +218,21 @@ const ChatRoomWindow = ({ onCloseRoom }: ChatRoomWindowProps) => {
         sentTo: selectedUserId,
         isRead: false,
       });
-
       await updateChattedWith(firestore, currentUser.id, selectedUserId);
       await updateChattedWith(firestore, selectedUserId, currentUser.id);
-
       loadMessagesForSelectedUser(firestore, selectedUserId);
-
       setMessage("");
     } catch (error) {
-      console.error("Error sending message: ", error);
-      showAlert("🚨 System Alert", "Message sending failed...", "error");
+      console.error("訊息發送錯誤: ", error);
+      showAlert("🚨 系統提醒", "訊息發送錯誤...", "error");
     }
   };
-
   const loadMessagesForSelectedUser = async (
     firestore: Firestore,
     userId: string,
   ) => {
     if (!currentUser || !userId) return;
-
     setMessages([]);
-
     const messagesRef = collection(firestore, "messages");
     const q = query(
       messagesRef,
@@ -284,12 +241,10 @@ const ChatRoomWindow = ({ onCloseRoom }: ChatRoomWindowProps) => {
         `${userId}_${currentUser.id}`,
       ]),
     );
-
     const querySnapshot = await getDocs(q);
     const userMessages = querySnapshot.docs.map((doc) => doc.data() as Message);
     setMessages(userMessages.sort((a, b) => getTimestamp(a) - getTimestamp(b)));
   };
-
   const updateChattedWith = async (
     firestore: Firestore,
     userId: string,
@@ -308,28 +263,23 @@ const ChatRoomWindow = ({ onCloseRoom }: ChatRoomWindowProps) => {
       );
     }
   };
-
   const loadUsers = async (
     firestore: Firestore,
     userIds: string[],
+    currentUserId: string,
   ): Promise<UserList[]> => {
-    const users: UserList[] = [];
-    for (const userId of userIds) {
+    const userFetchPromises = userIds.map(async (userId) => {
       const userRef = doc(firestore, "users", userId);
       const userSnap = await getDoc(userRef);
-      if (userSnap.exists()) {
+      if (userSnap.exists() && userSnap.id !== currentUserId) {
         const userData = userSnap.data() as User;
-        if (userData.id !== currentUser?.id) {
-          users.push({
-            id: userId,
-            name: userData.name,
-          });
-        }
+        return { id: userSnap.id, name: userData.name };
       }
-    }
-    return users;
+      return null;
+    });
+    const users = await Promise.all(userFetchPromises);
+    return users.filter((user): user is UserList => user !== null);
   };
-
   const executeSearch = async () => {
     const firestore = getFirestore();
     const usersRef = collection(firestore, "users");
@@ -353,7 +303,6 @@ const ChatRoomWindow = ({ onCloseRoom }: ChatRoomWindowProps) => {
       await executeSearch();
     }
   };
-
   const handleKeyDownSendMessage = async (
     event: React.KeyboardEvent<HTMLInputElement>,
   ) => {
@@ -372,7 +321,6 @@ const ChatRoomWindow = ({ onCloseRoom }: ChatRoomWindowProps) => {
     return message.sentAt?.toMillis() ?? Number.MAX_SAFE_INTEGER;
   };
   const handleSelectUser = async (userId: string) => {
-    console.log("選擇的用戶 ID:", userId);
     const selectedUser = userList.find((user) => user.id === userId);
     if (selectedUser) {
       setSelectedUserName(selectedUser.name);
@@ -389,11 +337,8 @@ const ChatRoomWindow = ({ onCloseRoom }: ChatRoomWindowProps) => {
     }
     setSelectedUserId(userId);
     setMessages([]);
-
     if (!currentUser || !userId) return;
-
     const firestore = getFirestore();
-
     const messagesRef = collection(firestore, "messages");
     const q = query(
       messagesRef,
@@ -405,7 +350,6 @@ const ChatRoomWindow = ({ onCloseRoom }: ChatRoomWindowProps) => {
     querySnapshot.forEach(async (doc) => {
       await updateDoc(doc.ref, { isRead: true });
     });
-
     const q2 = query(
       messagesRef,
       where("chatSessionId", "in", [
@@ -421,12 +365,12 @@ const ChatRoomWindow = ({ onCloseRoom }: ChatRoomWindowProps) => {
     setUserList(updatedUserList);
     setMessages(userMessages.sort((a, b) => getTimestamp(a) - getTimestamp(b)));
   };
-
   return (
     <div className="fixed inset-0 z-50 my-auto flex h-full items-center justify-center bg-black bg-opacity-50 py-10 text-gray-800 antialiased">
       <div className="relative flex h-[100vh] w-[95%] flex-col overflow-y-auto rounded-md bg-white p-2 shadow-lg md:p-4 lg:w-[99%] lg:flex-row">
         <span className="absolute right-5 top-6 h-6 w-6 animate-ping rounded-full " />
         <button
+          type="button"
           onClick={onCloseRoom}
           className="absolute right-0 top-0 z-[100] mr-2 mt-2 text-gray-500 hover:text-gray-700"
           aria-label="Close chat window"
@@ -437,6 +381,8 @@ const ChatRoomWindow = ({ onCloseRoom }: ChatRoomWindowProps) => {
             stroke="currentColor"
             viewBox="0 0 24 24"
             xmlns="http://www.w3.org/2000/svg"
+            role="img"
+            aria-label="關閉按鈕icon"
           >
             <path
               strokeLinecap="round"
@@ -493,6 +439,7 @@ const ChatRoomWindow = ({ onCloseRoom }: ChatRoomWindowProps) => {
                 >
                   {user.name}
                   <button
+                    type="button"
                     onClick={() => handleRemoveUser(user.id)}
                     className="mr-2 text-gray-500 hover:text-gray-700"
                   >
@@ -502,6 +449,8 @@ const ChatRoomWindow = ({ onCloseRoom }: ChatRoomWindowProps) => {
                       stroke="currentColor"
                       viewBox="0 0 24 24"
                       xmlns="http://www.w3.org/2000/svg"
+                      role="img"
+                      aria-label="關閉icon"
                     >
                       <path
                         strokeLinecap="round"
@@ -518,6 +467,7 @@ const ChatRoomWindow = ({ onCloseRoom }: ChatRoomWindowProps) => {
           <div className="-mx-2 flex h-[100px] flex-col space-y-1 overflow-y-auto lg:h-1/2">
             {userList.map((user) => (
               <button
+                type="button"
                 className="relative flex flex-row items-center rounded-md p-2 hover:rounded-md hover:bg-gray-100"
                 key={user.id}
                 onClick={() => handleSelectUser(user.id)}
@@ -553,7 +503,6 @@ const ChatRoomWindow = ({ onCloseRoom }: ChatRoomWindowProps) => {
                         message.sentBy === currentUser?.id;
                       const messageTime =
                         message.sentAt?.toDate().toLocaleString() || "時間未知";
-
                       return (
                         <>
                           <div
@@ -599,7 +548,6 @@ const ChatRoomWindow = ({ onCloseRoom }: ChatRoomWindowProps) => {
                         </>
                       );
                     })}
-
                   <div ref={messagesEndRef} />
                 </div>
               </div>
@@ -623,6 +571,7 @@ const ChatRoomWindow = ({ onCloseRoom }: ChatRoomWindowProps) => {
                       </div>
                     )}
                     <button
+                      type="button"
                       title="來點表情符號吧~"
                       onClick={() => setShowPicker(!showPicker)}
                       className="absolute right-0 top-0 flex h-full w-12 items-center justify-center text-gray-400 hover:text-gray-600"
@@ -633,6 +582,8 @@ const ChatRoomWindow = ({ onCloseRoom }: ChatRoomWindowProps) => {
                         stroke="currentColor"
                         viewBox="0 0 24 24"
                         xmlns="http://www.w3.org/2000/svg"
+                        role="img"
+                        aria-label="emoji 表情符號 icon"
                       >
                         <path
                           strokeLinecap="round"
@@ -646,6 +597,7 @@ const ChatRoomWindow = ({ onCloseRoom }: ChatRoomWindowProps) => {
                 </div>
                 <div className="ml-4">
                   <button
+                    type="button"
                     onClick={handleSendMessage}
                     className="flex items-center justify-center rounded-md bg-[#368DCF] py-1 pl-2 text-sm font-medium tracking-wider text-white transition duration-500 ease-in-out hover:bg-[#3178C6] md:text-lg"
                   >
@@ -657,6 +609,8 @@ const ChatRoomWindow = ({ onCloseRoom }: ChatRoomWindowProps) => {
                         stroke="currentColor"
                         viewBox="0 0 24 24"
                         xmlns="http://www.w3.org/2000/svg"
+                        role="img"
+                        aria-label="傳送訊息icon"
                       >
                         <path
                           strokeLinecap="round"

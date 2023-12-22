@@ -1,6 +1,6 @@
 const ChatRoomTitle = () => {
   return (
-    <div className="flex h-12 w-full flex-row items-center justify-center">
+    <header className="flex h-12 w-full flex-row items-center justify-center">
       <div className="rounded-md-2xl flex h-10 w-10 items-center justify-center text-[#368DCF]">
         <svg
           className="h-6 w-6"
@@ -8,6 +8,8 @@ const ChatRoomTitle = () => {
           stroke="currentColor"
           viewBox="0 0 24 24"
           xmlns="http://www.w3.org/2000/svg"
+          role="img"
+          aria-label="訊息icon"
         >
           <path
             strokeLinecap="round"
@@ -18,7 +20,7 @@ const ChatRoomTitle = () => {
         </svg>
       </div>
       <div className="ml-2 text-2xl font-bold">Chat Room</div>
-    </div>
+    </header>
   );
 };
 
