@@ -13,9 +13,9 @@ import Footer from "../layout/Footer";
 import Header from "../layout/Header";
 const SignIn = () => {
   const [isRightPanelActive, setIsRightPanelActive] = useState(false);
-  const [email, setEmail] = useState("Billy@gmail.com");
-  const [password, setPassword] = useState("aqqqqq");
-  const [name, setName] = useState("Billy");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [name, setName] = useState("");
   const navigate = useNavigate();
   const auth = getAuth();
   const handleSignUpClick = () => {
@@ -123,10 +123,7 @@ const SignIn = () => {
                 placeholder="Password"
                 onChange={(e) => setPassword(e.target.value)}
               />
-              <button
-                type="button"
-                className="mt-[22px] rounded-md border-[1px] border-[#A7B4FC] border-[solid] bg-[#A7B4FC] px-[45px] py-3 text-[12px] font-bold uppercase tracking-[1px] text-[#FFFFFF] [transition:transform_80ms_ease-in] focus:outline-[none] active:scale-[0.95]"
-              >
+              <button className="mt-[22px] rounded-md border-[1px] border-[#A7B4FC] border-[solid] bg-[#A7B4FC] px-[45px] py-3 text-[12px] font-bold uppercase tracking-[1px] text-[#FFFFFF] [transition:transform_80ms_ease-in] focus:outline-[none] active:scale-[0.95]">
                 Sign Up
               </button>
             </form>
@@ -151,10 +148,7 @@ const SignIn = () => {
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
               />
-              <button
-                type="button"
-                className="mt-[15px] rounded-md border-[1px] border-[#A7B4FC] border-[solid] bg-[#A7B4FC] px-[45px] py-3 text-[12px] font-bold uppercase tracking-[1px] text-[#FFFFFF] [transition:transform_80ms_ease-in] focus:outline-[none] active:scale-[0.95]"
-              >
+              <button className="mt-[15px] rounded-md border-[1px] border-[#A7B4FC] border-[solid] bg-[#A7B4FC] px-[45px] py-3 text-[12px] font-bold uppercase tracking-[1px] text-[#FFFFFF] [transition:transform_80ms_ease-in] focus:outline-[none] active:scale-[0.95]">
                 Sign In
               </button>
             </form>
