@@ -1,5 +1,5 @@
-import Footer from "../layout/Footer";
-import Header from "../layout/Header";
+import Footer from "../../layout/Footer";
+import Header from "../../layout/Header";
 import EvaluationsGrid from "./HomeEvaluationsGrid";
 import HomePainPoints from "./HomePainPoints";
 import HomeSlogan from "./HomeSlogan";

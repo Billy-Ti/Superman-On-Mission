@@ -15,8 +15,8 @@ import {
 import { useCallback, useEffect, useRef, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import Swal from "sweetalert2";
-import { db } from "../../config/firebase";
-import { useAuth } from "../../hooks/AuthProvider";
+import { useAuth } from "../hooks/AuthProvider";
+import { db } from "../utils/firebase";
 
 interface Notification {
   acceptorName: string;
@@ -373,15 +373,23 @@ const Header = () => {
                     alt="logout"
                   />
                 </div>
-
                 <div className="ml-2 lg:hidden">
                   <button type="button" onClick={toggleMenu}>
-                    <Icon
-                      icon="heroicons:bars-3-bottom-right-solid"
-                      color="#2B79B4"
-                      width="30"
-                      height="30"
-                    />
+                    {isMenuOpen ? (
+                      <Icon
+                        icon="mdi:close"
+                        color="#2b79b4"
+                        width="30"
+                        height="30"
+                      />
+                    ) : (
+                      <Icon
+                        icon="heroicons:bars-3-bottom-right-solid"
+                        color="#2B79B4"
+                        width="30"
+                        height="30"
+                      />
+                    )}
                   </button>
                 </div>
               </div>

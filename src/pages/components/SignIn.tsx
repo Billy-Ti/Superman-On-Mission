@@ -7,10 +7,10 @@ import {
 import { doc, setDoc } from "firebase/firestore";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { db } from "../../config/firebase";
+import Footer from "../../layout/Footer";
+import Header from "../../layout/Header";
+import { db } from "../../utils/firebase";
 import { showAlert } from "../../utils/showAlert";
-import Footer from "../layout/Footer";
-import Header from "../layout/Header";
 const SignIn = () => {
   const [isRightPanelActive, setIsRightPanelActive] = useState(false);
   const [email, setEmail] = useState("");

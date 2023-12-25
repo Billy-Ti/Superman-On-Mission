@@ -10,7 +10,7 @@ import {
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import Swal from "sweetalert2";
-import { db } from "../config/firebase";
+import { db } from "../utils/firebase";
 interface StarRatingProps {
   taskId: string;
   currentUserId: string;

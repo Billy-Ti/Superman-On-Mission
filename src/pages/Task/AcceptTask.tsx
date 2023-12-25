@@ -3,12 +3,12 @@ import { collection, getDocs, orderBy, query, where } from "firebase/firestore";
 import { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import Pagination from "../../components/Pagination";
-import { db } from "../../config/firebase";
+import Footer from "../../layout/Footer";
+import Header from "../../layout/Header";
+import { db } from "../../utils/firebase";
 import Carousel from "../components/Carousel";
 import DisplaySwitchButton from "../components/DisplaySwitchButton";
 import ServiceTypeSelector from "../components/ServiceTypeSelectorProps";
-import Footer from "../layout/Footer";
-import Header from "../layout/Header";
 import RegionFilter from "./RegionFilter";
 
 interface Task {
@@ -135,7 +135,7 @@ const AcceptTask = () => {
 
   useEffect(() => {
     const filteredTasks = isUrgentSelected
-      ? tasks.filter((task) => task.isUrgent) 
+      ? tasks.filter((task) => task.isUrgent)
       : tasks;
     setFilteredTasks(filteredTasks);
   }, [tasks, isUrgentSelected]);

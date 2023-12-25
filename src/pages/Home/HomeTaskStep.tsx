@@ -2,7 +2,7 @@ import { Icon } from "@iconify/react";
 import { collection, getDocs, query } from "firebase/firestore";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router";
-import { db } from "../../config/firebase";
+import { db } from "../../utils/firebase";
 
 interface Task {
   title: string;

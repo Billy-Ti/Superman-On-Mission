@@ -15,10 +15,10 @@ import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import Swal from "sweetalert2";
 import ChatRoomWindow from "../../components/chatRoom";
-import { db, storage } from "../../config/firebase";
+import Footer from "../../layout/Footer";
+import Header from "../../layout/Header";
+import { db, storage } from "../../utils/firebase";
 import { showAlert } from "../../utils/showAlert";
-import Footer from "../layout/Footer";
-import Header from "../layout/Header";
 interface Task {
   id: string;
   cost: number;

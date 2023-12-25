@@ -15,9 +15,9 @@ import { useParams } from "react-router-dom";
 import Swal from "sweetalert2";
 import LoadingSpinner from "../../components/LoadingSpinner";
 import StarRating from "../../components/StarRating";
-import { db } from "../../config/firebase";
-import Footer from "../layout/Footer";
-import Header from "../layout/Header";
+import Footer from "../../layout/Footer";
+import Header from "../../layout/Header";
+import { db } from "../../utils/firebase";
 
 interface Task {
   id: string;

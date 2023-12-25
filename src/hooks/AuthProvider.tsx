@@ -1,6 +1,12 @@
-import { User, onAuthStateChanged, signOut } from 'firebase/auth';
-import { ReactNode, createContext, useContext, useEffect, useState } from 'react';
-import { auth } from '../config/firebase';
+import { User, onAuthStateChanged, signOut } from "firebase/auth";
+import {
+  ReactNode,
+  createContext,
+  useContext,
+  useEffect,
+  useState,
+} from "react";
+import { auth } from "../utils/firebase";
 
 interface AuthContextType {
   currentUser: User | null;
@@ -29,7 +35,7 @@ export function AuthProvider({ children }: AuthProviderProps) {
       setCurrentUser(user);
       setLoading(false);
     });
-  
+
     return unsubscribe;
   }, []);
 

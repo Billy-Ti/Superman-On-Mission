@@ -5,8 +5,8 @@ import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import NoRecordsComponent from "../../components/NoRecordsComponent";
 import Pagination from "../../components/Pagination";
-import { db } from "../../config/firebase";
 import usePagination from "../../hooks/usePagination";
+import { db } from "../../utils/firebase";
 
 interface Task {
   id: string;

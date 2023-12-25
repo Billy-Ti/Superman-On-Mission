@@ -1,6 +1,6 @@
 import { collection, getDocs, query, where } from "firebase/firestore";
 import React, { useEffect, useState } from "react";
-import { db } from "../../config/firebase";
+import { db } from "../../utils/firebase";
 import HomeEvaluationCard from "./HomeEvaluationCard";
 import { Evaluation, ReviewData, UserInfo } from "./types";
 

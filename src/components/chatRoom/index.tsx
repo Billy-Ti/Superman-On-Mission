@@ -521,9 +521,7 @@ const ChatRoomWindow = ({ onCloseRoom }: ChatRoomWindowProps) => {
                               }`}
                             >
                               {isCurrentUserMessage ? (
-                                <p className="whitespace-nowrap text-[16px] font-bold">
-                                  You
-                                </p>
+                                ""
                               ) : (
                                 <p className="whitespace-nowrap text-[14px] font-bold">
                                   {userList.find(

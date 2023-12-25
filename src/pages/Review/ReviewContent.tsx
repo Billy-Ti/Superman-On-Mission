@@ -12,7 +12,7 @@ import { useCallback, useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import LoadingSpinner from "../../components/LoadingSpinner";
 import Pagination from "../../components/Pagination";
-import { db } from "../../config/firebase";
+import { db } from "../../utils/firebase";
 import DisplaySwitchButton from "../components/DisplaySwitchButton";
 interface Review {
   title: string;
