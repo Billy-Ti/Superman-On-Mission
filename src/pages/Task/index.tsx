@@ -497,7 +497,7 @@ const Task = () => {
                     </li>
                   ))}
                 </ul>
-                <div className="flex justify-center">
+                <div className="flex justify-center pb-10">
                   <button
                     type="button"
                     onClick={confirmSubmitTask}

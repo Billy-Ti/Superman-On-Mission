@@ -1,6 +1,20 @@
 import { Link } from "react-router-dom";
 import HomeEndingButton from "../Home/HomeEndingButton";
 
+const FooterLink: React.FC<{ to: string; children: React.ReactNode }> = ({
+  to,
+  children,
+}) => (
+  <div className="flex w-32 flex-col items-center">
+    <Link
+      to={to}
+      className="text-medium relative cursor-pointer font-medium tracking-widest text-gray-600 after:absolute after:bottom-0 after:left-0 after:h-[8px] after:w-full after:translate-y-1 after:bg-[#368dcf] after:opacity-0 after:transition after:duration-200 after:ease-in-out hover:text-gray-900 hover:after:translate-y-0 hover:after:opacity-50"
+    >
+      {children}
+    </Link>
+  </div>
+);
+
 const Footer: React.FC = () => {
   return (
     <footer className="container mx-auto w-full max-w-[1280px] px-4 py-4 md:px-20 md:pb-10 md:pt-20">
@@ -46,38 +60,18 @@ const Footer: React.FC = () => {
         <div className="flex flex-col tracking-widest sm:flex-row">
           <div className="flex">
             <div className="flex w-32 flex-col items-center">
-              <Link
-                to="/acceptTask"
-                className="text-medium relative cursor-pointer font-medium tracking-widest text-gray-600 after:absolute after:bottom-0 after:left-0 after:h-[8px] after:w-full after:translate-y-1 after:bg-[#368dcf] after:opacity-0 after:transition after:duration-200 after:ease-in-out hover:text-gray-900 hover:after:translate-y-0 hover:after:opacity-50"
-              >
-                立即接任務
-              </Link>
+              <FooterLink to="/acceptTask">立即接任務</FooterLink>
             </div>
             <div className="flex w-32 flex-col items-center">
-              <Link
-                to="/taskPage"
-                className="text-medium relative cursor-pointer font-medium tracking-widest text-gray-600 after:absolute after:bottom-0 after:left-0 after:h-[8px] after:w-full after:translate-y-1 after:bg-[#368dcf] after:opacity-0 after:transition after:duration-200 after:ease-in-out hover:text-gray-900 hover:after:translate-y-0 hover:after:opacity-50"
-              >
-                立即發任務
-              </Link>
+              <FooterLink to="/taskPage">立即發任務</FooterLink>
             </div>
           </div>
           <div className="flex">
             <div className="flex w-32 flex-col items-center">
-              <Link
-                to="/signIn"
-                className="text-medium relative cursor-pointer font-medium tracking-widest text-gray-600 after:absolute after:bottom-0 after:left-0 after:h-[8px] after:w-full after:translate-y-1 after:bg-[#368dcf] after:opacity-0 after:transition after:duration-200 after:ease-in-out hover:text-gray-900 hover:after:translate-y-0 hover:after:opacity-50"
-              >
-                登入 | 註冊
-              </Link>
+              <FooterLink to="/signIn">登入 | 註冊</FooterLink>
             </div>
             <div className="flex w-32 flex-col items-center">
-              <Link
-                to="/profile"
-                className="text-medium relative cursor-pointer font-medium tracking-widest text-gray-600 after:absolute after:bottom-0 after:left-0 after:h-[8px] after:w-full after:translate-y-1 after:bg-[#368dcf] after:opacity-0 after:transition after:duration-200 after:ease-in-out hover:text-gray-900 hover:after:translate-y-0 hover:after:opacity-50"
-              >
-                我的帳戶
-              </Link>
+              <FooterLink to="/profile">我的帳戶</FooterLink>
             </div>
           </div>
         </div>

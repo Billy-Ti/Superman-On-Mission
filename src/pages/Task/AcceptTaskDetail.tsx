@@ -44,14 +44,12 @@ interface Task {
   photos?: string[];
 }
 const AcceptTaskDetail = () => {
-  const { taskId } = useParams<{ taskId: string }>();
   const [taskDetails, setTaskDetails] = useState<Task | null>(null);
   const [loading, setLoading] = useState<boolean>(true);
   const [posterName, setPosterName] = useState<string>("");
   const [showOverlay, setShowOverlay] = useState<boolean>(true);
   const [selectedPhoto, setSelectedPhoto] = useState<string | null>(null);
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
-  const taskIsAccepted = taskDetails && taskDetails.accepted;
   const [reportDescription, setReportDescription] = useState("");
   const [reportSupplementaryNotes, setReportSupplementaryNotes] = useState("");
   const [selectedImages, setSelectedImages] = useState(Array(5).fill(null));
@@ -61,6 +59,8 @@ const AcceptTaskDetail = () => {
   const [isChatOpen, setIsChatOpen] = useState(false);
   const [acceptorName, setAcceptorName] = useState("");
 
+  const { taskId } = useParams<{ taskId: string }>();
+  const taskIsAccepted = taskDetails && taskDetails.accepted;
   const handleOverlay = () => {
     setShowOverlay(false);
   };
@@ -107,43 +107,65 @@ const AcceptTaskDetail = () => {
     index: number,
   ) => {
     const file = event.target.files && event.target.files[0];
-    if (file) {
-      if (file.type.match(/image\/(png|jpg|jpeg)/)) {
-        if (file.size <= 5 * 1024 * 1024) {
-          const updatedImageFiles = [...imageFiles];
-          updatedImageFiles[index] = file;
-          setImageFiles(updatedImageFiles);
-          const reader = new FileReader();
-          reader.onload = (e: ProgressEvent<FileReader>) => {
-            const result = e.target?.result;
-            if (result) {
-              const updatedImages = [...selectedImages];
-              updatedImages[index] = result.toString();
-              setSelectedImages(updatedImages);
-            }
-          };
-          reader.readAsDataURL(file);
-        } else {
-          showAlert("錯誤", "圖片大小不能超過 5 MB", "error");
-        }
-      } else {
-        showAlert("錯誤", "只能上傳圖片格式（.png / .jpg / .jpeg）", "error");
+    if (!file) {
+      return;
+    }
+
+    if (!file.type.match(/image\/(png|jpg|jpeg)/)) {
+      showAlert("錯誤", "只能上傳圖片格式（.png / .jpg / .jpeg）", "error");
+      return;
+    }
+
+    if (file.size > 5 * 1024 * 1024) {
+      showAlert("錯誤", "圖片大小不能超過 5 MB", "error");
+      return;
+    }
+
+    updateSelectedImages(file, index);
+  };
+
+  const updateSelectedImages = (file: File, index: number) => {
+    const reader = new FileReader();
+    reader.onload = (e: ProgressEvent<FileReader>) => {
+      const result = e.target?.result;
+      if (result) {
+        const updatedImages = [...selectedImages];
+        updatedImages[index] = result.toString();
+        setSelectedImages(updatedImages);
+
+        const updatedImageFiles = [...imageFiles];
+        updatedImageFiles[index] = file;
+        setImageFiles(updatedImageFiles);
       }
+    };
+    reader.readAsDataURL(file);
+  };
+
+  const uploadImages = async (): Promise<string[]> => {
+    try {
+      const uploadAndGetURL = async (
+        file: File | null,
+      ): Promise<string | null> => {
+        if (!file) return null;
+
+        const fileRef = ref(storage, `tasks/${taskId}/${file.name}`);
+        await uploadBytes(fileRef, file);
+        return getDownloadURL(fileRef);
+      };
+
+      const validFiles = imageFiles.filter(
+        (file): file is File => file instanceof File,
+      );
+
+      const urls = await Promise.all(validFiles.map(uploadAndGetURL));
+      return urls.filter((url): url is string => url !== null);
+    } catch (error) {
+      console.error("Error uploading images:", error);
+      showAlert("上傳錯誤", "圖片上傳失敗", "error");
+      return [];
     }
   };
-  const uploadImages = async () => {
-    const urls = await Promise.all(
-      imageFiles.map(async (file) => {
-        if (file) {
-          const fileRef = ref(storage, `tasks/${taskId}/${file.name}`);
-          await uploadBytes(fileRef, file);
-          return getDownloadURL(fileRef);
-        }
-        return null;
-      }),
-    );
-    return urls.filter((url) => url != null);
-  };
+
   const fetchTask = async () => {
     if (!taskId) {
       console.log("Task ID is not defined");
@@ -581,14 +603,14 @@ const AcceptTaskDetail = () => {
 
           <div>
             <label
-              htmlFor="input1"
+              htmlFor="mission-return"
               className="text-xl font-medium text-gray-700"
             >
               任務回報說明
             </label>
             <textarea
-              id="input1"
-              name="input1"
+              id="mission-return"
+              name="mission-return"
               rows={3}
               readOnly={taskStatus === "已完成"}
               className={`mb-3 mt-1 block w-full resize-none rounded-md border border-gray-300 p-2.5 font-medium tracking-wider shadow-sm focus:border-blue-500 focus:outline-none focus:ring-blue-500 ${
@@ -602,14 +624,14 @@ const AcceptTaskDetail = () => {
           </div>
           <div>
             <label
-              htmlFor="input2"
+              htmlFor="additional"
               className="block text-xl font-medium text-gray-700"
             >
               超人補充說明
             </label>
             <textarea
-              id="input2"
-              name="input2"
+              id="additional"
+              name="additional"
               rows={3}
               readOnly={taskStatus === "已完成"}
               onChange={handleReportSupplementaryNotesChange}
@@ -643,7 +665,7 @@ const AcceptTaskDetail = () => {
           </div>
           <div>
             <label
-              htmlFor="input3"
+              htmlFor="acceptance-feedback"
               className="flex text-xl font-medium text-gray-700"
             >
               發案者回饋
@@ -653,8 +675,8 @@ const AcceptTaskDetail = () => {
               </span>
             </label>
             <textarea
-              id="input3"
-              name="input3"
+              id="acceptance-feedback"
+              name="acceptance-feedback"
               rows={3}
               className="bg-[#f7f4f0]] mb-10 mt-1 block w-full cursor-not-allowed resize-none rounded-md border border-gray-300 p-2.5 font-medium tracking-wider shadow-sm focus:border-blue-500 focus:outline-none focus:ring-blue-500"
               readOnly

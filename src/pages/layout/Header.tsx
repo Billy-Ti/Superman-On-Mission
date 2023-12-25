@@ -12,7 +12,7 @@ import {
   updateDoc,
   where,
 } from "firebase/firestore";
-import { useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import Swal from "sweetalert2";
 import { db } from "../../config/firebase";
@@ -35,19 +35,25 @@ const Header = () => {
   const [notificationCount, setNotificationCount] = useState(0);
 
   const navigate = useNavigate();
-  const handleSignIn = () => {
-    navigate("/signIn");
-  };
-  const handleToAdmin = () => {
-    navigate("/profile");
-  };
-  const handleToReviews = () => {
-    navigate("/reviewLists");
-  };
+  const handleSignIn = useCallback(() => navigate("/signIn"), [navigate]);
+  const handleToAdmin = useCallback(() => navigate("/profile"), [navigate]);
+  const handleToReviews = useCallback(
+    () => navigate("/reviewLists"),
+    [navigate],
+  );
+  const handleTaskManagement = useCallback(
+    () => navigate("/taskManagement"),
+    [navigate],
+  );
+  const toggleDropdown = useCallback(
+    () => setIsDropdownOpen(!isDropdownOpen),
+    [isDropdownOpen],
+  );
+  const toggleMenu = useCallback(
+    () => setIsMenuOpen(!isMenuOpen),
+    [isMenuOpen],
+  );
 
-  const toggleDropdown = () => {
-    setIsDropdownOpen(!isDropdownOpen);
-  };
   const handleLogout = async () => {
     Swal.fire({
       title: "確定要登出嗎？",
@@ -75,9 +81,6 @@ const Header = () => {
         }
       }
     });
-  };
-  const handleTaskManagement = () => {
-    navigate("/taskManagement");
   };
 
   const deleteNotification = async (notificationId: string) => {
@@ -253,9 +256,6 @@ const Header = () => {
     }
   }, [currentUser]);
 
-  const toggleMenu = () => {
-    setIsMenuOpen(!isMenuOpen);
-  };
   return (
     <>
       <header
@@ -402,7 +402,7 @@ const Header = () => {
           </div>
         </div>
         <div
-          className={`absolute left-0 top-0 z-[100] w-full bg-[#B3D7FF] transition-transform duration-300 ease-in-out lg:hidden ${
+          className={`absolute left-0 top-[-36px] z-[100] w-full bg-[#B3D7FF] transition-transform duration-300 ease-in-out lg:hidden ${
             isMenuOpen ? "translate-y-[106px]" : "-translate-y-full"
           }`}
         >
@@ -410,7 +410,7 @@ const Header = () => {
             <li>
               <img
                 className="w-24"
-                src="/superman_logo.png"
+                src="/header_superman_logo.png"
                 alt="superman-logo"
               />
             </li>
