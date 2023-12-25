@@ -5,7 +5,7 @@ import { Evaluation } from "./types";
 
 type HomeEvaluationCardProps = {
   evaluation: Evaluation;
-  leftSide?: boolean; // 新增一個 prop 來指示卡片是從左邊還是右邊進場
+  leftSide?: boolean;
 };
 
 const HomeEvaluationCard: React.FC<HomeEvaluationCardProps> = ({
@@ -40,7 +40,6 @@ const HomeEvaluationCard: React.FC<HomeEvaluationCardProps> = ({
         }
       }
     };
-
     window.addEventListener("scroll", checkIfInView);
     checkIfInView();
     return () => window.removeEventListener("scroll", checkIfInView);

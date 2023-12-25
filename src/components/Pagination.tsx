@@ -19,14 +19,11 @@ const Pagination: React.FC<PaginationProps> = ({
   const pageNumbers = [];
   let startPage = currentPage - 1 <= 0 ? 1 : currentPage - 1;
 
-  // 設定當前頁為 1 或 2 的情況
   if (currentPage <= 2) {
     startPage = 1;
   } else if (currentPage > 2 && currentPage < totalPages) {
-    // 如果當前頁碼在中間時，保證左邊有一個頁碼，右邊有兩個頁碼 (含 Next)
     startPage = currentPage - 1;
   } else if (currentPage === totalPages) {
-    // 處理當前頁碼為最後一頁的情況
     startPage = totalPages - 2 <= 0 ? 1 : totalPages - 2;
   }
 
@@ -52,14 +49,16 @@ const Pagination: React.FC<PaginationProps> = ({
   return (
     <div className={`mb-4 flex justify-center lg:justify-end ${className}`}>
       <nav className="flex space-x-2" aria-label="Pagination">
-        <a
+        <button
+          type="button"
           onClick={handlePreviousPageButton}
           className="cursor-pointer rounded-md bg-[#368DCF] px-4 py-2 font-medium text-white transition duration-500 ease-in-out hover:bg-[#2b79b4]"
         >
           上一頁
-        </a>
+        </button>
         {pageNumbers.map((number) => (
-          <a
+          <button
+            type="button"
             key={number}
             onClick={() => paginate(number)}
             className={`cursor-pointer rounded-md px-4 py-2 font-medium ${
@@ -69,7 +68,7 @@ const Pagination: React.FC<PaginationProps> = ({
             }`}
           >
             {number}
-          </a>
+          </button>
         ))}
         <a
           onClick={handleNextPageButton}

@@ -8,7 +8,7 @@ import {
   query,
   where,
 } from "firebase/firestore";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import LoadingSpinner from "../../components/LoadingSpinner";
 import Pagination from "../../components/Pagination";
@@ -24,10 +24,22 @@ interface Review {
   reviewedUserName: string;
 }
 
+const renderRatingStars = (rating: number) => {
+  return [...Array(rating)].map((_, index) => (
+    <Icon
+      key={index}
+      icon="mingcute:star-fill"
+      color="#ffc107"
+      width="20"
+      height="20"
+      className="mr-2 flex"
+    />
+  ));
+};
 const ReviewContent = () => {
   const [reviews, setReviews] = useState<Review[]>([]);
   const [showReviews, setShowReviews] = useState<boolean>(false);
-  const [reviewsPerPage] = useState(6); // 每頁顯示 6 條評價
+  const [reviewsPerPage] = useState(6);
   const [currentPage, setCurrentPage] = useState(1);
   const [isLoading, setIsLoading] = useState(false);
 
@@ -39,69 +51,60 @@ const ReviewContent = () => {
       }
     });
   }, [showReviews]);
+  const loadReviews = useCallback(
+    async (userId: string) => {
+      setIsLoading(true);
 
-  const loadReviews = async (userId: string) => {
-    setIsLoading(true);
+      const reviewsCol = collection(db, "reviews");
+      const condition = showReviews ? "ratedBy" : "ratedUser";
+      const q = query(reviewsCol, where(condition, "==", userId));
 
-    const reviewsCol = collection(db, "reviews");
-    const condition = showReviews ? "ratedBy" : "ratedUser";
-    const q = query(reviewsCol, where(condition, "==", userId));
+      const querySnapshot = await getDocs(q);
+      const loadedReviews: Review[] = [];
 
-    const querySnapshot = await getDocs(q);
-    const loadedReviews: Review[] = [];
+      for (const docSnapshot of querySnapshot.docs) {
+        const reviewData = docSnapshot.data();
+        const taskDocRef = doc(db, "tasks", reviewData.reviewTaskId);
+        const taskDoc = await getDoc(taskDocRef);
+        const taskData = taskDoc.data();
 
-    for (const docSnapshot of querySnapshot.docs) {
-      const reviewData = docSnapshot.data();
-      const taskDocRef = doc(db, "tasks", reviewData.reviewTaskId);
-      const taskDoc = await getDoc(taskDocRef);
-      const taskData = taskDoc.data();
+        const userDocRef = doc(db, "users", reviewData.ratedBy);
+        const userDoc = await getDoc(userDocRef);
+        const userData = userDoc.data();
 
-      const userDocRef = doc(db, "users", reviewData.ratedBy);
-      const userDoc = await getDoc(userDocRef);
-      const userData = userDoc.data();
+        const reviewedUserDocRef = doc(db, "users", reviewData.ratedUser);
+        const reviewedUserDoc = await getDoc(reviewedUserDocRef);
+        const reviewedUserData = reviewedUserDoc.data();
 
-      const reviewedUserDocRef = doc(db, "users", reviewData.ratedUser);
-      const reviewedUserDoc = await getDoc(reviewedUserDocRef);
-      const reviewedUserData = reviewedUserDoc.data();
+        loadedReviews.push({
+          title: taskData?.title || "Unknown Task",
+          photo: taskData?.photos?.[0] || "",
+          rating: reviewData.rating,
+          userName: userData?.name || "Unknown User",
+          status: taskData?.status || "Unknown Status",
+          reviewTaskId: reviewData.reviewTaskId,
+          reviewedUserName: reviewedUserData?.name || "Unknown User",
+        });
+      }
+      setReviews(loadedReviews);
+      setIsLoading(false);
+    },
+    [showReviews],
+  );
 
-      loadedReviews.push({
-        title: taskData?.title || "Unknown Task",
-        photo: taskData?.photos?.[0] || "",
-        rating: reviewData.rating,
-        userName: userData?.name || "Unknown User",
-        status: taskData?.status || "Unknown Status",
-        reviewTaskId: reviewData.reviewTaskId,
-        reviewedUserName: reviewedUserData?.name || "Unknown User",
-      });
-    }
-    setReviews(loadedReviews);
-    setIsLoading(false);
-  };
-
-  // 獲取當前頁的評價
   const indexOfLastReview = currentPage * reviewsPerPage;
   const indexOfFirstReview = indexOfLastReview - reviewsPerPage;
   const currentReviews = reviews.slice(indexOfFirstReview, indexOfLastReview);
-  // 更改頁碼
   const paginate = (pageNumber: number) => setCurrentPage(pageNumber);
 
-  const handleToggleDisplay = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setShowReviews(event.target.checked);
-    setCurrentPage(1);
-  };
+  const handleToggleDisplay = useCallback(
+    (event: React.ChangeEvent<HTMLInputElement>) => {
+      setShowReviews(event.target.checked);
+      setCurrentPage(1);
+    },
+    [],
+  );
 
-  const renderRatingStars = (rating: number) => {
-    return [...Array(rating)].map((_, index) => (
-      <Icon
-        key={index}
-        icon="mingcute:star-fill"
-        color="#ffc107"
-        width="20"
-        height="20"
-        className="mr-2 flex"
-      />
-    ));
-  };
   return (
     <div className="container mx-auto">
       <div className="mb-10 flex items-center">
@@ -136,12 +139,12 @@ const ReviewContent = () => {
       {isLoading ? (
         <LoadingSpinner />
       ) : (
-        <div className="mt-10 grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3 ">
+        <div className="mt-10 grid grid-cols-1 gap-4 overflow-hidden md:grid-cols-2 lg:grid-cols-3">
           {currentReviews.length > 0 ? (
             currentReviews.map((review) => (
               <div
                 key={review.reviewTaskId}
-                className="border-gradient relative flex flex-col rounded-md border-2 border-gray-200 bg-white p-4 shadow-xl transition-all duration-300 ease-in-out hover:shadow-2xl"
+                className="border-gradient relative flex flex-col rounded-md border-2 border-gray-200 bg-white p-4 shadow-xl transition-all duration-300 ease-in-out hover:scale-105 hover:shadow-2xl"
               >
                 <p className="text-black-700 flex items-center justify-center text-lg font-bold">
                   <span className="mr-2 block h-6 w-6 rounded-full bg-green-500 text-2xl"></span>

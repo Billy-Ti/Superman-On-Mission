@@ -19,7 +19,6 @@ import { db } from "../../config/firebase";
 import Footer from "../layout/Footer";
 import Header from "../layout/Header";
 
-// 使用 Task interface 替代原來的 TaskData
 interface Task {
   id: string;
   cost: number;
@@ -45,14 +44,11 @@ interface Task {
 }
 
 const StartTaskDetail = () => {
-  const { taskId } = useParams<{ taskId: string }>(); // 如果 useParams 不帶參數，它的預設型別是 { [key: string]: string }
+  const { taskId } = useParams<{ taskId: string }>();
   const [taskDetails, setTaskDetails] = useState<Task | null>(null);
   const [loading, setLoading] = useState(true);
-  // 存發案者名稱，以存取不同集合中的 user
   const [posterName, setPosterName] = useState<string>("");
-  // 儲存已選擇的圖片，用作點及圖片可放大的前置準備
   const [selectedPhoto, setSelectedPhoto] = useState<string | null>(null);
-  // 建立一個視窗，讓圖片可以被點擊後放大，有預覽的效果
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [currentUserId, setCurrentUserId] = useState<string | null>(null);
   const [showOverlay, setShowOverlay] = useState(true);
@@ -63,12 +59,11 @@ const StartTaskDetail = () => {
   const [ratedUser, setRatedUser] = useState<string>("defaultRatedUserId");
   const [ratedStatus, setRatedStatus] = useState<boolean>(false);
   const [ratingComment, setRatingComment] = useState("");
-  const [acceptorName, setAcceptorName] = useState<string>(""); // 用於保存接案人名稱的狀態
+  const [acceptorName, setAcceptorName] = useState<string>("");
 
   const renderPhotoList = () => {
     const totalSlots = 5;
 
-    // 使用 taskDetails.reportFiles 來取得驗收圖片
     const reportPhotos = taskDetails ? taskDetails.reportFiles || [] : [];
 
     const emptySlots = totalSlots - reportPhotos.length;
@@ -112,13 +107,13 @@ const StartTaskDetail = () => {
       if (taskSnap.exists()) {
         const taskData = taskSnap.data() as Task;
         setTaskDetails(taskData);
-        setRatedUser(taskData.acceptedBy || ""); // 從任務數據中獲取接案者 ID
+        setRatedUser(taskData.acceptedBy || "");
         setRatedStatus(taskData.hasBeenRated || false);
         if (taskData.acceptedBy) {
           const acceptorRef = doc(db, "users", taskData.acceptedBy);
           const acceptorSnap = await getDoc(acceptorRef);
           if (acceptorSnap.exists()) {
-            setAcceptorName(acceptorSnap.data().name); // 更新接案者名稱
+            setAcceptorName(acceptorSnap.data().name);
           } else {
             setAcceptorName("未知接案者");
           }
@@ -133,14 +128,13 @@ const StartTaskDetail = () => {
         }
         console.log(taskData);
 
-        // 使用 taskData.createdBy 來讀取發案者的使用者 ID 並更新 posterName 狀態
         const userId = taskData.createdBy;
         if (userId) {
           const userRef = doc(db, "users", userId);
           const userSnap = await getDoc(userRef);
           if (userSnap.exists()) {
             console.log("User data:", userSnap.data());
-            setPosterName(userSnap.data().name); // 更新發案者名稱
+            setPosterName(userSnap.data().name);
           } else {
             console.log("No such user!");
             setPosterName("找不到使用者");
@@ -161,12 +155,10 @@ const StartTaskDetail = () => {
     if (!taskId) return;
 
     try {
-      // 建立針對 reviews 集合的查詢，篩選出與特定 taskId 相關的評價
       const querySnapshot = await getDocs(
         query(collection(db, "reviews"), where("reviewTaskId", "==", taskId)),
       );
 
-      // 遍歷查詢結果
       querySnapshot.forEach((doc) => {
         const reviewData = doc.data();
         if (reviewData) {
@@ -200,7 +192,7 @@ const StartTaskDetail = () => {
         await updateDoc(taskRef, {
           isFeedback: true,
           feedbackMessage: feedbackMessage,
-          status: "已完成", // 更新狀態
+          status: "已完成",
         });
         setIsFeedbackSubmitted(true);
         await fetchTaskDetails();
@@ -215,7 +207,6 @@ const StartTaskDetail = () => {
           allowOutsideClick: false,
         });
 
-        // 現在顯示評價模態框
         setIsRatingModalOpen(true);
       } catch (error) {
         console.error("Error updating task:", error);
@@ -239,7 +230,6 @@ const StartTaskDetail = () => {
   useEffect(() => {
     const checkAndUpdateOverlayStatus = () => {
       if (taskDetails && currentUserId) {
-        // 確保在 "任務回報完成" 或 "已完成" 狀態下遮罩不顯示
         if (
           taskDetails.createdBy === currentUserId &&
           (taskDetails.status === "任務回報完成" ||
@@ -288,10 +278,8 @@ const StartTaskDetail = () => {
     const auth = getAuth();
     onAuthStateChanged(auth, (user) => {
       if (user) {
-        // 使用者已登入, 可以獲取 user.uid
         setCurrentUserId(user.uid);
       } else {
-        // 使用者未登入
         console.log("使用者未登入");
       }
     });
@@ -326,7 +314,6 @@ const StartTaskDetail = () => {
           <span className="h-8 w-2 bg-[#368dcf]"></span>
           <p className="pl-2">任務資訊</p>
         </div>
-        {/* 任務進度 */}
         <div className="hidden items-center justify-center space-x-2 py-4 md:flex">
           <div className="flex items-center justify-center">
             <div className="flex h-10 w-10 items-center justify-center rounded-full bg-green-500 text-xl font-bold text-white md:h-40 md:w-40">
@@ -382,7 +369,6 @@ const StartTaskDetail = () => {
             </div>
           </div>
         </div>
-        {/* 手機版任務內容 */}
         <div className="flex items-center justify-between space-x-2 py-4 md:hidden">
           <div className="flex flex-col items-center justify-center">
             <div className="mb-4 flex h-10 w-10 flex-col items-center justify-center rounded-full bg-green-500 text-xl font-bold text-white sm:h-20 sm:w-20"></div>
@@ -429,19 +415,14 @@ const StartTaskDetail = () => {
             <p>已完成</p>
           </div>
         </div>
-        {/* 任務資訊 */}
-
         <div className="flex flex-col lg:flex-row">
-          {/* 左邊區塊開始 */}
           <div className="space-y-4 p-4 lg:w-1/3">
-            {/* 案主 */}
             <div className="flex items-center space-x-2">
               <div className="flex-grow items-center text-xl font-semibold tracking-wider text-[#3178C6]">
                 <span className="text-xl tracking-wider">發案者名稱：</span>
                 {posterName}
               </div>
             </div>
-            {/* 任務截止日期 */}
             <div className="flex items-center space-x-2">
               <div className="flex-grow font-semibold tracking-wider ">
                 <span className="tracking-wider">任務截止日期：</span>
@@ -449,13 +430,8 @@ const StartTaskDetail = () => {
               </div>
             </div>
           </div>
-          {/* 左邊區塊結束 */}
-
-          {/* 右邊區塊開始 */}
           <div className="mb-10 grid grid-cols-1 gap-4 rounded-md bg-[#B3D7FF] p-4 md:grid-cols-2 lg:w-2/3">
-            {/* 以下是六個欄位，根據屏幕大小分為一列或兩列 */}
             <div className="rounded-md bg-white p-4">
-              {/* 任務名稱 */}
               <div className="mb-3 border-b-4 border-b-[#B3D7FF] text-center text-xl font-black text-gray-500">
                 任務名稱
               </div>
@@ -464,7 +440,6 @@ const StartTaskDetail = () => {
               </div>
             </div>
             <div className="rounded-md bg-white p-4">
-              {/* 任務地點 */}
               <div className="mb-3  border-b-4 border-b-[#B3D7FF] text-center text-xl font-black text-gray-500">
                 任務地點
               </div>
@@ -475,7 +450,6 @@ const StartTaskDetail = () => {
               </div>
             </div>
             <div className="rounded-md bg-white p-4">
-              {/* 任務類型 */}
               <div className="mb-3 border-b-4 border-b-[#B3D7FF] text-center text-xl font-black text-gray-500">
                 任務類型
               </div>
@@ -486,7 +460,6 @@ const StartTaskDetail = () => {
               </div>
             </div>
             <div className="rounded-md bg-white p-4">
-              {/* 任務報酬 Super Coins */}
               <div className="mb-3  border-b-4 border-b-[#B3D7FF] text-center text-xl font-black text-gray-500">
                 任務報酬 Super Coins
               </div>
@@ -495,7 +468,6 @@ const StartTaskDetail = () => {
               </div>
             </div>
             <div className="rounded-md bg-white p-4">
-              {/* 任務說明 */}
               <div className="mb-3 border-b-4 border-b-[#B3D7FF] text-center text-xl font-black text-gray-500">
                 任務說明
               </div>
@@ -504,7 +476,6 @@ const StartTaskDetail = () => {
               </div>
             </div>
             <div className="rounded-md bg-white p-4">
-              {/* 其他備註 */}
               <div className="mb-3 border-b-4 border-b-[#B3D7FF] text-center text-xl font-black text-gray-500">
                 其他備註
               </div>
@@ -513,14 +484,12 @@ const StartTaskDetail = () => {
               </div>
             </div>
             <div className="rounded-md bg-white p-4">
-              {/* 接案者名稱 */}
               <div className="mb-3 border-b-4 border-b-[#B3D7FF] text-center text-xl font-black text-gray-500">
                 接案者名稱
               </div>
               <div className="font-medium text-[#3178C6]">{acceptorName}</div>
             </div>
           </div>
-          {/* 右邊區塊結束 */}
         </div>
 
         <div className="mb-4 mt-4 flex text-3xl font-semibold text-gray-700">
@@ -568,6 +537,7 @@ const StartTaskDetail = () => {
                     alt="Enlarged task photo"
                   />
                   <button
+                    type="button"
                     className="absolute bottom-3 left-1/2 flex h-10 w-10 -translate-x-1/2 transform items-center justify-center rounded-full p-2 text-black"
                     onClick={() => setIsModalOpen(false)}
                   >
@@ -577,6 +547,8 @@ const StartTaskDetail = () => {
                         className="h-5 w-5"
                         viewBox="0 0 20 20"
                         fill="currentColor"
+                        role="img"
+                        aria-label="關閉icon"
                       >
                         <path
                           fillRule="evenodd"
@@ -591,7 +563,6 @@ const StartTaskDetail = () => {
             </div>
           )}
         </div>
-        {/* 驗收內容 */}
         {!showOverlay && (
           <form className="relative mb-10 bg-gray-400 p-4">
             <div className="flex items-center">
@@ -695,7 +666,6 @@ const StartTaskDetail = () => {
                 送出
               </button>
             </div>
-            {/* 遮罩區塊 */}
             {showOverlay && (
               <div className="absolute inset-0 flex items-center justify-center bg-black bg-opacity-50">
                 <div className="relative flex h-[100px] w-[400px] items-center justify-center">
@@ -765,7 +735,6 @@ const StartTaskDetail = () => {
                 readOnly={taskDetails.status === "已完成"}
               />
             </div>
-
             <div>
               <label
                 htmlFor="comment"
@@ -820,7 +789,7 @@ const StartTaskDetail = () => {
                 type="button"
                 disabled={
                   isFeedbackSubmitted || taskDetails.status === "已完成"
-                } // 在這裡添加檢查
+                }
                 className={`rounded-md bg-[#368DCF] px-6 py-4 text-xl font-medium text-white transition duration-500 ease-in-out hover:bg-[#2b79b4] ${
                   isFeedbackSubmitted || taskDetails.status === "已完成"
                     ? "cursor-not-allowed opacity-50"
@@ -836,7 +805,7 @@ const StartTaskDetail = () => {
           <StarRating
             taskId={taskId || "defaultTaskId"}
             currentUserId={currentUserId || "defaultUserId"}
-            ratedUser={ratedUser} // 將接案者 ID 傳遞給 StarRating 組件
+            ratedUser={ratedUser}
             ratedStatus={ratedStatus !== undefined ? ratedStatus : false}
           />
         )}

@@ -11,6 +11,7 @@ interface Task {
   address: string;
   cost: number;
   id: string;
+  task: Task;
 }
 
 const HomeTaskStep = () => {
@@ -24,10 +25,9 @@ const HomeTaskStep = () => {
       const tasksArray: Task[] = [];
       querySnapshot.forEach((doc) => {
         const taskData = doc.data() as Task;
-        tasksArray.push({ ...taskData, id: doc.id }); // 添加每個任務的 id
+        tasksArray.push({ ...taskData, id: doc.id });
       });
 
-      // 對任務按照 cost 降序排列，並選取前四個
       const sortedTasks = tasksArray
         .sort((a, b) => b.cost - a.cost)
         .slice(0, 4);
@@ -36,6 +36,40 @@ const HomeTaskStep = () => {
 
     fetchTasks();
   }, []);
+
+  const steps = ["Step 1", "Step 2", "Step 3"];
+
+  const TaskCard: React.FC<{ task: Task }> = ({ task }) => (
+    <div className="group relative flex h-full w-full flex-col items-center justify-between rounded-xl bg-white p-4 shadow-xl transition-all duration-300 ease-in-out hover:shadow-2xl">
+      <div className="flex items-center text-xl font-black text-[#2b79b4]">
+        <p className="mr-1 italic">SuperTask co.</p>
+      </div>
+      <div className="my-2 text-xl font-bold">{task.title}</div>
+      <div className="mb-1 flex items-center gap-1 text-sm font-semibold">
+        <Icon icon="mdi:location" className="text-gray-400" />
+        <span>
+          {task.city}
+          {task.address}
+        </span>
+      </div>
+      <div className="flex items-center gap-1 text-sm font-semibold">
+        <Icon icon="uim:clock" className="text-gray-400" />
+        <span>{task.dueDate}</span>
+      </div>
+      <div className="font-semibold">
+        <span className="text-base">{task.cost}</span>
+        <span className="text-sm">/ Super Coins</span>
+      </div>
+      <button
+        type="button"
+        onClick={() => navigate(`/acceptDetail/${task.id}`)}
+        className="mt-2 w-full items-center justify-center rounded-md  bg-[#368DCF] py-2 text-xl font-medium text-white transition duration-500 ease-in-out hover:bg-[#2b79b4]"
+      >
+        看更多
+      </button>
+    </div>
+  );
+
   return (
     <div className="container mx-auto max-w-[1280px] px-4 md:px-20">
       <div className="py-10 md:py-20">
@@ -43,11 +77,13 @@ const HomeTaskStep = () => {
           發案 3 步驟，跟著一起 go
         </p>
         <div className="mx-auto mb-10 h-[10px] w-4/5 bg-[#2B79B4] sm:w-1/5"></div>
-        <div className="flex justify-between">
-          <p className="mb-1 font-bold sm:text-2xl">Step 1</p>
-          <p className="font-bold sm:text-2xl">Step 2</p>
-          <p className="font-bold sm:text-2xl">Step 3</p>
-        </div>
+        <ul className="flex justify-between">
+          {steps.map((step) => (
+            <li key={step} className="mb-1 font-bold sm:text-2xl">
+              {step}
+            </li>
+          ))}
+        </ul>
         <div className="mb-2 flex items-center justify-center space-x-4">
           <Icon
             icon="cil:list"
@@ -78,42 +114,14 @@ const HomeTaskStep = () => {
         </ul>
         <div className="mb-10 flex flex-col">
           <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-4">
-            {tasks.map((task, index) => (
-              <div
-                className="group relative flex h-full w-full flex-col items-center justify-between rounded-xl bg-white p-4 shadow-xl transition-all duration-300 ease-in-out hover:shadow-2xl"
-                key={index}
-              >
-                <div className="flex items-center text-xl font-black text-[#2b79b4]">
-                  <p className="mr-1 italic">SuperTask co.</p>
-                </div>
-                <div className="my-2 text-xl font-bold">{task.title}</div>
-                <div className="mb-1 flex items-center gap-1 text-sm font-semibold">
-                  <Icon icon="mdi:location" className="text-gray-400" />
-                  <span>
-                    {task.city}
-                    {task.address}
-                  </span>
-                </div>
-                <div className="flex items-center gap-1 text-sm font-semibold">
-                  <Icon icon="uim:clock" className="text-gray-400" />
-                  <span>{task.dueDate}</span>
-                </div>
-                <div className="font-semibold">
-                  <span className="text-base">{task.cost}</span>
-                  <span className="text-sm">/ Super Coins</span>
-                </div>
-                <button
-                  onClick={() => navigate(`/acceptDetail/${task.id}`)}
-                  className="mt-2 w-full items-center justify-center rounded-md  bg-[#368DCF] py-2 text-xl font-medium text-white transition duration-500 ease-in-out hover:bg-[#2b79b4]"
-                >
-                  看更多
-                </button>
-              </div>
+            {tasks.map((task) => (
+              <TaskCard key={task.id} task={task} />
             ))}
           </div>
         </div>
         <div className="flex justify-center">
           <button
+            type="button"
             onClick={() => navigate("/taskPage")}
             className="items-center justify-center rounded-md  bg-[#368DCF] px-5 py-3 text-xl font-medium text-white transition duration-500 ease-in-out hover:bg-[#2b79b4]"
           >

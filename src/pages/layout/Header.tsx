@@ -1,5 +1,5 @@
 import { Icon } from "@iconify/react";
-import { getAuth, onAuthStateChanged } from "firebase/auth";
+import { getAuth } from "firebase/auth";
 import {
   collection,
   deleteDoc,
@@ -12,7 +12,7 @@ import {
   updateDoc,
   where,
 } from "firebase/firestore";
-import { useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import Swal from "sweetalert2";
 import { db } from "../../config/firebase";
@@ -21,7 +21,7 @@ import { useAuth } from "../../hooks/AuthProvider";
 interface Notification {
   acceptorName: string;
   taskName: string;
-  id: string; // 通知的 ID
+  id: string;
 }
 
 const Header = () => {
@@ -35,19 +35,25 @@ const Header = () => {
   const [notificationCount, setNotificationCount] = useState(0);
 
   const navigate = useNavigate();
-  const handleSignIn = () => {
-    navigate("/signIn");
-  };
-  const handleToAdmin = () => {
-    navigate("/profile");
-  };
-  const handleToReviews = () => {
-    navigate("/reviewLists");
-  };
+  const handleSignIn = useCallback(() => navigate("/signIn"), [navigate]);
+  const handleToAdmin = useCallback(() => navigate("/profile"), [navigate]);
+  const handleToReviews = useCallback(
+    () => navigate("/reviewLists"),
+    [navigate],
+  );
+  const handleTaskManagement = useCallback(
+    () => navigate("/taskManagement"),
+    [navigate],
+  );
+  const toggleDropdown = useCallback(
+    () => setIsDropdownOpen(!isDropdownOpen),
+    [isDropdownOpen],
+  );
+  const toggleMenu = useCallback(
+    () => setIsMenuOpen(!isMenuOpen),
+    [isMenuOpen],
+  );
 
-  const toggleDropdown = () => {
-    setIsDropdownOpen(!isDropdownOpen);
-  };
   const handleLogout = async () => {
     Swal.fire({
       title: "確定要登出嗎？",
@@ -76,9 +82,6 @@ const Header = () => {
       }
     });
   };
-  const handleTaskManagement = () => {
-    navigate("/taskManagement");
-  };
 
   const deleteNotification = async (notificationId: string) => {
     try {
@@ -91,9 +94,7 @@ const Header = () => {
   };
 
   const handleShowNotifications = async () => {
-    // 檢查是否有未讀通知
     if (notifications.length === 0) {
-      // 沒有未讀通知，顯示無新通知的提示
       Swal.fire("無新通知", "", "info");
       return;
     }
@@ -112,13 +113,11 @@ const Header = () => {
       confirmButtonText: "確定",
     });
 
-    // 標記通知為已讀
     await markNotificationsRead();
     notifications.forEach(async (notification) => {
       await deleteNotification(notification.id);
     });
 
-    // 清空通知陣列
     setNotifications([]);
   };
 
@@ -127,7 +126,6 @@ const Header = () => {
       console.log("沒有用戶登錄");
       return;
     }
-    // 更新數據庫中的通知狀態
     const notificationsRef = collection(db, "notifications");
     const q = query(
       notificationsRef,
@@ -141,7 +139,6 @@ const Header = () => {
       await updateDoc(notificationRef, { read: true });
     });
 
-    // 重設未讀通知計數
     setNotificationCount(0);
   };
 
@@ -169,9 +166,9 @@ const Header = () => {
 
           if (acceptorSnap.exists()) {
             fetchedNotifications.push({
-              id: notificationDoc.id, // 保存通知的 ID
-              acceptorName: acceptorSnap.data().name, // 假設接案者的名稱存儲在 'name' 字段
-              taskName: taskSnap.data().title, // 假設任務的名稱存儲在 'title' 字段
+              id: notificationDoc.id,
+              acceptorName: acceptorSnap.data().name,
+              taskName: taskSnap.data().title,
             });
           }
         }
@@ -195,29 +192,13 @@ const Header = () => {
       );
 
       const unsubscribe = onSnapshot(q, (snapshot) => {
-        // 設置未讀通知數量
         setNotificationCount(snapshot.docs.length);
       });
 
-      return () => unsubscribe(); // 清理監聽器
+      return () => unsubscribe();
     }
   }, []);
 
-  useEffect(() => {
-    const auth = getAuth();
-    const unsubscribe = onAuthStateChanged(auth, (user) => {
-      if (user) {
-        // 用戶已登錄，輸出用戶郵件和 ID
-        console.log("當前用戶 email:", user.email);
-        console.log("當前用戶 ID:", user.uid);
-      } else {
-        // 用戶未登錄
-        console.log("沒有用戶登錄");
-      }
-    });
-    // 清理監聽器
-    return () => unsubscribe();
-  }, []);
   useEffect(() => {
     const handleScroll = () => {
       setIsScrolled(window.scrollY > 0);
@@ -228,7 +209,6 @@ const Header = () => {
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
-      // 檢查 event.target 是否為 Node 類型
       if (event.target instanceof Node) {
         if (
           isDropdownOpen &&
@@ -240,11 +220,9 @@ const Header = () => {
       }
     };
 
-    // 添加全局點擊事件監聽器
     document.addEventListener("mousedown", handleClickOutside);
 
     return () => {
-      // 清理監聽器
       document.removeEventListener("mousedown", handleClickOutside);
     };
   }, [isDropdownOpen]);
@@ -260,16 +238,11 @@ const Header = () => {
       const unsubscribe = onSnapshot(
         q,
         (querySnapshot) => {
-          if (querySnapshot.empty) {
-            // console.log("未找到匹配的用戶數據");
-            return;
-          }
+          if (querySnapshot.empty) return;
 
           querySnapshot.forEach((doc) => {
             const userData = doc.data();
-            // console.log("用戶數據:", userData);
             if (userData.profilePicUrl) {
-              // console.log("設置 profilePicUrl:", userData.profilePicUrl);
               setProfilePicUrl(userData.profilePicUrl);
             }
           });
@@ -283,9 +256,6 @@ const Header = () => {
     }
   }, [currentUser]);
 
-  const toggleMenu = () => {
-    setIsMenuOpen(!isMenuOpen);
-  };
   return (
     <>
       <header
@@ -304,7 +274,7 @@ const Header = () => {
               <img
                 className="hidden sm:block"
                 width="70"
-                src="/superman_logo.png"
+                src="/header_superman_logo.png"
                 alt="superman-logo"
               />
               <p className="mr-1 italic">SuperTask co.</p>
@@ -339,6 +309,7 @@ const Header = () => {
                       onClick={toggleDropdown}
                     />
                     <button
+                      type="button"
                       onClick={handleShowNotifications}
                       className="relative"
                     >
@@ -365,7 +336,6 @@ const Header = () => {
                     onClick={toggleDropdown}
                   />
                 )}
-                {/* Header 點擊頭像之後的選單 */}
                 <div
                   ref={dropdownRef}
                   className={`absolute -right-[-16px] top-[50px] z-10 flex-col space-y-2 rounded-md border border-[#B3D7FF] bg-blue-100 transition-opacity duration-300 ease-in-out ${
@@ -405,7 +375,7 @@ const Header = () => {
                 </div>
 
                 <div className="ml-2 lg:hidden">
-                  <button onClick={toggleMenu}>
+                  <button type="button" onClick={toggleMenu}>
                     <Icon
                       icon="heroicons:bars-3-bottom-right-solid"
                       color="#2B79B4"
@@ -432,23 +402,22 @@ const Header = () => {
           </div>
         </div>
         <div
-          className={`absolute left-0 top-0 z-[100] w-full bg-[#B3D7FF] transition-transform duration-300 ease-in-out lg:hidden ${
+          className={`absolute left-0 top-[-36px] z-[100] w-full bg-[#B3D7FF] transition-transform duration-300 ease-in-out lg:hidden ${
             isMenuOpen ? "translate-y-[106px]" : "-translate-y-full"
           }`}
         >
-          {/* 漢堡選單內容 */}
           <ul className="flex flex-col items-center divide-y-2 shadow-lg">
             <li>
               <img
                 className="w-24"
-                src="/superman_logo.png"
+                src="/header_superman_logo.png"
                 alt="superman-logo"
               />
             </li>
             <li className="w-full ">
               <button
-                onClick={handleSignIn}
                 type="button"
+                onClick={handleSignIn}
                 className="w-full rounded-md p-5 text-lg font-bold text-[#3178C6] hover:bg-[#368DCF] hover:text-white"
               >
                 {currentUser ? "會員中心" : "Login"}

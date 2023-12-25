@@ -40,9 +40,9 @@ const StarRating: React.FC<StarRatingProps> = ({
         ratedBy: currentUserId,
         rating: rating,
         ratedAt: serverTimestamp(),
-        ratedUser: ratedUser, // 被評價的用戶 ID
-        ratedStatus: true, // 標記評價已完成
-        ratedComment: comment, // 發案者評論
+        ratedUser: ratedUser,
+        ratedStatus: true,
+        ratedComment: comment,
       };
 
       let userRef;
@@ -63,7 +63,6 @@ const StarRating: React.FC<StarRatingProps> = ({
             const docRef = await addDoc(collection(db, "reviews"), review);
             console.log("Review submitted successfully, ID: ", docRef.id);
 
-            // 計算新的平均評分
             const reviewsSnapshot = await getDocs(collection(db, "reviews"));
             let totalRating = 0;
             let count = 0;
@@ -75,8 +74,7 @@ const StarRating: React.FC<StarRatingProps> = ({
             });
             const newAverageRating = count > 0 ? totalRating / count : 0;
 
-            // 更新 `users` 集合中的 `averageRating`
-            userRef = doc(db, "users", ratedUser); // 更新 userRef
+            userRef = doc(db, "users", ratedUser);
             await updateDoc(userRef, {
               averageRating: newAverageRating,
             });
@@ -91,7 +89,6 @@ const StarRating: React.FC<StarRatingProps> = ({
             });
             setComment("");
 
-            // 更新接案者金幣餘額
             const userSnap = await getDoc(userRef);
             if (userSnap.exists()) {
               const userData = userSnap.data();
@@ -99,10 +96,8 @@ const StarRating: React.FC<StarRatingProps> = ({
               await updateDoc(userRef, { superCoins: newCoinBalance });
             }
 
-            // 更新任務狀態
             await updateDoc(taskRef, { status: "已完成" });
 
-            // 在這裡執行導航到"/"頁面的操作
             navigate("/");
           } catch (error) {
             console.error(
@@ -174,6 +169,8 @@ const StarRating: React.FC<StarRatingProps> = ({
                 height={32}
                 viewBox="0 0 32 32"
                 aria-hidden="true"
+                role="img"
+                aria-label="評價星等icon"
               >
                 <ellipse
                   className="rating__star-shadow"
@@ -198,6 +195,8 @@ const StarRating: React.FC<StarRatingProps> = ({
                 height={32}
                 viewBox="0 0 32 32"
                 aria-hidden="true"
+                role="img"
+                aria-label="評價星等icon"
               >
                 <ellipse
                   className="rating__star-shadow"
@@ -222,6 +221,8 @@ const StarRating: React.FC<StarRatingProps> = ({
                 height={32}
                 viewBox="0 0 32 32"
                 aria-hidden="true"
+                role="img"
+                aria-label="評價星等icon"
               >
                 <ellipse
                   className="rating__star-shadow"
@@ -246,6 +247,8 @@ const StarRating: React.FC<StarRatingProps> = ({
                 height={32}
                 viewBox="0 0 32 32"
                 aria-hidden="true"
+                role="img"
+                aria-label="評價星等icon"
               >
                 <ellipse
                   className="rating__star-shadow"
@@ -270,6 +273,8 @@ const StarRating: React.FC<StarRatingProps> = ({
                 height={32}
                 viewBox="0 0 32 32"
                 aria-hidden="true"
+                role="img"
+                aria-label="評價星等icon"
               >
                 <ellipse
                   className="rating__star-shadow"

@@ -18,7 +18,7 @@ import { useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import Swal from "sweetalert2";
 import { v4 as uuidv4 } from "uuid";
-import { app, auth } from "../../config/firebase"; // 導入初始化的 Firebase app
+import { app, auth } from "../../config/firebase";
 import { showAlert } from "../../utils/showAlert";
 import ServiceType, { ServiceTypeRef } from "../components/ServiceType";
 import countyToRegion from "../components/TaiwanRegion";
@@ -26,24 +26,17 @@ import Footer from "../layout/Footer";
 import Header from "../layout/Header";
 
 const db = getFirestore(app);
-// 使用Firebase App實例獲取Storage的參考
 const storage = getStorage(app);
 
 const Task = () => {
   const [selectedCounty, setSelectedCounty] = useState<string>("");
-  const [taskTitle, setTaskTitle] =
-    useState("急徵，請人幫我打掃家裡，有事即將出國");
-  const [taskDescription, setTaskDescription] = useState(
-    "我需要緊急請人來我家幫我打掃，因為重要長輩來訪，正好我有急事要出國，所以急徵",
-  );
-  // 保留 selectedRegion 儲存地區的 state
+  const [taskTitle, setTaskTitle] = useState("");
+  const [taskDescription, setTaskDescription] = useState("");
   const [selectedRegion, setSelectedRegion] = useState<string>("");
-  const [detailedAddress, setDetailedAddress] = useState("仁愛路二段99號9樓");
-  const [additionalNotes, setAdditionalNotes] = useState(
-    "不用準備任何打掃用具，我家什麼都有，帶人就好",
-  );
+  const [detailedAddress, setDetailedAddress] = useState("");
+  const [additionalNotes, setAdditionalNotes] = useState("");
   const [taskReward, setTaskReward] = useState("");
-  const [superCoins, setSuperCoins] = useState(5000); // 初始 Super Coins 數量
+  const [superCoins, setSuperCoins] = useState(5000);
   const [currentUserId, setCurrentUserId] = useState<string | null>(null);
   const serviceTypeRef = useRef<ServiceTypeRef>(null);
   const [userName, setUserName] = useState("");
@@ -60,7 +53,7 @@ const Task = () => {
   ) => {
     const rewardValue = Number(event.target.value);
     if (!isNaN(rewardValue) && rewardValue >= 0) {
-      setTaskReward(event.target.value); // 只更新任務報酬
+      setTaskReward(event.target.value);
     } else {
       showAlert("🚨系統提醒", "請輸入有效的數字...");
     }
@@ -74,11 +67,9 @@ const Task = () => {
     setSelectedRegion(region);
   };
 
-  // 函數來切換縣市下拉的顯示狀態
   const toggleCountyDropdown = () =>
     setIsCountyDropdownOpen(!isCountyDropdownOpen);
 
-  // 函數來切換地區下拉的顯示狀態
   const toggleRegionDropdown = () =>
     setIsRegionDropdownOpen(!isRegionDropdownOpen);
 
@@ -88,9 +79,7 @@ const Task = () => {
   ) => {
     const file = event.target.files ? event.target.files[0] : null;
     if (file) {
-      // 判斷是否為圖片
       if (file.type.startsWith("image/")) {
-        // 檢查文件大小是否小于等于5MB
         if (file.size <= 5 * 1024 * 1024) {
           const reader = new FileReader();
           reader.onloadend = () => {
@@ -136,12 +125,9 @@ const Task = () => {
         const userDocRef = doc(db, "users", user.uid);
         const userDoc = await getDoc(userDocRef);
         if (userDoc.exists()) {
-          // 從 Firestore 讀取用戶資訊
           const userData = userDoc.data();
           setUserName(userData.name || "未知用戶");
-          // 讀取 userName字段
         } else {
-          // 若用戶資料不存在於 Firestore，則建立初始資料
           await setDoc(userDocRef, {
             userId: user.uid,
             userName: user.displayName || "未設置名稱",
@@ -179,14 +165,13 @@ const Task = () => {
   ) => {
     event.preventDefault();
 
-    // 取得所有選擇的文件
     const fileInputs = document.querySelectorAll('input[type="file"]');
     const files = Array.from(fileInputs).flatMap((input) => {
       const inputElement = input as HTMLInputElement;
       if (inputElement.files && inputElement.files.length > 0) {
-        return [inputElement.files[0]]; // 確保文件存在，並回傳一個含有該文件的陣列
+        return [inputElement.files[0]];
       }
-      return []; // 如果沒有文件，回傳一個空陣列
+      return [];
     });
     if (!currentUserId) {
       showAlert("錯誤", "無法識別用戶身份");
@@ -218,11 +203,9 @@ const Task = () => {
     });
     if (result.isConfirmed) {
       try {
-        setIsLoading(true); // 開始載入時設置為 true
-        // 上傳文件並取得 URL
+        setIsLoading(true);
         const uploadPromises = files.map((file) => uploadFile(file));
         const photoUrls = await Promise.all(uploadPromises);
-        // 建立新的任務資料
         const taskData = {
           title: taskTitle,
           city: selectedCounty,
@@ -241,9 +224,7 @@ const Task = () => {
           cost: taskRewardValue,
           acceptedBy: "",
         };
-        // 將任務存到資料庫
         await addDoc(collection(db, "tasks"), taskData);
-        // 更新用戶的 Super Coins
         await updateDoc(doc(db, "users", currentUserId), {
           superCoins: superCoins - taskRewardValue,
         });
@@ -516,7 +497,7 @@ const Task = () => {
                     </li>
                   ))}
                 </ul>
-                <div className="flex justify-center">
+                <div className="flex justify-center pb-10">
                   <button
                     type="button"
                     onClick={confirmSubmitTask}
@@ -529,6 +510,8 @@ const Task = () => {
                           xmlns="http://www.w3.org/2000/svg"
                           fill="none"
                           viewBox="0 0 24 24"
+                          role="img"
+                          aria-label="Loading"
                         >
                           <circle
                             className="opacity-25"

@@ -15,7 +15,6 @@ import { showAlert } from "../../utils/showAlert";
 import Footer from "../layout/Footer";
 import Header from "../layout/Header";
 import SideBar from "./SideBar";
-
 const Profile = () => {
   const [profilePic, setProfilePic] = useState(
     "https://cdn-icons-png.flaticon.com/512/149/149071.png",
@@ -27,7 +26,6 @@ const Profile = () => {
   const [superCoins, setSuperCoins] = useState(0);
   const [averageRating, setAverageRating] = useState(0);
   const [isLoading, setIsLoading] = useState(false);
-
   const auth = getAuth();
   const navigate = useNavigate();
   const storage = getStorage();
@@ -62,18 +60,14 @@ const Profile = () => {
   ];
   const toggleAccordion = (index: number) => {
     setOpenAccordions((currentOpenAccordions) => {
-      // 檢查是否已經打開了這個項目
       if (currentOpenAccordions.includes(index)) {
-        // 如果已經打開，則將它移除
         return currentOpenAccordions.filter((itemIndex) => itemIndex !== index);
       } else {
-        // 如果還沒打開，則將它添加到陣列中
         return [...currentOpenAccordions, index];
       }
     });
   };
   useEffect(() => {
-    // 獲取用戶資料
     const fetchUserData = async () => {
       if (auth.currentUser) {
         const docRef = doc(db, "users", auth.currentUser.uid);
@@ -94,7 +88,6 @@ const Profile = () => {
     };
     fetchUserData();
   }, [auth]);
-
   useEffect(() => {
     if (!auth.currentUser) {
       Swal.fire({
@@ -110,46 +103,35 @@ const Profile = () => {
       });
     }
   }, [auth, navigate]);
-
   const handleImageUpload = async (
     event: React.ChangeEvent<HTMLInputElement>,
   ) => {
     const file = event.target.files?.[0];
-    if (!file || !auth.currentUser) return;
-
-    // 檢查文件格式
     const validFormats = ["image/png", "image/jpg", "image/jpeg"];
+    const maxAllowedSize = 5 * 1024 * 1024;
+    if (!file || !auth.currentUser) return;
     if (!validFormats.includes(file.type)) {
       showAlert("錯誤", "只能上傳圖片格式（.png / .jpg / .jpeg）", "error");
       return;
     }
-
-    // 檢查文件大小 (5MB)
-    const maxAllowedSize = 5 * 1024 * 1024; // 5MB
     if (file.size > maxAllowedSize) {
       showAlert("錯誤", "圖片大小不能超過 5 MB", "error");
       return;
     }
-
-    // 顯示本地圖片預覽
     const localImageUrl = URL.createObjectURL(file);
     setProfilePic(localImageUrl);
-
     setIsLoading(true);
-
     const fileRef = storageRef(
       storage,
       `profilePics/${auth.currentUser.uid}/${file.name}`,
     );
     await uploadBytes(fileRef, file);
     const newProfilePicUrl = await getDownloadURL(fileRef);
-
     await updateDoc(doc(db, "users", auth.currentUser.uid), {
       profilePicUrl: newProfilePicUrl,
     });
-
-    setProfilePic(newProfilePicUrl); // 更新本地狀態
-    setIsLoading(false); // 上傳結束，取消載入狀態
+    setProfilePic(newProfilePicUrl);
+    setIsLoading(false);
   };
 
   return (
@@ -164,7 +146,6 @@ const Profile = () => {
             <div className="flex justify-center">
               {isLoading && (
                 <div className="absolute inset-0 flex items-center justify-center bg-gray-200 bg-opacity-50">
-                  {/* 載入指示器，例如旋轉的圖標 */}
                   <Icon
                     icon="eos-icons:loading"
                     className="animate-spin text-4xl text-blue-200"

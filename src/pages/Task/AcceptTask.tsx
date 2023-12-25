@@ -22,7 +22,7 @@ interface Task {
   district: string;
   address: string;
   categorys: string[];
-  photos?: string[]; // photos是可選的字串陣列的 URL，有可能任務資訊中沒有上傳圖片
+  photos?: string[];
   accepted?: boolean;
   createdAt: string;
 }
@@ -30,11 +30,8 @@ interface Task {
 const AcceptTask = () => {
   const [tasks, setTasks] = useState<Task[]>([]);
   const [filteredTasks, setFilteredTasks] = useState<Task[]>([]);
-  // 新增一個狀態來儲存用戶選擇的服務類型
   const [currentPage, setCurrentPage] = useState(1);
-  // 目前設定每頁只會有兩則任務 useState(2);
   const [tasksPerPage] = useState(3);
-  // 選擇地區、縣市的狀態
   const [selectedCity, setSelectedCity] = useState("");
   const [selectedDistrict, setSelectedDistrict] = useState("");
   const [isUrgentSelected, setIsUrgentSelected] = useState(false);
@@ -66,10 +63,10 @@ const AcceptTask = () => {
   useEffect(() => {
     const fetchTasks = async () => {
       try {
-        setLoading(true); // 開始加載
+        setLoading(true);
         const q = query(
           collection(db, "tasks"),
-          where("accepted", "==", false), // 直接從 firebase 中查詢未被接受的任務
+          where("accepted", "==", false),
         );
         const querySnapshot = await getDocs(q);
         const tasksData = querySnapshot.docs.map((doc) => ({
@@ -103,22 +100,21 @@ const AcceptTask = () => {
     setFilteredTasks(newFilteredTasks);
   }, [tasks, selectedIndexes, serviceType]);
 
-  // 排序任務
   useEffect(() => {
     const fetchTasks = async () => {
       const tasksCollectionRef = collection(db, "tasks");
-      const q = query(tasksCollectionRef, orderBy("createdAt", "desc")); // 使用 orderBy 進行降序排序
+      const q = query(tasksCollectionRef, orderBy("createdAt", "desc"));
       const querySnapshot = await getDocs(q);
 
       const tasksData = querySnapshot.docs
         .map((doc) => {
-          const data = doc.data() as Task; // 確保映射所有 Task 屬性
+          const data = doc.data() as Task;
           return {
             ...data,
             id: doc.id,
           };
         })
-        .filter((task) => !task.accepted); // 只保留未被接受的任務
+        .filter((task) => !task.accepted);
 
       setTasks(tasksData);
     };
@@ -127,7 +123,6 @@ const AcceptTask = () => {
   }, [currentPage]);
 
   useEffect(() => {
-    // 篩選任務
     const filtered = tasks.filter((task) => {
       return (
         (!selectedCity || task.city === selectedCity) &&
@@ -136,14 +131,13 @@ const AcceptTask = () => {
     });
 
     setFilteredTasks(filtered);
-  }, [selectedCity, selectedDistrict, tasks]); // 注意這裡是依賴 tasks，而非 tasksData
+  }, [selectedCity, selectedDistrict, tasks]);
 
   useEffect(() => {
-    // 根據 isUrgentSelected 的值來過濾任務
     const filteredTasks = isUrgentSelected
-      ? tasks.filter((task) => task.isUrgent) // 若 isUrgentSelected 為 true，則只顯示標記為急件的任務
-      : tasks; // 若 isUrgentSelected 為 false，則顯示所有任務
-    setFilteredTasks(filteredTasks); // 更新 filteredTasks 狀態
+      ? tasks.filter((task) => task.isUrgent) 
+      : tasks;
+    setFilteredTasks(filteredTasks);
   }, [tasks, isUrgentSelected]);
   if (loading) {
     return (
@@ -152,12 +146,10 @@ const AcceptTask = () => {
       </div>
     );
   }
-  // 獲取當前頁的任務
   const indexOfLastTask = currentPage * tasksPerPage;
   const indexOfFirstTask = indexOfLastTask - tasksPerPage;
   const currentTasks = filteredTasks.slice(indexOfFirstTask, indexOfLastTask);
 
-  // 更改頁碼
   const paginate = (pageNumber: number) => setCurrentPage(pageNumber);
 
   const handleServiceTypeClick = (index: number) => {

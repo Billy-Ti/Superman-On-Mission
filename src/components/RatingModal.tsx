@@ -29,7 +29,7 @@ const RatingModal: React.FC<RatingModalProps> = ({
 
   const handleSubmit = () => {
     onSubmit(rating);
-    onClose(); // 關閉模態視窗
+    onClose();
   };
 
   return isOpen ? (
@@ -37,7 +37,7 @@ const RatingModal: React.FC<RatingModalProps> = ({
       <div className="mx-4 w-[500px] rounded-md bg-white p-6 shadow-lg md:mx-0 md:w-[800px]">
         <div className="mx-auto flex  items-center justify-between ">
           <h3 className="mx-auto text-3xl font-bold">請評價此次感受</h3>
-          <button onClick={onClose}>X</button>
+          <button type="button" onClick={onClose}>X</button>
         </div>
         <div className="my-4 flex justify-center">
           {[...Array(5)].map((_, index) => {
@@ -69,6 +69,7 @@ const RatingModal: React.FC<RatingModalProps> = ({
           })}
         </div>
         <button
+          type="button"
           onClick={handleSubmit}
           className="w-full rounded-md bg-blue-500 px-4 py-2 text-white hover:bg-blue-700"
         >

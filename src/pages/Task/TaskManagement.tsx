@@ -6,6 +6,11 @@ import AcceptTaskRecord from "./AcceptTaskRecord";
 import FinishTaskRecord from "./FinishTaskRecord";
 import StartTaskRecord from "./StartTaskRecord";
 
+interface TaskButtonProps {
+  buttonName: string;
+  title: string;
+}
+
 const TaskManagement = () => {
   const [activeButton, setActiveButton] = useState("post");
   const [isLoading, setIsLoading] = useState(false);
@@ -18,6 +23,20 @@ const TaskManagement = () => {
       setIsLoading(false);
     }, 500);
   };
+
+  const TaskButton: React.FC<TaskButtonProps> = ({ buttonName, title }) => (
+    <button
+      className={`w-full rounded-md bg-[#368DCF] px-4 py-2 text-lg font-medium transition duration-500 ease-in-out hover:bg-[#2b79b4] hover:text-white md:w-36 ${
+        activeButton === buttonName
+          ? "bg-[#3178C6] text-white"
+          : "bg-white text-gray-700"
+      }`}
+      type="button"
+      onClick={() => handleButtonClick(buttonName)}
+    >
+      {title}
+    </button>
+  );
 
   return (
     <>
@@ -45,39 +64,9 @@ const TaskManagement = () => {
             </div>
           ) : (
             <>
-              <button
-                className={`w-full rounded-md bg-[#368DCF] px-4 py-2 text-lg font-medium transition duration-500 ease-in-out hover:bg-[#2b79b4] hover:text-white md:w-36 ${
-                  activeButton === "post"
-                    ? "bg-[#3178C6] text-white"
-                    : " bg-white text-gray-700 "
-                }`}
-                type="button"
-                onClick={() => handleButtonClick("post")}
-              >
-                發案紀錄
-              </button>
-              <button
-                className={`w-full rounded-md bg-[#368DCF] px-4 py-2 text-lg font-medium transition duration-500 ease-in-out hover:bg-[#2b79b4] hover:text-white md:w-36 ${
-                  activeButton === "accept"
-                    ? "bg-[#3178C6] text-white"
-                    : "bg-white text-gray-700 "
-                }`}
-                type="button"
-                onClick={() => handleButtonClick("accept")}
-              >
-                接案紀錄
-              </button>
-              <button
-                className={`w-full rounded-md bg-[#368DCF] px-4 py-2 text-lg font-medium transition duration-500 ease-in-out hover:bg-[#2b79b4] hover:text-white md:w-36 ${
-                  activeButton === "completed"
-                    ? "bg-[#3178C6] text-white"
-                    : "bg-white text-gray-700 "
-                }`}
-                type="button"
-                onClick={() => handleButtonClick("completed")}
-              >
-                已完成
-              </button>
+              <TaskButton buttonName="post" title="發案紀錄" />
+              <TaskButton buttonName="accept" title="接案紀錄" />
+              <TaskButton buttonName="completed" title="已完成" />
             </>
           )}
         </div>

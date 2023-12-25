@@ -13,7 +13,6 @@
   "dependencies": {
     "@iconify/react": "^4.1.1",
     "air-datepicker": "^3.4.0",
-    "animate.css": "^4.1.1",
     "autoprefixer": "^10.4.16",
     "emoji-picker-react": "^4.5.16",
     "firebase": "^10.7.0",

@@ -11,14 +11,12 @@ import {
   useState,
 } from "react";
 
-// 定義 interface 以提供 Task 元件做清空動作
 export interface ServiceTypeRef {
   resetServiceType: () => void;
   getSelectedServiceTypes: () => string[];
   getUrgentStatus: () => boolean | null;
   getDate: () => string;
 }
-// 定義一個接口消除 TS 對 data picker 參數的提醒
 interface AirDatepickerInstance {
   selectDate: (date: Date) => void;
   setViewDate: (date: Date) => void;
@@ -121,7 +119,7 @@ const ServiceType = forwardRef((_props, ref) => {
               }`}
               onClick={() => handleServiceTypeClick(index)}
             >
-              {getIcon(index)} {/* 使用對應的 SVG 圖標 */}
+              {getIcon(index)}
               {item}
             </div>
           ))}
@@ -173,6 +171,8 @@ const ServiceType = forwardRef((_props, ref) => {
                   xmlns="http://www.w3.org/2000/svg"
                   viewBox="0 0 24 24"
                   fill="currentColor"
+                  role="img"
+                  aria-label="日曆icon"
                 >
                   <path d="M8 14q-.425 0-.712-.288T7 13q0-.425.288-.712T8 12q.425 0 .713.288T9 13q0 .425-.288.713T8 14m4 0q-.425 0-.712-.288T11 13q0-.425.288-.712T12 12q.425 0 .713.288T13 13q0 .425-.288.713T12 14m4 0q-.425 0-.712-.288T15 13q0-.425.288-.712T16 12q.425 0 .713.288T17 13q0 .425-.288.713T16 14M5 22q-.825 0-1.412-.587T3 20V6q0-.825.588-1.412T5 4h1V2h2v2h8V2h2v2h1q.825 0 1.413.588T21 6v14q0 .825-.587 1.413T19 22zm0-2h14V10H5z" />
                 </svg>
@@ -213,7 +213,7 @@ const getIcon = (index: number) => {
     case 8:
       return <Icon icon="mingcute:more-3-fill" width="40" height="40" />;
     default:
-      return <Icon icon="subway:redo-icon" width="40" height="40" />; // 若無圖標顯示
+      return <Icon icon="subway:redo-icon" width="40" height="40" />;
   }
 };
 export default ServiceType;
