@@ -13,9 +13,9 @@ import { db } from "../../utils/firebase";
 import { showAlert } from "../../utils/showAlert";
 const SignIn = () => {
   const [isRightPanelActive, setIsRightPanelActive] = useState(false);
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [name, setName] = useState("");
+  const [email, setEmail] = useState("alice@gmail.com");
+  const [password, setPassword] = useState("aqqqqq");
+  const [name, setName] = useState("Alice");
   const navigate = useNavigate();
   const auth = getAuth();
   const handleSignUpClick = () => {
@@ -26,6 +26,10 @@ const SignIn = () => {
   };
   const handleSignUp = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
+    if (!name.trim() || !email.trim() || !password.trim()) {
+      showAlert("🚨系統提醒", "請填寫所有欄位", "error");
+      return;
+    }
     try {
       const joinedAt = new Date().toLocaleDateString();
       const userCredential = await createUserWithEmailAndPassword(

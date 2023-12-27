@@ -564,7 +564,7 @@ const StartTaskDetail = () => {
           )}
         </div>
         {!showOverlay && (
-          <form className="relative mb-10 bg-gray-400 p-4">
+          <form className="relative mb-10 bg-[#d5e6f8] p-4">
             <div className="flex items-center">
               <div className="mb-2 mr-3  flex items-center text-gray-700">
                 <p className=" mr-2 text-3xl font-semibold">驗收內容</p>
@@ -681,7 +681,7 @@ const StartTaskDetail = () => {
           </form>
         )}
         {showFeedbackContent && (
-          <form className="relative mb-10 bg-gray-400 p-4">
+          <form className="relative mb-10 rounded-md bg-[#d5e6f8] p-4">
             <div className="flex items-center">
               <div className="mb-2 mr-3 flex items-center text-gray-700">
                 <p className=" mr-2 text-3xl font-semibold">驗收內容</p>

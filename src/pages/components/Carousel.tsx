@@ -34,13 +34,13 @@ const Carousel = () => {
   }, []);
 
   const showDots = true;
-  const visibleTasks = tasks.slice(0, 6);
+  const visibleTasks = tasks.length > 6 ? tasks.slice(0, 6) : tasks;
   // Slider setting
   const CarouselSetting = {
     dots: showDots,
     infinite: true,
     speed: 500,
-    slidesToShow: 5,
+    slidesToShow: Math.min(6, visibleTasks.length),
     slidesToScroll: 1,
     autoplay: true,
     autoplaySpeed: 2000,
@@ -51,8 +51,8 @@ const Carousel = () => {
       {
         breakpoint: 1280,
         settings: {
-          slidesToShow: 3,
-          slidesToScroll: 3,
+          slidesToShow: Math.min(3, visibleTasks.length),
+          slidesToScroll: 1,
           infinite: true,
           dots: true,
         },
@@ -60,10 +60,10 @@ const Carousel = () => {
       {
         breakpoint: 1024,
         settings: {
-          slidesToShow: 2,
-          slidesToScroll: 2,
+          slidesToShow: Math.min(2, visibleTasks.length),
+          slidesToScroll: 1,
           infinite: true,
-          dots: false,
+          dots: true,
           centerMode: false,
         },
       },
@@ -73,7 +73,7 @@ const Carousel = () => {
           slidesToShow: 1,
           slidesToScroll: 1,
           initialSlide: 1,
-          dots: false,
+          dots: true,
         },
       },
     ],

@@ -724,7 +724,7 @@ const AcceptTaskDetail = () => {
             </button>
           </div>
           {showOverlay && (
-            <div className="absolute inset-0 flex items-center justify-center bg-black bg-opacity-50">
+            <div className="absolute inset-0 flex items-center justify-center bg-black bg-opacity-50 rounded-md">
               <div className="relative flex h-[200px] w-[400px] items-center justify-center">
                 <span className="absolute -left-4 -top-4 h-[200px] w-[400px] animate-ping rounded-full bg-gray-200 opacity-75" />
                 <span className="absolute -left-4 -top-4 flex h-[200px] w-[400px] items-center justify-center rounded-full bg-gray-200">
