@@ -42,7 +42,6 @@ const StartTaskRecord = () => {
       const auth = getAuth();
       const currentUser = auth.currentUser;
       if (!currentUser) {
-        console.log("沒有用戶登錄");
         return;
       }
 

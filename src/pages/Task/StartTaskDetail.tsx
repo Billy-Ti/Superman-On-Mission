@@ -126,22 +126,18 @@ const StartTaskDetail = () => {
           setFeedbackMessage("");
           setIsFeedbackSubmitted(false);
         }
-        console.log(taskData);
 
         const userId = taskData.createdBy;
         if (userId) {
           const userRef = doc(db, "users", userId);
           const userSnap = await getDoc(userRef);
           if (userSnap.exists()) {
-            console.log("User data:", userSnap.data());
             setPosterName(userSnap.data().name);
           } else {
-            console.log("No such user!");
             setPosterName("找不到使用者");
           }
         }
       } else {
-        console.log("No such task!", taskId);
         setTaskDetails(null);
       }
     } catch (error) {
@@ -279,8 +275,6 @@ const StartTaskDetail = () => {
     onAuthStateChanged(auth, (user) => {
       if (user) {
         setCurrentUserId(user.uid);
-      } else {
-        console.log("使用者未登入");
       }
     });
   }, []);

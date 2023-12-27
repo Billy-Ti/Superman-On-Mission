@@ -86,7 +86,6 @@ const ChatRoomWindow = ({ onCloseRoom }: ChatRoomWindowProps) => {
         const docSnap = await getDoc(userRef);
         if (docSnap.exists()) {
           const userData = docSnap.data();
-          console.log(userData);
           setCurrentUser({
             id: firebaseUser.uid,
             name: userData.name,
@@ -283,19 +282,25 @@ const ChatRoomWindow = ({ onCloseRoom }: ChatRoomWindowProps) => {
   const executeSearch = async () => {
     const firestore = getFirestore();
     const usersRef = collection(firestore, "users");
-    const q = query(usersRef, where("name", "==", searchQuery));
-    const querySnapshot = await getDocs(q);
+    const querySnapshot = await getDocs(usersRef);
     setSearchQuery("");
-    const users = querySnapshot.docs.map((doc) => {
-      const userData = doc.data();
-      return {
-        id: doc.id,
-        name: userData.name,
-      };
-    });
+
+    const users = querySnapshot.docs
+      .map((doc) => {
+        const userData = doc.data();
+        return {
+          id: doc.id,
+          name: userData.name,
+        };
+      })
+      .filter((user) =>
+        user.name.toLowerCase().includes(searchQuery.toLowerCase()),
+      );
+
     setSearchResults(users);
     setHasSearched(true);
   };
+
   const handleKeyDown = async (
     event: React.KeyboardEvent<HTMLInputElement>,
   ) => {
@@ -523,11 +528,11 @@ const ChatRoomWindow = ({ onCloseRoom }: ChatRoomWindowProps) => {
                               {isCurrentUserMessage ? (
                                 ""
                               ) : (
-                                <p className="whitespace-nowrap text-[14px] font-bold">
+                                <span className="whitespace-nowrap text-[14px] font-bold">
                                   {userList.find(
                                     (user) => user.id === message.sentBy,
                                   )?.name || "未知用戶"}
-                                </p>
+                                </span>
                               )}
                             </p>
                             <p className="font-medium text-black">
@@ -535,6 +540,7 @@ const ChatRoomWindow = ({ onCloseRoom }: ChatRoomWindowProps) => {
                             </p>
                           </div>
                           <time
+                            key={`time-${index}`}
                             className={`mb-10 text-xs text-gray-400 ${
                               isCurrentUserMessage
                                 ? "ml-auto text-right"
@@ -613,7 +619,7 @@ const ChatRoomWindow = ({ onCloseRoom }: ChatRoomWindowProps) => {
                         <path
                           strokeLinecap="round"
                           strokeLinejoin="round"
-                          stroke-width="2"
+                          strokeWidth="2"
                           d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8"
                         ></path>
                       </svg>

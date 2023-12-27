@@ -168,23 +168,19 @@ const AcceptTaskDetail = () => {
 
   const fetchTask = async () => {
     if (!taskId) {
-      console.log("Task ID is not defined");
       setLoading(false);
       return;
     }
-    console.log("Fetching task with ID:", taskId);
     setLoading(true);
     const taskRef = doc(db, "tasks", taskId);
     try {
       const docSnap = await getDoc(taskRef);
       if (docSnap.exists()) {
         const taskData = docSnap.data() as Task;
-        console.log("Task data retrieved:", taskData);
         setTaskDetails(taskData);
         setTaskStatus(taskData.status);
         setReportDescription(taskData.reportDescription ?? "");
         setReportSupplementaryNotes(taskData.reportSupplementaryNotes ?? "");
-        console.log("taskStatus", taskStatus);
         const userRef = doc(db, "users", taskData.createdBy);
         const userSnap = await getDoc(userRef);
         if (userSnap.exists()) {

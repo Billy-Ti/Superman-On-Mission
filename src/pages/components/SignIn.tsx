@@ -72,7 +72,7 @@ const SignIn = () => {
         password,
       );
       showAlert("登入成功", "下一個超人就是你~", "success");
-      console.log("登入成功：", userCredential.user);
+      console.log("登入成功：", userCredential);
       navigate("/");
     } catch (error) {
       showAlert("🚨系統提醒", "登入錯誤", "error");

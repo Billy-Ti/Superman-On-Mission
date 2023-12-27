@@ -123,12 +123,9 @@ const TaskDetail = () => {
             const userSnap = await getDoc(userRef);
             if (userSnap.exists()) {
               setPosterName(userSnap.data().name);
-            } else {
-              console.log("No such user!");
             }
           }
         } else {
-          console.log("No such task!");
           setTaskDetails(null);
         }
       } catch (error) {

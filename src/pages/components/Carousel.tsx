@@ -35,7 +35,9 @@ const Carousel = () => {
 
   const showDots = true;
   const visibleTasks = tasks.length > 6 ? tasks.slice(0, 6) : tasks;
-  // Slider setting
+  if (visibleTasks.length === 0) {
+    return <div className="text-2xl font-bold">目前沒有任務</div>;
+  }
   const CarouselSetting = {
     dots: showDots,
     infinite: true,

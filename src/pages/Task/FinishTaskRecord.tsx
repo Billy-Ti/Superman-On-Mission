@@ -42,7 +42,7 @@ const FinishTaskRecord = () => {
       const auth = getAuth();
       const currentUser = auth.currentUser;
       if (!currentUser) {
-        console.log("沒有用戶登錄");
+        ("沒有用戶登錄");
         return;
       }
 
@@ -162,7 +162,9 @@ const FinishTaskRecord = () => {
                         className="mr-1 flex-shrink-0"
                       />
                       {task.categorys.map((category, index) => (
-                        <>{index > 0 ? `、${category}` : category}</>
+                        <span key={task.id + "-" + index}>
+                          {index > 0 ? `、${category}` : category}
+                        </span>
                       ))}
                     </h5>
                     <div className="flex grow flex-col">

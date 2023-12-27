@@ -87,7 +87,6 @@ const Header = () => {
     try {
       const notificationRef = doc(db, "notifications", notificationId);
       await deleteDoc(notificationRef);
-      console.log("通知已刪除");
     } catch (error) {
       console.error("刪除通知時出錯", error);
     }
@@ -123,7 +122,6 @@ const Header = () => {
 
   const markNotificationsRead = async () => {
     if (!currentUser) {
-      console.log("沒有用戶登錄");
       return;
     }
     const notificationsRef = collection(db, "notifications");
