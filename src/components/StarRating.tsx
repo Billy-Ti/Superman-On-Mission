@@ -56,7 +56,6 @@ const StarRating: React.FC<StarRatingProps> = ({
         cancelButtonText: "取消",
         reverseButtons: true,
         allowOutsideClick: false,
-        background: "#DBE2EC",
       }).then(async (result) => {
         if (result.isConfirmed) {
           try {

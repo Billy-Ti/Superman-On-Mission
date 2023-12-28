@@ -577,12 +577,13 @@ const StartTaskDetail = () => {
               >
                 任務回報說明
               </label>
+              <span className="mr-2 text-sm text-red-600">*必填</span>
               <textarea
                 id="input1"
                 name="input1"
                 rows={3}
                 className="mb-3 mt-1 block w-full resize-none rounded-md border border-gray-300 p-2.5 font-medium tracking-wider shadow-sm focus:border-blue-500 focus:outline-none focus:ring-blue-500"
-                placeholder="請填寫關於此任務的詳細完成成果"
+                placeholder="請填寫關於此次任務的詳細內容"
                 defaultValue={taskDetails.reportDescription || ""}
                 readOnly
               />
@@ -599,7 +600,7 @@ const StartTaskDetail = () => {
                 name="input2"
                 rows={3}
                 className="mb-3 mt-1 block w-full resize-none rounded-md border border-gray-300 p-2.5 font-medium tracking-wider shadow-sm focus:border-blue-500 focus:outline-none focus:ring-blue-500"
-                placeholder="請補充所需要讓發案者知道的資訊"
+                placeholder="如要備註其他事項可填寫於此"
                 defaultValue={taskDetails.reportSupplementaryNotes || ""}
                 readOnly
               />
@@ -620,7 +621,7 @@ const StartTaskDetail = () => {
                 name="comment"
                 rows={3}
                 className="mb-3 mt-1 block w-full resize-none rounded-md border border-gray-300 p-2.5 font-medium tracking-wider shadow-sm focus:border-blue-500 focus:outline-none focus:ring-blue-500"
-                placeholder="尚未有評價內容"
+                placeholder="案主評價內容將顯示於此"
                 defaultValue={ratingComment}
                 readOnly
               />
@@ -694,6 +695,7 @@ const StartTaskDetail = () => {
               >
                 任務回報說明
               </label>
+              <span className="mr-2 text-sm text-red-600">*必填</span>
               <textarea
                 id="input1"
                 name="input1"
@@ -702,7 +704,7 @@ const StartTaskDetail = () => {
                 placeholder={
                   taskDetails.status === "已完成"
                     ? "已完成，不能輸入"
-                    : "請填寫關於此任務的詳細完成成果"
+                    : "請填寫關於此次任務的詳細內容"
                 }
                 defaultValue={taskDetails.reportDescription || ""}
                 readOnly={taskDetails.status === "已完成"}
@@ -723,7 +725,7 @@ const StartTaskDetail = () => {
                 placeholder={
                   taskDetails.status === "已完成"
                     ? "已完成，不能輸入"
-                    : "請補充所需要讓發案者知道的資訊"
+                    : "如要備註其他事項可填寫於此"
                 }
                 defaultValue={taskDetails.reportSupplementaryNotes || ""}
                 readOnly={taskDetails.status === "已完成"}
@@ -745,7 +747,7 @@ const StartTaskDetail = () => {
                 name="comment"
                 rows={3}
                 className="mb-3 mt-1 block w-full resize-none rounded-md border border-gray-300 p-2.5 font-medium tracking-wider shadow-sm focus:border-blue-500 focus:outline-none focus:ring-blue-500"
-                placeholder="尚未有評價內容"
+                placeholder="案主評價內容將顯示於此"
                 defaultValue={ratingComment}
                 readOnly
               />

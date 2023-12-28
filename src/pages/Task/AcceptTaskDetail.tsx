@@ -58,6 +58,7 @@ const AcceptTaskDetail = () => {
   const [imageFiles, setImageFiles] = useState<File[]>(Array(5).fill(null));
   const [isChatOpen, setIsChatOpen] = useState(false);
   const [acceptorName, setAcceptorName] = useState("");
+  const [reportDescriptionError, setReportDescriptionError] = useState(false);
 
   const { taskId } = useParams<{ taskId: string }>();
   const taskIsAccepted = taskDetails && taskDetails.accepted;
@@ -89,6 +90,9 @@ const AcceptTaskDetail = () => {
         reportDescription: newReportDescription,
       };
     });
+    if (reportDescriptionError) {
+      setReportDescriptionError(false);
+    }
   };
   const handleReportSupplementaryNotesChange = (
     event: React.ChangeEvent<HTMLTextAreaElement>,
@@ -227,6 +231,13 @@ const AcceptTaskDetail = () => {
     if (!taskId) {
       console.error("Task ID is undefined");
       return;
+    }
+    if (!reportDescription.trim()) {
+      setReportDescriptionError(true);
+      showAlert("🚨 系統提醒", "請填寫必填項目...", "error");
+      return;
+    } else {
+      setReportDescriptionError(false);
     }
     if (reportDescription === undefined) {
       console.error("reportDescription is undefined");
@@ -604,18 +615,22 @@ const AcceptTaskDetail = () => {
             >
               任務回報說明
             </label>
+            <span className="mr-2 text-sm text-red-600">*必填</span>
             <textarea
               id="mission-return"
               name="mission-return"
               rows={3}
               readOnly={taskStatus === "已完成"}
-              className={`mb-3 mt-1 block w-full resize-none rounded-md border border-gray-300 p-2.5 font-medium tracking-wider shadow-sm focus:border-blue-500 focus:outline-none focus:ring-blue-500 ${
+              className={`mb-3 mt-1 block w-full resize-none rounded-md border p-2.5 font-medium tracking-wider shadow-sm focus:outline-none ${
+                reportDescriptionError ? "border-red-500" : "border-gray-300"
+              } ${
                 taskStatus === "任務回報完成" || taskStatus === "已完成"
-                  ? "cursor-not-allowed "
-                  : ""
+                  ? "cursor-not-allowed"
+                  : "focus:border-blue-500 focus:ring-blue-500"
               }`}
               value={taskDetails.reportDescription}
               onChange={handleReportDescriptionChange}
+              placeholder="請填寫關於此次任務的詳細內容"
             />
           </div>
           <div>
@@ -637,6 +652,7 @@ const AcceptTaskDetail = () => {
                   : ""
               } shadow-sm focus:border-blue-500 focus:outline-none focus:ring-blue-500`}
               value={taskDetails.reportSupplementaryNotes}
+              placeholder="如要備註其他事項可填寫於此"
             />
           </div>
           <div>
@@ -657,6 +673,7 @@ const AcceptTaskDetail = () => {
               className={`bg-[#f7f4f0]] mb-3 mt-1 block w-full cursor-not-allowed resize-none rounded-md border border-gray-300 p-2.5 font-medium tracking-wider shadow-sm focus:border-blue-500 focus:outline-none focus:ring-blue-300`}
               readOnly
               value={ratedComment}
+              placeholder="案主評價內容將顯示於此"
             />
           </div>
           <div>
@@ -720,7 +737,7 @@ const AcceptTaskDetail = () => {
             </button>
           </div>
           {showOverlay && (
-            <div className="absolute inset-0 flex items-center justify-center bg-black bg-opacity-50 rounded-md">
+            <div className="absolute inset-0 flex items-center justify-center rounded-md bg-black bg-opacity-50">
               <div className="relative flex h-[200px] w-[400px] items-center justify-center">
                 <span className="absolute -left-4 -top-4 h-[200px] w-[400px] animate-ping rounded-full bg-gray-200 opacity-75" />
                 <span className="absolute -left-4 -top-4 flex h-[200px] w-[400px] items-center justify-center rounded-full bg-gray-200">

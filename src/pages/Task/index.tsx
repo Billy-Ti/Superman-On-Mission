@@ -188,21 +188,20 @@ const Task = () => {
     let hasError = false;
 
     const errors = {
-      taskTitle: !taskTitle,
-      selectedCounty: !selectedCounty,
-      selectedRegion: !selectedRegion,
-      detailedAddress: !detailedAddress,
-      taskDescription: !taskDescription,
+      taskTitle: !taskTitle.trim(),
+      selectedCounty: !selectedCounty.trim(),
+      selectedRegion: !selectedRegion.trim(),
+      detailedAddress: !detailedAddress.trim(),
+      taskDescription: !taskDescription.trim(),
       taskReward: false,
     };
 
     const taskRewardValue = Number(taskReward);
-    if (
-      !taskReward ||
-      isNaN(taskRewardValue) ||
-      taskRewardValue < 0 ||
-      taskRewardValue > superCoins
-    ) {
+    if (!taskReward.trim() || isNaN(taskRewardValue) || taskRewardValue < 0) {
+      errors.taskReward = true;
+      showAlert("🚨 系統提醒", "請輸入有效的數字...", "error");
+      hasError = true;
+    } else if (taskRewardValue > superCoins) {
       errors.taskReward = true;
       showAlert(
         "超過可用 Super Coins 數量",
@@ -220,7 +219,8 @@ const Task = () => {
 
     setFormErrors(errors);
 
-    if (hasError) {
+    if (hasError || Object.values(errors).some((e) => e)) {
+      showAlert("🚨 系統提醒", "請填寫必填項目...", "error");
       return;
     }
 
@@ -234,18 +234,6 @@ const Task = () => {
     });
     if (!currentUserId) {
       showAlert("錯誤", "無法識別用戶身份");
-      return;
-    }
-    if (
-      isNaN(taskRewardValue) ||
-      taskRewardValue < 0 ||
-      taskRewardValue > superCoins
-    ) {
-      showAlert(
-        "超過可用 Super Coins 數量",
-        `您目前剩餘 ${superCoins} Super Coins`,
-        "error",
-      );
       return;
     }
     const result = await Swal.fire({
