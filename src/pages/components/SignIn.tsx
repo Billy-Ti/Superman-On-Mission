@@ -65,18 +65,17 @@ const SignIn = () => {
   };
   const handleSignIn = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
+    let userCredential;
     try {
-      const userCredential = await signInWithEmailAndPassword(
-        auth,
-        email,
-        password,
-      );
+      userCredential = await signInWithEmailAndPassword(auth, email, password);
       showAlert("登入成功", "下一個超人就是你~", "success");
-      console.log("登入成功：", userCredential);
       navigate("/");
     } catch (error) {
       showAlert("🚨系統提醒", "登入錯誤", "error");
       console.error("登入錯誤：", error);
+      if (userCredential) {
+        console.log("登入時的用戶憑證：", userCredential);
+      }
     }
   };
 

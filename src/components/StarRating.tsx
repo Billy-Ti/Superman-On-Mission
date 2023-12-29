@@ -59,8 +59,7 @@ const StarRating: React.FC<StarRatingProps> = ({
       }).then(async (result) => {
         if (result.isConfirmed) {
           try {
-            const docRef = await addDoc(collection(db, "reviews"), review);
-            console.log("Review submitted successfully, ID: ", docRef.id);
+            await addDoc(collection(db, "reviews"), review);
 
             const reviewsSnapshot = await getDocs(collection(db, "reviews"));
             let totalRating = 0;
