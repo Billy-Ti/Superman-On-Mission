@@ -1,14 +1,27 @@
-import StartTask from "../components/StartTask";
+import Footer from "../../layout/Footer";
+import Header from "../../layout/Header";
+import EvaluationsGrid from "./HomeEvaluationsGrid";
+import HomePainPoints from "./HomePainPoints";
+import HomeSlogan from "./HomeSlogan";
+import HomeSolutionList from "./HomeSolutionList";
+import HomeTaskCount from "./HomeTaskCount";
+import HomeTaskHeroCard from "./HomeTaskHeroCard";
+import HomeTaskStep from "./HomeTaskStep";
 
-const index = () => {
+const Home = () => {
   return (
     <>
-      <div className="container mx-auto">
-        <p className="text-center mt-10 text-xl">Home</p>
-        <StartTask />
-      </div>
+      <Header />
+      <HomeSlogan />
+      <HomePainPoints />
+      <HomeSolutionList />
+      <HomeTaskCount />
+      <HomeTaskStep />
+      <HomeTaskHeroCard />
+      <EvaluationsGrid />
+      <Footer />
     </>
   );
 };
 
-export default index;
+export default Home;

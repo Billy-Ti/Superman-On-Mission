@@ -1,0 +1,814 @@
+import { Icon } from "@iconify/react";
+import { getAuth, onAuthStateChanged } from "firebase/auth";
+import "firebase/firestore";
+import {
+  collection,
+  doc,
+  getDoc,
+  getDocs,
+  query,
+  updateDoc,
+  where,
+} from "firebase/firestore";
+import { useEffect, useState } from "react";
+import { useParams } from "react-router-dom";
+import Swal from "sweetalert2";
+import LoadingSpinner from "../../components/LoadingSpinner";
+import StarRating from "../../components/StarRating";
+import Footer from "../../layout/Footer";
+import Header from "../../layout/Header";
+import { db } from "../../utils/firebase";
+
+interface Task {
+  id: string;
+  cost: number;
+  dueDate: string;
+  isUrgent: boolean;
+  title: string;
+  city: string;
+  description: string;
+  district: string;
+  reportSupplementaryNotes: string;
+  createdBy: string;
+  notes: string;
+  reportFiles: string[];
+  status: string;
+  reportDescription: string;
+  address: string;
+  feedbackMessage: string;
+  isFeedback: boolean;
+  acceptedBy: string;
+  categorys: string[];
+  photos?: string[];
+  hasBeenRated?: boolean;
+}
+
+const StartTaskDetail = () => {
+  const { taskId } = useParams<{ taskId: string }>();
+  const [taskDetails, setTaskDetails] = useState<Task | null>(null);
+  const [loading, setLoading] = useState(true);
+  const [posterName, setPosterName] = useState<string>("");
+  const [selectedPhoto, setSelectedPhoto] = useState<string | null>(null);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [currentUserId, setCurrentUserId] = useState<string | null>(null);
+  const [showOverlay, setShowOverlay] = useState(true);
+  const [feedbackMessage, setFeedbackMessage] = useState("");
+  const [isFeedbackSubmitted, setIsFeedbackSubmitted] = useState(false);
+  const [showFeedbackContent, setShowFeedbackContent] = useState(false);
+  const [isRatingModalOpen, setIsRatingModalOpen] = useState(false);
+  const [ratedUser, setRatedUser] = useState<string>("defaultRatedUserId");
+  const [ratedStatus, setRatedStatus] = useState<boolean>(false);
+  const [ratingComment, setRatingComment] = useState("");
+  const [acceptorName, setAcceptorName] = useState<string>("");
+
+  const renderPhotoList = () => {
+    const totalSlots = 5;
+
+    const reportPhotos = taskDetails ? taskDetails.reportFiles || [] : [];
+
+    const emptySlots = totalSlots - reportPhotos.length;
+    return (
+      <>
+        {reportPhotos.map((photo, index) => (
+          <li
+            key={photo}
+            className="h-48 w-full border-2 border-dashed border-[#368dcf] md:w-52"
+          >
+            <img
+              className="h-full w-full cursor-pointer object-cover p-2"
+              src={photo}
+              alt={`Task report photo ${index + 1}`}
+              onClick={() => {
+                setSelectedPhoto(photo);
+                setIsModalOpen(true);
+              }}
+            />
+          </li>
+        ))}
+        {[...Array(emptySlots)].map((_, index) => (
+          <li
+            key={`empty-${index}`}
+            className="flex h-48 w-full items-center justify-center border-2 border-dashed border-[#368dcf] font-extrabold md:w-52"
+          >
+            <span>未提供圖片</span>
+          </li>
+        ))}
+      </>
+    );
+  };
+
+  const fetchTaskDetails = async () => {
+    if (!taskId) return;
+    setLoading(true);
+    try {
+      const taskRef = doc(db, "tasks", taskId);
+      const taskSnap = await getDoc(taskRef);
+
+      if (taskSnap.exists()) {
+        const taskData = taskSnap.data() as Task;
+        setTaskDetails(taskData);
+        setRatedUser(taskData.acceptedBy || "");
+        setRatedStatus(taskData.hasBeenRated || false);
+        if (taskData.acceptedBy) {
+          const acceptorRef = doc(db, "users", taskData.acceptedBy);
+          const acceptorSnap = await getDoc(acceptorRef);
+          if (acceptorSnap.exists()) {
+            setAcceptorName(acceptorSnap.data().name);
+          } else {
+            setAcceptorName("未知接案者");
+          }
+        }
+
+        if (taskData.feedbackMessage) {
+          setFeedbackMessage(taskData.feedbackMessage);
+          setIsFeedbackSubmitted(taskData.isFeedback || false);
+        } else {
+          setFeedbackMessage("");
+          setIsFeedbackSubmitted(false);
+        }
+
+        const userId = taskData.createdBy;
+        if (userId) {
+          const userRef = doc(db, "users", userId);
+          const userSnap = await getDoc(userRef);
+          if (userSnap.exists()) {
+            setPosterName(userSnap.data().name);
+          } else {
+            setPosterName("找不到使用者");
+          }
+        }
+      } else {
+        setTaskDetails(null);
+      }
+    } catch (error) {
+      console.error("Error fetching task details:", error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const fetchRatingDetails = async (taskId: string) => {
+    if (!taskId) return;
+
+    try {
+      const querySnapshot = await getDocs(
+        query(collection(db, "reviews"), where("reviewTaskId", "==", taskId)),
+      );
+
+      querySnapshot.forEach((doc) => {
+        const reviewData = doc.data();
+        if (reviewData) {
+          setRatingComment(reviewData.ratedComment || "尚未有評價");
+        }
+      });
+    } catch (error) {
+      console.error("Error fetching rating details:", error);
+    }
+  };
+  const handleFeedBack = async () => {
+    if (!taskId) {
+      console.error("Task ID is undefined");
+      return;
+    }
+
+    const result = await Swal.fire({
+      title: "🚨系統提醒",
+      html: "<strong style='color: gray;'>回饋成功後您將進入評價流程</strong>",
+      icon: "info",
+      showCancelButton: true,
+      confirmButtonText: "確定",
+      cancelButtonText: "取消",
+      reverseButtons: true,
+      allowOutsideClick: false,
+    });
+
+    if (result.isConfirmed) {
+      try {
+        const taskRef = doc(db, "tasks", taskId);
+        await updateDoc(taskRef, {
+          isFeedback: true,
+          feedbackMessage: feedbackMessage,
+          status: "已完成",
+        });
+        setIsFeedbackSubmitted(true);
+        await fetchTaskDetails();
+
+        await Swal.fire({
+          title: "感謝您的回饋",
+          text: "將進入評價流程",
+          icon: "success",
+          timer: 1500,
+          timerProgressBar: true,
+          showConfirmButton: false,
+          allowOutsideClick: false,
+        });
+
+        setIsRatingModalOpen(true);
+      } catch (error) {
+        console.error("Error updating task:", error);
+      }
+    }
+  };
+
+  useEffect(() => {
+    const auth = getAuth();
+    const unsubscribe = auth.onAuthStateChanged((user) => {
+      if (user) {
+        setCurrentUserId(user.uid);
+      } else {
+        setCurrentUserId(null);
+      }
+    });
+
+    return () => unsubscribe();
+  }, []);
+
+  useEffect(() => {
+    const checkAndUpdateOverlayStatus = () => {
+      if (taskDetails && currentUserId) {
+        if (
+          taskDetails.createdBy === currentUserId &&
+          (taskDetails.status === "任務回報完成" ||
+            taskDetails.status === "已完成")
+        ) {
+          setShowOverlay(false);
+        } else {
+          setShowOverlay(true);
+        }
+      }
+    };
+
+    checkAndUpdateOverlayStatus();
+  }, [taskDetails, currentUserId]);
+
+  useEffect(() => {
+    if (taskDetails && currentUserId) {
+      if (
+        taskDetails.createdBy === currentUserId &&
+        taskDetails.status === "任務回報完成"
+      ) {
+        setShowOverlay(false);
+      } else {
+        setShowOverlay(true);
+      }
+    }
+  }, [taskDetails, currentUserId]);
+
+  useEffect(() => {
+    if (taskDetails && currentUserId) {
+      setShowOverlay(
+        !(
+          taskDetails.createdBy === currentUserId &&
+          taskDetails.status === "任務回報完成"
+        ),
+      );
+      setShowFeedbackContent(taskDetails.status === "已完成");
+    }
+  }, [taskDetails, currentUserId]);
+
+  useEffect(() => {
+    fetchTaskDetails();
+  }, [taskId]);
+
+  useEffect(() => {
+    const auth = getAuth();
+    onAuthStateChanged(auth, (user) => {
+      if (user) {
+        setCurrentUserId(user.uid);
+      }
+    });
+  }, []);
+
+  useEffect(() => {
+    if (taskId) {
+      fetchRatingDetails(taskId);
+    }
+  }, [taskId]);
+
+  if (loading) {
+    return <LoadingSpinner />;
+  }
+
+  if (!taskDetails) {
+    return (
+      <div className="flex h-screen items-center justify-center">
+        <div className="text-center">
+          <p className="mb-4 text-lg font-semibold text-gray-800">
+            無相關資料載入，請稍後或重整後再試...
+          </p>
+        </div>
+      </div>
+    );
+  }
+  return (
+    <>
+      <Header />
+      <div className="container mx-auto max-w-[1280px] px-4 py-10 md:py-20 lg:px-20">
+        <div className="mb-4 flex text-3xl font-semibold text-gray-700">
+          <span className="h-8 w-2 bg-[#368dcf]"></span>
+          <p className="pl-2">任務資訊</p>
+        </div>
+        <div className="hidden items-center justify-center space-x-2 py-4 md:flex">
+          <div className="flex items-center justify-center">
+            <div className="flex h-10 w-10 items-center justify-center rounded-full bg-green-500 text-xl font-bold text-white md:h-40 md:w-40">
+              <p>任務媒合中</p>
+            </div>
+          </div>
+          <div className="flex-auto border-t-2 border-black"></div>
+
+          <div className="flex items-center justify-center">
+            <div
+              className={`hidden h-10 w-10 items-center justify-center rounded-full text-xl font-bold md:flex md:h-40 md:w-40 ${
+                taskDetails && taskDetails.status !== "任務媒合中"
+                  ? "bg-green-500 text-white"
+                  : "bg-gray-400"
+              }`}
+            >
+              <p>任務進行中</p>
+            </div>
+            <div
+              className={`flex h-10 w-10 items-center justify-center rounded-full text-xl font-bold md:hidden md:h-40 md:w-40 ${
+                taskDetails && taskDetails.status !== "任務媒合中"
+                  ? "bg-green-500 text-white"
+                  : "bg-gray-400"
+              }`}
+            >
+              <p>任務進行中</p>
+            </div>
+          </div>
+          <div className="flex-auto border-t-2 border-black"></div>
+
+          <div className="flex items-center justify-center">
+            <div
+              className={`flex h-10 w-10 items-center justify-center rounded-full text-xl font-bold md:h-40 md:w-40 ${
+                (taskDetails && taskDetails.status === "任務回報完成") ||
+                taskDetails.status === "已完成"
+                  ? "bg-green-500 text-white"
+                  : "bg-gray-400"
+              }`}
+            >
+              <p>任務回報完成</p>
+            </div>
+          </div>
+          <div className="flex-auto border-t-2 border-black"></div>
+          <div className="flex items-center justify-center">
+            <div
+              className={`flex h-10 w-10 items-center justify-center rounded-full text-xl font-bold md:h-40 md:w-40 ${
+                taskDetails && taskDetails.status === "已完成"
+                  ? "bg-green-500 text-white"
+                  : "bg-gray-400 text-black"
+              }`}
+            >
+              <p>已完成</p>
+            </div>
+          </div>
+        </div>
+        <div className="flex items-center justify-between space-x-2 py-4 md:hidden">
+          <div className="flex flex-col items-center justify-center">
+            <div className="mb-4 flex h-10 w-10 flex-col items-center justify-center rounded-full bg-green-500 text-xl font-bold text-white sm:h-20 sm:w-20"></div>
+            <div className="flex flex-col">
+              <p>任務媒合中</p>
+            </div>
+          </div>
+          <div className="flex-auto border-t-2 border-black"></div>
+
+          <div className="flex flex-col items-center justify-center">
+            <div
+              className={`mb-4 flex h-10 w-10 items-center justify-center rounded-full text-xl font-bold sm:h-20 sm:w-20 ${
+                taskDetails && taskDetails.status !== "任務媒合中"
+                  ? "bg-green-500 text-white"
+                  : "bg-gray-400"
+              }`}
+            ></div>
+            <div className="flex flex-col">
+              <p>任務進行中</p>
+            </div>
+          </div>
+          <div className="flex-auto border-t-2 border-black"></div>
+
+          <div className="flex flex-col items-center justify-center">
+            <div
+              className={`mb-4 flex h-10 w-10 items-center justify-center rounded-full text-xl font-bold sm:h-20 sm:w-20 ${
+                (taskDetails && taskDetails.status === "任務回報完成") ||
+                taskDetails.status === "已完成"
+                  ? "bg-green-500 text-white"
+                  : "bg-gray-400"
+              }`}
+            ></div>
+            <p>任務回報完成</p>
+          </div>
+          <div className="flex-auto border-t-2 border-black"></div>
+          <div className="flex flex-col items-center justify-center">
+            <div
+              className={`mb-4 flex h-10 w-10 items-center justify-center rounded-full text-xl font-bold sm:h-20 sm:w-20 ${
+                taskDetails && taskDetails.status === "已完成"
+                  ? "bg-green-500 text-white"
+                  : "bg-gray-400 text-black"
+              }`}
+            ></div>
+            <p>已完成</p>
+          </div>
+        </div>
+        <div className="flex flex-col lg:flex-row">
+          <div className="space-y-4 p-4 lg:w-1/3">
+            <div className="flex items-center space-x-2">
+              <div className="flex-grow items-center text-xl font-semibold tracking-wider text-[#3178C6]">
+                <span className="text-xl tracking-wider">發案者名稱：</span>
+                {posterName}
+              </div>
+            </div>
+            <div className="flex items-center space-x-2">
+              <div className="flex-grow font-semibold tracking-wider ">
+                <span className="tracking-wider">任務截止日期：</span>
+                {taskDetails.dueDate}
+              </div>
+            </div>
+          </div>
+          <div className="mb-10 grid grid-cols-1 gap-4 rounded-md bg-[#B3D7FF] p-4 md:grid-cols-2 lg:w-2/3">
+            <div className="rounded-md bg-white p-4">
+              <div className="mb-3 border-b-4 border-b-[#B3D7FF] text-center text-xl font-black text-gray-500">
+                任務名稱
+              </div>
+              <div className="font-medium text-[#3178C6]">
+                {taskDetails.title}
+              </div>
+            </div>
+            <div className="rounded-md bg-white p-4">
+              <div className="mb-3  border-b-4 border-b-[#B3D7FF] text-center text-xl font-black text-gray-500">
+                任務地點
+              </div>
+              <div className="font-medium text-[#3178C6]">
+                {taskDetails.city}
+                {taskDetails.district}
+                {taskDetails.address}
+              </div>
+            </div>
+            <div className="rounded-md bg-white p-4">
+              <div className="mb-3 border-b-4 border-b-[#B3D7FF] text-center text-xl font-black text-gray-500">
+                任務類型
+              </div>
+              <div className="font-medium text-[#3178C6]">
+                {taskDetails.categorys
+                  .map((category) => `#${category}`)
+                  .join(" ")}
+              </div>
+            </div>
+            <div className="rounded-md bg-white p-4">
+              <div className="mb-3  border-b-4 border-b-[#B3D7FF] text-center text-xl font-black text-gray-500">
+                任務報酬 Super Coins
+              </div>
+              <div className="flex items-center font-medium text-[#3178C6]">
+                <span>{taskDetails.cost}</span>
+              </div>
+            </div>
+            <div className="rounded-md bg-white p-4">
+              <div className="mb-3 border-b-4 border-b-[#B3D7FF] text-center text-xl font-black text-gray-500">
+                任務說明
+              </div>
+              <div className="font-medium text-[#3178C6]">
+                {taskDetails.description}
+              </div>
+            </div>
+            <div className="rounded-md bg-white p-4">
+              <div className="mb-3 border-b-4 border-b-[#B3D7FF] text-center text-xl font-black text-gray-500">
+                其他備註
+              </div>
+              <div className="font-medium text-[#3178C6]">
+                {taskDetails.notes}
+              </div>
+            </div>
+            <div className="rounded-md bg-white p-4">
+              <div className="mb-3 border-b-4 border-b-[#B3D7FF] text-center text-xl font-black text-gray-500">
+                接案者名稱
+              </div>
+              <div className="font-medium text-[#3178C6]">{acceptorName}</div>
+            </div>
+          </div>
+        </div>
+
+        <div className="mb-4 mt-4 flex text-3xl font-semibold text-gray-700">
+          <span className="h-8 w-2 bg-[#368dcf]"></span>
+          <p className="pl-2">任務照片</p>
+        </div>
+        <div className="mb-10 flex items-center justify-center">
+          <ul className="flex flex-wrap justify-center gap-4">
+            {taskDetails.photos?.map((photo) => (
+              <li
+                key={photo}
+                className="h-52 w-full border-2 border-dashed border-[#368dcf] sm:w-52"
+              >
+                <img
+                  className="h-full w-full cursor-pointer object-cover p-2"
+                  src={photo}
+                  alt="Task photo"
+                  onClick={() => {
+                    setSelectedPhoto(photo);
+                    setIsModalOpen(true);
+                  }}
+                />
+              </li>
+            ))}
+
+            {[...Array(4 - (taskDetails.photos?.length || 0))].map(
+              (_, index) => (
+                <li
+                  key={index}
+                  className="flex h-52 w-full items-center justify-center border-2 border-dashed border-[#368dcf] font-extrabold sm:w-52"
+                >
+                  <span>未提供圖片</span>
+                </li>
+              ),
+            )}
+          </ul>
+
+          {isModalOpen && (
+            <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
+              <div className="relative overflow-auto">
+                <div className="mx-4 flex h-full items-center justify-center">
+                  <img
+                    className="object-cover"
+                    src={selectedPhoto || "defaultImagePath"}
+                    alt="Enlarged task photo"
+                  />
+                  <button
+                    type="button"
+                    className="absolute bottom-3 left-1/2 flex h-10 w-10 -translate-x-1/2 transform items-center justify-center rounded-full p-2 text-black"
+                    onClick={() => setIsModalOpen(false)}
+                  >
+                    <span className="absolute -left-4 -top-4 flex h-10 w-10 animate-ping items-center justify-center rounded-full bg-[#2B79B4] text-sm text-white opacity-75">
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        className="h-5 w-5"
+                        viewBox="0 0 20 20"
+                        fill="currentColor"
+                        role="img"
+                        aria-label="關閉icon"
+                      >
+                        <path
+                          fillRule="evenodd"
+                          d="M14.293 5.293a1 1 0 011.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 11-1.414-1.414L8.586 10 4.293 5.707a1 1 0 111.414-1.414L10 8.586l4.293-4.293z"
+                          clipRule="evenodd"
+                        />
+                      </svg>
+                    </span>
+                  </button>
+                </div>
+              </div>
+            </div>
+          )}
+        </div>
+        {!showOverlay && (
+          <form className="relative mb-10 bg-[#d5e6f8] p-4">
+            <div className="flex items-center">
+              <div className="mb-2 mr-3  flex items-center text-gray-700">
+                <p className=" mr-2 text-3xl font-semibold">驗收內容</p>
+                <p className="text-medium flex flex-col justify-end font-semibold text-red-600">
+                  圖片大小不超過 5MB
+                </p>
+              </div>
+            </div>
+            <ul className="flex flex-wrap justify-center gap-4 lg:flex-nowrap">
+              {renderPhotoList()}
+            </ul>
+            <div>
+              <label
+                htmlFor="input1"
+                className="block text-xl font-extrabold text-gray-700"
+              >
+                任務回報說明
+              </label>
+              <span className="mr-2 text-sm text-red-600">*必填</span>
+              <textarea
+                id="input1"
+                name="input1"
+                rows={3}
+                className="mb-3 mt-1 block w-full resize-none rounded-md border border-gray-300 p-2.5 font-medium tracking-wider shadow-sm focus:border-blue-500 focus:outline-none focus:ring-blue-500"
+                placeholder="請填寫關於此次任務的詳細內容"
+                defaultValue={taskDetails.reportDescription || ""}
+                readOnly
+              />
+            </div>
+            <div>
+              <label
+                htmlFor="input2"
+                className="block text-xl font-extrabold text-gray-700"
+              >
+                超人補充說明
+              </label>
+              <textarea
+                id="input2"
+                name="input2"
+                rows={3}
+                className="mb-3 mt-1 block w-full resize-none rounded-md border border-gray-300 p-2.5 font-medium tracking-wider shadow-sm focus:border-blue-500 focus:outline-none focus:ring-blue-500"
+                placeholder="如要備註其他事項可填寫於此"
+                defaultValue={taskDetails.reportSupplementaryNotes || ""}
+                readOnly
+              />
+            </div>
+            <div>
+              <label
+                htmlFor="comment"
+                className="flex text-xl font-extrabold text-gray-700"
+              >
+                To 超人的評價
+                <span className="flex items-center text-sm font-extrabold text-[#2B79B4]">
+                  <Icon icon="solar:star-bold" />
+                  案主填寫
+                </span>
+              </label>
+              <textarea
+                id="comment"
+                name="comment"
+                rows={3}
+                className="mb-3 mt-1 block w-full resize-none rounded-md border border-gray-300 p-2.5 font-medium tracking-wider shadow-sm focus:border-blue-500 focus:outline-none focus:ring-blue-500"
+                placeholder="案主評價內容將顯示於此"
+                defaultValue={ratingComment}
+                readOnly
+              />
+            </div>
+            <div>
+              <label
+                htmlFor="input3"
+                className="flex text-xl font-extrabold text-gray-700"
+              >
+                發案者回饋
+                <span className="flex items-center text-sm font-extrabold text-[#2B79B4]">
+                  <Icon icon="solar:star-bold" />
+                  案主填寫
+                </span>
+              </label>
+              <textarea
+                id="input3"
+                name="input3"
+                rows={3}
+                className="mb-10 mt-1 block w-full resize-none rounded-md border border-gray-300 bg-blue-200 p-2.5 font-medium tracking-wider shadow-sm focus:border-blue-500 focus:outline-none focus:ring-blue-500"
+                placeholder={
+                  isFeedbackSubmitted
+                    ? feedbackMessage
+                    : "請針對此任務驗收成果填寫。"
+                }
+                value={feedbackMessage}
+                onChange={(e) => setFeedbackMessage(e.target.value)}
+                readOnly={isFeedbackSubmitted}
+              />
+            </div>
+            <div className="flex justify-center">
+              <button
+                onClick={handleFeedBack}
+                type="button"
+                className="rounded-md bg-[#368DCF] px-6 py-4 text-xl font-medium text-white transition duration-500 ease-in-out hover:bg-[#2b79b4]"
+              >
+                送出
+              </button>
+            </div>
+            {showOverlay && (
+              <div className="absolute inset-0 flex items-center justify-center bg-black bg-opacity-50">
+                <div className="relative flex h-[100px] w-[400px] items-center justify-center">
+                  <span className="absolute -left-4 -top-4 h-[100px] w-[400px] animate-ping rounded-full bg-gray-200 opacity-75" />
+                  <span className="absolute -left-4 -top-4 flex h-[100px] w-[400px] items-center justify-center rounded-full bg-gray-200">
+                    <p className="z-10 text-2xl font-extrabold text-black">
+                      等待『任務進行中』才會開放
+                    </p>
+                  </span>
+                </div>
+              </div>
+            )}
+          </form>
+        )}
+        {showFeedbackContent && (
+          <form className="relative mb-10 rounded-md bg-[#d5e6f8] p-4">
+            <div className="flex items-center">
+              <div className="mb-2 mr-3 flex items-center text-gray-700">
+                <p className=" mr-2 text-3xl font-semibold">驗收內容</p>
+                <p className="text-medium flex flex-col justify-end font-semibold text-red-600">
+                  圖片大小不超過 5MB
+                </p>
+              </div>
+            </div>
+            <ul className="flex flex-wrap justify-center gap-4 lg:flex-nowrap">
+              {renderPhotoList()}
+            </ul>
+            <div>
+              <label
+                htmlFor="input1"
+                className="block text-xl font-extrabold text-gray-700"
+              >
+                任務回報說明
+              </label>
+              <span className="mr-2 text-sm text-red-600">*必填</span>
+              <textarea
+                id="input1"
+                name="input1"
+                rows={3}
+                className="mb-3 mt-1 block w-full resize-none rounded-md border border-gray-300 p-2.5 font-medium tracking-wider shadow-sm focus:border-blue-500 focus:outline-none focus:ring-blue-500"
+                placeholder={
+                  taskDetails.status === "已完成"
+                    ? "已完成，不能輸入"
+                    : "請填寫關於此次任務的詳細內容"
+                }
+                defaultValue={taskDetails.reportDescription || ""}
+                readOnly={taskDetails.status === "已完成"}
+              />
+            </div>
+            <div>
+              <label
+                htmlFor="input2"
+                className="block text-xl font-extrabold text-gray-700"
+              >
+                超人補充說明
+              </label>
+              <textarea
+                id="input2"
+                name="input2"
+                rows={3}
+                className="mb-3 mt-1 block w-full resize-none rounded-md border border-gray-300 p-2.5 font-medium tracking-wider shadow-sm focus:border-blue-500 focus:outline-none focus:ring-blue-500"
+                placeholder={
+                  taskDetails.status === "已完成"
+                    ? "已完成，不能輸入"
+                    : "如要備註其他事項可填寫於此"
+                }
+                defaultValue={taskDetails.reportSupplementaryNotes || ""}
+                readOnly={taskDetails.status === "已完成"}
+              />
+            </div>
+            <div>
+              <label
+                htmlFor="comment"
+                className="flex text-xl font-extrabold text-gray-700"
+              >
+                To 超人的評價
+                <span className="flex items-center text-sm font-extrabold text-[#2B79B4]">
+                  <Icon icon="solar:star-bold" />
+                  案主填寫
+                </span>
+              </label>
+              <textarea
+                id="comment"
+                name="comment"
+                rows={3}
+                className="mb-3 mt-1 block w-full resize-none rounded-md border border-gray-300 p-2.5 font-medium tracking-wider shadow-sm focus:border-blue-500 focus:outline-none focus:ring-blue-500"
+                placeholder="案主評價內容將顯示於此"
+                defaultValue={ratingComment}
+                readOnly
+              />
+            </div>
+            <div>
+              <label
+                htmlFor="input3"
+                className="flex text-xl font-extrabold text-gray-700"
+              >
+                發案者回饋
+                <span className="flex items-center text-sm font-extrabold text-[#2B79B4]">
+                  <Icon icon="solar:star-bold" />
+                  案主填寫
+                </span>
+              </label>
+              <textarea
+                id="input3"
+                name="input3"
+                rows={3}
+                className="mb-10 mt-1 block w-full resize-none rounded-md border border-gray-300 bg-blue-200 p-2.5 font-medium tracking-wider shadow-sm focus:border-blue-500 focus:outline-none focus:ring-blue-500"
+                placeholder={
+                  isFeedbackSubmitted
+                    ? feedbackMessage
+                    : "請針對此任務驗收成果填寫"
+                }
+                value={feedbackMessage}
+                onChange={(e) => setFeedbackMessage(e.target.value)}
+                disabled={taskDetails.status === "已完成"}
+                readOnly={isFeedbackSubmitted}
+              />
+            </div>
+            <div className="flex justify-center">
+              <button
+                onClick={handleFeedBack}
+                type="button"
+                disabled={
+                  isFeedbackSubmitted || taskDetails.status === "已完成"
+                }
+                className={`rounded-md bg-[#368DCF] px-6 py-4 text-xl font-medium text-white transition duration-500 ease-in-out hover:bg-[#2b79b4] ${
+                  isFeedbackSubmitted || taskDetails.status === "已完成"
+                    ? "cursor-not-allowed opacity-50"
+                    : ""
+                }`}
+              >
+                送出
+              </button>
+            </div>
+          </form>
+        )}
+        {isRatingModalOpen && (
+          <StarRating
+            taskId={taskId || "defaultTaskId"}
+            currentUserId={currentUserId || "defaultUserId"}
+            ratedUser={ratedUser}
+            ratedStatus={ratedStatus !== undefined ? ratedStatus : false}
+          />
+        )}
+      </div>
+      <Footer />
+    </>
+  );
+};
+
+export default StartTaskDetail;
