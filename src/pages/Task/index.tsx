@@ -18,12 +18,21 @@ import { useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import Swal from "sweetalert2";
 import { v4 as uuidv4 } from "uuid";
-import { app, auth } from "../../config/firebase";
+import Footer from "../../layout/Footer";
+import Header from "../../layout/Header";
+import { app, auth } from "../../utils/firebase";
 import { showAlert } from "../../utils/showAlert";
 import ServiceType, { ServiceTypeRef } from "../components/ServiceType";
 import countyToRegion from "../components/TaiwanRegion";
-import Footer from "../layout/Footer";
-import Header from "../layout/Header";
+
+interface FormErrors {
+  taskTitle: boolean;
+  selectedCounty: boolean;
+  selectedRegion: boolean;
+  detailedAddress: boolean;
+  taskDescription: boolean;
+  taskReward: boolean;
+}
 
 const db = getFirestore(app);
 const storage = getStorage(app);
@@ -46,16 +55,27 @@ const Task = () => {
   const regionRef = useRef<HTMLDivElement>(null);
   const [isCountyDropdownOpen, setIsCountyDropdownOpen] = useState(false);
   const [isRegionDropdownOpen, setIsRegionDropdownOpen] = useState(false);
+  const [formErrors, setFormErrors] = useState<FormErrors>({
+    taskTitle: false,
+    selectedCounty: false,
+    selectedRegion: false,
+    detailedAddress: false,
+    taskDescription: false,
+    taskReward: false,
+  });
 
   const navigate = useNavigate();
   const handleTaskRewardChange = (
     event: React.ChangeEvent<HTMLInputElement>,
   ) => {
     const rewardValue = Number(event.target.value);
+
     if (!isNaN(rewardValue) && rewardValue >= 0) {
       setTaskReward(event.target.value);
+      setFormErrors((prevErrors) => ({ ...prevErrors, taskReward: false }));
     } else {
       showAlert("🚨系統提醒", "請輸入有效的數字...");
+      setFormErrors((prevErrors) => ({ ...prevErrors, taskReward: true }));
     }
   };
   const onCountyChange = (county: string) => {
@@ -165,6 +185,45 @@ const Task = () => {
   ) => {
     event.preventDefault();
 
+    let hasError = false;
+
+    const errors = {
+      taskTitle: !taskTitle.trim(),
+      selectedCounty: !selectedCounty.trim(),
+      selectedRegion: !selectedRegion.trim(),
+      detailedAddress: !detailedAddress.trim(),
+      taskDescription: !taskDescription.trim(),
+      taskReward: false,
+    };
+
+    const taskRewardValue = Number(taskReward);
+    if (!taskReward.trim() || isNaN(taskRewardValue) || taskRewardValue < 0) {
+      errors.taskReward = true;
+      showAlert("🚨 系統提醒", "請輸入有效的數字...", "error");
+      hasError = true;
+    } else if (taskRewardValue > superCoins) {
+      errors.taskReward = true;
+      showAlert(
+        "超過可用 Super Coins 數量",
+        `您目前剩餘 ${superCoins} Super Coins`,
+        "error",
+      );
+      hasError = true;
+    }
+
+    const isDateValid = serviceTypeRef.current?.validateDate();
+    if (!isDateValid) {
+      showAlert("🚨 系統提醒", "請填寫必填項目...", "error");
+      hasError = true;
+    }
+
+    setFormErrors(errors);
+
+    if (hasError || Object.values(errors).some((e) => e)) {
+      showAlert("🚨 系統提醒", "請填寫必填項目...", "error");
+      return;
+    }
+
     const fileInputs = document.querySelectorAll('input[type="file"]');
     const files = Array.from(fileInputs).flatMap((input) => {
       const inputElement = input as HTMLInputElement;
@@ -175,19 +234,6 @@ const Task = () => {
     });
     if (!currentUserId) {
       showAlert("錯誤", "無法識別用戶身份");
-      return;
-    }
-    const taskRewardValue = Number(taskReward);
-    if (
-      isNaN(taskRewardValue) ||
-      taskRewardValue < 0 ||
-      taskRewardValue > superCoins
-    ) {
-      showAlert(
-        "超過可用 Super Coins 數量",
-        `您目前剩餘 ${superCoins} Super Coins`,
-        "error",
-      );
       return;
     }
     const result = await Swal.fire({
@@ -285,14 +331,20 @@ const Task = () => {
                   <label htmlFor="taskTitle" className="text-xl md:text-2xl">
                     標題
                   </label>
+                  <span className="text-sm font-black text-red-600">*必填</span>
                 </div>
                 <input
                   type="text"
                   id="taskTitle"
                   value={taskTitle}
-                  onChange={(e) => setTaskTitle(e.target.value)}
+                  onChange={(e) => {
+                    setTaskTitle(e.target.value);
+                    setFormErrors({ ...formErrors, taskTitle: false });
+                  }}
                   placeholder="例如 : 請人幫我...，請盡量輸入明白的任務需求"
-                  className="w-full rounded-md border bg-[#EFF7FF] p-3 font-medium focus:bg-white focus:outline-none"
+                  className={`w-full rounded-md border p-3 font-medium focus:bg-white focus:outline-none ${
+                    formErrors.taskTitle ? "border-red-500" : "bg-[#EFF7FF]"
+                  }`}
                 />
               </div>
               <div className="mb-8 flex flex-col flex-wrap items-start sm:flex-row sm:items-center">
@@ -302,9 +354,10 @@ const Task = () => {
                 >
                   <div className="flex items-center">
                     <span className="mr-2 h-8 w-2 bg-[#368dcf]"></span>
-                    <p className="mr-3 whitespace-nowrap text-xl font-semibold md:text-2xl">
+                    <p className="whitespace-nowrap text-xl font-semibold md:text-2xl">
                       選擇類別 / 輸入地址
                     </p>
+                    <span className="mr-2 text-sm text-red-600">*必填</span>
                   </div>
                   <div className="relative flex">
                     <button
@@ -388,9 +441,16 @@ const Task = () => {
                 <input
                   type="text"
                   placeholder="請輸入詳細地址，例如 : xx 路 x 巷 x 弄 x 號 x 樓"
-                  className="w-full rounded-md border bg-[#EFF7FF] p-3 font-medium focus:bg-white focus:outline-none"
+                  className={`w-full rounded-md border ${
+                    formErrors.detailedAddress
+                      ? "border-red-500"
+                      : "bg-[#EFF7FF]"
+                  } p-3 font-medium focus:bg-white focus:outline-none`}
                   value={detailedAddress}
-                  onChange={(e) => setDetailedAddress(e.target.value)}
+                  onChange={(e) => {
+                    setDetailedAddress(e.target.value);
+                    setFormErrors({ ...formErrors, detailedAddress: false });
+                  }}
                 />
               </div>
 
@@ -398,23 +458,31 @@ const Task = () => {
               <div className="mb-4 flex flex-col items-center justify-between gap-4 lg:flex-row">
                 <div className="flex w-full flex-col lg:w-1/2">
                   <div className="mb-4 flex items-center">
-                    <div className="flex">
+                    <div className="flex items-center">
                       <span className="mr-2 h-8 w-2 bg-[#368dcf]"></span>
-                      <p className="mr-3 text-xl font-semibold md:text-2xl">
+                      <p className="text-xl font-semibold md:text-2xl">
                         任務說明
                       </p>
+                      <span className="mr-3 text-sm text-red-600">*必填</span>
                       <p className="md:text-medium flex flex-col justify-end text-sm font-semibold text-red-600">
-                        請輸入20字以上，以明白要做什麼事情
+                        建議輸入20字以上，以明白要做什麼事情
                       </p>
                     </div>
                   </div>
                   <textarea
-                    className="h-30 mb-4 w-full resize-none rounded-md border bg-[#EFF7FF] p-4 font-medium focus:bg-white focus:outline-none"
+                    className={`h-30 mb-4 w-full resize-none rounded-md border ${
+                      formErrors.taskDescription
+                        ? "border-red-500"
+                        : "bg-[#EFF7FF]"
+                    } p-4 font-medium focus:bg-white focus:outline-none`}
                     name="startTaskContent"
                     id="startTaskContent"
                     value={taskDescription}
                     placeholder="例：我需要為我的網站設計 LOGO，未來我想用在作品集"
-                    onChange={(e) => setTaskDescription(e.target.value)}
+                    onChange={(e) => {
+                      setTaskDescription(e.target.value);
+                      setFormErrors({ ...formErrors, taskDescription: false });
+                    }}
                   ></textarea>
                 </div>
                 <div className="flex w-full flex-col items-start lg:w-1/2">
@@ -438,9 +506,10 @@ const Task = () => {
                 <div className="flex w-full flex-col items-start lg:w-1/2">
                   <div className="mb-4 flex items-end text-right">
                     <span className="mr-2 h-8 w-2 bg-[#368dcf]"></span>
-                    <p className="mr-3 text-xl font-semibold md:text-2xl">
+                    <p className="text-xl font-semibold md:text-2xl">
                       任務報酬
                     </p>
+                    <span className="mr-3 text-sm text-red-600">*必填</span>
                     <div className="text-medium flex items-center font-medium">
                       <p>剩餘</p>
                       <span className="ml-1 hidden sm:block">
@@ -454,7 +523,9 @@ const Task = () => {
                     type="text"
                     id="taskReward"
                     placeholder="願支付多少 Coin 請人完成任務"
-                    className="w-full  rounded-md border bg-[#EFF7FF] p-3 font-medium focus:bg-white focus:outline-none"
+                    className={`w-full  rounded-md border ${
+                      formErrors.taskReward ? "border-red-500" : "bg-[#EFF7FF]"
+                    } p-3 font-medium focus:bg-white focus:outline-none`}
                     value={taskReward}
                     onChange={handleTaskRewardChange}
                   />

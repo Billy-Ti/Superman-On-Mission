@@ -10,7 +10,7 @@ import {
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import Swal from "sweetalert2";
-import { db } from "../config/firebase";
+import { db } from "../utils/firebase";
 interface StarRatingProps {
   taskId: string;
   currentUserId: string;
@@ -56,12 +56,10 @@ const StarRating: React.FC<StarRatingProps> = ({
         cancelButtonText: "取消",
         reverseButtons: true,
         allowOutsideClick: false,
-        background: "#DBE2EC",
       }).then(async (result) => {
         if (result.isConfirmed) {
           try {
-            const docRef = await addDoc(collection(db, "reviews"), review);
-            console.log("Review submitted successfully, ID: ", docRef.id);
+            await addDoc(collection(db, "reviews"), review);
 
             const reviewsSnapshot = await getDocs(collection(db, "reviews"));
             let totalRating = 0;

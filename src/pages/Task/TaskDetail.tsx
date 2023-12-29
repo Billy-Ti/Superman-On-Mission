@@ -16,9 +16,9 @@ import { useNavigate, useParams } from "react-router-dom";
 import Swal from "sweetalert2";
 import LoadingSpinner from "../../components/LoadingSpinner";
 import ChatRoomWindow from "../../components/chatRoom";
-import { db } from "../../config/firebase";
-import Footer from "../layout/Footer";
-import Header from "../layout/Header";
+import Footer from "../../layout/Footer";
+import Header from "../../layout/Header";
+import { db } from "../../utils/firebase";
 
 interface Task {
   id: string;
@@ -123,12 +123,9 @@ const TaskDetail = () => {
             const userSnap = await getDoc(userRef);
             if (userSnap.exists()) {
               setPosterName(userSnap.data().name);
-            } else {
-              console.log("No such user!");
             }
           }
         } else {
-          console.log("No such task!");
           setTaskDetails(null);
         }
       } catch (error) {

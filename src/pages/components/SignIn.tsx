@@ -7,15 +7,15 @@ import {
 import { doc, setDoc } from "firebase/firestore";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { db } from "../../config/firebase";
+import Footer from "../../layout/Footer";
+import Header from "../../layout/Header";
+import { db } from "../../utils/firebase";
 import { showAlert } from "../../utils/showAlert";
-import Footer from "../layout/Footer";
-import Header from "../layout/Header";
 const SignIn = () => {
   const [isRightPanelActive, setIsRightPanelActive] = useState(false);
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [name, setName] = useState("");
+  const [email, setEmail] = useState("alice@gmail.com");
+  const [password, setPassword] = useState("aqqqqq");
+  const [name, setName] = useState("Alice");
   const navigate = useNavigate();
   const auth = getAuth();
   const handleSignUpClick = () => {
@@ -26,6 +26,10 @@ const SignIn = () => {
   };
   const handleSignUp = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
+    if (!name.trim() || !email.trim() || !password.trim()) {
+      showAlert("🚨系統提醒", "請填寫所有欄位", "error");
+      return;
+    }
     try {
       const joinedAt = new Date().toLocaleDateString();
       const userCredential = await createUserWithEmailAndPassword(
@@ -61,18 +65,17 @@ const SignIn = () => {
   };
   const handleSignIn = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
+    let userCredential;
     try {
-      const userCredential = await signInWithEmailAndPassword(
-        auth,
-        email,
-        password,
-      );
+      userCredential = await signInWithEmailAndPassword(auth, email, password);
       showAlert("登入成功", "下一個超人就是你~", "success");
-      console.log("登入成功：", userCredential.user);
       navigate("/");
     } catch (error) {
       showAlert("🚨系統提醒", "登入錯誤", "error");
       console.error("登入錯誤：", error);
+      if (userCredential) {
+        console.log("登入時的用戶憑證：", userCredential);
+      }
     }
   };
 

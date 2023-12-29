@@ -5,8 +5,8 @@ import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import NoRecordsComponent from "../../components/NoRecordsComponent";
 import Pagination from "../../components/Pagination";
-import { db } from "../../config/firebase";
 import usePagination from "../../hooks/usePagination";
+import { db } from "../../utils/firebase";
 interface Task {
   id: string;
   cost: number;
@@ -39,7 +39,6 @@ const AcceptTaskRecord = () => {
       const auth = getAuth();
       const currentUser = auth.currentUser;
       if (!currentUser) {
-        console.log("沒有用戶登錄");
         return;
       }
       const q = query(
@@ -154,7 +153,9 @@ const AcceptTaskRecord = () => {
                         className="mr-1 flex-shrink-0"
                       />
                       {task.categorys.map((category, index) => (
-                        <>{index > 0 ? `、${category}` : category}</>
+                        <span key={task.id + "-" + index}>
+                          {index > 0 ? `、${category}` : category}
+                        </span>
                       ))}
                     </h5>
                     <div className="flex grow flex-col">

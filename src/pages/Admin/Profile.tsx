@@ -10,10 +10,10 @@ import {
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import Swal from "sweetalert2";
-import { db } from "../../config/firebase";
+import Footer from "../../layout/Footer";
+import Header from "../../layout/Header";
+import { db } from "../../utils/firebase";
 import { showAlert } from "../../utils/showAlert";
-import Footer from "../layout/Footer";
-import Header from "../layout/Header";
 import SideBar from "./SideBar";
 const Profile = () => {
   const [profilePic, setProfilePic] = useState(

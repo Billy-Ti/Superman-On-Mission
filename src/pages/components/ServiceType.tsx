@@ -16,6 +16,7 @@ export interface ServiceTypeRef {
   getSelectedServiceTypes: () => string[];
   getUrgentStatus: () => boolean | null;
   getDate: () => string;
+  validateDate: () => boolean;
 }
 interface AirDatepickerInstance {
   selectDate: (date: Date) => void;
@@ -30,6 +31,7 @@ const ServiceType = forwardRef((_props, ref) => {
   const [urgent, setUrgent] = useState<boolean | null>(false);
   const [selectedDate, setSelectedDate] = useState<string>("");
   const datepickerRef = useRef<AirDatepickerInstance | null>(null);
+  const [dateError, setDateError] = useState(false);
 
   useEffect(() => {
     datepickerRef.current = new AirDatepicker("#datepicker", {
@@ -43,6 +45,7 @@ const ServiceType = forwardRef((_props, ref) => {
         } else {
           setSelectedDate(formattedDate);
         }
+        setDateError(false);
       },
     });
 
@@ -60,6 +63,11 @@ const ServiceType = forwardRef((_props, ref) => {
       setSelectedIndexes([]);
       setUrgent(false);
       setSelectedDate("");
+    },
+    validateDate: () => {
+      const isValid = !!selectedDate;
+      setDateError(!isValid);
+      return isValid;
     },
     getSelectedServiceTypes: () => {
       return selectedIndexes.map((index) => serviceType[index]);
@@ -153,17 +161,21 @@ const ServiceType = forwardRef((_props, ref) => {
             <div className="flex items-center">
               <div className="flex items-center font-semibold">
                 <span className="mr-2 h-8 w-2 bg-[#368dcf]"></span>
-                <p className="pr-4 text-xl font-semibold sm:text-2xl">
-                  任務截止日
-                </p>
+                <p className="text-xl font-semibold sm:text-2xl">任務截止日</p>
+                <span className="mr-2 text-sm font-black text-red-600">
+                  *必填
+                </span>
               </div>
               <div className="relative flex items-center">
                 <input
-                  className="scale-95 transform cursor-pointer rounded-md border p-1  focus:outline-none"
+                  className={`scale-95 transform cursor-pointer rounded-md border p-1 focus:outline-none ${
+                    dateError ? "border-red-500" : ""
+                  }`}
                   id="datepicker"
                   placeholder="請選擇截止日期"
                   type="text"
                   value={selectedDate}
+                  readOnly // 使輸入框為唯讀，因為日期是通過日曆選擇的
                 />
                 <svg
                   onClick={handleIconClick}

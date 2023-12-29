@@ -15,9 +15,9 @@ import { useParams } from "react-router-dom";
 import Swal from "sweetalert2";
 import LoadingSpinner from "../../components/LoadingSpinner";
 import StarRating from "../../components/StarRating";
-import { db } from "../../config/firebase";
-import Footer from "../layout/Footer";
-import Header from "../layout/Header";
+import Footer from "../../layout/Footer";
+import Header from "../../layout/Header";
+import { db } from "../../utils/firebase";
 
 interface Task {
   id: string;
@@ -126,22 +126,18 @@ const StartTaskDetail = () => {
           setFeedbackMessage("");
           setIsFeedbackSubmitted(false);
         }
-        console.log(taskData);
 
         const userId = taskData.createdBy;
         if (userId) {
           const userRef = doc(db, "users", userId);
           const userSnap = await getDoc(userRef);
           if (userSnap.exists()) {
-            console.log("User data:", userSnap.data());
             setPosterName(userSnap.data().name);
           } else {
-            console.log("No such user!");
             setPosterName("找不到使用者");
           }
         }
       } else {
-        console.log("No such task!", taskId);
         setTaskDetails(null);
       }
     } catch (error) {
@@ -279,8 +275,6 @@ const StartTaskDetail = () => {
     onAuthStateChanged(auth, (user) => {
       if (user) {
         setCurrentUserId(user.uid);
-      } else {
-        console.log("使用者未登入");
       }
     });
   }, []);
@@ -564,7 +558,7 @@ const StartTaskDetail = () => {
           )}
         </div>
         {!showOverlay && (
-          <form className="relative mb-10 bg-gray-400 p-4">
+          <form className="relative mb-10 bg-[#d5e6f8] p-4">
             <div className="flex items-center">
               <div className="mb-2 mr-3  flex items-center text-gray-700">
                 <p className=" mr-2 text-3xl font-semibold">驗收內容</p>
@@ -583,12 +577,13 @@ const StartTaskDetail = () => {
               >
                 任務回報說明
               </label>
+              <span className="mr-2 text-sm text-red-600">*必填</span>
               <textarea
                 id="input1"
                 name="input1"
                 rows={3}
                 className="mb-3 mt-1 block w-full resize-none rounded-md border border-gray-300 p-2.5 font-medium tracking-wider shadow-sm focus:border-blue-500 focus:outline-none focus:ring-blue-500"
-                placeholder="請填寫關於此任務的詳細完成成果"
+                placeholder="請填寫關於此次任務的詳細內容"
                 defaultValue={taskDetails.reportDescription || ""}
                 readOnly
               />
@@ -605,7 +600,7 @@ const StartTaskDetail = () => {
                 name="input2"
                 rows={3}
                 className="mb-3 mt-1 block w-full resize-none rounded-md border border-gray-300 p-2.5 font-medium tracking-wider shadow-sm focus:border-blue-500 focus:outline-none focus:ring-blue-500"
-                placeholder="請補充所需要讓發案者知道的資訊"
+                placeholder="如要備註其他事項可填寫於此"
                 defaultValue={taskDetails.reportSupplementaryNotes || ""}
                 readOnly
               />
@@ -626,7 +621,7 @@ const StartTaskDetail = () => {
                 name="comment"
                 rows={3}
                 className="mb-3 mt-1 block w-full resize-none rounded-md border border-gray-300 p-2.5 font-medium tracking-wider shadow-sm focus:border-blue-500 focus:outline-none focus:ring-blue-500"
-                placeholder="尚未有評價內容"
+                placeholder="案主評價內容將顯示於此"
                 defaultValue={ratingComment}
                 readOnly
               />
@@ -681,7 +676,7 @@ const StartTaskDetail = () => {
           </form>
         )}
         {showFeedbackContent && (
-          <form className="relative mb-10 bg-gray-400 p-4">
+          <form className="relative mb-10 rounded-md bg-[#d5e6f8] p-4">
             <div className="flex items-center">
               <div className="mb-2 mr-3 flex items-center text-gray-700">
                 <p className=" mr-2 text-3xl font-semibold">驗收內容</p>
@@ -700,6 +695,7 @@ const StartTaskDetail = () => {
               >
                 任務回報說明
               </label>
+              <span className="mr-2 text-sm text-red-600">*必填</span>
               <textarea
                 id="input1"
                 name="input1"
@@ -708,7 +704,7 @@ const StartTaskDetail = () => {
                 placeholder={
                   taskDetails.status === "已完成"
                     ? "已完成，不能輸入"
-                    : "請填寫關於此任務的詳細完成成果"
+                    : "請填寫關於此次任務的詳細內容"
                 }
                 defaultValue={taskDetails.reportDescription || ""}
                 readOnly={taskDetails.status === "已完成"}
@@ -729,7 +725,7 @@ const StartTaskDetail = () => {
                 placeholder={
                   taskDetails.status === "已完成"
                     ? "已完成，不能輸入"
-                    : "請補充所需要讓發案者知道的資訊"
+                    : "如要備註其他事項可填寫於此"
                 }
                 defaultValue={taskDetails.reportSupplementaryNotes || ""}
                 readOnly={taskDetails.status === "已完成"}
@@ -751,7 +747,7 @@ const StartTaskDetail = () => {
                 name="comment"
                 rows={3}
                 className="mb-3 mt-1 block w-full resize-none rounded-md border border-gray-300 p-2.5 font-medium tracking-wider shadow-sm focus:border-blue-500 focus:outline-none focus:ring-blue-500"
-                placeholder="尚未有評價內容"
+                placeholder="案主評價內容將顯示於此"
                 defaultValue={ratingComment}
                 readOnly
               />

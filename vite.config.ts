@@ -1,10 +1,18 @@
 import react from '@vitejs/plugin-react';
-import { defineConfig } from 'vite';
+import { defineConfig, UserConfig as ViteUserConfig } from 'vite';
+import { UserConfig as VitestUserConfig } from 'vitest';
+
+type UserConfig = ViteUserConfig & Partial<VitestUserConfig>;
 
 // https://vitejs.dev/config/
 export default defineConfig({
   plugins: [react()],
   build: {
-    chunkSizeWarningLimit: 2000, // 將警告限制提高到 1000KB
+    chunkSizeWarningLimit: 2000,
   },
-});
+  test: {
+    globals: true,
+    environment: 'jsdom',
+    setupFiles: ['./src/test-setup.ts'],
+  },
+} as UserConfig);
