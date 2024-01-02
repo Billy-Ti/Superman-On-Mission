@@ -33,13 +33,13 @@ const Carousel = () => {
     fetchTasks();
   }, []);
 
-  const showDots = true;
+  // const showDots = true;
   const visibleTasks = tasks.length > 6 ? tasks.slice(0, 6) : tasks;
   if (visibleTasks.length === 0) {
     return <div className="text-2xl font-bold">目前沒有任務</div>;
   }
   const CarouselSetting = {
-    dots: showDots,
+    dots: true,
     infinite: true,
     speed: 500,
     slidesToShow: Math.min(6, visibleTasks.length),
@@ -53,10 +53,10 @@ const Carousel = () => {
       {
         breakpoint: 1280,
         settings: {
-          slidesToShow: Math.min(3, visibleTasks.length),
+          slidesToShow: Math.min(6, visibleTasks.length),
           slidesToScroll: 1,
           infinite: true,
-          dots: true,
+          dots: tasks.length >= 6,
         },
       },
       {
@@ -65,7 +65,7 @@ const Carousel = () => {
           slidesToShow: Math.min(2, visibleTasks.length),
           slidesToScroll: 1,
           infinite: true,
-          dots: true,
+          dots: tasks.length >= 6,
           centerMode: false,
         },
       },
@@ -75,7 +75,7 @@ const Carousel = () => {
           slidesToShow: 1,
           slidesToScroll: 1,
           initialSlide: 1,
-          dots: true,
+          dots: false,
         },
       },
     ],
@@ -125,7 +125,7 @@ const Carousel = () => {
                   </h3>
                 </div>
 
-                <div className="min-h-[225px]">
+                <div className="flex min-h-[225px] items-center justify-center">
                   {task.photos && task.photos.length > 0 ? (
                     <div className="mb-4 text-center">
                       <Link
@@ -141,12 +141,26 @@ const Carousel = () => {
                       </Link>
                     </div>
                   ) : (
-                    <div className="mx-auto flex h-52 w-52 flex-col items-center justify-center">
-                      <p className="font-semibold">無提供圖片</p>
-                      <Icon
-                        icon="bxs:image-alt"
-                        className="h-20 w-20 text-gray-600"
-                      />
+                    // <div className="mx-auto h-52 w-52 rounded-md border-[4px] border-[transparent] object-cover duration-300 [box-shadow:rgb(0_0_0_/_69%)_0px_26px_30px_-10px,rgb(0_0_0_/_20%)_0px_16px_10px_-10px] hover:border-[4px]  hover:border-[rgba(249,249,249,0.8)]">
+                    //   <p className="font-semibold">無提供圖片</p>
+                    //   <Icon
+                    //     icon="bxs:image-alt"
+                    //     className="h-20 w-20 text-gray-600"
+                    //   />
+                    // </div>
+
+                    <div className="mb-4 flex justify-center text-center">
+                      <Link
+                        title="前往任務資訊"
+                        to={`/acceptDetail/${task.id}`}
+                        className="block text-center"
+                      >
+                        <p className="font-semibold">無提供圖片</p>
+                        <Icon
+                          icon="bxs:image-alt"
+                          className="h-20 w-20 text-gray-600"
+                        />
+                      </Link>
                     </div>
                   )}
                 </div>
