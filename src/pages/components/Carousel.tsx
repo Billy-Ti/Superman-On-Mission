@@ -3,6 +3,8 @@ import {
   collection,
   getDocs,
   getFirestore,
+  limit,
+  orderBy,
   query,
   where,
 } from "firebase/firestore";
@@ -21,15 +23,27 @@ const Carousel = () => {
   useEffect(() => {
     const fetchTasks = async () => {
       const firestore = getFirestore();
-      const tasksCol = collection(firestore, "tasks");
-      const q = query(tasksCol, where("status", "==", "任務媒合中"));
-      const taskSnapshot = await getDocs(q);
-      const tasksList: Task[] = taskSnapshot.docs.map((doc) => ({
-        ...(doc.data() as Task),
-        id: doc.id,
-      }));
-      setTasks(tasksList);
+
+      const q = query(
+        collection(firestore, "tasks"),
+        where("status", "==", "任務媒合中"),
+        orderBy("createdAt", "desc"),
+        limit(6),
+      );
+
+      try {
+        const querySnapshot = await getDocs(q);
+        const fetchedTasks = querySnapshot.docs.map((doc) => ({
+          ...(doc.data() as Task),
+          id: doc.id,
+        }));
+        setTasks(fetchedTasks);
+      } catch (error) {
+        console.error("Error fetching tasks:", error);
+        // 處理錯誤（例如：設置狀態顯示錯誤信息）
+      }
     };
+
     fetchTasks();
   }, []);
 
