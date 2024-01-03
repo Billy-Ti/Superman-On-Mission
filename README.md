@@ -1,14 +1,8 @@
 <div align="center">
-  <a target="_blank" href="https://github.com/Billy-Ti/Superman-On-Mission" style="margin-bottom:8px; display:block; font-weight:bold; font-size:40px; font-">
-    <em>Super Task co.</em>
-  </a>
-   <div class="arrow" style="font-size:24px; animation: bounce 2s infinite;">
-    <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 32 32"><path fill="#368dcf" d="M8.037 11.166L14.5 22.36c.825 1.43 2.175 1.43 3 0l6.463-11.195c.826-1.43.15-2.598-1.5-2.598H9.537c-1.65 0-2.326 1.17-1.5 2.6z"/></svg>
-  </div>
-  <p align="center" style="font-size:32px;">
-    <a href="https://github.com/imjohnathan/lankat#demo">Demo Website</a>
-  </p>
-<img style="margin-bottom:16px;" width="800px" src="https://imgur.com/ohBlR9Q.gif"/>
+  <a href="https://github.com/Billy-Ti/Superman-On-Mission" style="font-size: 48px;">Super Task co.</a>
+</div>
+<div align="center">
+  <a href="https://superman-4eb28.web.app/" style="font-size: 24px;">Demo</a>
 </div>
 
 ##<svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" viewBox="0 0 24 24"><path fill="#368dcf" d="M6 22q-.825 0-1.412-.587T4 20V4q0-.825.588-1.412T6 2h12q.825 0 1.413.588T20 4v16q0 .825-.587 1.413T18 22zm5-11l2.5-1.5L16 11V4h-5z"/></svg> Project introduction
