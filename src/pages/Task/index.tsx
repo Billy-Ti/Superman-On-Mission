@@ -266,7 +266,7 @@ const Task = () => {
           photos: photoUrls,
           createdBy: currentUserId,
           taskId: uuidv4(),
-          createdAt: new Date().toLocaleDateString(),
+          createdAt: new Date().toISOString().split("T")[0], // 输出格式如 "2024-09-29"
           cost: taskRewardValue,
           acceptedBy: "",
         };

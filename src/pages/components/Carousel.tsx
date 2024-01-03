@@ -3,6 +3,8 @@ import {
   collection,
   getDocs,
   getFirestore,
+  limit,
+  orderBy,
   query,
   where,
 } from "firebase/firestore";
@@ -21,20 +23,31 @@ const Carousel = () => {
   useEffect(() => {
     const fetchTasks = async () => {
       const firestore = getFirestore();
-      const tasksCol = collection(firestore, "tasks");
-      const q = query(tasksCol, where("status", "==", "任務媒合中"));
-      const taskSnapshot = await getDocs(q);
-      const tasksList: Task[] = taskSnapshot.docs.map((doc) => ({
-        ...(doc.data() as Task),
-        id: doc.id,
-      }));
-      setTasks(tasksList);
+
+      const q = query(
+        collection(firestore, "tasks"),
+        where("status", "==", "任務媒合中"),
+        orderBy("createdAt", "desc"),
+        limit(6),
+      );
+
+      try {
+        const querySnapshot = await getDocs(q);
+        const fetchedTasks = querySnapshot.docs.map((doc) => ({
+          ...(doc.data() as Task),
+          id: doc.id,
+        }));
+        setTasks(fetchedTasks);
+      } catch (error) {
+        console.error("Error fetching tasks:", error);
+      }
     };
+
     fetchTasks();
   }, []);
 
-  // const showDots = true;
   const visibleTasks = tasks.length > 6 ? tasks.slice(0, 6) : tasks;
+  const maxSlidesToShow = visibleTasks.length > 6 ? 6 : visibleTasks.length - 1;
   if (visibleTasks.length === 0) {
     return <div className="text-2xl font-bold">目前沒有任務</div>;
   }
@@ -51,26 +64,25 @@ const Carousel = () => {
     dotsClass: "slick-dots slick-thumb",
     responsive: [
       {
-        breakpoint: 1280,
+        breakpoint: 1920,
         settings: {
-          slidesToShow: Math.min(6, visibleTasks.length),
+          slidesToShow: Math.min(maxSlidesToShow, visibleTasks.length),
           slidesToScroll: 1,
           infinite: true,
-          dots: tasks.length >= 6,
+          centerMode: false,
         },
       },
       {
         breakpoint: 1024,
         settings: {
-          slidesToShow: Math.min(2, visibleTasks.length),
+          slidesToShow: Math.min(3, visibleTasks.length),
           slidesToScroll: 1,
           infinite: true,
-          dots: tasks.length >= 6,
           centerMode: false,
         },
       },
       {
-        breakpoint: 767,
+        breakpoint: 768,
         settings: {
           slidesToShow: 1,
           slidesToScroll: 1,
@@ -141,14 +153,6 @@ const Carousel = () => {
                       </Link>
                     </div>
                   ) : (
-                    // <div className="mx-auto h-52 w-52 rounded-md border-[4px] border-[transparent] object-cover duration-300 [box-shadow:rgb(0_0_0_/_69%)_0px_26px_30px_-10px,rgb(0_0_0_/_20%)_0px_16px_10px_-10px] hover:border-[4px]  hover:border-[rgba(249,249,249,0.8)]">
-                    //   <p className="font-semibold">無提供圖片</p>
-                    //   <Icon
-                    //     icon="bxs:image-alt"
-                    //     className="h-20 w-20 text-gray-600"
-                    //   />
-                    // </div>
-
                     <div className="mb-4 flex justify-center text-center">
                       <Link
                         title="前往任務資訊"
