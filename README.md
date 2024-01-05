@@ -1,8 +1,8 @@
 <h1 align="center">
-  <a href="https://github.com/Billy-Ti/Superman-On-Mission">Super Task co.</a>
+  <a target="_blank" href="https://github.com/Billy-Ti/Superman-On-Mission">Super Task co.</a>
 </h1>
 <div align="center">
-  <a href="https://superman-4eb28.web.app/" style="font-size: 24px;">Demo</a>
+  <a target="_blank" href="https://superman-4eb28.web.app/" style="font-size: 24px;">Demo</a>
 </div>
 
 ## <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" viewBox="0 0 24 24"><path fill="#368dcf" d="M6 22q-.825 0-1.412-.587T4 20V4q0-.825.588-1.412T6 2h12q.825 0 1.413.588T20 4v16q0 .825-.587 1.413T18 22zm5-11l2.5-1.5L16 11V4h-5z"/></svg> Project introduction
@@ -31,6 +31,14 @@
 ## <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" viewBox="0 0 24 24"><path fill="#368dcf" d="M13 13.5h1v-3h3v-1h-3v-3h-1v3h-3v1h3zM6.5 17V3h14v14zm-3 3V6.615h1V19h12.385v1z"/></svg> Libraries
 
 `React-Router` `React-Spring` `React-Slick` `Typed.js`
+
+## <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" viewBox="0 0 24 24"><path fill="#368dcf" d="m19 1l-1.26 2.75L15 5l2.74 1.26L19 9l1.25-2.74L23 5l-2.75-1.25M9 4L6.5 9.5L1 12l5.5 2.5L9 20l2.5-5.5L17 12l-5.5-2.5M19 15l-1.26 2.74L15 19l2.74 1.25L19 23l1.25-2.75L23 19l-2.75-1.26"/></svg> [Demo](https://superman-4eb28.web.app/)
+
+- After registering and logging in, you can start using the features of this platform. Those who are not logged in can only view task information.
+- Click on "Initiate Task" and enter the information to submit.
+- You can click on the chat icon and search for the other person's name to send a message.
+- When reporting a task, you can upload a picture. The picture can be clicked to enlarge and preview. Finally, enter a description for your report.
+- On the homepage and by clicking "My Evaluations," you can switch between the evaluations you have given to others and the evaluations you have received.
 
 ## <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" viewBox="0 0 24 24"><g stroke="#368dcf" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"><path fill="none" stroke-dasharray="14" stroke-dashoffset="14" d="M6 19h12"><animate fill="freeze" attributeName="stroke-dashoffset" dur="0.4s" values="14;0"/></path><path fill="#368dcf" d="M12 4 h2 v6 h2.5 L12 14.5M12 4 h-2 v6 h-2.5 L12 14.5"><animate attributeName="d" calcMode="linear" dur="1.5s" keyTimes="0;0.7;1" repeatCount="indefinite" values="M12 4 h2 v6 h2.5 L12 14.5M12 4 h-2 v6 h-2.5 L12 14.5;M12 4 h2 v3 h2.5 L12 11.5M12 4 h-2 v3 h-2.5 L12 11.5;M12 4 h2 v6 h2.5 L12 14.5M12 4 h-2 v6 h-2.5 L12 14.5"/></path></g></svg> Download & Start Project
 
