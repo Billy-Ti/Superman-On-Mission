@@ -1,6 +1,6 @@
-<div align="center">
-  <a href="https://github.com/Billy-Ti/Superman-On-Mission" style="font-size: 48px;">Super Task co.</a>
-</div>
+<h1 align="center">
+  <a href="https://github.com/Billy-Ti/Superman-On-Mission">Super Task co.</a>
+</h1>
 <div align="center">
   <a href="https://superman-4eb28.web.app/" style="font-size: 24px;">Demo</a>
 </div>
