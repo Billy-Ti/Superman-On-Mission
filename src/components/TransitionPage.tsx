@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
 import { useLocation } from "react-router-dom";
 import { animated, useTransition } from "react-spring";
 
@@ -9,13 +8,13 @@ interface TransitionPageProps {
 const TransitionPage: React.FC<TransitionPageProps> = ({ children }) => {
   const location = useLocation();
 
-  const transitions = useTransition(location, {
+  const transitions = useTransition(location.pathname, {
     from: { opacity: 0, transform: "translate3d(-100%,0,0)" },
     enter: { opacity: 1, transform: "translate3d(0%,0,0)" },
     leave: { opacity: 0, transform: "translate3d(100%,0,0)" },
   });
 
-  return transitions((style, _) => (
+  return transitions((style) => (
     <animated.div style={style}>{children}</animated.div>
   ));
 };

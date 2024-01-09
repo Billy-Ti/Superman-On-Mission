@@ -13,11 +13,13 @@ import ChatRoomWindow from "./index";
 const ChatRoomButton = () => {
   const [isChatOpen, setIsChatOpen] = useState<boolean>(false);
   const [newMessageCount, setNewMessageCount] = useState<number>(0);
+  const [isLoggedIn, setIsLoggedIn] = useState<boolean>(false);
   const auth = getAuth();
 
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (user) => {
       if (user) {
+        setIsLoggedIn(true);
         const firestore = getFirestore();
         const messagesRef = collection(firestore, "messages");
         const q = query(
@@ -29,6 +31,8 @@ const ChatRoomButton = () => {
           setNewMessageCount(snapshot.docs.length);
         });
         return () => unsubscribeMessages();
+      } else {
+        setIsLoggedIn(false);
       }
     });
     return () => unsubscribe();
@@ -39,6 +43,8 @@ const ChatRoomButton = () => {
       setIsChatOpen(true);
     }
   };
+
+  if (!isLoggedIn) return null;
 
   return (
     <div className="fixed right-[1%] top-1/2 z-50">

@@ -67,7 +67,7 @@ const Task = () => {
     taskDescription: false,
     taskReward: false,
   });
-
+  
   const navigate = useNavigate();
   const handleTaskRewardChange = (
     event: React.ChangeEvent<HTMLInputElement>,
