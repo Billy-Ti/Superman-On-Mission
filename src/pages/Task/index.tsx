@@ -39,12 +39,16 @@ const storage = getStorage(app);
 
 const Task = () => {
   const [selectedCounty, setSelectedCounty] = useState<string>("");
-  const [taskTitle, setTaskTitle] = useState("");
-  const [taskDescription, setTaskDescription] = useState("");
+  const [taskTitle, setTaskTitle] = useState("徵人一起做專案");
+  const [taskDescription, setTaskDescription] = useState(
+    "以前後端建立一個小型電商網站，主題是親子探索",
+  );
   const [selectedRegion, setSelectedRegion] = useState<string>("");
-  const [detailedAddress, setDetailedAddress] = useState("");
-  const [additionalNotes, setAdditionalNotes] = useState("");
-  const [taskReward, setTaskReward] = useState("");
+  const [detailedAddress, setDetailedAddress] = useState("幸福路10號1樓");
+  const [additionalNotes, setAdditionalNotes] = useState(
+    "詳情請私訊，參與者需具一年以上工作經驗",
+  );
+  const [taskReward, setTaskReward] = useState("100");
   const [superCoins, setSuperCoins] = useState(5000);
   const [currentUserId, setCurrentUserId] = useState<string | null>(null);
   const serviceTypeRef = useRef<ServiceTypeRef>(null);
