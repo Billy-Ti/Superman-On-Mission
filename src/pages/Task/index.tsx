@@ -18,12 +18,12 @@ import { useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import Swal from "sweetalert2";
 import { v4 as uuidv4 } from "uuid";
+import ServiceType, { ServiceTypeRef } from "../../components/ServiceType";
+import countyToRegion from "../../components/TaiwanRegion";
 import Footer from "../../layout/Footer";
 import Header from "../../layout/Header";
 import { app, auth } from "../../utils/firebase";
 import { showAlert } from "../../utils/showAlert";
-import ServiceType, { ServiceTypeRef } from "../components/ServiceType";
-import countyToRegion from "../components/TaiwanRegion";
 
 interface FormErrors {
   taskTitle: boolean;

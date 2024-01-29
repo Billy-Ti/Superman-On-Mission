@@ -10,10 +10,10 @@ import {
 } from "firebase/firestore";
 import { useCallback, useEffect, useState } from "react";
 import { Link } from "react-router-dom";
+import DisplaySwitchButton from "../../components/DisplaySwitchButton";
 import LoadingSpinner from "../../components/LoadingSpinner";
 import Pagination from "../../components/Pagination";
 import { db } from "../../utils/firebase";
-import DisplaySwitchButton from "../components/DisplaySwitchButton";
 interface Review {
   title: string;
   photo: string;
