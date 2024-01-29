@@ -7,15 +7,15 @@ import {
 import { doc, setDoc } from "firebase/firestore";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import Footer from "../../layout/Footer";
-import Header from "../../layout/Header";
-import { db } from "../../utils/firebase";
-import { showAlert } from "../../utils/showAlert";
+import Footer from "../layout/Footer";
+import Header from "../layout/Header";
+import { db } from "../utils/firebase";
+import { showAlert } from "../utils/showAlert";
 const SignIn = () => {
   const [isRightPanelActive, setIsRightPanelActive] = useState(false);
-  const [email, setEmail] = useState("alice@gmail.com");
+  const [email, setEmail] = useState("billy@gmail.com");
   const [password, setPassword] = useState("aqqqqq");
-  const [name, setName] = useState("Alice");
+  const [name, setName] = useState("billy");
   const navigate = useNavigate();
   const auth = getAuth();
   const handleSignUpClick = () => {
