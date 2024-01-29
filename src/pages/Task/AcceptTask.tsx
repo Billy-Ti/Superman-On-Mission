@@ -2,13 +2,13 @@ import { Icon } from "@iconify/react";
 import { collection, getDocs, orderBy, query, where } from "firebase/firestore";
 import { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
+import Carousel from "../../components/Carousel";
+import DisplaySwitchButton from "../../components/DisplaySwitchButton";
 import Pagination from "../../components/Pagination";
+import ServiceTypeSelector from "../../components/ServiceTypeSelectorProps";
 import Footer from "../../layout/Footer";
 import Header from "../../layout/Header";
 import { db } from "../../utils/firebase";
-import Carousel from "../components/Carousel";
-import DisplaySwitchButton from "../components/DisplaySwitchButton";
-import ServiceTypeSelector from "../components/ServiceTypeSelectorProps";
 import RegionFilter from "./RegionFilter";
 
 interface Task {
